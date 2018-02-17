@@ -45,12 +45,48 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Types.cs" />
+    <Compile Include="DataStructures\GTModeData\Car.cs" />
+    <Compile Include="DataStructures\GTModeData\CarUnknown6.cs" />
+    <Compile Include="DataStructures\GTModeData\CarUnknown5.cs" />
+    <Compile Include="DataStructures\GTModeData\CarUnknown4.cs" />
+    <Compile Include="DataStructures\GTModeData\CarUnknown3.cs" />
+    <Compile Include="DataStructures\GTModeData\CarUnknown2.cs" />
+    <Compile Include="DataStructures\GTModeData\Clutch.cs" />
+    <Compile Include="DataStructures\GTModeData\CarUnknown1.cs" />
+    <Compile Include="DataStructures\GTModeData\TyresRear.cs" />
+    <Compile Include="DataStructures\GTModeData\TyresFront.cs" />
+    <Compile Include="DataStructures\GTModeData\Differential.cs" />
+    <Compile Include="DataStructures\GTModeData\Exhaust.cs" />
+    <Compile Include="DataStructures\GTModeData\Intercooler.cs" />
+    <Compile Include="DataStructures\GTModeData\Suspension.cs" />
+    <Compile Include="DataStructures\GTModeData\Gearbox.cs" />
+    <Compile Include="DataStructures\GTModeData\Propshaft.cs" />
+    <Compile Include="DataStructures\GTModeData\Flywheel.cs" />
+    <Compile Include="DataStructures\GTModeData\Drivetrain.cs" />
+    <Compile Include="DataStructures\GTModeData\TurboKit.cs" />
+    <Compile Include="DataStructures\GTModeData\NATuning.cs" />
+    <Compile Include="DataStructures\GTModeData\Chip.cs" />
+    <Compile Include="DataStructures\GTModeData\DisplacementIncrease.cs" />
+    <Compile Include="DataStructures\GTModeData\EngineBalancing.cs" />
+    <Compile Include="DataStructures\GTModeData\PortPolishing.cs" />
+    <Compile Include="DataStructures\GTModeData\Engine.cs" />
+    <Compile Include="DataStructures\GTModeData\Body.cs" />
+    <Compile Include="DataStructures\GTModeData\WeightReduction.cs" />
+    <Compile Include="DataStructures\GTModeData\Dimensions.cs" />
+    <Compile Include="DataStructures\GTModeData\Steering.cs" />
+    <Compile Include="DataStructures\GTModeData\BrakeBalanceController.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="DataStructures\DataStructure.cs" />
+    <Compile Include="DataStructures\GTModeData\Brakes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DataStructures\GTModeRace\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
