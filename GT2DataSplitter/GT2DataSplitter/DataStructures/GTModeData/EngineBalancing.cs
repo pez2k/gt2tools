@@ -1,6 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class EngineBalancing : DataStructure
+    public class EngineBalancing : CarDataStructure
     {
         public EngineBalancing() : base(0xC)
         {

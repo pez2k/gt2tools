@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GT2DataSplitter
 {
@@ -15,11 +10,11 @@ namespace GT2DataSplitter
 
         public DataStructure(int Size)
         {
-            this.Name = GetType().Name;
+            Name = GetType().Name;
             this.Size = Size;
         }
 
-        public void ReadData(FileStream infile, uint blockStart, uint blockSize)
+        public virtual void ReadData(FileStream infile, uint blockStart, uint blockSize)
         {
             if (blockSize % Size > 0)
             {
@@ -39,29 +34,24 @@ namespace GT2DataSplitter
                 byte[] data = new byte[Size];
                 infile.Read(data, 0, Size);
 
-                string filename = Name;
-
-                if (blockCount > 1)
+                using (FileStream outfile = new FileStream(CreateOutputFilename(data), FileMode.Create, FileAccess.Write))
                 {
-                    uint carID = data.ReadUInt();
-                    filename += "\\" + Utils.GetCarName(carID);
-
-                    if (!Directory.Exists(filename))
-                    {
-                        Directory.CreateDirectory(filename);
-                    }
-                }
-
-                filename += "\\" + Directory.GetFiles(filename).Length.ToString() + "0.dat";
-
-                using (FileStream outfile = new FileStream(filename, FileMode.Create, FileAccess.Write))
-                {
-                    outfile.Write(data, 0, data.Length);
+                    ExportStructure(data, outfile);
                 }
             }
         }
 
-        public void WriteData(FileStream outfile, uint indexPosition)
+        public virtual string CreateOutputFilename(byte[] data)
+        {
+            return Name + "\\" + Directory.GetFiles(Name).Length.ToString() + "0.dat";
+        }
+
+        public virtual void ExportStructure(byte[] structure, FileStream output)
+        {
+            output.Write(structure, 0, structure.Length);
+        }
+
+        public virtual void WriteData(FileStream outfile, uint indexPosition)
         {
             Dictionary<uint, string> cars = new Dictionary<uint, string>();
 
@@ -84,7 +74,7 @@ namespace GT2DataSplitter
                 {
                     using (FileStream infile = new FileStream(filename, FileMode.Open, FileAccess.Read))
                     {
-                        infile.CopyTo(outfile);
+                        ImportStructure(infile, outfile);
                     }
                 }
             }
@@ -93,6 +83,11 @@ namespace GT2DataSplitter
             outfile.Position = indexPosition;
             outfile.WriteUInt(startingPosition);
             outfile.WriteUInt(blockSize);
+        }
+
+        public virtual void ImportStructure(FileStream structure, FileStream output)
+        {
+            structure.CopyTo(output);
         }
     }
 }

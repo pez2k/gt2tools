@@ -1,8 +1,8 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Steering : DataStructure
+    public class Steering : CarDataStructure
     {
-        public Steering() : base(0x18)
+        public Steering() : base(0x18, false)
         {
         }
     }

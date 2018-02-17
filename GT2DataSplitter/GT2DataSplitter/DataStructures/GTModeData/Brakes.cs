@@ -1,6 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Brakes : DataStructure
+    public class Brakes : CarDataStructure
     {
         public Brakes() : base(0xC)
         {

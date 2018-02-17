@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GT2DataSplitter
 {
@@ -52,7 +46,7 @@ namespace GT2DataSplitter
             }
         }
 
-        static DataStructure[] dataStructures =
+        static CarDataStructure[] dataStructures =
         {
             new Brakes(), new BrakeBalanceController(), new Steering(), new Dimensions(),  new WeightReduction(), new Body(), new Engine(), new PortPolishing(),
             new EngineBalancing(), new DisplacementIncrease(), new Chip(), new NATuning(), new TurboKit(), new Drivetrain(), new Flywheel(), new Clutch(),
@@ -65,7 +59,7 @@ namespace GT2DataSplitter
             using (FileStream file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
                 int i = 1;
-                foreach(DataStructure dataStructure in dataStructures)
+                foreach(CarDataStructure dataStructure in dataStructures)
                 {
                     file.Position = 8 * i;
                     uint blockStart = file.ReadUInt();
@@ -87,7 +81,7 @@ namespace GT2DataSplitter
                 file.Position = 0x1F7;
                 file.WriteByte(0x00);
                 uint i = 1;
-                foreach (DataStructure dataStructure in dataStructures)
+                foreach (CarDataStructure dataStructure in dataStructures)
                 {
                     dataStructure.WriteData(file, 8 * i);
                     i++;

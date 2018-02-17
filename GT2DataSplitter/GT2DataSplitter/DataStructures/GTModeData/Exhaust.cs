@@ -1,6 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Exhaust : DataStructure
+    public class Exhaust : CarDataStructure
     {
         public Exhaust() : base(0xC)
         {

@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataStructures\CarDataStructure.cs" />
     <Compile Include="DataStructures\GTModeData\Car.cs" />
     <Compile Include="DataStructures\GTModeData\CarUnknown6.cs" />
     <Compile Include="DataStructures\GTModeData\CarUnknown5.cs" />

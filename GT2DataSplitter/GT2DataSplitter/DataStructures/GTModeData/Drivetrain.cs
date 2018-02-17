@@ -1,6 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Drivetrain : DataStructure
+    public class Drivetrain : CarDataStructure
     {
         public Drivetrain() : base(0x10)
         {

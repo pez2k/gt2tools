@@ -1,8 +1,8 @@
 ﻿namespace GT2DataSplitter
 {
-    public class CarUnknown5 : DataStructure
+    public class CarUnknown5 : CarDataStructure
     {
-        public CarUnknown5() : base(0x30)
+        public CarUnknown5() : base(0x30, false)
         {
         }
     }

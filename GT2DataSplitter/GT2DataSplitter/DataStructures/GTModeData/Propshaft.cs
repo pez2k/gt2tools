@@ -1,6 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Propshaft : DataStructure
+    public class Propshaft : CarDataStructure
     {
         public Propshaft() : base(0xC)
         {

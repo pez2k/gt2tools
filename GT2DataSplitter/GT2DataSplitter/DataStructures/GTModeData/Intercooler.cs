@@ -1,6 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Intercooler : DataStructure
+    public class Intercooler : CarDataStructure
     {
         public Intercooler() : base(0xC)
         {

@@ -1,6 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class WeightReduction : DataStructure
+    public class WeightReduction : CarDataStructure
     {
         public WeightReduction() : base(0xC)
         {

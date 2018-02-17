@@ -1,6 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Gearbox : DataStructure
+    public class Gearbox : CarDataStructure
     {
         public Gearbox() : base(0x24)
         {

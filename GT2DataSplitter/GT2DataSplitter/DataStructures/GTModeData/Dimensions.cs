@@ -1,6 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Dimensions : DataStructure
+    public class Dimensions : CarDataStructure
     {
         public Dimensions() : base(0x14)
         {
