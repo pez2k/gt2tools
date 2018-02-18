@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+﻿using System.IO;
 using System.Runtime.InteropServices;
+using CsvHelper;
+using System.Text;
+using CsvHelper.Configuration;
 
 namespace GT2DataSplitter
 {
@@ -25,7 +25,7 @@ namespace GT2DataSplitter
                 Directory.CreateDirectory(Name);
             }
 
-            return Name + "\\" + Utils.GetCarName(data.ReadUInt()) + ".dat";
+            return Name + "\\" + Utils.GetCarName(data.ReadUInt()) + ".csv";
         }
 
         public override void Read(FileStream infile)
@@ -39,21 +39,18 @@ namespace GT2DataSplitter
 
         public override void Dump()
         {
-            base.Dump();
-        }
-
-        /*public override void ExportStructure(byte[] structure, FileStream output)
-        {
-            var newData = new List<string>();
-
-            Type dataType = typeof(StructureData);
-            foreach (FieldInfo field in dataType.GetFields())
+            using (TextWriter output = new StreamWriter(File.Create(CreateOutputFilename(RawData)), Encoding.UTF8))
             {
-                newData.Add(field.GetValue(Data).ToString());
+                using (CsvWriter csv = new CsvWriter(output))
+                {
+                    csv.Configuration.RegisterClassMap<CarCSVMap>();
+                    csv.Configuration.QuoteAllFields = true;
+                    csv.WriteHeader<StructureData>();
+                    csv.NextRecord();
+                    csv.WriteRecord(Data);
+                }
             }
-
-            base.ExportStructure(structure, output);
-        }*/
+        }
 
         public StructureData Data { get; set; }
 
@@ -64,8 +61,8 @@ namespace GT2DataSplitter
             public ushort Brakes; // (4)
             public uint IsSpecial;
             public ushort WeightReduction; // (a)
-            public ushort Body; // (c)
-            public ushort WeightDistribution;// (e)
+            public ushort Unknown0; // (c)
+            public ushort Body;// (e)
             public ushort Engine; // (10)
             public ushort Unknown1; // 12
             public ushort Unknown2; // 14
@@ -95,6 +92,46 @@ namespace GT2DataSplitter
             public ushort Unknown10; // 42
             public uint Price; // 0x44
         }
+    }
 
+    public sealed class CarCSVMap : ClassMap<Car.StructureData>
+    {
+        public CarCSVMap()
+        {
+            Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
+            Map(m => m.Brakes);
+            Map(m => m.IsSpecial);
+            Map(m => m.WeightReduction);
+            Map(m => m.Unknown0);
+            Map(m => m.Body);
+            Map(m => m.Engine);
+            Map(m => m.Unknown1);
+            Map(m => m.Unknown2);
+            Map(m => m.Unknown3);
+            Map(m => m.Unknown4);
+            Map(m => m.NATuning);
+            Map(m => m.TurboKit);
+            Map(m => m.Drivetrain);
+            Map(m => m.Flywheel);
+            Map(m => m.Clutch);
+            Map(m => m.Unknown5);
+            Map(m => m.Differential);
+            Map(m => m.Transmission);
+            Map(m => m.Suspension);
+            Map(m => m.Unknown6);
+            Map(m => m.Unknown7);
+            Map(m => m.FrontTyres);
+            Map(m => m.RearTyres);
+            Map(m => m.Unknown8);
+            Map(m => m.Unknown9);
+            Map(m => m.RimsCode3);
+            Map(m => m.ManufacturerID);
+            Map(m => m.NameFirstPart);
+            Map(m => m.NameSecondPart);
+            Map(m => m.Year);
+            Map(m => m.Unknown10);
+            Map(m => m.Price);
+            Map(m => m.CarId);
+        }
     }
 }
