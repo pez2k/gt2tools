@@ -7,7 +7,7 @@ namespace GT2DataSplitter
     {
         public List<Brakes> BrakeParts { get; set; } = new List<Brakes>();
         public List<BrakeBalanceController> BrakeBalanceControllerParts { get; set; } = new List<BrakeBalanceController>();
-        public Steering SteeringPart { get; set; } = new Steering();
+        public List<Steering> SteeringParts { get; set; } = new List<Steering>();
         public List<Dimensions> DimensionsParts { get; set; } = new List<Dimensions>();
         public List<WeightReduction> WeightReductionParts { get; set; } = new List<WeightReduction>();
         public List<Body> BodyParts { get; set; } = new List<Body>();
@@ -29,12 +29,12 @@ namespace GT2DataSplitter
         public List<Differential> DifferentialParts { get; set; } = new List<Differential>();
         public List<TyresFront> TyresFrontParts { get; set; } = new List<TyresFront>();
         public List<TyresRear> TyresRearParts { get; set; } = new List<TyresRear>();
-        public CarUnknown1 Unknown1 { get; set; } = new CarUnknown1();
-        public CarUnknown2 Unknown2 { get; set; } = new CarUnknown2();
-        public CarUnknown3 Unknown3 { get; set; } = new CarUnknown3();
-        public CarUnknown4 Unknown4 { get; set; } = new CarUnknown4();
-        public CarUnknown5 Unknown5 { get; set; } = new CarUnknown5();
-        public CarUnknown6 Unknown6 { get; set; } = new CarUnknown6();
+        public List<CarUnknown1> Unknown1 { get; set; } = new List<CarUnknown1>();
+        public List<CarUnknown2> Unknown2 { get; set; } = new List<CarUnknown2>();
+        public List<CarUnknown3> Unknown3 { get; set; } = new List<CarUnknown3>();
+        public List<CarUnknown4> Unknown4 { get; set; } = new List<CarUnknown4>();
+        public List<CarUnknown5> Unknown5 { get; set; } = new List<CarUnknown5>();
+        public List<CarUnknown6> Unknown6 { get; set; } = new List<CarUnknown6>();
         public List<Car> Cars { get; set; } = new List<Car>();
         
         public void ReadData(string filename)
@@ -53,7 +53,7 @@ namespace GT2DataSplitter
 
                 BrakeParts.Read(file, blocks[0].BlockStart, blocks[0].BlockSize);
                 BrakeBalanceControllerParts.Read(file, blocks[1].BlockStart, blocks[1].BlockSize);
-                SteeringPart.Read(file);
+                SteeringParts.Read(file, blocks[2].BlockStart, blocks[2].BlockSize);
                 DimensionsParts.Read(file, blocks[3].BlockStart, blocks[3].BlockSize);
                 WeightReductionParts.Read(file, blocks[4].BlockStart, blocks[4].BlockSize);
                 BodyParts.Read(file, blocks[5].BlockStart, blocks[5].BlockSize);
@@ -75,12 +75,12 @@ namespace GT2DataSplitter
                 DifferentialParts.Read(file, blocks[21].BlockStart, blocks[21].BlockSize);
                 TyresFrontParts.Read(file, blocks[22].BlockStart, blocks[22].BlockSize);
                 TyresRearParts.Read(file, blocks[23].BlockStart, blocks[23].BlockSize);
-                Unknown1.Read(file);
-                Unknown2.Read(file);
-                Unknown3.Read(file);
-                Unknown4.Read(file);
-                Unknown5.Read(file);
-                Unknown6.Read(file);
+                Unknown1.Read(file, blocks[24].BlockStart, blocks[24].BlockSize);
+                Unknown2.Read(file, blocks[25].BlockStart, blocks[25].BlockSize);
+                Unknown3.Read(file, blocks[26].BlockStart, blocks[26].BlockSize);
+                Unknown4.Read(file, blocks[27].BlockStart, blocks[27].BlockSize);
+                Unknown5.Read(file, blocks[28].BlockStart, blocks[28].BlockSize);
+                Unknown6.Read(file, blocks[29].BlockStart, blocks[29].BlockSize);
                 Cars.Read(file, blocks[30].BlockStart, blocks[30].BlockSize);
             }
         }
@@ -89,7 +89,7 @@ namespace GT2DataSplitter
         {
             BrakeParts.Dump();
             BrakeBalanceControllerParts.Dump();
-            SteeringPart.Dump();
+            SteeringParts.Dump();
             DimensionsParts.Dump();
             WeightReductionParts.Dump();
             BodyParts.Dump();

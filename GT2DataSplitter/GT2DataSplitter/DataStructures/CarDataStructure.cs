@@ -5,14 +5,6 @@ namespace GT2DataSplitter
     public class CarDataStructure : DataStructure
     {
         public bool HasCarId { get; set; } = true;
-        
-        public override void CreateDirectory()
-        {
-            if (!HasCarId)
-            {
-                base.CreateDirectory();
-            }
-        }
 
         public override string CreateOutputFilename(byte[] data)
         {

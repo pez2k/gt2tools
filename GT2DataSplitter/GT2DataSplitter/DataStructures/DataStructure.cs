@@ -24,8 +24,6 @@ namespace GT2DataSplitter
 
         public virtual void Dump()
         {
-            CreateDirectory();
-
             using (FileStream outfile = new FileStream(CreateOutputFilename(RawData), FileMode.Create, FileAccess.Write))
             {
                 ExportStructure(RawData, outfile);
@@ -114,6 +112,13 @@ namespace GT2DataSplitter
 
         public static void Dump<T>(this List<T> structures) where T : DataStructure, new()
         {
+            T example = new T();
+
+            if (!Directory.Exists(example.Name))
+            {
+                Directory.CreateDirectory(example.Name);
+            }
+
             foreach (var structure in structures)
             {
                 structure.Dump();

@@ -13,18 +13,8 @@ namespace GT2DataSplitter
             Size = 0x48;
         }
 
-        public override void CreateDirectory()
-        {
-            base.CreateDirectory();
-        }
-
         public override string CreateOutputFilename(byte[] data)
         {
-            if (!Directory.Exists(Name))
-            {
-                Directory.CreateDirectory(Name);
-            }
-
             return Name + "\\" + Utils.GetCarName(data.ReadUInt()) + ".csv";
         }
 
