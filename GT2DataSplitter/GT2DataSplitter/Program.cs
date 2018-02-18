@@ -59,6 +59,10 @@ namespace GT2DataSplitter
             GTModeData CarData = new GTModeData();
             CarData.ReadData(filename);
             CarData.DumpData();
+
+            GTModeRace RaceData = new GTModeRace();
+            RaceData.ReadData("eng_gtmode_race.dat");
+            RaceData.DumpData();
         }
 
         static void BuildFile(string filename)

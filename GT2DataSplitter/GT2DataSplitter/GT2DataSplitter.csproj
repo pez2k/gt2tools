@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataStructures\CarDataStructure.cs" />
+    <Compile Include="DataStructures\GTModeRace.cs" />
     <Compile Include="DataStructures\GTModeData.cs" />
     <Compile Include="DataStructures\GTModeData\Car.cs" />
     <Compile Include="DataStructures\GTModeData\CarUnknown6.cs" />
@@ -81,6 +82,10 @@
     <Compile Include="DataStructures\GTModeData\Dimensions.cs" />
     <Compile Include="DataStructures\GTModeData\Steering.cs" />
     <Compile Include="DataStructures\GTModeData\BrakeBalanceController.cs" />
+    <Compile Include="DataStructures\GTModeRace\RaceStrings.cs" />
+    <Compile Include="DataStructures\GTModeRace\RaceUnknown1.cs" />
+    <Compile Include="DataStructures\GTModeRace\Opponent.cs" />
+    <Compile Include="DataStructures\GTModeRace\Race.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="DataStructures\DataStructure.cs" />
@@ -92,9 +97,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="DataStructures\GTModeRace\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
