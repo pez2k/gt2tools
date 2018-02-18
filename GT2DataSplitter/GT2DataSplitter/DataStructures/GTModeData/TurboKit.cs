@@ -2,8 +2,9 @@
 {
     public class TurboKit : CarDataStructure
     {
-        public TurboKit() : base(0x14)
+        public TurboKit()
         {
+            Size = 0x14;
         }
     }
 }

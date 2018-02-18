@@ -2,8 +2,9 @@
 {
     public class TyresFront : CarDataStructure
     {
-        public TyresFront() : base(0x10)
+        public TyresFront()
         {
+            Size = 0x10;
         }
     }
 }

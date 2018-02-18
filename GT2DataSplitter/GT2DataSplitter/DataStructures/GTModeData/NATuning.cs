@@ -2,8 +2,9 @@
 {
     public class NATuning : CarDataStructure
     {
-        public NATuning() : base(0xC)
+        public NATuning()
         {
+            Size = 0xC;
         }
     }
 }

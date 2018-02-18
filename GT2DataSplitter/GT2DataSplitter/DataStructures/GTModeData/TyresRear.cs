@@ -2,8 +2,9 @@
 {
     public class TyresRear : CarDataStructure
     {
-        public TyresRear() : base(0xC)
+        public TyresRear()
         {
+            Size = 0xC;
         }
     }
 }

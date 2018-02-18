@@ -2,8 +2,9 @@
 {
     public class Drivetrain : CarDataStructure
     {
-        public Drivetrain() : base(0x10)
+        public Drivetrain()
         {
+            Size = 0x10;
         }
     }
 }

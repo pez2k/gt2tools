@@ -2,8 +2,9 @@
 {
     public class Clutch : CarDataStructure
     {
-        public Clutch() : base(0x10)
+        public Clutch()
         {
+            Size = 0x10;
         }
     }
 }

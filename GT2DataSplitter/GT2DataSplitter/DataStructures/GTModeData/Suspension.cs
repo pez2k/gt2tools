@@ -2,8 +2,9 @@
 {
     public class Suspension : CarDataStructure
     {
-        public Suspension() : base(0x4C)
+        public Suspension()
         {
+            Size = 0x4C;
         }
     }
 }

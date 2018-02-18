@@ -2,8 +2,9 @@
 {
     public class Engine : CarDataStructure
     {
-        public Engine() : base(0x4C)
+        public Engine()
         {
+            Size = 0x4C;
         }
     }
 }

@@ -2,8 +2,9 @@
 {
     public class Differential : CarDataStructure
     {
-        public Differential() : base(0x20)
+        public Differential()
         {
+            Size = 0x20;
         }
     }
 }

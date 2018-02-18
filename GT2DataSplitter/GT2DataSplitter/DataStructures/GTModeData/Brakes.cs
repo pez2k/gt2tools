@@ -2,8 +2,9 @@
 {
     public class Brakes : CarDataStructure
     {
-        public Brakes() : base(0xC)
+        public Brakes()
         {
+            Size = 0xC;
         }
     }
 }

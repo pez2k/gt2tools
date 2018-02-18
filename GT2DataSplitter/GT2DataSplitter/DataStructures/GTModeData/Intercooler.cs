@@ -2,8 +2,9 @@
 {
     public class Intercooler : CarDataStructure
     {
-        public Intercooler() : base(0xC)
+        public Intercooler()
         {
+            Size = 0xC;
         }
     }
 }

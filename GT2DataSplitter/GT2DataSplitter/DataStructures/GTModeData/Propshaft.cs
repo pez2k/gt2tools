@@ -2,8 +2,9 @@
 {
     public class Propshaft : CarDataStructure
     {
-        public Propshaft() : base(0xC)
+        public Propshaft()
         {
+            Size = 0xC;
         }
     }
 }

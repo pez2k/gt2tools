@@ -2,8 +2,9 @@
 {
     public class Body : CarDataStructure
     {
-        public Body() : base(0x1C)
+        public Body()
         {
+            Size = 0x1C;
         }
     }
 }

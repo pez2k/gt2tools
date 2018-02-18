@@ -2,8 +2,9 @@
 {
     public class EngineBalancing : CarDataStructure
     {
-        public EngineBalancing() : base(0xC)
+        public EngineBalancing()
         {
+            Size = 0xC;
         }
     }
 }

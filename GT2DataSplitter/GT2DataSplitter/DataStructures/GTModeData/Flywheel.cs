@@ -2,8 +2,9 @@
 {
     public class Flywheel : CarDataStructure
     {
-        public Flywheel() : base(0xC)
+        public Flywheel()
         {
+            Size = 0xC;
         }
     }
 }

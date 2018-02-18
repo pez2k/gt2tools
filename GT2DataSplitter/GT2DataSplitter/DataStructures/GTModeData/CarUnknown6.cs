@@ -2,8 +2,10 @@
 {
     public class CarUnknown6 : CarDataStructure
     {
-        public CarUnknown6() : base(0x628, false)
+        public CarUnknown6()
         {
+            Size = 0x628;
+            HasCarId = false;
         }
     }
 }

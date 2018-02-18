@@ -2,8 +2,9 @@
 {
     public class Exhaust : CarDataStructure
     {
-        public Exhaust() : base(0xC)
+        public Exhaust()
         {
+            Size = 0xC;
         }
     }
 }

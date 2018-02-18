@@ -56,20 +56,9 @@ namespace GT2DataSplitter
 
         static void SplitFile(string filename)
         {
-            using (FileStream file = new FileStream(filename, FileMode.Open, FileAccess.Read))
-            {
-                int i = 1;
-                foreach(CarDataStructure dataStructure in dataStructures)
-                {
-                    file.Position = 8 * i;
-                    uint blockStart = file.ReadUInt();
-                    uint blockSize = file.ReadUInt();
-
-                    dataStructure.ReadData(file, blockStart, blockSize);
-
-                    i++;
-                }
-            }
+            GTModeData CarData = new GTModeData();
+            CarData.ReadData(filename);
+            CarData.DumpData();
         }
 
         static void BuildFile(string filename)

@@ -8,21 +8,42 @@ namespace GT2DataSplitter
 {
     public class Car : CarDataStructure
     {
-        public Car() : base(0x48)
+        public Car()
         {
+            Size = 0x48;
+        }
+
+        public override void CreateDirectory()
+        {
+            base.CreateDirectory();
         }
 
         public override string CreateOutputFilename(byte[] data)
         {
+            if (!Directory.Exists(Name))
+            {
+                Directory.CreateDirectory(Name);
+            }
+
             return Name + "\\" + Utils.GetCarName(data.ReadUInt()) + ".dat";
+        }
+
+        public override void Read(FileStream infile)
+        {
+            base.Read(infile);
+
+            GCHandle handle = GCHandle.Alloc(RawData, GCHandleType.Pinned);
+            Data = (StructureData)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(StructureData));
+            handle.Free();
+        }
+
+        public override void Dump()
+        {
+            base.Dump();
         }
 
         /*public override void ExportStructure(byte[] structure, FileStream output)
         {
-            GCHandle handle = GCHandle.Alloc(structure, GCHandleType.Pinned);
-            Data = (StructureData)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(StructureData));
-            handle.Free();
-
             var newData = new List<string>();
 
             Type dataType = typeof(StructureData);
@@ -39,9 +60,9 @@ namespace GT2DataSplitter
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct StructureData
         {
-            public uint CarId; // standard thing (0)
+            public uint CarId; // (0)
             public ushort Brakes; // (4)
-            public uint IsSpecial; // 1 for special cars, 0 for not
+            public uint IsSpecial;
             public ushort WeightReduction; // (a)
             public ushort Body; // (c)
             public ushort WeightDistribution;// (e)
@@ -50,7 +71,7 @@ namespace GT2DataSplitter
             public ushort Unknown2; // 14
             public ushort Unknown3; // 16
             public ushort Unknown4; // 18
-            public ushort NATuning; // 1a - this and the last one are probably 4 shorts, but they're always 0 so it doesn't really matter
+            public ushort NATuning; // 1a
             public ushort TurboKit; // 1c
             public ushort Drivetrain; // 1e
             public ushort Flywheel; // 20
@@ -67,9 +88,9 @@ namespace GT2DataSplitter
             public ushort Unknown9; // 36
             public ushort RimsCode3; // 38
             public ushort ManufacturerID; // 0x3a
-            public ushort NameFirstPart; // 0x3c unistrdb index
-            public ushort NameSecondPart; // 0x3e unistrdb index
-            public byte IsSpecial2; // 0x40 (1 for special  cars, 0 for not)
+            public ushort NameFirstPart; // 0x3c
+            public ushort NameSecondPart; // 0x3e
+            public byte IsSpecial2; // 0x40
             public byte Year; // 0x41 
             public ushort Unknown10; // 42
             public uint Price; // 0x44

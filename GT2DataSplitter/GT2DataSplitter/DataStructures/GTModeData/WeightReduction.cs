@@ -2,8 +2,9 @@
 {
     public class WeightReduction : CarDataStructure
     {
-        public WeightReduction() : base(0xC)
+        public WeightReduction()
         {
+            Size = 0xC;
         }
     }
 }

@@ -2,8 +2,9 @@
 {
     public class Gearbox : CarDataStructure
     {
-        public Gearbox() : base(0x24)
+        public Gearbox()
         {
+            Size = 0x24;
         }
     }
 }

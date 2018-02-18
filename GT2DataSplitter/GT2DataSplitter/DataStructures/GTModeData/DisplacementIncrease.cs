@@ -2,8 +2,9 @@
 {
     public class DisplacementIncrease : CarDataStructure
     {
-        public DisplacementIncrease() : base(0xC)
+        public DisplacementIncrease()
         {
+            Size = 0xC;
         }
     }
 }

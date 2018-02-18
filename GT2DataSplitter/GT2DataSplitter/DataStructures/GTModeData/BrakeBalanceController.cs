@@ -2,8 +2,9 @@
 {
     public class BrakeBalanceController : CarDataStructure
     {
-        public BrakeBalanceController() : base(0x10)
+        public BrakeBalanceController()
         {
+            Size = 0x10;
         }
     }
 }

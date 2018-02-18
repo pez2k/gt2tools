@@ -5,39 +5,38 @@ namespace GT2DataSplitter
 {
     public class DataStructure
     {
-        public string Name { get; set; }
-        public int Size { get; set; }
-
-        public DataStructure(int Size)
-        {
-            Name = GetType().Name;
-            this.Size = Size;
+        public string Name {
+            get
+            {
+                return GetType().Name;
+            }
         }
 
-        public virtual void ReadData(FileStream infile, uint blockStart, uint blockSize)
-        {
-            if (blockSize % Size > 0)
-            {
-                return;
-            }
+        public int Size { get; set; }
 
+        public byte[] RawData { get; set; }
+
+        public virtual void Read(FileStream infile)
+        {
+            RawData = new byte[Size];
+            infile.Read(RawData, 0, Size);
+        }
+
+        public virtual void Dump()
+        {
+            CreateDirectory();
+
+            using (FileStream outfile = new FileStream(CreateOutputFilename(RawData), FileMode.Create, FileAccess.Write))
+            {
+                ExportStructure(RawData, outfile);
+            }
+        }
+
+        public virtual void CreateDirectory()
+        {
             if (!Directory.Exists(Name))
             {
                 Directory.CreateDirectory(Name);
-            }
-
-            infile.Position = blockStart;
-            long blockCount = blockSize / Size;
-
-            for (int i = 0; i < blockCount; i++)
-            {
-                byte[] data = new byte[Size];
-                infile.Read(data, 0, Size);
-
-                using (FileStream outfile = new FileStream(CreateOutputFilename(data), FileMode.Create, FileAccess.Write))
-                {
-                    ExportStructure(data, outfile);
-                }
             }
         }
 
@@ -88,6 +87,37 @@ namespace GT2DataSplitter
         public virtual void ImportStructure(FileStream structure, FileStream output)
         {
             structure.CopyTo(output);
+        }
+    }
+
+    public static class DataStructureExtensions
+    {
+        public static void Read<T>(this List<T> structureList, FileStream infile, uint blockStart, uint blockSize) where T : DataStructure, new()
+        {
+            T structure = new T();
+
+            if (blockSize % structure.Size > 0)
+            {
+                return;
+            }
+
+            infile.Position = blockStart;
+            long blockCount = blockSize / structure.Size;
+
+            for (int i = 0; i < blockCount; i++)
+            {
+                T newStructure = new T();
+                newStructure.Read(infile);
+                structureList.Add(newStructure);
+            }
+        }
+
+        public static void Dump<T>(this List<T> structures) where T : DataStructure, new()
+        {
+            foreach (var structure in structures)
+            {
+                structure.Dump();
+            }
         }
     }
 }

@@ -2,8 +2,10 @@
 {
     public class Steering : CarDataStructure
     {
-        public Steering() : base(0x18, false)
+        public Steering()
         {
+            Size = 0x18;
+            HasCarId = false;
         }
     }
 }

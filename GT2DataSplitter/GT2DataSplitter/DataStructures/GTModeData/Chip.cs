@@ -2,8 +2,9 @@
 {
     public class Chip : CarDataStructure
     {
-        public Chip() : base(0xC)
+        public Chip()
         {
+            Size = 0xC;
         }
     }
 }
