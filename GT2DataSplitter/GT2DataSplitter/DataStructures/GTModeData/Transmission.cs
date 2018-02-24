@@ -1,8 +1,8 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Gearbox : CarDataStructure
+    public class Transmission : CarDataStructure
     {
-        public Gearbox()
+        public Transmission()
         {
             Size = 0x24;
         }

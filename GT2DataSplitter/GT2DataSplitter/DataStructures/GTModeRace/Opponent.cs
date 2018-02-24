@@ -56,7 +56,8 @@ namespace GT2DataSplitter
             public ushort Engine; // (10)
             public ushort Unknown1; // 12
             public uint Unknown2; // 16
-            public uint NATuning; // 1a
+            public ushort Unknown2b; // 1a
+            public ushort NATuning; // 1a -------- check!
             public ushort TurboKit; // 1c
             public ushort Drivetrain; // 1e
             public ushort Flywheel; // 20
@@ -96,26 +97,27 @@ namespace GT2DataSplitter
         public OpponentCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
-            Map(m => m.Brakes);
+            Map(m => m.Brakes).TypeConverter(Utils.GetFileNameConverter("Brakes"));
             Map(m => m.IsSpecial);
-            Map(m => m.WeightReduction);
+            Map(m => m.WeightReduction).TypeConverter(Utils.GetFileNameConverter("WeightReduction"));
             Map(m => m.Unknown0);
-            Map(m => m.Body);
-            Map(m => m.Engine);
+            Map(m => m.Body).TypeConverter(Utils.GetFileNameConverter("Body"));
+            Map(m => m.Engine).TypeConverter(Utils.GetFileNameConverter("Engine"));
             Map(m => m.Unknown1);
             Map(m => m.Unknown2);
-            Map(m => m.NATuning);
-            Map(m => m.TurboKit);
-            Map(m => m.Drivetrain);
-            Map(m => m.Flywheel);
-            Map(m => m.Clutch);
+            Map(m => m.Unknown2b);
+            Map(m => m.NATuning).TypeConverter(Utils.GetFileNameConverter("NATuning"));
+            Map(m => m.TurboKit).TypeConverter(Utils.GetFileNameConverter("TurboKit"));
+            Map(m => m.Drivetrain).TypeConverter(Utils.GetFileNameConverter("Drivetrain"));
+            Map(m => m.Flywheel).TypeConverter(Utils.GetFileNameConverter("Flywheel"));
+            Map(m => m.Clutch).TypeConverter(Utils.GetFileNameConverter("Clutch"));
             Map(m => m.Unknown3);
-            Map(m => m.Differential);
-            Map(m => m.Transmission);
-            Map(m => m.Suspension);
+            Map(m => m.Differential).TypeConverter(Utils.GetFileNameConverter("Differential"));
+            Map(m => m.Transmission).TypeConverter(Utils.GetFileNameConverter("Transmission"));
+            Map(m => m.Suspension).TypeConverter(Utils.GetFileNameConverter("Suspension"));
             Map(m => m.Unknown4);
-            Map(m => m.TyresFront);
-            Map(m => m.TyresRear);
+            Map(m => m.TyresFront).TypeConverter(Utils.GetFileNameConverter("TyresFront"));
+            Map(m => m.TyresRear).TypeConverter(Utils.GetFileNameConverter("TyresRear"));
             Map(m => m.Unknown5);
             Map(m => m.RimsCode3);
             Map(m => m.Unknown6);

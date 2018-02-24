@@ -42,6 +42,11 @@ namespace GT2DataSplitter
             carID = (uint)currentCarID;
             return carID;
         }
+
+        public static CachedFileNameConverter GetFileNameConverter(string name)
+        {
+            return new CachedFileNameConverter(name);
+        }
     }
 
     public class CarIdConverter : ITypeConverter
@@ -55,6 +60,27 @@ namespace GT2DataSplitter
         {
             uint carId = (uint)value;
             return Utils.GetCarName(carId);
+        }
+    }
+
+    public class CachedFileNameConverter : ITypeConverter
+    {
+        public virtual string Name { get; set; }
+
+        public CachedFileNameConverter(string name = "")
+        {
+            Name = name;
+        }
+
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            ushort cacheIndex = (ushort)value;
+            return FileNameCache.Get(Name, cacheIndex);
         }
     }
 }

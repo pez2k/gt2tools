@@ -22,7 +22,7 @@ namespace GT2DataSplitter
         public List<Flywheel> FlywheelParts { get; set; } = new List<Flywheel>();
         public List<Clutch> ClutchParts { get; set; } = new List<Clutch>();
         public List<Propshaft> PropshaftParts { get; set; } = new List<Propshaft>();
-        public List<Gearbox> GearboxParts { get; set; } = new List<Gearbox>();
+        public List<Transmission> TransmissionParts { get; set; } = new List<Transmission>();
         public List<Suspension> SuspensionParts { get; set; } = new List<Suspension>();
         public List<Intercooler> IntercoolerParts { get; set; } = new List<Intercooler>();
         public List<Exhaust> ExhaustParts { get; set; } = new List<Exhaust>();
@@ -68,7 +68,7 @@ namespace GT2DataSplitter
                 FlywheelParts.Read(file, blocks[14].BlockStart, blocks[14].BlockSize);
                 ClutchParts.Read(file, blocks[15].BlockStart, blocks[15].BlockSize);
                 PropshaftParts.Read(file, blocks[16].BlockStart, blocks[16].BlockSize);
-                GearboxParts.Read(file, blocks[17].BlockStart, blocks[17].BlockSize);
+                TransmissionParts.Read(file, blocks[17].BlockStart, blocks[17].BlockSize);
                 SuspensionParts.Read(file, blocks[18].BlockStart, blocks[18].BlockSize);
                 IntercoolerParts.Read(file, blocks[19].BlockStart, blocks[19].BlockSize);
                 ExhaustParts.Read(file, blocks[20].BlockStart, blocks[20].BlockSize);
@@ -104,7 +104,7 @@ namespace GT2DataSplitter
             FlywheelParts.Dump();
             ClutchParts.Dump();
             PropshaftParts.Dump();
-            GearboxParts.Dump();
+            TransmissionParts.Dump();
             SuspensionParts.Dump();
             IntercoolerParts.Dump();
             ExhaustParts.Dump();

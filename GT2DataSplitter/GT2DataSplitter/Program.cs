@@ -50,7 +50,7 @@ namespace GT2DataSplitter
         {
             new Brakes(), new BrakeBalanceController(), new Steering(), new Dimensions(),  new WeightReduction(), new Body(), new Engine(), new PortPolishing(),
             new EngineBalancing(), new DisplacementIncrease(), new Chip(), new NATuning(), new TurboKit(), new Drivetrain(), new Flywheel(), new Clutch(),
-            new Propshaft(), new Gearbox(), new Suspension(), new Intercooler(), new Exhaust(), new Differential(), new TyresFront(), new TyresRear(),
+            new Propshaft(), new Transmission(), new Suspension(), new Intercooler(), new Exhaust(), new Differential(), new TyresFront(), new TyresRear(),
             new CarUnknown1(), new CarUnknown2(), new CarUnknown3(), new CarUnknown4(), new CarUnknown5(), new CarUnknown6(), new Car()
         };
 
@@ -72,7 +72,7 @@ namespace GT2DataSplitter
                 file.Write(new byte[]{ 0x47, 0x54, 0x44, 0x54, 0x6C, 0x00, 0x3E, 0x00 }, 0, 8);
 
                 file.Position = 0x1F7;
-                file.WriteByte(0x00);
+                file.WriteByte(0x00); // Data starts at 0x1F8 so position EOF
                 uint i = 1;
                 foreach (CarDataStructure dataStructure in dataStructures)
                 {

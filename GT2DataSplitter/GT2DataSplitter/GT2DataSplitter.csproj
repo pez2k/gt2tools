@@ -66,7 +66,7 @@
     <Compile Include="DataStructures\GTModeData\Exhaust.cs" />
     <Compile Include="DataStructures\GTModeData\Intercooler.cs" />
     <Compile Include="DataStructures\GTModeData\Suspension.cs" />
-    <Compile Include="DataStructures\GTModeData\Gearbox.cs" />
+    <Compile Include="DataStructures\GTModeData\Transmission.cs" />
     <Compile Include="DataStructures\GTModeData\Propshaft.cs" />
     <Compile Include="DataStructures\GTModeData\Flywheel.cs" />
     <Compile Include="DataStructures\GTModeData\Drivetrain.cs" />
@@ -86,6 +86,7 @@
     <Compile Include="DataStructures\GTModeRace\RaceUnknown1.cs" />
     <Compile Include="DataStructures\GTModeRace\Opponent.cs" />
     <Compile Include="DataStructures\GTModeRace\Race.cs" />
+    <Compile Include="FileNameCache.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="DataStructures\DataStructure.cs" />
