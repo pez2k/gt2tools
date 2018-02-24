@@ -114,7 +114,6 @@ namespace GT2DataSplitter
 
         public static void Dump<T>(this List<T> structures) where T : DataStructure, new()
         {
-            FileNameCache.Count = 0;
             T example = new T();
 
             if (!Directory.Exists(example.Name))
