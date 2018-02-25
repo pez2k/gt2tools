@@ -70,6 +70,10 @@ namespace GT2DataSplitter
             GTModeData CarData = new GTModeData();
             CarData.ImportData();
             CarData.WriteData(filename);
+
+            GTModeRace RaceData = new GTModeRace();
+            RaceData.ImportData();
+            RaceData.WriteData("eng_gtmode_race.dat");
         }
     }
 }

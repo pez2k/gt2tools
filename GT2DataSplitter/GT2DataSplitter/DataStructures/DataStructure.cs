@@ -42,7 +42,14 @@ namespace GT2DataSplitter
 
         public virtual string CreateOutputFilename(byte[] data)
         {
-            return Name + "\\" + Directory.GetFiles(Name).Length.ToString() + "0.dat";
+            string number = Directory.GetFiles(Name).Length.ToString();
+
+            for (int i = number.Length; i < 4; i++)
+            {
+                number = "0" + number;
+            }
+
+            return Name + "\\" + number + "0.dat";
         }
 
         public virtual void ExportStructure(byte[] structure, FileStream output)

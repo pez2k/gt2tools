@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 
 namespace GT2DataSplitter
 {
@@ -37,6 +38,42 @@ namespace GT2DataSplitter
             Opponents.Dump();
             RaceUnknown1.Dump();
             RaceStrings.Dump();
+        }
+
+        public void ImportData()
+        {
+            Races.Import();
+            Opponents.Import();
+            RaceUnknown1.Import();
+            RaceStrings.Import();
+        }
+
+        public void WriteData(string filename)
+        {
+            filename = "new_" + filename;
+
+            using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
+            {
+                file.Write(new byte[] { 0x47, 0x54, 0x44, 0x54, 0x6C, 0x00, 0x06, 0x00 }, 0, 8); // The 0x06 is the number of indices
+
+                file.Position = (0x06 * 8) + 7;
+                file.WriteByte(0x00); // Data starts at 0x38 so position EOF
+
+                uint i = 1;
+                Races.Write(file, 8 * i++);
+                Opponents.Write(file, 8 * i++);
+                RaceUnknown1.Write(file, 8 * i++);
+                RaceStrings.Write(file, 8 * i++);
+
+                file.Position = 0;
+                using (FileStream zipFile = new FileStream(filename + ".gz", FileMode.Create, FileAccess.Write))
+                {
+                    using (GZipStream zip = new GZipStream(zipFile, CompressionMode.Compress))
+                    {
+                        file.CopyTo(zip);
+                    }
+                }
+            }
         }
 
         public struct DataBlock

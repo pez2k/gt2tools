@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -40,6 +41,32 @@ namespace GT2DataSplitter
                     csv.WriteRecord(Data);
                 }
             }
+        }
+
+        public override void Import(string filename)
+        {
+            using (TextReader input = new StreamReader(filename, Encoding.UTF8))
+            {
+                using (CsvReader csv = new CsvReader(input))
+                {
+                    csv.Configuration.RegisterClassMap<OpponentCSVMap>();
+                    csv.Read();
+                    Data = csv.GetRecord<StructureData>();
+                }
+            }
+        }
+
+        public override void Write(FileStream outfile)
+        {
+            int size = Marshal.SizeOf(Data);
+            RawData = new byte[size];
+
+            IntPtr objectPointer = Marshal.AllocHGlobal(size);
+            Marshal.StructureToPtr(Data, objectPointer, true);
+            Marshal.Copy(objectPointer, RawData, 0, size);
+            Marshal.FreeHGlobal(objectPointer);
+
+            base.Write(outfile);
         }
 
         public StructureData Data { get; set; }

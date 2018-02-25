@@ -162,9 +162,9 @@ namespace GT2DataSplitter
 
             using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
             {
-                file.Write(new byte[] { 0x47, 0x54, 0x44, 0x54, 0x6C, 0x00, 0x3E, 0x00 }, 0, 8);
+                file.Write(new byte[] { 0x47, 0x54, 0x44, 0x54, 0x6C, 0x00, 0x3E, 0x00 }, 0, 8); // The 0x3E is the number of indices
 
-                file.Position = 0x1F7;
+                file.Position = (0x3E * 8) + 7;
                 file.WriteByte(0x00); // Data starts at 0x1F8 so position EOF
 
                 uint i = 1;

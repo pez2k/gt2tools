@@ -21,7 +21,14 @@ namespace GT2DataSplitter
                 }
             }
 
-            return filename + "\\" + Directory.GetFiles(filename).Length.ToString() + "0.dat";
+            string number = Directory.GetFiles(filename).Length.ToString();
+
+            for (int i = number.Length; i < 4; i++)
+            {
+                number = "0" + number;
+            }
+
+            return filename + "\\" + number + "0.dat";
         }
     }
 }

@@ -10,6 +10,7 @@ namespace GT2DataSplitter
     public static class Utils
     {
         public static CarIdConverter CarIdConverter { get; set; } = new CarIdConverter();
+        public static CarIdArrayConverter CarIdArrayConverter { get; set; } = new CarIdArrayConverter();
 
         private static char[] characterSet = { '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
         private static List<char> characterList = characterSet.ToList();
@@ -60,6 +61,33 @@ namespace GT2DataSplitter
         {
             uint carId = (uint)value;
             return Utils.GetCarName(carId);
+        }
+    }
+
+    public class CarIdArrayConverter : ITypeConverter
+    {
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            string[] inputs = text.Split(',');
+            uint[] carIds = new uint[inputs.Length];
+
+            for (int i = 0; i < inputs.Length; i++)
+            {
+                carIds[i] = Utils.GetCarID(inputs[i]);
+            }
+
+            return carIds;
+        }
+
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            uint[] carIds = ((Array)value).Cast<uint>().ToArray();
+            string output = "";
+            foreach (uint carId in carIds)
+            {
+                output += Utils.GetCarName(carId) + ",";
+            }
+            return output.TrimEnd(',');
         }
     }
 
