@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 
 namespace GT2DataSplitter
 {
@@ -118,6 +119,96 @@ namespace GT2DataSplitter
             Unknown5.Dump();
             Unknown6.Dump();
             Cars.Dump();
+        }
+
+        public void ImportData()
+        {
+            BrakeParts.Import();
+            BrakeBalanceControllerParts.Import();
+            SteeringParts.Import();
+            DimensionsParts.Import();
+            WeightReductionParts.Import();
+            BodyParts.Import();
+            EngineParts.Import();
+            PortPolishingParts.Import();
+            EngineBalancingParts.Import();
+            DisplacementIncreaseParts.Import();
+            ChipParts.Import();
+            NATuningParts.Import();
+            TurboKitParts.Import();
+            DrivetrainParts.Import();
+            FlywheelParts.Import();
+            ClutchParts.Import();
+            PropshaftParts.Import();
+            TransmissionParts.Import();
+            SuspensionParts.Import();
+            IntercoolerParts.Import();
+            ExhaustParts.Import();
+            DifferentialParts.Import();
+            TyresFrontParts.Import();
+            TyresRearParts.Import();
+            Unknown1.Import();
+            Unknown2.Import();
+            Unknown3.Import();
+            Unknown4.Import();
+            Unknown5.Import();
+            Unknown6.Import();
+            Cars.Import();
+        }
+
+        public void WriteData(string filename)
+        {
+            filename = "new_" + filename;
+
+            using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
+            {
+                file.Write(new byte[] { 0x47, 0x54, 0x44, 0x54, 0x6C, 0x00, 0x3E, 0x00 }, 0, 8);
+
+                file.Position = 0x1F7;
+                file.WriteByte(0x00); // Data starts at 0x1F8 so position EOF
+
+                uint i = 1;
+                BrakeParts.Write(file, 8 * i++);
+                BrakeBalanceControllerParts.Write(file, 8 * i++);
+                SteeringParts.Write(file, 8 * i++);
+                DimensionsParts.Write(file, 8 * i++);
+                WeightReductionParts.Write(file, 8 * i++);
+                BodyParts.Write(file, 8 * i++);
+                EngineParts.Write(file, 8 * i++);
+                PortPolishingParts.Write(file, 8 * i++);
+                EngineBalancingParts.Write(file, 8 * i++);
+                DisplacementIncreaseParts.Write(file, 8 * i++);
+                ChipParts.Write(file, 8 * i++);
+                NATuningParts.Write(file, 8 * i++);
+                TurboKitParts.Write(file, 8 * i++);
+                DrivetrainParts.Write(file, 8 * i++);
+                FlywheelParts.Write(file, 8 * i++);
+                ClutchParts.Write(file, 8 * i++);
+                PropshaftParts.Write(file, 8 * i++);
+                TransmissionParts.Write(file, 8 * i++);
+                SuspensionParts.Write(file, 8 * i++);
+                IntercoolerParts.Write(file, 8 * i++);
+                ExhaustParts.Write(file, 8 * i++);
+                DifferentialParts.Write(file, 8 * i++);
+                TyresFrontParts.Write(file, 8 * i++);
+                TyresRearParts.Write(file, 8 * i++);
+                Unknown1.Write(file, 8 * i++);
+                Unknown2.Write(file, 8 * i++);
+                Unknown3.Write(file, 8 * i++);
+                Unknown4.Write(file, 8 * i++);
+                Unknown5.Write(file, 8 * i++);
+                Unknown6.Write(file, 8 * i++);
+                Cars.Write(file, 8 * i++);
+
+                file.Position = 0;
+                using (FileStream zipFile = new FileStream(filename + ".gz", FileMode.Create, FileAccess.Write))
+                {
+                    using (GZipStream zip = new GZipStream(zipFile, CompressionMode.Compress))
+                    {
+                        file.CopyTo(zip);
+                    }
+                }
+            }
         }
 
         public struct DataBlock

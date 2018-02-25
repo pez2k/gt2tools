@@ -67,28 +67,9 @@ namespace GT2DataSplitter
 
         static void BuildFile(string filename)
         {
-            using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
-            {
-                file.Write(new byte[]{ 0x47, 0x54, 0x44, 0x54, 0x6C, 0x00, 0x3E, 0x00 }, 0, 8);
-
-                file.Position = 0x1F7;
-                file.WriteByte(0x00); // Data starts at 0x1F8 so position EOF
-                uint i = 1;
-                foreach (CarDataStructure dataStructure in dataStructures)
-                {
-                    dataStructure.WriteData(file, 8 * i);
-                    i++;
-                }
-
-                file.Position = 0;
-                using (FileStream zipFile = new FileStream(filename + ".gz", FileMode.Create, FileAccess.Write))
-                {
-                    using (GZipStream zip = new GZipStream(zipFile, CompressionMode.Compress))
-                    {
-                        file.CopyTo(zip);
-                    }
-                }
-            }
+            GTModeData CarData = new GTModeData();
+            CarData.ImportData();
+            CarData.WriteData(filename);
         }
     }
 }

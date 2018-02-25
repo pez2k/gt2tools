@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using CsvHelper;
 using System.Text;
 using CsvHelper.Configuration;
+using System;
 
 namespace GT2DataSplitter
 {
@@ -40,6 +41,32 @@ namespace GT2DataSplitter
                     csv.WriteRecord(Data);
                 }
             }
+        }
+
+        public override void Import(string filename)
+        {
+            using (TextReader input = new StreamReader(filename, Encoding.UTF8))
+            {
+                using (CsvReader csv = new CsvReader(input))
+                {
+                    csv.Configuration.RegisterClassMap<CarCSVMap>();
+                    csv.Read();
+                    Data = csv.GetRecord<StructureData>();
+                }
+            }
+        }
+
+        public override void Write(FileStream outfile)
+        {
+            int size = Marshal.SizeOf(Data);
+            RawData = new byte[size];
+
+            IntPtr objectPointer = Marshal.AllocHGlobal(size);
+            Marshal.StructureToPtr(Data, objectPointer, true);
+            Marshal.Copy(objectPointer, RawData, 0, size);
+            Marshal.FreeHGlobal(objectPointer);
+
+            base.Write(outfile);
         }
 
         public StructureData Data { get; set; }
@@ -118,6 +145,7 @@ namespace GT2DataSplitter
             Map(m => m.ManufacturerID);
             Map(m => m.NameFirstPart);
             Map(m => m.NameSecondPart);
+            Map(m => m.IsSpecial2);
             Map(m => m.Year);
             Map(m => m.Unknown10);
             Map(m => m.Price);

@@ -50,43 +50,24 @@ namespace GT2DataSplitter
             output.Write(structure, 0, structure.Length);
         }
 
-        public virtual void WriteData(FileStream outfile, uint indexPosition)
+        public virtual void Import(string filename)
         {
-            Dictionary<uint, string> cars = new Dictionary<uint, string>();
-
-            foreach (string carName in Directory.EnumerateDirectories(Name))
+            using (FileStream infile = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
-                cars.Add(Utils.GetCarID(carName), carName);
+                ImportStructure(infile);
+                FileNameCache.Add(Name, filename);
             }
-
-            if (cars.Count == 0)
-            {
-                cars.Add(0, Name);
-            }
-
-            outfile.Position = outfile.Length;
-            uint startingPosition = (uint)outfile.Position;
-
-            foreach (string carName in cars.Values)
-            {
-                foreach (string filename in Directory.EnumerateFiles(carName))
-                {
-                    using (FileStream infile = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                    {
-                        ImportStructure(infile, outfile);
-                    }
-                }
-            }
-
-            uint blockSize = (uint)outfile.Position - startingPosition;
-            outfile.Position = indexPosition;
-            outfile.WriteUInt(startingPosition);
-            outfile.WriteUInt(blockSize);
         }
 
-        public virtual void ImportStructure(FileStream structure, FileStream output)
+        public virtual void ImportStructure(FileStream file)
         {
-            structure.CopyTo(output);
+            RawData = new byte[file.Length];
+            file.Read(RawData, 0, (int)file.Length);
+        }
+
+        public virtual void Write(FileStream outfile)
+        {
+            outfile.Write(RawData, 0, Size);
         }
     }
 
@@ -125,6 +106,49 @@ namespace GT2DataSplitter
             {
                 structure.Dump();
             }
+        }
+
+        public static void Import<T>(this List<T> structures) where T : DataStructure, new()
+        {
+            T example = new T();
+
+            Dictionary<uint, string> cars = new Dictionary<uint, string>();
+
+            foreach (string carName in Directory.EnumerateDirectories(example.Name))
+            {
+                cars.Add(Utils.GetCarID(carName), carName);
+            }
+
+            if (cars.Count == 0)
+            {
+                cars.Add(0, example.Name);
+            }
+            
+            foreach (string carName in cars.Values)
+            {
+                foreach (string filename in Directory.EnumerateFiles(carName))
+                {
+                    T structure = new T();
+                    structure.Import(filename);
+                    structures.Add(structure);
+                }
+            }
+        }
+
+        public static void Write<T>(this List<T> structures, FileStream file, uint indexPosition) where T : DataStructure, new()
+        {
+            file.Position = file.Length;
+            uint startingPosition = (uint)file.Position;
+
+            foreach (T structure in structures)
+            {
+                structure.Write(file);
+            }
+
+            uint blockSize = (uint)file.Position - startingPosition;
+            file.Position = indexPosition;
+            file.WriteUInt(startingPosition);
+            file.WriteUInt(blockSize);
         }
     }
 }
