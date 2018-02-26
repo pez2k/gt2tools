@@ -149,7 +149,6 @@ namespace GT2DataSplitter
             Map(m => m.Year);
             Map(m => m.Unknown10);
             Map(m => m.Price);
-            Map(m => m.CarId);
         }
     }
 }
