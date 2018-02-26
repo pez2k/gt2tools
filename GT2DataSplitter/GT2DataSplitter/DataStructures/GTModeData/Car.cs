@@ -78,35 +78,35 @@ namespace GT2DataSplitter
             public ushort Brakes; // (4)
             public uint IsSpecial;
             public ushort WeightReduction; // (a)
-            public ushort Unknown0; // (c)
+            public ushort Unknown1; // (c)
             public ushort Body;// (e)
             public ushort Engine; // (10)
-            public ushort Unknown1; // 12
-            public ushort Unknown2; // 14
-            public ushort Unknown3; // 16
-            public ushort Unknown4; // 18
+            public ushort PortPolishing; // 12
+            public ushort EngineBalancing; // 14
+            public ushort DisplacementIncrease; // 16
+            public ushort Chip; // 18
             public ushort NATuning; // 1a
             public ushort TurboKit; // 1c
             public ushort Drivetrain; // 1e
             public ushort Flywheel; // 20
             public ushort Clutch; // 22
-            public ushort Unknown5; // 24
+            public ushort Propshaft; // 24
             public ushort Differential; // 26
             public ushort Transmission; // 28
             public ushort Suspension; // 2a
-            public ushort Unknown6; // 2c
-            public ushort Unknown7; // 2e
+            public ushort Intercooler; // 2c
+            public ushort Exhaust; // 2e
             public ushort TyresFront; // 30
             public ushort TyresRear; // 32
-            public ushort Unknown8; // 34
-            public ushort Unknown9; // 36
+            public ushort ASMLevel; // 34
+            public ushort TCSLevel; // 36
             public ushort RimsCode3; // 38
             public ushort ManufacturerID; // 0x3a
             public ushort NameFirstPart; // 0x3c
             public ushort NameSecondPart; // 0x3e
             public byte IsSpecial2; // 0x40
             public byte Year; // 0x41 
-            public ushort Unknown10; // 42
+            public ushort Unknown2; // 42
             public uint Price; // 0x44
         }
     }
@@ -116,38 +116,38 @@ namespace GT2DataSplitter
         public CarCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
-            Map(m => m.Brakes).TypeConverter(Utils.GetFileNameConverter("Brakes"));
+            Map(m => m.Brakes).PartFilename("Brakes");
             Map(m => m.IsSpecial);
-            Map(m => m.WeightReduction).TypeConverter(Utils.GetFileNameConverter("WeightReduction"));
-            Map(m => m.Unknown0);
-            Map(m => m.Body).TypeConverter(Utils.GetFileNameConverter("Body"));
-            Map(m => m.Engine).TypeConverter(Utils.GetFileNameConverter("Engine"));
+            Map(m => m.WeightReduction).PartFilename("WeightReduction");
             Map(m => m.Unknown1);
-            Map(m => m.Unknown2);
-            Map(m => m.Unknown3);
-            Map(m => m.Unknown4);
-            Map(m => m.NATuning).TypeConverter(Utils.GetFileNameConverter("NATuning"));
-            Map(m => m.TurboKit).TypeConverter(Utils.GetFileNameConverter("TurboKit"));
-            Map(m => m.Drivetrain).TypeConverter(Utils.GetFileNameConverter("Drivetrain"));
-            Map(m => m.Flywheel).TypeConverter(Utils.GetFileNameConverter("Flywheel"));
-            Map(m => m.Clutch).TypeConverter(Utils.GetFileNameConverter("Clutch"));
-            Map(m => m.Unknown5);
-            Map(m => m.Differential).TypeConverter(Utils.GetFileNameConverter("Differential"));
-            Map(m => m.Transmission).TypeConverter(Utils.GetFileNameConverter("Transmission"));
-            Map(m => m.Suspension).TypeConverter(Utils.GetFileNameConverter("Suspension"));
-            Map(m => m.Unknown6);
-            Map(m => m.Unknown7);
-            Map(m => m.TyresFront).TypeConverter(Utils.GetFileNameConverter("TyresFront"));
-            Map(m => m.TyresRear).TypeConverter(Utils.GetFileNameConverter("TyresRear"));
-            Map(m => m.Unknown8);
-            Map(m => m.Unknown9);
+            Map(m => m.Body).PartFilename("Body");
+            Map(m => m.Engine).PartFilename("Engine");
+            Map(m => m.PortPolishing).PartFilename("PortPolishing");
+            Map(m => m.EngineBalancing).PartFilename("EngineBalancing");
+            Map(m => m.DisplacementIncrease).PartFilename("DisplacementIncrease");
+            Map(m => m.Chip).PartFilename("Chip");
+            Map(m => m.NATuning).PartFilename("NATuning");
+            Map(m => m.TurboKit).PartFilename("TurboKit");
+            Map(m => m.Drivetrain).PartFilename("Drivetrain");
+            Map(m => m.Flywheel).PartFilename("Flywheel");
+            Map(m => m.Clutch).PartFilename("Clutch");
+            Map(m => m.Propshaft).PartFilename("Propshaft");
+            Map(m => m.Differential).PartFilename("Differential");
+            Map(m => m.Transmission).PartFilename("Transmission");
+            Map(m => m.Suspension).PartFilename("Suspension");
+            Map(m => m.Intercooler).PartFilename("Intercooler");
+            Map(m => m.Exhaust).PartFilename("Exhaust");
+            Map(m => m.TyresFront).PartFilename("TyresFront");
+            Map(m => m.TyresRear).PartFilename("TyresRear");
+            Map(m => m.ASMLevel);
+            Map(m => m.TCSLevel);
             Map(m => m.RimsCode3);
             Map(m => m.ManufacturerID);
             Map(m => m.NameFirstPart);
             Map(m => m.NameSecondPart);
             Map(m => m.IsSpecial2);
             Map(m => m.Year);
-            Map(m => m.Unknown10);
+            Map(m => m.Unknown2);
             Map(m => m.Price);
         }
     }

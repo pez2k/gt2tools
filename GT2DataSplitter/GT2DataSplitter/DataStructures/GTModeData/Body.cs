@@ -41,7 +41,8 @@ namespace GT2DataSplitter
 
         public override void Dump()
         {
-            using (TextWriter output = new StreamWriter(File.Create(CreateOutputFilename(RawData)), Encoding.UTF8))
+            string filename = CreateOutputFilename(RawData);
+            using (TextWriter output = new StreamWriter(File.Create(filename), Encoding.UTF8))
             {
                 using (CsvWriter csv = new CsvWriter(output))
                 {
@@ -51,6 +52,7 @@ namespace GT2DataSplitter
                     csv.NextRecord();
                     csv.WriteRecord(Data);
                 }
+                FileNameCache.Add(Name, filename);
             }
         }
 
@@ -64,6 +66,7 @@ namespace GT2DataSplitter
                     csv.Read();
                     Data = csv.GetRecord<StructureData>();
                 }
+                FileNameCache.Add(Name, filename);
             }
         }
 
@@ -89,7 +92,7 @@ namespace GT2DataSplitter
             public uint Price; // if 0 or low byte = 0, not possible
             public uint BodyId; // e.g. if car id ends with 0x8, rmCarId will end with 0xc, d, e etc
             public byte Weight; // weight is a multiple of some car-indepenent value
-            public byte Unknown1;
+            public byte BodyRollAmount;
             public byte Stage;
             public byte Unknown2;
             public byte FrontDownforceMinimum;
@@ -114,7 +117,7 @@ namespace GT2DataSplitter
             Map(m => m.Price);
             Map(m => m.BodyId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Weight);
-            Map(m => m.Unknown1);
+            Map(m => m.BodyRollAmount);
             Map(m => m.Stage);
             Map(m => m.Unknown2);
             Map(m => m.FrontDownforceMinimum);

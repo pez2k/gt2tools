@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using CsvHelper.Configuration;
+using System.IO;
 
 namespace GT2DataSplitter
 {
@@ -29,6 +30,11 @@ namespace GT2DataSplitter
             byteArray[1] = (byte)((valueToConvert / 256) % 256);
             byteArray[0] = (byte)(valueToConvert % 256);
             return byteArray;
+        }
+
+        public static MemberMap<T, ushort> PartFilename<T>(this MemberMap<T, ushort> map, string partType)
+        {
+            return map.TypeConverter(Utils.GetFileNameConverter(partType));
         }
     }
 }
