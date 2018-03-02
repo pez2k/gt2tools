@@ -1,13 +1,10 @@
 ﻿using System.IO;
 using System.Runtime.InteropServices;
-using CsvHelper;
-using System.Text;
 using CsvHelper.Configuration;
-using System;
 
 namespace GT2DataSplitter
 {
-    public class Car : CarDataStructure
+    public class Car : CsvDataStructure
     {
         public Car()
         {
@@ -16,63 +13,33 @@ namespace GT2DataSplitter
 
         public override string CreateOutputFilename(byte[] data)
         {
-            return Name + "\\" + Utils.GetCarName(data.ReadUInt()) + ".csv";
+            return Name + "\\" + Utils.GetCarName(Data.CarId) + ".csv";
         }
 
         public override void Read(FileStream infile)
         {
-            base.Read(infile);
-
-            GCHandle handle = GCHandle.Alloc(RawData, GCHandleType.Pinned);
-            Data = (StructureData)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(StructureData));
-            handle.Free();
+            Data = ReadStructure<StructureData>(infile);
         }
 
         public override void Dump()
         {
-            using (TextWriter output = new StreamWriter(File.Create(CreateOutputFilename(RawData)), Encoding.UTF8))
-            {
-                using (CsvWriter csv = new CsvWriter(output))
-                {
-                    csv.Configuration.RegisterClassMap<CarCSVMap>();
-                    csv.Configuration.QuoteAllFields = true;
-                    csv.WriteHeader<StructureData>();
-                    csv.NextRecord();
-                    csv.WriteRecord(Data);
-                }
-            }
+            DumpCsv<StructureData, CarCSVMap>(Data);
         }
 
         public override void Import(string filename)
         {
-            using (TextReader input = new StreamReader(filename, Encoding.UTF8))
-            {
-                using (CsvReader csv = new CsvReader(input))
-                {
-                    csv.Configuration.RegisterClassMap<CarCSVMap>();
-                    csv.Read();
-                    Data = csv.GetRecord<StructureData>();
-                }
-            }
+            Data = ImportCsv<StructureData, CarCSVMap>(filename);
         }
 
         public override void Write(FileStream outfile)
         {
-            int size = Marshal.SizeOf(Data);
-            RawData = new byte[size];
-
-            IntPtr objectPointer = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr(Data, objectPointer, true);
-            Marshal.Copy(objectPointer, RawData, 0, size);
-            Marshal.FreeHGlobal(objectPointer);
-
-            base.Write(outfile);
+            WriteStructure(outfile, Data);
         }
 
         public StructureData Data { get; set; }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct StructureData
+        public new class StructureData : CsvDataStructure.StructureData
         {
             public uint CarId; // (0)
             public ushort Brakes; // (4)

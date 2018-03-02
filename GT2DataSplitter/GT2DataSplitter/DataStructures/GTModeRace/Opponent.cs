@@ -1,78 +1,40 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
-using System;
+﻿using CsvHelper.Configuration;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace GT2DataSplitter
 {
-    public class Opponent : DataStructure
+    public class Opponent : CsvDataStructure
     {
         public Opponent()
         {
             Size = 0x60;
         }
-
-        public override string CreateOutputFilename(byte[] data)
-        {
-            return base.CreateOutputFilename(data).Replace(".dat", ".csv");
-        }
-
+        
         public override void Read(FileStream infile)
         {
-            base.Read(infile);
-
-            GCHandle handle = GCHandle.Alloc(RawData, GCHandleType.Pinned);
-            Data = (StructureData)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(StructureData));
-            handle.Free();
+            Data = ReadStructure<StructureData>(infile);
         }
 
         public override void Dump()
         {
-            using (TextWriter output = new StreamWriter(File.Create(CreateOutputFilename(RawData)), Encoding.UTF8))
-            {
-                using (CsvWriter csv = new CsvWriter(output))
-                {
-                    csv.Configuration.RegisterClassMap<OpponentCSVMap>();
-                    csv.Configuration.QuoteAllFields = true;
-                    csv.WriteHeader<StructureData>();
-                    csv.NextRecord();
-                    csv.WriteRecord(Data);
-                }
-            }
+            DumpCsv<StructureData, OpponentCSVMap>(Data);
         }
 
         public override void Import(string filename)
         {
-            using (TextReader input = new StreamReader(filename, Encoding.UTF8))
-            {
-                using (CsvReader csv = new CsvReader(input))
-                {
-                    csv.Configuration.RegisterClassMap<OpponentCSVMap>();
-                    csv.Read();
-                    Data = csv.GetRecord<StructureData>();
-                }
-            }
+            Data = ImportCsv<StructureData, OpponentCSVMap>(filename);
         }
 
         public override void Write(FileStream outfile)
         {
-            int size = Marshal.SizeOf(Data);
-            RawData = new byte[size];
-
-            IntPtr objectPointer = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr(Data, objectPointer, true);
-            Marshal.Copy(objectPointer, RawData, 0, size);
-            Marshal.FreeHGlobal(objectPointer);
-
-            base.Write(outfile);
+            WriteStructure(outfile, Data);
         }
 
         public StructureData Data { get; set; }
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public struct StructureData
+        public new class StructureData : CsvDataStructure.StructureData
         {
             public uint CarId; // standard thing (0)
             public ushort Brakes; // (4)

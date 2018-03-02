@@ -46,14 +46,6 @@ namespace GT2DataSplitter
             }
         }
 
-        static CarDataStructure[] dataStructures =
-        {
-            new Brakes(), new BrakeBalanceController(), new Steering(), new Dimensions(),  new WeightReduction(), new Body(), new Engine(), new PortPolishing(),
-            new EngineBalancing(), new DisplacementIncrease(), new Chip(), new NATuning(), new TurboKit(), new Drivetrain(), new Flywheel(), new Clutch(),
-            new Propshaft(), new Transmission(), new Suspension(), new Intercooler(), new Exhaust(), new Differential(), new TyresFront(), new TyresRear(),
-            new CarUnknown1(), new CarUnknown2(), new CarUnknown3(), new CarUnknown4(), new CarUnknown5(), new CarUnknown6(), new Car()
-        };
-
         static void SplitFile(string filename)
         {
             GTModeData CarData = new GTModeData();
