@@ -7,26 +7,31 @@ using System.Text;
 
 namespace GT2DataSplitter
 {
-    public class CsvDataStructure : DataStructure
+    public class CsvDataStructure<TStructure, TMap> : DataStructure where TMap : ClassMap
     {
         public bool CacheFilename { get; set; } = false;
+        public TStructure Data { get; set; }
+
+        public CsvDataStructure()
+        {
+            Size = Marshal.SizeOf<TStructure>();
+        }
 
         public override string CreateOutputFilename(byte[] data)
         {
             return base.CreateOutputFilename(data).Replace(".dat", ".csv");
         }
 
-        public TStructure ReadStructure<TStructure>(FileStream infile) where TStructure : StructureData
+        public override void Read(FileStream infile)
         {
             base.Read(infile);
 
             GCHandle handle = GCHandle.Alloc(RawData, GCHandleType.Pinned);
-            TStructure data = (TStructure)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(TStructure));
+            Data = (TStructure)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(TStructure));
             handle.Free();
-            return data;
         }
 
-        public void DumpCsv<TStructure, TMap>(TStructure data) where TStructure : StructureData where TMap : ClassMap
+        public override void Dump()
         {
             string filename = CreateOutputFilename(RawData);
             using (TextWriter output = new StreamWriter(File.Create(filename), Encoding.UTF8))
@@ -37,7 +42,7 @@ namespace GT2DataSplitter
                     csv.Configuration.QuoteAllFields = true;
                     csv.WriteHeader<TStructure>();
                     csv.NextRecord();
-                    csv.WriteRecord(data);
+                    csv.WriteRecord(Data);
                     if (CacheFilename)
                     {
                         FileNameCache.Add(Name, filename);
@@ -46,7 +51,7 @@ namespace GT2DataSplitter
             }
         }
 
-        public TStructure ImportCsv<TStructure, TMap>(string filename) where TStructure : StructureData where TMap : ClassMap
+        public override void Import(string filename)
         {
             using (TextReader input = new StreamReader(filename, Encoding.UTF8))
             {
@@ -54,32 +59,26 @@ namespace GT2DataSplitter
                 {
                     csv.Configuration.RegisterClassMap<TMap>();
                     csv.Read();
-                    TStructure data = csv.GetRecord<TStructure>();
+                    Data = csv.GetRecord<TStructure>();
                     if (CacheFilename)
                     {
                         FileNameCache.Add(Name, filename);
                     }
-                    return data;
                 }
             }
         }
 
-        public void WriteStructure<TStructure>(FileStream outfile, TStructure data) where TStructure : StructureData
+        public override void Write(FileStream outfile)
         {
-            int size = Marshal.SizeOf(data);
+            int size = Marshal.SizeOf(Data);
             RawData = new byte[size];
 
             IntPtr objectPointer = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr(data, objectPointer, true);
+            Marshal.StructureToPtr(Data, objectPointer, true);
             Marshal.Copy(objectPointer, RawData, 0, size);
             Marshal.FreeHGlobal(objectPointer);
 
             base.Write(outfile);
-        }
-        
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public class StructureData
-        {
         }
     }
 }

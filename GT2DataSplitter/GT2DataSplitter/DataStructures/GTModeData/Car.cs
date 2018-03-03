@@ -1,84 +1,56 @@
-﻿using System.IO;
+﻿using CsvHelper.Configuration;
 using System.Runtime.InteropServices;
-using CsvHelper.Configuration;
 
 namespace GT2DataSplitter
 {
-    public class Car : CsvDataStructure
+    public class Car : CsvDataStructure<CarData, CarCSVMap>
     {
-        public Car()
-        {
-            Size = 0x48;
-        }
-
         public override string CreateOutputFilename(byte[] data)
         {
             return Name + "\\" + Utils.GetCarName(Data.CarId) + ".csv";
         }
-
-        public override void Read(FileStream infile)
-        {
-            Data = ReadStructure<StructureData>(infile);
-        }
-
-        public override void Dump()
-        {
-            DumpCsv<StructureData, CarCSVMap>(Data);
-        }
-
-        public override void Import(string filename)
-        {
-            Data = ImportCsv<StructureData, CarCSVMap>(filename);
-        }
-
-        public override void Write(FileStream outfile)
-        {
-            WriteStructure(outfile, Data);
-        }
-
-        public StructureData Data { get; set; }
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-        public new class StructureData : CsvDataStructure.StructureData
-        {
-            public uint CarId; // (0)
-            public ushort Brakes; // (4)
-            public uint IsSpecial;
-            public ushort WeightReduction; // (a)
-            public ushort Unknown1; // (c)
-            public ushort Body;// (e)
-            public ushort Engine; // (10)
-            public ushort PortPolishing; // 12
-            public ushort EngineBalancing; // 14
-            public ushort DisplacementIncrease; // 16
-            public ushort Chip; // 18
-            public ushort NATuning; // 1a
-            public ushort TurboKit; // 1c
-            public ushort Drivetrain; // 1e
-            public ushort Flywheel; // 20
-            public ushort Clutch; // 22
-            public ushort Propshaft; // 24
-            public ushort Differential; // 26
-            public ushort Transmission; // 28
-            public ushort Suspension; // 2a
-            public ushort Intercooler; // 2c
-            public ushort Exhaust; // 2e
-            public ushort TyresFront; // 30
-            public ushort TyresRear; // 32
-            public ushort ASMLevel; // 34
-            public ushort TCSLevel; // 36
-            public ushort RimsCode3; // 38
-            public ushort ManufacturerID; // 0x3a
-            public ushort NameFirstPart; // 0x3c
-            public ushort NameSecondPart; // 0x3e
-            public byte IsSpecial2; // 0x40
-            public byte Year; // 0x41 
-            public ushort Unknown2; // 42
-            public uint Price; // 0x44
-        }
     }
 
-    public sealed class CarCSVMap : ClassMap<Car.StructureData>
+    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x48
+    public struct CarData
+    {
+        public uint CarId; // (0)
+        public ushort Brakes; // (4)
+        public uint IsSpecial;
+        public ushort WeightReduction; // (a)
+        public ushort Unknown1; // (c)
+        public ushort Body;// (e)
+        public ushort Engine; // (10)
+        public ushort PortPolishing; // 12
+        public ushort EngineBalancing; // 14
+        public ushort DisplacementIncrease; // 16
+        public ushort Chip; // 18
+        public ushort NATuning; // 1a
+        public ushort TurboKit; // 1c
+        public ushort Drivetrain; // 1e
+        public ushort Flywheel; // 20
+        public ushort Clutch; // 22
+        public ushort Propshaft; // 24
+        public ushort Differential; // 26
+        public ushort Transmission; // 28
+        public ushort Suspension; // 2a
+        public ushort Intercooler; // 2c
+        public ushort Exhaust; // 2e
+        public ushort TyresFront; // 30
+        public ushort TyresRear; // 32
+        public ushort ASMLevel; // 34
+        public ushort TCSLevel; // 36
+        public ushort RimsCode3; // 38
+        public ushort ManufacturerID; // 0x3a
+        public ushort NameFirstPart; // 0x3c
+        public ushort NameSecondPart; // 0x3e
+        public byte IsSpecial2; // 0x40
+        public byte Year; // 0x41 
+        public ushort Unknown2; // 42
+        public uint Price; // 0x44
+    }
+
+    public sealed class CarCSVMap : ClassMap<CarData>
     {
         public CarCSVMap()
         {
