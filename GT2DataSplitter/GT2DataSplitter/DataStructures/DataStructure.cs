@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace GT2DataSplitter
@@ -83,6 +84,7 @@ namespace GT2DataSplitter
         public static void Read<T>(this List<T> structureList, FileStream infile, uint blockStart, uint blockSize) where T : DataStructure, new()
         {
             T structure = new T();
+            Console.WriteLine($"Reading {structure.Name} structures from file...");
 
             if (blockSize % structure.Size > 0)
             {
@@ -103,6 +105,7 @@ namespace GT2DataSplitter
         public static void Dump<T>(this List<T> structures) where T : DataStructure, new()
         {
             T example = new T();
+            Console.WriteLine($"Dumping {example.Name} structures to disk...");
 
             if (!Directory.Exists(example.Name))
             {
@@ -118,6 +121,7 @@ namespace GT2DataSplitter
         public static void Import<T>(this List<T> structures) where T : DataStructure, new()
         {
             T example = new T();
+            Console.WriteLine($"Importing {example.Name} structures from disk...");
 
             Dictionary<uint, string> cars = new Dictionary<uint, string>();
 
