@@ -1,10 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Intercooler : CarDataStructure
+    public class Intercooler : GenericEngineUpgrade
     {
-        public Intercooler()
-        {
-            Size = 0xC;
-        }
     }
 }

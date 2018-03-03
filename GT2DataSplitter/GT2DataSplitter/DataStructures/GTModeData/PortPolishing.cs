@@ -1,10 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class PortPolishing : CarDataStructure
+    public class PortPolishing : GenericEngineUpgrade
     {
-        public PortPolishing()
-        {
-            Size = 0xC;
-        }
     }
 }

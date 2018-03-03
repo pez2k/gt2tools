@@ -1,10 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Chip : CarDataStructure
+    public class Chip : GenericEngineUpgrade
     {
-        public Chip()
-        {
-            Size = 0xC;
-        }
     }
 }

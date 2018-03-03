@@ -1,10 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class Exhaust : CarDataStructure
+    public class Exhaust : GenericEngineUpgrade
     {
-        public Exhaust()
-        {
-            Size = 0xC;
-        }
     }
 }

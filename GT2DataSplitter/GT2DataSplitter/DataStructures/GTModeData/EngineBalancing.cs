@@ -1,10 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class EngineBalancing : CarDataStructure
+    public class EngineBalancing : GenericEngineUpgrade
     {
-        public EngineBalancing()
-        {
-            Size = 0xC;
-        }
     }
 }

@@ -1,10 +1,6 @@
 ﻿namespace GT2DataSplitter
 {
-    public class DisplacementIncrease : CarDataStructure
+    public class DisplacementIncrease : GenericEngineUpgrade
     {
-        public DisplacementIncrease()
-        {
-            Size = 0xC;
-        }
     }
 }
