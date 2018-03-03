@@ -1,10 +1,63 @@
-﻿namespace GT2DataSplitter
+﻿using CsvHelper.Configuration;
+using System.Runtime.InteropServices;
+
+namespace GT2DataSplitter
 {
-    public class Transmission : CarDataStructure
+    public class Transmission : CarCsvDataStructure<TransmissionData, TransmissionCSVMap>
     {
-        public Transmission()
+        public override string CreateOutputFilename(byte[] data)
         {
-            Size = 0x24;
+            return CreateOutputFilename(Data.CarId, Data.Stage);
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x24
+    public struct TransmissionData
+    {
+        public uint CarId;
+        public uint Price;
+        public byte Stage;
+        public byte NumberOfGears;
+        public ushort ReverseGearRatio;
+        public ushort FirstGearRatio;
+        public ushort SecondGearRatio;
+        public ushort ThirdGearRatio;
+        public ushort FourthGearRatio;
+        public ushort FifthGearRatio;
+        public ushort SixthGearRatio;
+        public ushort SeventhGearRatio;
+        public ushort DefaultFinalDriveRatio;
+        public ushort MaxFinalDriveRatio;
+        public ushort MinFinalDriveRatio;
+        public byte Unknown;
+        public byte DefaultAutoSetting;
+        public byte MinAutoSetting;
+        public byte MaxAutoSetting;
+    }
+
+    public sealed class TransmissionCSVMap : ClassMap<TransmissionData>
+    {
+        public TransmissionCSVMap()
+        {
+            Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
+            Map(m => m.Price);
+            Map(m => m.Stage);
+            Map(m => m.NumberOfGears);
+            Map(m => m.ReverseGearRatio);
+            Map(m => m.FirstGearRatio);
+            Map(m => m.SecondGearRatio);
+            Map(m => m.ThirdGearRatio);
+            Map(m => m.FourthGearRatio);
+            Map(m => m.FifthGearRatio);
+            Map(m => m.SixthGearRatio);
+            Map(m => m.SeventhGearRatio);
+            Map(m => m.DefaultFinalDriveRatio);
+            Map(m => m.MaxFinalDriveRatio);
+            Map(m => m.MinFinalDriveRatio);
+            Map(m => m.Unknown);
+            Map(m => m.DefaultAutoSetting);
+            Map(m => m.MinAutoSetting);
+            Map(m => m.MaxAutoSetting);
         }
     }
 }
