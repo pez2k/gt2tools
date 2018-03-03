@@ -18,8 +18,8 @@ namespace GT2DataSplitter
         public uint Price;
         public byte Stage;
         public byte PowerMultiplier;
-        public byte PowerMultiplier2;
-        public byte PowerMultiplier3;
+        public byte RPMIncrease;
+        public byte Unknown;
     }
 
     public sealed class GenericEngineUpgradeCSVMap : ClassMap<GenericEngineUpgradeData>
@@ -30,8 +30,8 @@ namespace GT2DataSplitter
             Map(m => m.Price);
             Map(m => m.Stage);
             Map(m => m.PowerMultiplier);
-            Map(m => m.PowerMultiplier2);
-            Map(m => m.PowerMultiplier3);
+            Map(m => m.RPMIncrease);
+            Map(m => m.Unknown);
         }
     }
 }
