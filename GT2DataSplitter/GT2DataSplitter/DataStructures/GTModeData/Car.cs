@@ -16,8 +16,9 @@ namespace GT2DataSplitter
     {
         public uint CarId; // (0)
         public ushort Brakes; // (4)
-        public uint IsSpecial;
-        public ushort Unknown1; // (a)
+        public ushort BrakeBalanceController;
+        public ushort Steering;
+        public ushort Dimensions; // (a)
         public ushort WeightReduction; // (c)
         public ushort Body;// (e)
         public ushort Engine; // (10)
@@ -44,9 +45,9 @@ namespace GT2DataSplitter
         public ushort ManufacturerID; // 0x3a
         public ushort NameFirstPart; // 0x3c
         public ushort NameSecondPart; // 0x3e
-        public byte IsSpecial2; // 0x40
+        public byte IsSpecial; // 0x40
         public byte Year; // 0x41 
-        public ushort Unknown2; // 42
+        public ushort Unknown; // 42
         public uint Price; // 0x44
     }
 
@@ -56,8 +57,9 @@ namespace GT2DataSplitter
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Brakes).PartFilename("Brakes");
-            Map(m => m.IsSpecial);
-            Map(m => m.Unknown1);
+            Map(m => m.BrakeBalanceController).PartFilename("BrakeBalanceController");
+            Map(m => m.Steering).PartFilename("Steering");
+            Map(m => m.Dimensions).PartFilename("Dimensions");
             Map(m => m.WeightReduction).PartFilename("WeightReduction");
             Map(m => m.Body).PartFilename("Body");
             Map(m => m.Engine).PartFilename("Engine");
@@ -84,9 +86,9 @@ namespace GT2DataSplitter
             Map(m => m.ManufacturerID);
             Map(m => m.NameFirstPart);
             Map(m => m.NameSecondPart);
-            Map(m => m.IsSpecial2);
+            Map(m => m.IsSpecial);
             Map(m => m.Year);
-            Map(m => m.Unknown2);
+            Map(m => m.Unknown);
             Map(m => m.Price);
         }
     }
