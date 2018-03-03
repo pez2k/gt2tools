@@ -11,6 +11,7 @@ namespace GT2DataSplitter
     {
         public static CarIdConverter CarIdConverter { get; set; } = new CarIdConverter();
         public static CarIdArrayConverter CarIdArrayConverter { get; set; } = new CarIdArrayConverter();
+        public static DrivetrainTypeConverter DrivetrainTypeConverter { get; set; } = new DrivetrainTypeConverter();
 
         private static char[] characterSet = { '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
         private static List<char> characterList = characterSet.ToList();
@@ -109,6 +110,22 @@ namespace GT2DataSplitter
         {
             ushort cacheIndex = (ushort)value;
             return FileNameCache.Get(Name, cacheIndex);
+        }
+    }
+
+    public class DrivetrainTypeConverter : ITypeConverter
+    {
+        protected List<string> DrivetrainTypes = new List<string> { "FR", "FF", "4WD", "MR", "RR" };
+
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            return DrivetrainTypes.IndexOf(text);
+        }
+
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            byte drivetrainType = (byte)value;
+            return DrivetrainTypes[drivetrainType];
         }
     }
 }
