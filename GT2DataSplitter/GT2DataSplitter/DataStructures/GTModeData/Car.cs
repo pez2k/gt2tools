@@ -17,8 +17,8 @@ namespace GT2DataSplitter
         public uint CarId; // (0)
         public ushort Brakes; // (4)
         public uint IsSpecial;
-        public ushort WeightReduction; // (a)
-        public ushort Unknown1; // (c)
+        public ushort Unknown1; // (a)
+        public ushort WeightReduction; // (c)
         public ushort Body;// (e)
         public ushort Engine; // (10)
         public ushort PortPolishing; // 12
@@ -57,8 +57,8 @@ namespace GT2DataSplitter
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Brakes).PartFilename("Brakes");
             Map(m => m.IsSpecial);
-            Map(m => m.WeightReduction).PartFilename("WeightReduction");
             Map(m => m.Unknown1);
+            Map(m => m.WeightReduction).PartFilename("WeightReduction");
             Map(m => m.Body).PartFilename("Body");
             Map(m => m.Engine).PartFilename("Engine");
             Map(m => m.PortPolishing).PartFilename("PortPolishing");
