@@ -119,7 +119,7 @@ namespace GT2DataSplitter
 
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
-            return DrivetrainTypes.IndexOf(text);
+            return (byte)DrivetrainTypes.IndexOf(text);
         }
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
