@@ -52,6 +52,7 @@
     <Compile Include="DataStructures\CarCsvDataStructure.cs" />
     <Compile Include="DataStructures\CsvDataStructure.cs" />
     <Compile Include="DataStructures\CarDataStructure.cs" />
+    <Compile Include="DataStructures\LicenseData.cs" />
     <Compile Include="DataStructures\GTModeData\GenericEngineUpgrade.cs" />
     <Compile Include="DataStructures\GTModeRace.cs" />
     <Compile Include="DataStructures\GTModeData.cs" />
@@ -89,6 +90,14 @@
     <Compile Include="DataStructures\GTModeRace\RaceUnknown1.cs" />
     <Compile Include="DataStructures\GTModeRace\Opponent.cs" />
     <Compile Include="DataStructures\GTModeRace\Race.cs" />
+    <Compile Include="DataStructures\LicenseData\LicenseCar.cs" />
+    <Compile Include="DataStructures\LicenseData\LicenseUnknown7.cs" />
+    <Compile Include="DataStructures\LicenseData\LicenseUnknown6.cs" />
+    <Compile Include="DataStructures\LicenseData\LicenseUnknown5.cs" />
+    <Compile Include="DataStructures\LicenseData\LicenseUnknown4.cs" />
+    <Compile Include="DataStructures\LicenseData\LicenseUnknown3.cs" />
+    <Compile Include="DataStructures\LicenseData\LicenseUnknown2.cs" />
+    <Compile Include="DataStructures\LicenseData\LicenseUnknown1.cs" />
     <Compile Include="FileNameCache.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="Extensions.cs" />

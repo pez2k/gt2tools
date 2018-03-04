@@ -16,6 +16,13 @@ namespace GT2DataSplitter
             string filename = args[0];
             string extension = Path.GetExtension(filename);
             
+            //hack
+            if (filename.Contains("license_data"))
+            {
+                SplitLicenseFile(filename);
+                return;
+            }
+
             if (extension == ".gz")
             {
                 string innerFilename = Path.GetFileNameWithoutExtension(filename);
@@ -66,6 +73,13 @@ namespace GT2DataSplitter
             GTModeRace RaceData = new GTModeRace();
             RaceData.ImportData();
             RaceData.WriteData("eng_gtmode_race.dat");
+        }
+
+        static void SplitLicenseFile(string filename)
+        {
+            LicenseData LicenseData = new LicenseData();
+            LicenseData.ReadData(filename);
+            LicenseData.DumpData();
         }
     }
 }
