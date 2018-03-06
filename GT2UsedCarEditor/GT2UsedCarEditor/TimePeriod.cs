@@ -20,5 +20,13 @@ namespace GT2UsedCarEditor
                 Manufacturers.Add(manufacturer);
             }
         }
+
+        public void WriteCSV(string directory)
+        {
+            foreach (Manufacturer manufacturer in Manufacturers)
+            {
+                manufacturer.WriteCSV(directory);
+            }
+        }
     }
 }

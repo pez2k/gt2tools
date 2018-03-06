@@ -18,6 +18,7 @@ namespace GT2UsedCarEditor
                 }
                 var list = new UsedCarList();
                 list.Read(stream);
+                list.WriteCSV();
             }
         }
     }

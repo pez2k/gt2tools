@@ -17,5 +17,18 @@ namespace GT2UsedCarEditor
                 TimePeriods.Add(period);
             }
         }
+
+        public void WriteCSV()
+        {
+            for (int i = 0; i < TimePeriods.Count; i++)
+            {
+                string directoryName = string.Format("{0:000}", i * 10);
+                if (!Directory.Exists(directoryName))
+                {
+                    Directory.CreateDirectory(directoryName);
+                }
+                TimePeriods[i].WriteCSV(directoryName);
+            }
+        }
     }
 }
