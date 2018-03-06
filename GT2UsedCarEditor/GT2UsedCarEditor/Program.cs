@@ -59,6 +59,7 @@ namespace GT2UsedCarEditor
             using (MemoryStream stream = new MemoryStream())
             {
                 list.Write(stream);
+                stream.Position = 0;
                 
                 using (FileStream file = new FileStream("." + directory.Split('\\').Last(), FileMode.Create, FileAccess.Write))
                 {
