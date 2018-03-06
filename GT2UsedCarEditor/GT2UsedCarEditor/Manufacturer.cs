@@ -13,7 +13,7 @@ namespace GT2UsedCarEditor
         
         public void Read(Stream stream, uint startPosition, ushort carCount)
         {
-            for (int i = 1; i < carCount; i++)
+            for (int i = 0; i < carCount; i++)
             {
                 stream.Position = (i * 8) + startPosition;
                 var car = new Car();
@@ -44,6 +44,39 @@ namespace GT2UsedCarEditor
                     }
                 }
             }
+        }
+
+        public void ReadCSV(string filename)
+        {
+            using (TextReader file = new StreamReader(filename, Encoding.UTF8))
+            {
+                using (CsvReader csv = new CsvReader(file, new Configuration() { QuoteAllFields = true }))
+                {
+                    csv.Read();
+                    
+                    while(csv.Read())
+                    {
+                        var car = new Car();
+                        car.ReadCSV(csv);
+                        Cars.Add(car);
+                    }
+                }
+            }
+        }
+
+        public uint Write(Stream stream, uint indexPosition, uint blockStart, uint dataPosition)
+        {
+            stream.Position = indexPosition;
+            stream.WriteUShort((ushort)(dataPosition - blockStart));
+            stream.WriteUShort((ushort)Cars.Count);
+            stream.Position = dataPosition;
+
+            foreach (Car car in Cars)
+            {
+                car.Write(stream);
+            }
+
+            return (uint)stream.Position;
         }
     }
 }

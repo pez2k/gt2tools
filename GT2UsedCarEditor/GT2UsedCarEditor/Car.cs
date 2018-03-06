@@ -30,5 +30,28 @@ namespace GT2UsedCarEditor
             csv.WriteField(string.Format("{0:X2}", PaletteID));
             csv.NextRecord();
         }
+
+        public void ReadCSV(CsvReader csv)
+        {
+            Name = csv.GetField(0);
+            Price = uint.Parse(csv.GetField(1));
+            PaletteID = byte.Parse(csv.GetField(2), System.Globalization.NumberStyles.HexNumber);
+        }
+
+        public void Write(Stream stream)
+        {
+            stream.WriteUInt(Utils.GetCarID(Name));
+            WritePrice(stream);
+            stream.WriteByte(PaletteID);
+        }
+
+        public void WritePrice(Stream stream)
+        {
+            byte[] byteArray = new byte[3];
+            byteArray[2] = (byte)((Price / 256 / 256) % 256);
+            byteArray[1] = (byte)((Price / 256) % 256);
+            byteArray[0] = (byte)(Price % 256);
+            stream.Write(byteArray, 0, 3);
+        }
     }
 }

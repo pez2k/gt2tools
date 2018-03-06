@@ -37,5 +37,18 @@ namespace GT2UsedCarEditor
             stream.Read(rawValue, 0, 2);
             return (ushort)(rawValue[1] * 256 + rawValue[0]);
         }
+
+        public static void WriteUShort(this Stream stream, ushort value)
+        {
+            stream.Write(value.ToByteArray(), 0, 2);
+        }
+
+        public static byte[] ToByteArray(this ushort value)
+        {
+            byte[] byteArray = new byte[2];
+            byteArray[1] = (byte)((value / 256) % 256);
+            byteArray[0] = (byte)(value % 256);
+            return byteArray;
+        }
     }
 }

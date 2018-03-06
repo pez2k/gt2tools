@@ -28,5 +28,33 @@ namespace GT2UsedCarEditor
                 manufacturer.WriteCSV(directory);
             }
         }
+
+        public void ReadCSV(string directory)
+        {
+            foreach (string name in ManufacturerNames)
+            {
+                var manufacturer = new Manufacturer() { Name = name };
+                string filename = directory + "\\" + manufacturer.Name + ".csv";
+                if (!string.IsNullOrWhiteSpace(name) && File.Exists(filename))
+                {
+                    manufacturer.ReadCSV(filename);
+                }
+                Manufacturers.Add(manufacturer);
+            }
+        }
+
+        public uint Write(Stream stream, int indexPosition, uint dataPosition)
+        {
+            stream.Position = indexPosition;
+            stream.WriteUInt(dataPosition);
+            uint childDataPosition = dataPosition + (uint)(Manufacturers.Count * 4);
+
+            for (int i = 0; i < Manufacturers.Count; i++)
+            {
+                childDataPosition = Manufacturers[i].Write(stream, dataPosition + (uint)(i * 4), dataPosition, childDataPosition);
+            }
+
+            return (uint)stream.Position;
+        }
     }
 }
