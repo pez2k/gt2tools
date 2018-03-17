@@ -2,15 +2,17 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace GT2DataSplitter
+namespace GT2.DataSplitter
 {
+    using CarNameConversion;
+
     public class Body : CarCsvDataStructure<BodyData, BodyCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
             string filename = Name;
             
-            filename += "\\" + Utils.GetCarName(Data.CarId);
+            filename += "\\" + Data.CarId.ToCarName();
 
             if (!Directory.Exists(filename))
             {
@@ -19,7 +21,7 @@ namespace GT2DataSplitter
 
             string number = Directory.GetFiles(filename).Length.ToString();
 
-            return filename + "\\" + number + "_stage" + Data.Stage.ToString() + "_" + Utils.GetCarName(Data.BodyId) + ".csv";
+            return filename + "\\" + number + "_stage" + Data.Stage.ToString() + "_" + Data.BodyId.ToCarName() + ".csv";
         }
     }
 

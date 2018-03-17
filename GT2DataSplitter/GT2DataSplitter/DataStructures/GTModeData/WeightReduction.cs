@@ -1,7 +1,7 @@
 ﻿using CsvHelper.Configuration;
 using System.Runtime.InteropServices;
 
-namespace GT2DataSplitter
+namespace GT2.DataSplitter
 {
     public class WeightReduction : CarCsvDataStructure<WeightReductionData, WeightReductionCSVMap>
     {

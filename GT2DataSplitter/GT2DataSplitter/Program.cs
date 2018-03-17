@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.IO.Compression;
 
-namespace GT2DataSplitter
+namespace GT2.DataSplitter
 {
     class Program
     {

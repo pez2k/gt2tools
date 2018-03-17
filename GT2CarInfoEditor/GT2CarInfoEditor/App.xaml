@@ -1,7 +1,7 @@
-﻿<Application x:Class="GT2CarInfoEditor.App"
+﻿<Application x:Class="GT2.CarInfoEditor.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:GT2CarInfoEditor"
+             xmlns:local="clr-namespace:GT2.CarInfoEditor"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace GT2DataSplitter
+namespace GT2.DataSplitter
 {
     public class CsvDataStructure<TStructure, TMap> : DataStructure where TMap : ClassMap
     {

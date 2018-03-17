@@ -1,7 +1,9 @@
 ﻿using System.IO;
 
-namespace GT2WheelSwap
+namespace GT2.WheelSwap
 {
+    using StreamExtensions;
+
     class Program
     {
         static void Main(string[] args)

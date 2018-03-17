@@ -1,13 +1,15 @@
 ﻿using CsvHelper.Configuration;
 using System.Runtime.InteropServices;
 
-namespace GT2DataSplitter
+namespace GT2.DataSplitter
 {
+    using CarNameConversion;
+
     public class Drivetrain : CarCsvDataStructure<DrivetrainData, DrivetrainCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
-            return Name + "\\" + Utils.GetCarName(Data.CarId) + ".csv";
+            return Name + "\\" + Data.CarId.ToCarName() + ".csv";
         }
     }
 

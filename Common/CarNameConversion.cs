@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace GT2UsedCarEditor
+namespace GT2.CarNameConversion
 {
-    public static class Utils
+    public static class CarNameConversion
     {
         private static List<char> characterSet =
             new List<char> { '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
-        public static string GetCarName(uint carID)
+        public static string ToCarName(this uint carID)
         {
             string carName = "";
 
@@ -20,7 +20,7 @@ namespace GT2UsedCarEditor
             return carName;
         }
 
-        public static uint GetCarID(string carName)
+        public static uint ToCarID(this string carName)
         {
             uint carID = 0;
             char[] carNameChars = carName.ToCharArray();

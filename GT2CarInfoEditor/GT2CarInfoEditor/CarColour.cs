@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GT2CarInfoEditor
+namespace GT2.CarInfoEditor
 {
     class CarColour
     {

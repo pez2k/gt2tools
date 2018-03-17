@@ -1,8 +1,11 @@
 ﻿using CsvHelper.Configuration;
 using System.IO;
 
-namespace GT2DataSplitter
+namespace GT2.DataSplitter
 {
+    using CarNameConversion;
+    using StreamExtensions;
+
     public class CarCsvDataStructure<TStructure, TMap> : CsvDataStructure<TStructure, TMap> where TMap : ClassMap
     {
         public bool HasCarId { get; set; } = true;
@@ -19,7 +22,7 @@ namespace GT2DataSplitter
             if (HasCarId)
             {
                 uint carID = data.ReadUInt();
-                filename += "\\" + Utils.GetCarName(carID);
+                filename += "\\" + carID.ToCarName();
 
                 if (!Directory.Exists(filename))
                 {
@@ -41,7 +44,7 @@ namespace GT2DataSplitter
         {
             string filename = Name;
 
-            filename += "\\" + Utils.GetCarName(carId);
+            filename += "\\" + carId.ToCarName();
 
             if (!Directory.Exists(filename))
             {

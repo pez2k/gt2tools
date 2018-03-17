@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Common\CarNameConversion.cs">
+      <Link>CarNameConversion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\StreamExtensions.cs">
+      <Link>StreamExtensions.cs</Link>
+    </Compile>
     <Compile Include="DataStructures\CarCsvDataStructure.cs" />
     <Compile Include="DataStructures\CsvDataStructure.cs" />
     <Compile Include="DataStructures\CarDataStructure.cs" />
@@ -100,7 +106,7 @@
     <Compile Include="DataStructures\LicenseData\LicenseUnknown1.cs" />
     <Compile Include="FileNameCache.cs" />
     <Compile Include="Utils.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="MemberMapExtensions.cs" />
     <Compile Include="DataStructures\DataStructure.cs" />
     <Compile Include="DataStructures\GTModeData\Brakes.cs" />
     <Compile Include="Program.cs" />

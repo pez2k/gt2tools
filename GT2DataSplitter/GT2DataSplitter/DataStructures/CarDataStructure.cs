@@ -1,7 +1,10 @@
 ﻿using System.IO;
 
-namespace GT2DataSplitter
+namespace GT2.DataSplitter
 {
+    using CarNameConversion;
+    using StreamExtensions;
+
     public class CarDataStructure : DataStructure
     {
         public bool HasCarId { get; set; } = true;
@@ -13,7 +16,7 @@ namespace GT2DataSplitter
             if (HasCarId)
             {
                 uint carID = data.ReadUInt();
-                filename += "\\" + Utils.GetCarName(carID);
+                filename += "\\" + carID.ToCarName();
 
                 if (!Directory.Exists(filename))
                 {

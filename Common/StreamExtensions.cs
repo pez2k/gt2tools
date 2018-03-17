@@ -1,8 +1,8 @@
 ﻿using System.IO;
 
-namespace GT2WheelSwap
+namespace GT2.StreamExtensions
 {
-    public static class Extensions
+    public static class StreamExtensions
     {
         public static uint ReadUInt(this Stream stream)
         {

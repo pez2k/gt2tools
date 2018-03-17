@@ -1,8 +1,11 @@
 ﻿using CsvHelper;
 using System.IO;
 
-namespace GT2UsedCarEditor
+namespace GT2.UsedCarEditor
 {
+    using CarNameConversion;
+    using StreamExtensions;
+
     class Car
     {
         public string Name { get; set; }
@@ -11,7 +14,7 @@ namespace GT2UsedCarEditor
 
         public void Read(Stream stream)
         {
-            Name = Utils.GetCarName(stream.ReadUInt());
+            Name = stream.ReadUInt().ToCarName();
             Price = ReadPrice(stream);
             PaletteID = (byte)stream.ReadByte();
         }
@@ -40,7 +43,7 @@ namespace GT2UsedCarEditor
 
         public void Write(Stream stream)
         {
-            stream.WriteUInt(Utils.GetCarID(Name));
+            stream.WriteUInt(Name.ToCarID());
             WritePrice(stream);
             stream.WriteByte(PaletteID);
         }

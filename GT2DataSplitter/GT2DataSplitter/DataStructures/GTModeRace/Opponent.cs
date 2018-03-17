@@ -1,13 +1,15 @@
 ﻿using CsvHelper.Configuration;
 using System.Runtime.InteropServices;
 
-namespace GT2DataSplitter
+namespace GT2.DataSplitter
 {
+    using CarNameConversion;
+
     public class Opponent : CsvDataStructure<OpponentData, OpponentCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
-            return base.CreateOutputFilename(data).Replace(".csv", "_" + Utils.GetCarName(Data.CarId) + ".csv");
+            return base.CreateOutputFilename(data).Replace(".csv", "_" + Data.CarId.ToCarName() + ".csv");
         }
     }
     

@@ -1,5 +1,8 @@
-﻿namespace GT2DataSplitter
+﻿namespace GT2.DataSplitter
 {
+    using CarNameConversion;
+    using StreamExtensions;
+
     public class LicenseCar : DataStructure
     {
         public LicenseCar()
@@ -9,7 +12,7 @@
 
         public override string CreateOutputFilename(byte[] data)
         {
-            return Name + "\\" + Utils.GetCarName(data.ReadUInt()) + ".dat";
+            return Name + "\\" + data.ReadUInt().ToCarName() + ".dat";
         }
     }
 }

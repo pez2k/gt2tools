@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GT2CarInfoEditor.Properties
+namespace GT2.CarInfoEditor.Properties
 {
 
 

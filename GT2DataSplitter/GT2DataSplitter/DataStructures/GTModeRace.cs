@@ -2,8 +2,10 @@
 using System.IO;
 using System.IO.Compression;
 
-namespace GT2DataSplitter
+namespace GT2.DataSplitter
 {
+    using StreamExtensions;
+
     public class GTModeRace
     {
         public List<Race> Races { get; set; } = new List<Race>();

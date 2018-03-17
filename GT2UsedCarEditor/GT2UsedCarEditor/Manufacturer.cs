@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace GT2UsedCarEditor
+namespace GT2.UsedCarEditor
 {
+    using StreamExtensions;
+
     class Manufacturer
     {
         public string Name { get; set; }

@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace GT2DataSplitter
+namespace GT2.DataSplitter
 {
+    using CarNameConversion;
+    using StreamExtensions;
+
     public class DataStructure
     {
         public string Name {
@@ -127,7 +130,7 @@ namespace GT2DataSplitter
 
             foreach (string carName in Directory.EnumerateDirectories(example.Name))
             {
-                cars.Add(Utils.GetCarID(carName), carName);
+                cars.Add(carName.ToCarID(), carName);
             }
 
             if (cars.Count == 0)

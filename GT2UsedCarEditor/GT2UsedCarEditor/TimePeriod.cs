@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace GT2UsedCarEditor
+namespace GT2.UsedCarEditor
 {
+    using StreamExtensions;
+
     class TimePeriod
     {
         public List<Manufacturer> Manufacturers { get; set; } = new List<Manufacturer>(39);

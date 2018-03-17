@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GT2PaletteChop
+namespace GT2.PaletteChop
 {
     class Program
     {

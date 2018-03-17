@@ -3,8 +3,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
-namespace GT2TextureConverter
+namespace GT2.TextureConverter
 {
+    using StreamExtensions;
+
     class Program
     {
         static void Main(string[] args)

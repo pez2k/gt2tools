@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GT2DataSplitter
+namespace GT2.DataSplitter
 {
     public static class FileNameCache
     {

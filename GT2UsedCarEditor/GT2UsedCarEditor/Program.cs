@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 
-namespace GT2UsedCarEditor
+namespace GT2.UsedCarEditor
 {
     class Program
     {

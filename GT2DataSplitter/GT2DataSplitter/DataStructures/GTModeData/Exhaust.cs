@@ -1,4 +1,4 @@
-﻿namespace GT2DataSplitter
+﻿namespace GT2.DataSplitter
 {
     public class Exhaust : GenericEngineUpgrade
     {
