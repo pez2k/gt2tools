@@ -13,29 +13,46 @@ namespace GT2.CDP2TIM
 
         static void Main(string[] args)
         {
-            if (args.Length != 1)
+            if (args.Length < 1 || args.Length > 2)
             {
                 return;
             }
 
             string filename = args[0];
+            int paletteNumber = 1;
+
+            if (args.Length > 1)
+            {
+                int.TryParse(args[1], out paletteNumber);
+                if (paletteNumber < 1)
+                {
+                    paletteNumber = 1;
+                }
+            }
 
             if (Path.GetExtension(filename) == ".cdp")
             {
-                Export(filename);
+                Export(filename, paletteNumber);
             }
             else if (Path.GetExtension(filename) == ".tim")
             {
-                Import(filename);
+                Import(filename, paletteNumber);
             }
         }
 
-        static void Export(string cdpFilename)
+        static void Export(string cdpFilename, int paletteNumber)
         {
             using (FileStream cdpFile = new FileStream(cdpFilename, FileMode.Open, FileAccess.Read))
             {
                 using (FileStream timFile = new FileStream(Path.GetFileNameWithoutExtension(cdpFilename) + ".tim", FileMode.Create, FileAccess.Write))
                 {
+                    int paletteCount = cdpFile.ReadByte();
+
+                    if (paletteNumber > paletteCount)
+                    {
+                        paletteNumber = 1;
+                    }
+
                     // TIM header
                     timFile.Write(new byte[] { 0x10, 0x00, 0x00, 0x00 }, 0, 4);
                     timFile.WriteUInt(TIM_4BPP + TIM_INDEXED); // TIM type flags
@@ -48,7 +65,7 @@ namespace GT2.CDP2TIM
                     timFile.WriteUShort(14); // Number of CLUTs
 
                     // Read CLUTs from CDP
-                    cdpFile.Position = CDP_PALETTESTART;
+                    cdpFile.Position = CDP_PALETTESTART + ((paletteNumber - 1) * 0x240);
                     byte[] clutData = new byte[16 * 2 * 14]; // 16 ushorts * 14 CLUTs
                     cdpFile.Read(clutData, 0, clutData.Length);
                     timFile.Write(clutData, 0, clutData.Length);
@@ -70,17 +87,24 @@ namespace GT2.CDP2TIM
             }
         }
         
-        static void Import(string timFilename)
+        static void Import(string timFilename, int paletteNumber)
         {
             using (FileStream timFile = new FileStream(timFilename, FileMode.Open, FileAccess.Read))
             {
-                using (FileStream cdpFile = new FileStream(Path.GetFileNameWithoutExtension(timFilename) + ".cdp", FileMode.Open, FileAccess.Write))
+                using (FileStream cdpFile = new FileStream(Path.GetFileNameWithoutExtension(timFilename) + ".cdp", FileMode.Open, FileAccess.ReadWrite))
                 {
+                    int paletteCount = cdpFile.ReadByte();
+
+                    if (paletteNumber > paletteCount)
+                    {
+                        paletteNumber = 1;
+                    }
+
                     timFile.Position = 0x14;
                     byte[] clutData = new byte[16 * 2 * 14]; // 16 ushorts * 14 CLUTs
                     timFile.Read(clutData, 0, clutData.Length);
                     
-                    cdpFile.Position = CDP_PALETTESTART;
+                    cdpFile.Position = CDP_PALETTESTART + ((paletteNumber - 1) * 0x240);
                     cdpFile.Write(clutData, 0, clutData.Length);
 
                     timFile.Position = 0x1E0;
