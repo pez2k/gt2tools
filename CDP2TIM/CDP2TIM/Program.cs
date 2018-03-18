@@ -44,7 +44,9 @@ namespace GT2.CDP2TIM
         {
             using (FileStream cdpFile = new FileStream(cdpFilename, FileMode.Open, FileAccess.Read))
             {
-                using (FileStream timFile = new FileStream(Path.GetFileNameWithoutExtension(cdpFilename) + ".tim", FileMode.Create, FileAccess.Write))
+                string timFilename = Path.GetFileNameWithoutExtension(cdpFilename) + Path.GetExtension(cdpFilename).Replace(".", "_") + ".tim";
+
+                using (FileStream timFile = new FileStream(timFilename, FileMode.Create, FileAccess.Write))
                 {
                     int paletteCount = cdpFile.ReadByte();
 
@@ -91,7 +93,17 @@ namespace GT2.CDP2TIM
         {
             using (FileStream timFile = new FileStream(timFilename, FileMode.Open, FileAccess.Read))
             {
-                using (FileStream cdpFile = new FileStream(Path.GetFileNameWithoutExtension(timFilename) + ".cdp", FileMode.Open, FileAccess.ReadWrite))
+                string cdpFilename = Path.GetFileNameWithoutExtension(timFilename);
+                if (cdpFilename.EndsWith("_cnp"))
+                {
+                    cdpFilename = cdpFilename.Replace("_cnp", "") + ".cnp";
+                }
+                else
+                {
+                    cdpFilename = cdpFilename.Replace("_cdp", "") + ".cdp";
+                }
+
+                using (FileStream cdpFile = new FileStream(cdpFilename, FileMode.Open, FileAccess.ReadWrite))
                 {
                     int paletteCount = cdpFile.ReadByte();
 
