@@ -30,7 +30,7 @@ namespace GT2.CDP2TIM
                 }
             }
 
-            if (Path.GetExtension(filename) == ".cdp")
+            if (Path.GetExtension(filename) == ".cdp" || Path.GetExtension(filename) == ".cnp")
             {
                 Export(filename, paletteNumber);
             }
@@ -60,7 +60,7 @@ namespace GT2.CDP2TIM
                     timFile.WriteUInt(TIM_4BPP + TIM_INDEXED); // TIM type flags
 
                     // TIM CLUT header
-                    timFile.WriteUInt(12 + ((16 * 2) * 14)); // Header length + CLUT size (16 ushorts) * 14 CLUTs
+                    timFile.WriteUInt(12 + ((16 * 2) * 16)); // Header length + CLUT size (16 ushorts) * 16 CLUTs
                     timFile.WriteUShort(0); // CLUT memory target location X
                     timFile.WriteUShort(0); // CLUT memory target location Y
                     timFile.WriteUShort(16); // Colours in CLUT
@@ -68,7 +68,7 @@ namespace GT2.CDP2TIM
 
                     // Read CLUTs from CDP
                     cdpFile.Position = CDP_PALETTESTART + ((paletteNumber - 1) * 0x240);
-                    byte[] clutData = new byte[16 * 2 * 14]; // 16 ushorts * 14 CLUTs
+                    byte[] clutData = new byte[16 * 2 * 16]; // 16 ushorts * 16 CLUTs
                     cdpFile.Read(clutData, 0, clutData.Length);
                     timFile.Write(clutData, 0, clutData.Length);
 
@@ -113,7 +113,7 @@ namespace GT2.CDP2TIM
                     }
 
                     timFile.Position = 0x14;
-                    byte[] clutData = new byte[16 * 2 * 14]; // 16 ushorts * 14 CLUTs
+                    byte[] clutData = new byte[16 * 2 * 16]; // 16 ushorts * 16 CLUTs
                     timFile.Read(clutData, 0, clutData.Length);
                     
                     cdpFile.Position = CDP_PALETTESTART + ((paletteNumber - 1) * 0x240);
