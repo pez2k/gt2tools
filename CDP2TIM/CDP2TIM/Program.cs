@@ -64,7 +64,7 @@ namespace GT2.CDP2TIM
                     timFile.WriteUShort(0); // CLUT memory target location X
                     timFile.WriteUShort(0); // CLUT memory target location Y
                     timFile.WriteUShort(16); // Colours in CLUT
-                    timFile.WriteUShort(14); // Number of CLUTs
+                    timFile.WriteUShort(16); // Number of CLUTs
 
                     // Read CLUTs from CDP
                     cdpFile.Position = CDP_PALETTESTART + ((paletteNumber - 1) * 0x240);
