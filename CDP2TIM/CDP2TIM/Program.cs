@@ -119,7 +119,7 @@ namespace GT2.CDP2TIM
                     cdpFile.Position = CDP_PALETTESTART + ((paletteNumber - 1) * 0x240);
                     cdpFile.Write(clutData, 0, clutData.Length);
 
-                    timFile.Position = 0x1E0;
+                    timFile.Position = 0x220;
                     // Read image data from TIM
                     cdpFile.Position = CDP_IMAGESTART;
                     byte[] imageRow = new byte[256 * 224 / 2]; // 256 x 224 pixels at 4BPP
