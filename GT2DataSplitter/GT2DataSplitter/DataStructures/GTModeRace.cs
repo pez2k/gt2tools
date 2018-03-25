@@ -10,7 +10,7 @@ namespace GT2.DataSplitter
     {
         public List<Race> Races { get; set; } = new List<Race>();
         public List<Opponent> Opponents { get; set; } = new List<Opponent>();
-        public List<RaceUnknown1> RaceUnknown1 { get; set; } = new List<RaceUnknown1>();
+        public List<EligibleCars> EligibleCars { get; set; } = new List<EligibleCars>();
         public List<RaceStrings> RaceStrings { get; set; } = new List<RaceStrings>();
         
         public void ReadData(string filename)
@@ -29,7 +29,7 @@ namespace GT2.DataSplitter
 
                 Races.Read(file, blocks[0].BlockStart, blocks[0].BlockSize);
                 Opponents.Read(file, blocks[1].BlockStart, blocks[1].BlockSize);
-                RaceUnknown1.Read(file, blocks[2].BlockStart, blocks[2].BlockSize);
+                EligibleCars.Read(file, blocks[2].BlockStart, blocks[2].BlockSize);
                 RaceStrings.Read(file, blocks[3].BlockStart, blocks[3].BlockSize);
             }
         }
@@ -38,7 +38,7 @@ namespace GT2.DataSplitter
         {
             Races.Dump();
             Opponents.Dump();
-            RaceUnknown1.Dump();
+            EligibleCars.Dump();
             RaceStrings.Dump();
         }
 
@@ -46,7 +46,7 @@ namespace GT2.DataSplitter
         {
             Races.Import();
             Opponents.Import();
-            RaceUnknown1.Import();
+            EligibleCars.Import();
             RaceStrings.Import();
         }
 
@@ -64,7 +64,7 @@ namespace GT2.DataSplitter
                 uint i = 1;
                 Races.Write(file, 8 * i++);
                 Opponents.Write(file, 8 * i++);
-                RaceUnknown1.Write(file, 8 * i++);
+                EligibleCars.Write(file, 8 * i++);
                 RaceStrings.Write(file, 8 * i++);
 
                 file.Position = 0;

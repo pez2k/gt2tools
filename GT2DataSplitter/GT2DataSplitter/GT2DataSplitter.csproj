@@ -93,7 +93,7 @@
     <Compile Include="DataStructures\GTModeData\Steering.cs" />
     <Compile Include="DataStructures\GTModeData\BrakeBalanceController.cs" />
     <Compile Include="DataStructures\GTModeRace\RaceStrings.cs" />
-    <Compile Include="DataStructures\GTModeRace\RaceUnknown1.cs" />
+    <Compile Include="DataStructures\GTModeRace\EligibleCars.cs" />
     <Compile Include="DataStructures\GTModeRace\Opponent.cs" />
     <Compile Include="DataStructures\GTModeRace\Race.cs" />
     <Compile Include="DataStructures\LicenseData\LicenseCar.cs" />
