@@ -55,6 +55,8 @@ namespace GT2.DataSplitter
 
         static void SplitFile(string filename)
         {
+            StringTable.Read("eng_unistrdb.dat");
+
             GTModeData CarData = new GTModeData();
             CarData.ReadData(filename);
             CarData.DumpData();
@@ -62,10 +64,14 @@ namespace GT2.DataSplitter
             GTModeRace RaceData = new GTModeRace();
             RaceData.ReadData("eng_gtmode_race.dat");
             RaceData.DumpData();
+
+            StringTable.Export();
         }
 
         static void BuildFile(string filename)
         {
+            StringTable.Import();
+
             GTModeData CarData = new GTModeData();
             CarData.ImportData();
             CarData.WriteData(filename);
@@ -73,6 +79,8 @@ namespace GT2.DataSplitter
             GTModeRace RaceData = new GTModeRace();
             RaceData.ImportData();
             RaceData.WriteData("eng_gtmode_race.dat");
+
+            StringTable.Write("eng_unistrdb.dat");
         }
 
         static void SplitLicenseFile(string filename)

@@ -71,9 +71,9 @@ namespace GT2.DataSplitter
         public EngineCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
-            Map(m => m.LayoutName);
-            Map(m => m.ValvetrainName);
-            Map(m => m.Aspiration);
+            Map(m => m.LayoutName).TypeConverter(StringTable.Lookup);
+            Map(m => m.ValvetrainName).TypeConverter(StringTable.Lookup);
+            Map(m => m.Aspiration).TypeConverter(StringTable.Lookup);
             Map(m => m.SoundFile);
             Map(m => m.TorqueCurve1);
             Map(m => m.TorqueCurve2);
@@ -95,7 +95,7 @@ namespace GT2.DataSplitter
             Map(m => m.DisplayedPower);
             Map(m => m.MaxPowerRPM);
             Map(m => m.DisplayedTorque);
-            Map(m => m.MaxTorqueRPMName);
+            Map(m => m.MaxTorqueRPMName).TypeConverter(StringTable.Lookup);
             Map(m => m.PowerMultiplier);
             Map(m => m.ClutchReleaseRPM);
             Map(m => m.IdleRPM);

@@ -105,6 +105,7 @@
     <Compile Include="DataStructures\LicenseData\LicenseUnknown2.cs" />
     <Compile Include="DataStructures\LicenseData\LicenseUnknown1.cs" />
     <Compile Include="FileNameCache.cs" />
+    <Compile Include="StringTable.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="MemberMapExtensions.cs" />
     <Compile Include="DataStructures\DataStructure.cs" />

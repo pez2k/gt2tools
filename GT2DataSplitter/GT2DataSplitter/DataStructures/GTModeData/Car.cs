@@ -86,8 +86,8 @@ namespace GT2.DataSplitter
             Map(m => m.TCSLevel);
             Map(m => m.RimsCode3);
             Map(m => m.ManufacturerID);
-            Map(m => m.NameFirstPart);
-            Map(m => m.NameSecondPart);
+            Map(m => m.NameFirstPart).TypeConverter(StringTable.Lookup);
+            Map(m => m.NameSecondPart).TypeConverter(StringTable.Lookup);
             Map(m => m.IsSpecial);
             Map(m => m.Year);
             Map(m => m.Unknown);
