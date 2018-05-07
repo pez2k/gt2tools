@@ -45,7 +45,7 @@ namespace GT2.DataSplitter
             Map(m => m.SteeringReaction1);
             Map(m => m.WheelSize);
             Map(m => m.SteeringReaction2);
-            Map(m => m.TyreCompound);//.TypeConverter(Utils.TyreCompoundConverter);
+            Map(m => m.TyreCompound).TypeConverter(Utils.TyreCompoundConverter);
             Map(m => m.Unknown1);
             Map(m => m.Unknown2);
             Map(m => m.Unknown3);
