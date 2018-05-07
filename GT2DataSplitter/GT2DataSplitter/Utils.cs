@@ -14,7 +14,9 @@ namespace GT2.DataSplitter
         public static CarIdConverter CarIdConverter { get; set; } = new CarIdConverter();
         public static CarIdArrayConverter CarIdArrayConverter { get; set; } = new CarIdArrayConverter();
         public static DrivetrainTypeConverter DrivetrainTypeConverter { get; set; } = new DrivetrainTypeConverter();
-        
+        public static TyreStageConverter TyreStageConverter { get; set; } = new TyreStageConverter();
+        public static TyreCompoundConverter TyreCompoundConverter { get; set; } = new TyreCompoundConverter();
+
         public static CachedFileNameConverter GetFileNameConverter(string name)
         {
             return new CachedFileNameConverter(name);
@@ -96,6 +98,43 @@ namespace GT2.DataSplitter
         {
             byte drivetrainType = (byte)value;
             return DrivetrainTypes[drivetrainType];
+        }
+    }
+
+    public class TyreStageConverter : ITypeConverter
+    {
+        protected List<string> TyreTypes = new List<string> { "Stock", "Sports", "Hard", "Medium", "Soft", "SuperSoft", "Simulation", "Dirt" };
+
+        public virtual object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            return (byte)TyreTypes.IndexOf(text);
+        }
+
+        public virtual string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            byte tyreType = (byte)value;
+            return TyreTypes[tyreType];
+        }
+    }
+
+    public class TyreCompoundConverter : TyreStageConverter
+    {
+        public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            byte tyreType = (byte)(TyreTypes.IndexOf(text) * 2);
+
+            if (tyreType > 0)
+            {
+                return tyreType;
+            }
+
+            return byte.Parse(text);
+        }
+
+        public override string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            byte tyreType = (byte)((byte)value / 2);
+            return TyreTypes[tyreType];
         }
     }
 }

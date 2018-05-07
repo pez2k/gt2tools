@@ -1,10 +1,53 @@
-﻿namespace GT2.DataSplitter
+﻿using CsvHelper.Configuration;
+using System.Runtime.InteropServices;
+
+namespace GT2.DataSplitter
 {
-    public class TurboKit : CarDataStructure
+    public class TurboKit : CarCsvDataStructure<TurboKitData, TurboKitCSVMap>
     {
-        public TurboKit()
+        public override string CreateOutputFilename(byte[] data)
         {
-            Size = 0x14;
+            return CreateOutputFilename(Data.CarId, Data.Stage);
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x14
+    public struct TurboKitData
+    {
+        public uint CarId;
+        public uint Price;
+        public byte Stage;
+        public byte BoostGaugeLimit;
+        public byte LowRPMBoost;
+        public byte HighRPMBoost;
+        public byte SpoolRate;
+        public byte Unknown1;
+        public byte Unknown2;
+        public byte Unknown3;
+        public byte RPMIncrease;
+        public byte RedlineIncrease;
+        public byte HighRPMPowerMultiplier;
+        public byte LowRPMPowerMultiplier;
+    }
+
+    public sealed class TurboKitCSVMap : ClassMap<TurboKitData>
+    {
+        public TurboKitCSVMap()
+        {
+            Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
+            Map(m => m.Price);
+            Map(m => m.Stage);
+            Map(m => m.BoostGaugeLimit);
+            Map(m => m.LowRPMBoost);
+            Map(m => m.HighRPMBoost);
+            Map(m => m.SpoolRate);
+            Map(m => m.Unknown1);
+            Map(m => m.Unknown2);
+            Map(m => m.Unknown3);
+            Map(m => m.RPMIncrease);
+            Map(m => m.RedlineIncrease);
+            Map(m => m.HighRPMPowerMultiplier);
+            Map(m => m.LowRPMPowerMultiplier);
         }
     }
 }
