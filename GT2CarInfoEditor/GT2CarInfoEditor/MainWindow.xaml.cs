@@ -23,6 +23,9 @@ namespace GT2.CarInfoEditor
         public MainWindow()
         {
             InitializeComponent();
+
+            CarList list = new CarList();
+            list.ReadFromFiles();
         }
     }
 }

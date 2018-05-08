@@ -59,10 +59,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="..\..\Common\CarNameConversion.cs">
+      <Link>CarNameConversion.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Common\StreamExtensions.cs">
+      <Link>StreamExtensions.cs</Link>
+    </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CarList.cs" />
     <Compile Include="Car.cs" />
     <Compile Include="CarColour.cs" />
     <Compile Include="MainWindow.xaml.cs">
