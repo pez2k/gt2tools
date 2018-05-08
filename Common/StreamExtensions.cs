@@ -4,10 +4,15 @@ namespace GT2.StreamExtensions
 {
     public static class StreamExtensions
     {
+        public static int Read(this Stream stream, byte[] buffer)
+        {
+            return stream.Read(buffer, 0, buffer.Length);
+        }
+
         public static uint ReadUInt(this Stream stream)
         {
             byte[] rawValue = new byte[4];
-            stream.Read(rawValue, 0, 4);
+            stream.Read(rawValue);
             return (uint)(rawValue[3] * 256 * 256 * 256 + rawValue[2] * 256 * 256 + rawValue[1] * 256 + rawValue[0]);
         }
 
@@ -34,7 +39,7 @@ namespace GT2.StreamExtensions
         public static ushort ReadUShort(this Stream stream)
         {
             byte[] rawValue = new byte[2];
-            stream.Read(rawValue, 0, 2);
+            stream.Read(rawValue);
             return (ushort)(rawValue[1] * 256 + rawValue[0]);
         }
 
