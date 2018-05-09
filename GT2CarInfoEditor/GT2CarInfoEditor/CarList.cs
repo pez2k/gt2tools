@@ -11,16 +11,16 @@ namespace GT2.CarInfoEditor
 
         public void ReadFromFiles()
         {
-            using (FileStream stream = new FileStream(".carinfoe", FileMode.Open, FileAccess.Read))
+            using (FileSet files = new FileSet())
             {
-                stream.Position = 0x04; // Skip header
-                uint carCount = stream.ReadUInt();
+                files.JPCarInfo.Position = 0x04; // Skip header
+                uint carCount = files.JPCarInfo.ReadUInt();
 
                 Cars = new List<Car>();
 
                 for (uint i = 0; i < carCount; i++)
                 {
-                    Cars.Add(Car.ReadFromFile(stream));
+                    Cars.Add(Car.ReadFromFiles(files));
                 }
             }
         }

@@ -69,6 +69,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="FileSet.cs" />
     <Compile Include="CarList.cs" />
     <Compile Include="Car.cs" />
     <Compile Include="CarColour.cs" />
