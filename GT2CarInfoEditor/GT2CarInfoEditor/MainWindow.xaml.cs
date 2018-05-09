@@ -26,6 +26,8 @@ namespace GT2.CarInfoEditor
 
             CarList list = new CarList();
             list.ReadFromFiles();
+
+            treeView.ItemsSource = list.Cars;
         }
     }
 }

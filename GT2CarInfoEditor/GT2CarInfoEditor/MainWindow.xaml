@@ -5,8 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GT2.CarInfoEditor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="CarInfo Editor" Height="350" Width="525">
     <Grid>
-        
+        <TreeView x:Name="treeView" HorizontalAlignment="Left" Height="300" Margin="10,10,0,0" VerticalAlignment="Top" Width="497">
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type local:Car}" ItemsSource="{Binding Colours}">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding CarID}" Width="50" />
+                        <TextBox Text="{Binding EUName}" Width="200" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+                <DataTemplate DataType="{x:Type local:CarColour}">
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Fill="{Binding HexColour}" Width="20" />
+                        <TextBox Text="{Binding LatinName}" Width="200" />
+                    </StackPanel>
+                </DataTemplate>
+            </TreeView.Resources>
+        </TreeView>
     </Grid>
 </Window>
