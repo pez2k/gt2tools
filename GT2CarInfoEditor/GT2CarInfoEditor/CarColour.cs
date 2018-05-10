@@ -50,23 +50,20 @@ namespace GT2.CarInfoEditor
         {
             stream.Position = stringNumber * 2;
             ushort index = stream.ReadUShort();
-            stream.Position = index;
+            ushort nextIndex = stream.ReadUShort();
 
-            List<byte> stringBytes = new List<byte>();
-
-            byte currentByte = 0x00;
-
-            do
+            if (nextIndex < index)
             {
-                currentByte = (byte)stream.ReadByte();
-                if (currentByte != 0x00)
-                {
-                    stringBytes.Add(currentByte);
-                }
+                nextIndex = (ushort)stream.Length;
             }
-            while (currentByte != 0x00);
+
+            ushort stringLength = (ushort)(nextIndex - index);
+            stream.Position = index;
             
-            return (isUnicode ? Encoding.Unicode : Encoding.ASCII).GetString(stringBytes.ToArray()).TrimEnd('\0');
+            byte[] stringBytes = new byte[stringLength];
+            stream.Read(stringBytes);
+
+            return (isUnicode ? Encoding.Unicode : Encoding.ASCII).GetString(stringBytes).TrimEnd('\0');
         }
     }
 }
