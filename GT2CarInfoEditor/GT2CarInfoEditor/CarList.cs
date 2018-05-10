@@ -20,7 +20,9 @@ namespace GT2.CarInfoEditor
 
                 for (uint i = 0; i < carCount; i++)
                 {
-                    Cars.Add(Car.ReadFromFiles(files));
+                    Car car = new Car();
+                    car.ReadFromFiles(files, i);
+                    Cars.Add(car);
                 }
             }
         }
