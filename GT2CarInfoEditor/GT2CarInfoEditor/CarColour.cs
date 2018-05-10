@@ -63,7 +63,7 @@ namespace GT2.CarInfoEditor
             byte[] stringBytes = new byte[stringLength];
             stream.Read(stringBytes);
 
-            return (isUnicode ? Encoding.Unicode : Encoding.ASCII).GetString(stringBytes).TrimEnd('\0');
+            return (isUnicode ? Encoding.Unicode : Encoding.Default).GetString(stringBytes).TrimEnd('\0');
         }
     }
 }

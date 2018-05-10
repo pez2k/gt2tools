@@ -60,7 +60,7 @@ namespace GT2.CarInfoEditor
             byte stringLength = (byte)stream.ReadByte();
             byte[] stringBytes = new byte[stringLength];
             stream.Read(stringBytes);
-            return Encoding.ASCII.GetString(stringBytes).TrimEnd('\0').Replace(((char)0x7F).ToString(), "[R]");
+            return Encoding.Default.GetString(stringBytes).TrimEnd('\0').Replace(((char)0x7F).ToString(), "[R]");
         }
 
         public List<CarColour> ReadColoursFromFile(FileSet files, ushort index, uint carNumber, byte colourCount)
