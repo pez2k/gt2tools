@@ -16,6 +16,8 @@ namespace GT2.DataSplitter
         public static DrivetrainTypeConverter DrivetrainTypeConverter { get; set; } = new DrivetrainTypeConverter();
         public static TyreStageConverter TyreStageConverter { get; set; } = new TyreStageConverter();
         public static TyreCompoundConverter TyreCompoundConverter { get; set; } = new TyreCompoundConverter();
+        public static LicenseConverter LicenseConverter { get; set; } = new LicenseConverter();
+        public static DrivetrainRestrictionConverter DrivetrainRestrictionConverter { get; set; } = new DrivetrainRestrictionConverter();
 
         public static CachedFileNameConverter GetFileNameConverter(string name)
         {
@@ -75,12 +77,20 @@ namespace GT2.DataSplitter
 
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
-            return FileNameCache.Get(Name, text);
+            ushort stringNumber = FileNameCache.Get(Name, text);
+            if (Name == "EligibleCars")
+            {
+                return (byte)stringNumber;
+            }
+            else
+            {
+                return stringNumber;
+            }
         }
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
-            ushort cacheIndex = (ushort)value;
+            ushort cacheIndex = ushort.Parse(value.ToString());
             return FileNameCache.Get(Name, cacheIndex);
         }
     }
@@ -130,6 +140,38 @@ namespace GT2.DataSplitter
         {
             byte tyreType = (byte)value;
             return TyreTypes[tyreType];
+        }
+    }
+
+    public class LicenseConverter : ITypeConverter
+    {
+        protected List<string> LicenseTypes = new List<string> { "None", "B", "A", "IC", "IB", "IA", "S" };
+
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            return (byte)LicenseTypes.IndexOf(text);
+        }
+
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            byte licenseType = (byte)value;
+            return LicenseTypes[licenseType];
+        }
+    }
+
+    public class DrivetrainRestrictionConverter : ITypeConverter
+    {
+        protected List<string> DrivetrainTypes = new List<string> { "None", "FF", "FR", "MR", "RR", "4WD" };
+
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            return (byte)DrivetrainTypes.IndexOf(text);
+        }
+
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            byte drivetrainType = (byte)value;
+            return DrivetrainTypes[drivetrainType];
         }
     }
 }

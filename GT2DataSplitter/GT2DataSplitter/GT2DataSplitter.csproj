@@ -92,7 +92,6 @@
     <Compile Include="DataStructures\GTModeData\Dimensions.cs" />
     <Compile Include="DataStructures\GTModeData\Steering.cs" />
     <Compile Include="DataStructures\GTModeData\BrakeBalanceController.cs" />
-    <Compile Include="DataStructures\GTModeRace\RaceStrings.cs" />
     <Compile Include="DataStructures\GTModeRace\EligibleCars.cs" />
     <Compile Include="DataStructures\GTModeRace\Opponent.cs" />
     <Compile Include="DataStructures\GTModeRace\Race.cs" />
@@ -105,6 +104,7 @@
     <Compile Include="DataStructures\LicenseData\LicenseUnknown2.cs" />
     <Compile Include="DataStructures\LicenseData\LicenseUnknown1.cs" />
     <Compile Include="FileNameCache.cs" />
+    <Compile Include="DataStructures\GTModeRace\RaceStringTable.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="MemberMapExtensions.cs" />

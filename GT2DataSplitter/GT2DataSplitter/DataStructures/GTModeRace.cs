@@ -11,7 +11,6 @@ namespace GT2.DataSplitter
         public List<Race> Races { get; set; } = new List<Race>();
         public List<Opponent> Opponents { get; set; } = new List<Opponent>();
         public List<EligibleCars> EligibleCars { get; set; } = new List<EligibleCars>();
-        public List<RaceStrings> RaceStrings { get; set; } = new List<RaceStrings>();
         
         public void ReadData(string filename)
         {
@@ -30,24 +29,22 @@ namespace GT2.DataSplitter
                 Races.Read(file, blocks[0].BlockStart, blocks[0].BlockSize);
                 Opponents.Read(file, blocks[1].BlockStart, blocks[1].BlockSize);
                 EligibleCars.Read(file, blocks[2].BlockStart, blocks[2].BlockSize);
-                RaceStrings.Read(file, blocks[3].BlockStart, blocks[3].BlockSize);
+                RaceStringTable.Read(file, blocks[3].BlockStart, blocks[3].BlockSize);
             }
         }
 
         public void DumpData()
         {
+            EligibleCars.Dump();
             Races.Dump();
             Opponents.Dump();
-            EligibleCars.Dump();
-            RaceStrings.Dump();
         }
 
         public void ImportData()
         {
+            EligibleCars.Import();
             Races.Import();
             Opponents.Import();
-            EligibleCars.Import();
-            RaceStrings.Import();
         }
 
         public void WriteData(string filename)
@@ -65,7 +62,7 @@ namespace GT2.DataSplitter
                 Races.Write(file, 8 * i++);
                 Opponents.Write(file, 8 * i++);
                 EligibleCars.Write(file, 8 * i++);
-                RaceStrings.Write(file, 8 * i++);
+                RaceStringTable.Write(file, 8 * i++);
 
                 file.Position = 0;
                 using (FileStream zipFile = new FileStream(filename + ".gz", FileMode.Create, FileAccess.Write))

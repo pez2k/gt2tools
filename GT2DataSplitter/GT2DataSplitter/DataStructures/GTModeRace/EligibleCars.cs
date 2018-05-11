@@ -5,6 +5,28 @@ namespace GT2.DataSplitter
 {
     public class EligibleCars : CsvDataStructure<EligibleCarsData, EligibleCarsCSVMap>
     {
+        public EligibleCars()
+        {
+            CacheFilename = true;
+        }
+
+        public override void Dump()
+        {
+            if (!FileNameCache.Cache.ContainsKey(Name))
+            {
+                FileNameCache.Add(Name, "None");
+            }
+            base.Dump();
+        }
+
+        public override void Import(string filename)
+        {
+            if (!FileNameCache.Cache.ContainsKey(Name))
+            {
+                FileNameCache.Add(Name, "None");
+            }
+            base.Import(filename);
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x80

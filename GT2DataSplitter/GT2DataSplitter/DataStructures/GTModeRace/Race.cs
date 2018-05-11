@@ -1,17 +1,35 @@
 ﻿using CsvHelper.Configuration;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace GT2.DataSplitter
 {
     public class Race : CsvDataStructure<RaceData, RaceCSVMap>
     {
+        public override string CreateOutputFilename(byte[] data)
+        {
+            string filename = Name;
+            
+            if (!Directory.Exists(filename))
+            {
+                Directory.CreateDirectory(filename);
+            }
+            
+            string number = Directory.GetFiles(filename).Length.ToString();
+            for (int i = number.Length; i < 3; i++)
+            {
+                number = "0" + number;
+            }
+            return filename + "\\" + number + "_" + RaceStringTable.Lookup.ConvertToString(Data.RaceName, null, null) +
+                              "_" + RaceStringTable.Lookup.ConvertToString(Data.TrackName, null, null) + ".csv";
+        }
     }
     
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x9C
     public struct RaceData
     {
-        public ushort RaceNameIndex; // 0
-        public ushort TrackNameId; // 2
+        public ushort RaceName; // 0
+        public ushort TrackName; // 2
         public uint Opponent1; // 4
         public uint Opponent2; // 8
         public uint Opponent3; // 0xc
@@ -47,8 +65,8 @@ namespace GT2.DataSplitter
         public uint Unknown13; // (0x70)
         public byte Unknown14; // (0x74)
         public byte IsRally; // 0x75 set to 1 for rally race - requires dirt tyres, only 1 opponent. Can award prize car
-        public byte AllowedEntrantsId; // (0x75) - index into allowable entrants list
-        public byte ForcedDriveTrainFlags; // (0x76) 1 = FF, 2 = FR, 3 = MR, 4 = RR, 5 = 4WD
+        public byte EligibleCarsRestriction; // (0x75) - index into allowable entrants list
+        public byte DrivetrainRestriction; // (0x76) 1 = FF, 2 = FR, 3 = MR, 4 = RR, 5 = 4WD
         public ushort PrizeMoney1st; // multiply by 100 for non-JP / multiply by 10,000 for JP (0x78)
         public ushort PrizeMoney2nd; // multiply by 100 for non-JP / multiply by 10,000 for JP (0x7a)
         public ushort PrizeMoney3rd; // multiply by 100 for non-JP / multiply by 10,000 for JP (0x7c)
@@ -67,8 +85,8 @@ namespace GT2.DataSplitter
     {
         public RaceCSVMap()
         {
-            Map(m => m.RaceNameIndex);
-            Map(m => m.TrackNameId);
+            Map(m => m.RaceName).TypeConverter(RaceStringTable.Lookup);
+            Map(m => m.TrackName).TypeConverter(RaceStringTable.Lookup);
             Map(m => m.Opponent1);
             Map(m => m.Opponent2);
             Map(m => m.Opponent3);
@@ -88,7 +106,7 @@ namespace GT2.DataSplitter
             Map(m => m.RollingStartSpeed);
             Map(m => m.Laps);
             Map(m => m.Unknown1);
-            Map(m => m.Licence);
+            Map(m => m.Licence).TypeConverter(Utils.LicenseConverter);
             Map(m => m.Unknown2);
             Map(m => m.Unknown3);
             Map(m => m.Unknown4);
@@ -103,8 +121,8 @@ namespace GT2.DataSplitter
             Map(m => m.Unknown13);
             Map(m => m.Unknown14);
             Map(m => m.IsRally);
-            Map(m => m.AllowedEntrantsId);
-            Map(m => m.ForcedDriveTrainFlags);
+            Map(m => m.EligibleCarsRestriction).TypeConverter(Utils.GetFileNameConverter("EligibleCars"));
+            Map(m => m.DrivetrainRestriction).TypeConverter(Utils.DrivetrainRestrictionConverter);
             Map(m => m.PrizeMoney1st);
             Map(m => m.PrizeMoney2nd);
             Map(m => m.PrizeMoney3rd);
@@ -112,10 +130,10 @@ namespace GT2.DataSplitter
             Map(m => m.PrizeMoney5th);
             Map(m => m.PrizeMoney6th);
             Map(m => m.PrizeCars).TypeConverter(Utils.CarIdArrayConverter);
-            Map(m => m.Unknown15);
+            Map(m => m.Unknown15).TypeConverter(RaceStringTable.Lookup);
             Map(m => m.PSRestriction);
             Map(m => m.SeriesChampBonus);
-            Map(m => m.CarRestrictionFlags);
+            Map(m => m.CarRestrictionFlags); // 1 for NA, 2 for Turbo, 256 for Normal, 512 for Race
         }
     }
 }
