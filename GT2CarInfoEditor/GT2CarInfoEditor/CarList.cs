@@ -40,11 +40,17 @@ namespace GT2.CarInfoEditor
                     file.WriteUInt((uint)Cars.Count);
                     file.SetLength((Cars.Count + 1) * 8);
                 }
-                
+
+                files.CarColours.Write("CCOL00\0\0".ToByteArray());
+                files.CarColours.SetLength((Cars.Count * 2) + 8);
+
                 for (int i = 0; i < Cars.Count; i++)
                 {
-                    Cars[i].WriteToFiles(files, (uint)i);
+                    Cars[i].WriteToFiles(files, i);
                 }
+
+                CarColour.WriteCachedNames(files);
+                CarColour.ClearCache();
             }
         }
     }

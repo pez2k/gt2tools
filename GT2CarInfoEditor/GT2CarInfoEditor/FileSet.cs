@@ -21,14 +21,6 @@ namespace GT2.CarInfoEditor
             }
         }
 
-        public List<Stream> CCTextFiles
-        {
-            get
-            {
-                return new List<Stream> { CCJapanese, CCLatin };
-            }
-        }
-
         public static FileSet OpenRead()
         {
             FileSet fileset = new FileSet();

@@ -10,13 +10,6 @@ namespace GT2.CarInfoEditor
 
     public class Car
     {
-        // Region flags guess:
-        // bit enabled = blocked
-        // bit 1, right to left: USA
-        // bit 2, PAL FIGS
-        // bit 3, PAL English
-        // bit 4, unused / unknown
-
         public string CarName { get; set; }
         public string JPName { get; set; }
         public string USName { get; set; }
@@ -92,7 +85,7 @@ namespace GT2.CarInfoEditor
             return colours;
         }
 
-        public void WriteToFiles(FileSet files, uint carNumber)
+        public void WriteToFiles(FileSet files, int carNumber)
         {
             List<long> indexes = new List<long>(3);
 
@@ -106,9 +99,9 @@ namespace GT2.CarInfoEditor
                 file.WriteUShort(GetColourCountAndRegionBlockingFlags());
             }
             WriteColoursToFiles(files, indexes, carNumber);
-            WriteName(files.JPCarInfo, JPName, indexes[0], carNumber, Colours.Count);
-            WriteName(files.USCarInfo, USName, indexes[1], carNumber, Colours.Count);
-            WriteName(files.EUCarInfo, EUName, indexes[2], carNumber, Colours.Count);
+            WriteName(files.JPCarInfo, JPName, indexes[0], Colours.Count);
+            WriteName(files.USCarInfo, USName, indexes[1], Colours.Count);
+            WriteName(files.EUCarInfo, EUName, indexes[2], Colours.Count);
         }
 
         public ushort GetColourCountAndRegionBlockingFlags()
@@ -135,7 +128,7 @@ namespace GT2.CarInfoEditor
             return (ushort)(((((ushort)flags) << 7) & 0x780) | ((Colours.Count - 1) << 2) & 0x3C);
         }
 
-        public void WriteName(Stream stream, string name, long index, uint carNumber, int colourCount)
+        public void WriteName(Stream stream, string name, long index, int colourCount)
         {
             if (stream == null)
             {
@@ -148,11 +141,15 @@ namespace GT2.CarInfoEditor
             stream.Write(name.ToByteArray());
         }
 
-        public void WriteColoursToFiles(FileSet files, List<long> indexes, uint carNumber)
+        public void WriteColoursToFiles(FileSet files, List<long> carInfoIndexes, int carNumber)
         {
+            long carColourIndex = files.CarColours.Length;
+            files.CarColours.Position = (carNumber * 2) + 8;
+            files.CarColours.WriteUShort((ushort)carColourIndex);
+
             for (byte i = 0; i < Colours.Count; i++)
             {
-                Colours[i].WriteToFiles(files, indexes, carNumber, Colours.Count, i);
+                Colours[i].WriteToFiles(files, carInfoIndexes, carColourIndex, Colours.Count, i);
             }
         }
     }

@@ -55,7 +55,7 @@ namespace GT2.CarInfoEditor
             JapaneseName = ReadName(files.CCJapanese, stringNumber, true);
         }
 
-        public string ReadName(Stream stream, ushort stringNumber, bool isUnicode)
+        public string ReadName(Stream file, ushort stringNumber, bool isUnicode)
         {
             List<string> cache = isUnicode ? CachedJapaneseNames : CachedLatinNames;
 
@@ -64,40 +64,102 @@ namespace GT2.CarInfoEditor
                 return cache[stringNumber];
             }
 
-            stream.Position = stringNumber * 2;
-            ushort index = stream.ReadUShort();
-            ushort nextIndex = stream.ReadUShort();
+            file.Position = stringNumber * 2;
+            ushort index = file.ReadUShort();
+            ushort nextIndex = file.ReadUShort();
 
             if (nextIndex < index)
             {
-                nextIndex = (ushort)stream.Length;
+                nextIndex = (ushort)file.Length;
             }
 
             ushort stringLength = (ushort)(nextIndex - index);
-            stream.Position = index;
+            file.Position = index;
             
             byte[] stringBytes = new byte[stringLength];
-            stream.Read(stringBytes);
+            file.Read(stringBytes);
 
             string value = (isUnicode ? Encoding.Unicode : Encoding.Default).GetString(stringBytes).TrimEnd('\0');
             cache.Insert(stringNumber, value);
             return value;
         }
 
-        public void WriteToFiles(FileSet files, List<long> indexes, uint carNumber, int colourCount, byte colourNumber)
+        public void WriteToFiles(FileSet files, List<long> carInfoIndexes, long carColourIndex, int colourCount, byte colourNumber)
         {
             int i = 0;
             foreach (Stream file in files.CarInfoFiles)
             {
-                file.Position = indexes[i] + (colourNumber * 2);
+                file.Position = carInfoIndexes[i] + (colourNumber * 2);
                 file.WriteUShort(ThumbnailColour);
 
-                file.Position = indexes[i] + (colourCount * 2) + colourNumber;
+                file.Position = carInfoIndexes[i] + (colourCount * 2) + colourNumber;
                 file.WriteByte(PaletteID);
                 i++;
             }
 
-            //WriteName(files, carNumber, colourNumber);
+
+            WriteName(files, carColourIndex, colourNumber);
+        }
+
+        public void WriteName(FileSet files, long index, byte colourNumber)
+        {
+            files.CarColours.Position = index + (colourNumber * 2);
+            files.CarColours.WriteUShort(CacheNames());
+        }
+
+        public ushort CacheNames()
+        {
+            if (CachedJapaneseNames.Contains(JapaneseName) && CachedLatinNames.Contains(LatinName))
+            {
+                List<int> JapaneseIndexes = new List<int>();
+                int index = -1;
+
+                do
+                {
+                    index = CachedJapaneseNames.IndexOf(JapaneseName, index + 1);
+                    if (index > -1)
+                    {
+                        JapaneseIndexes.Add(index);
+                    }
+                }
+                while (index > -1);
+
+                index = -1;
+                do
+                {
+                    index = CachedLatinNames.IndexOf(LatinName, index + 1);
+                    if (JapaneseIndexes.Contains(index))
+                    {
+                        return (ushort)index;
+                    }
+                }
+                while (index > -1);
+            }
+
+            CachedJapaneseNames.Add(JapaneseName);
+            CachedLatinNames.Add(LatinName);
+            return (ushort)(CachedJapaneseNames.Count - 1);
+        }
+
+        public static void WriteCachedNames(FileSet files)
+        {
+            WriteCachedNames(files.CCJapanese, CachedJapaneseNames, true);
+            WriteCachedNames(files.CCLatin, CachedLatinNames, false);
+        }
+
+        private static void WriteCachedNames(Stream file, List<string> cache, bool isUnicode)
+        {
+            file.SetLength(cache.Count * 2);
+
+            for (int i = 0; i < cache.Count; i++)
+            {
+                long index = file.Length;
+                file.Position = i * 2;
+                file.WriteUShort((ushort)index);
+                file.Position = index;
+                string name = cache[i] + "\0";
+                file.Write((isUnicode ? Encoding.Unicode : Encoding.Default).GetBytes(name.ToCharArray()));
+            }
         }
     }
 }
