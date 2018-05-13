@@ -24,6 +24,8 @@ namespace GT2.CarInfoEditor
                     car.ReadFromFiles(files, i);
                     Cars.Add(car);
                 }
+
+                CarColour.ClearCache();
             }
         }
 

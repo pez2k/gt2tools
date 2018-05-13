@@ -8,6 +8,9 @@ namespace GT2.CarInfoEditor
 
     public class CarColour
     {
+        public static List<string> CachedLatinNames { get; set; } = new List<string>();
+        public static List<string> CachedJapaneseNames { get; set; } = new List<string>();
+
         public string LatinName { get; set; }
         public string JapaneseName { get; set; }
         public ushort ThumbnailColour { get; set; }
@@ -22,6 +25,12 @@ namespace GT2.CarInfoEditor
                 int B = (ThumbnailColour >> 10) & 0x1F;
                 return $"#{R * 8:X2}{G * 8:X2}{B * 8:X2}";
             }
+        }
+
+        public static void ClearCache()
+        {
+            CachedLatinNames = new List<string>();
+            CachedJapaneseNames = new List<string>();
         }
 
         public void ReadFromFiles(FileSet files, ushort index, uint carNumber, byte colourCount, byte colourNumber)
@@ -48,6 +57,13 @@ namespace GT2.CarInfoEditor
 
         public string ReadName(Stream stream, ushort stringNumber, bool isUnicode)
         {
+            List<string> cache = isUnicode ? CachedJapaneseNames : CachedLatinNames;
+
+            if (cache.Count > stringNumber)
+            {
+                return cache[stringNumber];
+            }
+
             stream.Position = stringNumber * 2;
             ushort index = stream.ReadUShort();
             ushort nextIndex = stream.ReadUShort();
@@ -63,7 +79,9 @@ namespace GT2.CarInfoEditor
             byte[] stringBytes = new byte[stringLength];
             stream.Read(stringBytes);
 
-            return (isUnicode ? Encoding.Unicode : Encoding.Default).GetString(stringBytes).TrimEnd('\0');
+            string value = (isUnicode ? Encoding.Unicode : Encoding.Default).GetString(stringBytes).TrimEnd('\0');
+            cache.Insert(stringNumber, value);
+            return value;
         }
 
         public void WriteToFiles(FileSet files, List<long> indexes, uint carNumber, int colourCount, byte colourNumber)
