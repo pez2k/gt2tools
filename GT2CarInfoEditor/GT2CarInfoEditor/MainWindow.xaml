@@ -15,6 +15,7 @@
                         <TextBox Text="{Binding JPName}" Width="200" />
                         <TextBox Text="{Binding USName}" Width="200" />
                         <TextBox Text="{Binding EUName}" Width="200" />
+                        <CheckBox IsChecked="{Binding BlockedInJapan}" />
                         <CheckBox IsChecked="{Binding BlockedInUSA}" />
                         <CheckBox IsChecked="{Binding BlockedInPALFIGS}" />
                         <CheckBox IsChecked="{Binding BlockedInPALEnglish}" />
