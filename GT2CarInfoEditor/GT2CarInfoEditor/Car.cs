@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -25,13 +26,22 @@ namespace GT2.CarInfoEditor
         public bool BlockedInPALFIGS { get; set; }
         public bool BlockedInPALEnglish { get; set; }
 
+        [Flags]
+        protected enum RegionBlockingFlag
+        {
+            None = 0,
+            USA = 1,
+            PALFIGS = 2,
+            PALEnglish = 4
+        }
+
         public void ReadFromFiles(FileSet files, uint carNumber)
         {
             files.JPCarInfo.Position = (carNumber + 1) * 8;
             CarID = files.JPCarInfo.ReadUInt().ToCarName();
             ushort index = files.JPCarInfo.ReadUShort();
             byte colourCount = GetColourCount((byte)files.JPCarInfo.ReadByte());
-            SetRegionBlockingFlags((byte)files.JPCarInfo.ReadByte());
+            SetRegionBlockingFlags((RegionBlockingFlag)files.JPCarInfo.ReadByte());
             Colours = ReadColoursFromFile(files, index, carNumber, colourCount);
             JPName = ReadName(files.JPCarInfo, carNumber, colourCount);
             EUName = ReadName(files.EUCarInfo, carNumber, colourCount);
@@ -40,11 +50,11 @@ namespace GT2.CarInfoEditor
 
         public byte GetColourCount(byte rawData) => (byte)(((rawData & 0x3C) >> 2) + 1);
 
-        public void SetRegionBlockingFlags(byte flags)
+        protected void SetRegionBlockingFlags(RegionBlockingFlag flags)
         {
-            BlockedInUSA = (flags & 1) == 1;
-            BlockedInPALFIGS = (flags & 2) == 2;
-            BlockedInPALEnglish = (flags & 4) == 4;
+            BlockedInUSA = flags.HasFlag(RegionBlockingFlag.USA);
+            BlockedInPALFIGS = flags.HasFlag(RegionBlockingFlag.PALFIGS);
+            BlockedInPALEnglish = flags.HasFlag(RegionBlockingFlag.PALEnglish);
         }
 
         public string ReadName(Stream stream, uint carNumber, byte colourCount)
