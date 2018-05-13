@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 
 namespace GT2.StreamExtensions
 {
@@ -7,6 +8,11 @@ namespace GT2.StreamExtensions
         public static int Read(this Stream stream, byte[] buffer)
         {
             return stream.Read(buffer, 0, buffer.Length);
+        }
+
+        public static void Write(this Stream stream, byte[] buffer)
+        {
+            stream.Write(buffer, 0, buffer.Length);
         }
 
         public static uint ReadUInt(this Stream stream)
@@ -54,6 +60,11 @@ namespace GT2.StreamExtensions
             byteArray[1] = (byte)((value / 256) % 256);
             byteArray[0] = (byte)(value % 256);
             return byteArray;
+        }
+
+        public static byte[] ToByteArray(this string value)
+        {
+            return Encoding.Default.GetBytes(value.ToCharArray());
         }
     }
 }
