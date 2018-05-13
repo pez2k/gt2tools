@@ -8,7 +8,7 @@ namespace GT2.CarInfoEditor
     using CarNameConversion;
     using StreamExtensions;
 
-    class Car
+    public class Car
     {
         // Region flags guess:
         // bit enabled = blocked
@@ -17,7 +17,7 @@ namespace GT2.CarInfoEditor
         // bit 3, PAL English
         // bit 4, unused / unknown
 
-        public string CarID { get; set; }
+        public string CarName { get; set; }
         public string JPName { get; set; }
         public string USName { get; set; }
         public string EUName { get; set; }
@@ -27,7 +27,7 @@ namespace GT2.CarInfoEditor
         public bool BlockedInPALEnglish { get; set; }
 
         [Flags]
-        protected enum RegionBlockingFlag
+        protected enum RegionBlockingFlags
         {
             None = 0,
             USA = 1,
@@ -38,23 +38,23 @@ namespace GT2.CarInfoEditor
         public void ReadFromFiles(FileSet files, uint carNumber)
         {
             files.JPCarInfo.Position = (carNumber + 1) * 8;
-            CarID = files.JPCarInfo.ReadUInt().ToCarName();
+            CarName = files.JPCarInfo.ReadUInt().ToCarName();
             ushort index = files.JPCarInfo.ReadUShort();
-            byte colourCount = GetColourCount((byte)files.JPCarInfo.ReadByte());
-            SetRegionBlockingFlags((RegionBlockingFlag)files.JPCarInfo.ReadByte());
-            Colours = ReadColoursFromFile(files, index, carNumber, colourCount);
+            byte colourCount = SetColourCount((byte)files.JPCarInfo.ReadByte());
+            SetRegionBlockingFlags((RegionBlockingFlags)files.JPCarInfo.ReadByte());
+            Colours = ReadColoursFromFiles(files, index, carNumber, colourCount);
             JPName = ReadName(files.JPCarInfo, carNumber, colourCount);
             EUName = ReadName(files.EUCarInfo, carNumber, colourCount);
             USName = ReadName(files.USCarInfo, carNumber, colourCount);
         }
 
-        public byte GetColourCount(byte rawData) => (byte)(((rawData & 0x3C) >> 2) + 1);
+        public byte SetColourCount(byte rawData) => (byte)(((rawData & 0x3C) >> 2) + 1);
 
-        protected void SetRegionBlockingFlags(RegionBlockingFlag flags)
+        protected void SetRegionBlockingFlags(RegionBlockingFlags flags)
         {
-            BlockedInUSA = flags.HasFlag(RegionBlockingFlag.USA);
-            BlockedInPALFIGS = flags.HasFlag(RegionBlockingFlag.PALFIGS);
-            BlockedInPALEnglish = flags.HasFlag(RegionBlockingFlag.PALEnglish);
+            BlockedInUSA = flags.HasFlag(RegionBlockingFlags.USA);
+            BlockedInPALFIGS = flags.HasFlag(RegionBlockingFlags.PALFIGS);
+            BlockedInPALEnglish = flags.HasFlag(RegionBlockingFlags.PALEnglish);
         }
 
         public string ReadName(Stream stream, uint carNumber, byte colourCount)
@@ -73,7 +73,7 @@ namespace GT2.CarInfoEditor
             return Encoding.Default.GetString(stringBytes).TrimEnd('\0').Replace(((char)0x7F).ToString(), "[R]");
         }
 
-        public List<CarColour> ReadColoursFromFile(FileSet files, ushort index, uint carNumber, byte colourCount)
+        public List<CarColour> ReadColoursFromFiles(FileSet files, ushort index, uint carNumber, byte colourCount)
         {
             var colours = new List<CarColour>();
 
@@ -85,6 +85,68 @@ namespace GT2.CarInfoEditor
             }
 
             return colours;
+        }
+
+        public void WriteToFiles(FileSet files, uint carNumber)
+        {
+            List<long> indexes = new List<long>(3);
+
+            foreach (Stream file in files.CarInfoFiles)
+            {
+                file.Position = (carNumber + 1) * 8;
+                file.WriteUInt(CarName.ToCarID());
+                long index = file.Length;
+                file.WriteUShort((ushort)index);
+                indexes.Add(index);
+                file.WriteByte(GetColourCount());
+                file.WriteByte(GetRegionBlockingFlags());
+            }
+            WriteColoursToFiles(files, indexes, carNumber);
+            WriteName(files.JPCarInfo, JPName, indexes[0], carNumber, Colours.Count);
+            WriteName(files.USCarInfo, USName, indexes[1], carNumber, Colours.Count);
+            WriteName(files.EUCarInfo, EUName, indexes[2], carNumber, Colours.Count);
+        }
+
+        public byte GetColourCount() => (byte)(((Colours.Count - 1) << 2) & 0x3C);
+
+        protected byte GetRegionBlockingFlags()
+        {
+            RegionBlockingFlags flags = RegionBlockingFlags.None;
+
+            if (BlockedInUSA)
+            {
+                flags |= RegionBlockingFlags.USA;
+            }
+            if (BlockedInPALFIGS)
+            {
+                flags |= RegionBlockingFlags.PALFIGS;
+            }
+            if (BlockedInPALEnglish)
+            {
+                flags |= RegionBlockingFlags.PALEnglish;
+            }
+            return (byte)flags;
+        }
+
+        public void WriteName(Stream stream, string name, long index, uint carNumber, int colourCount)
+        {
+            if (stream == null)
+            {
+                return;
+            }
+            
+            stream.Position = index + (colourCount * 3);
+            name = name.Replace("[R]", ((char)0x7F).ToString()) + "\0";
+            stream.WriteByte((byte)(name.Length - 1));
+            stream.Write(name.ToByteArray());
+        }
+
+        public void WriteColoursToFiles(FileSet files, List<long> indexes, uint carNumber)
+        {
+            for (byte i = 0; i < Colours.Count; i++)
+            {
+                Colours[i].WriteToFiles(files, indexes, carNumber, Colours.Count, i);
+            }
         }
     }
 }

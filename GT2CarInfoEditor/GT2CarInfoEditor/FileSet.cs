@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace GT2.CarInfoEditor
 {
-    class FileSet : IDisposable
+    public class FileSet : IDisposable
     {
         public Stream JPCarInfo { get; set; }
         public Stream USCarInfo { get; set; }
@@ -12,16 +13,46 @@ namespace GT2.CarInfoEditor
         public Stream CCJapanese { get; set; }
         public Stream CarColours { get; set; }
 
-        public FileSet()
+        public List<Stream> CarInfoFiles
         {
-            JPCarInfo = new FileStream(".carinfoj", FileMode.Open, FileAccess.Read);
-            USCarInfo = new FileStream(".carinfoa", FileMode.Open, FileAccess.Read);
-            EUCarInfo = new FileStream(".carinfoe", FileMode.Open, FileAccess.Read);
-            CCLatin = new FileStream(".cclatain", FileMode.Open, FileAccess.Read);
-            CCJapanese = new FileStream(".ccjapanese", FileMode.Open, FileAccess.Read);
-            CarColours = new FileStream(".carcolor", FileMode.Open, FileAccess.Read);
+            get
+            {
+                return new List<Stream> { JPCarInfo, USCarInfo, EUCarInfo };
+            }
+        }
+
+        public List<Stream> CCTextFiles
+        {
+            get
+            {
+                return new List<Stream> { CCJapanese, CCLatin };
+            }
+        }
+
+        public static FileSet OpenRead()
+        {
+            FileSet fileset = new FileSet();
+            fileset.JPCarInfo = new FileStream(".carinfoj", FileMode.Open, FileAccess.Read);
+            fileset.USCarInfo = new FileStream(".carinfoa", FileMode.Open, FileAccess.Read);
+            fileset.EUCarInfo = new FileStream(".carinfoe", FileMode.Open, FileAccess.Read);
+            fileset.CCLatin = new FileStream(".cclatain", FileMode.Open, FileAccess.Read);
+            fileset.CCJapanese = new FileStream(".ccjapanese", FileMode.Open, FileAccess.Read);
+            fileset.CarColours = new FileStream(".carcolor", FileMode.Open, FileAccess.Read);
+            return fileset;
 
             //JPCarInfo = new FileStream(".carinfo", FileMode.Open, FileAccess.Read);
+        }
+
+        public static FileSet OpenWrite()
+        {
+            FileSet fileset = new FileSet();
+            fileset.JPCarInfo = new FileStream(".carinfoj", FileMode.Truncate, FileAccess.Write);
+            fileset.USCarInfo = new FileStream(".carinfoa", FileMode.Truncate, FileAccess.Write);
+            fileset.EUCarInfo = new FileStream(".carinfoe", FileMode.Truncate, FileAccess.Write);
+            fileset.CCLatin = new FileStream(".cclatain", FileMode.Truncate, FileAccess.Write);
+            fileset.CCJapanese = new FileStream(".ccjapanese", FileMode.Truncate, FileAccess.Write);
+            fileset.CarColours = new FileStream(".carcolor", FileMode.Truncate, FileAccess.Write);
+            return fileset;
         }
 
         public void Dispose()

@@ -6,7 +6,7 @@ namespace GT2.CarInfoEditor
 {
     using StreamExtensions;
 
-    class CarColour
+    public class CarColour
     {
         public string LatinName { get; set; }
         public string JapaneseName { get; set; }
@@ -64,6 +64,22 @@ namespace GT2.CarInfoEditor
             stream.Read(stringBytes);
 
             return (isUnicode ? Encoding.Unicode : Encoding.Default).GetString(stringBytes).TrimEnd('\0');
+        }
+
+        public void WriteToFiles(FileSet files, List<long> indexes, uint carNumber, int colourCount, byte colourNumber)
+        {
+            int i = 0;
+            foreach (Stream file in files.CarInfoFiles)
+            {
+                file.Position = indexes[i] + (colourNumber * 2);
+                file.WriteUShort(ThumbnailColour);
+
+                file.Position = indexes[i] + (colourCount * 2) + colourNumber;
+                file.WriteByte(PaletteID);
+                i++;
+            }
+
+            //WriteName(files, carNumber, colourNumber);
         }
     }
 }

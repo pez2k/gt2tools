@@ -20,14 +20,21 @@ namespace GT2.CarInfoEditor
     /// </summary>
     public partial class MainWindow : Window
     {
+        public CarList list;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            CarList list = new CarList();
+            list = new CarList();
             list.ReadFromFiles();
 
             treeView.ItemsSource = list.Cars;
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            list.SaveToFiles();
         }
     }
 }
