@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -24,6 +25,17 @@ namespace GT2.CarInfoEditor
                 int G = (ThumbnailColour >> 5) & 0x1F;
                 int B = (ThumbnailColour >> 10) & 0x1F;
                 return $"#{R * 8:X2}{G * 8:X2}{B * 8:X2}";
+            }
+            set
+            {
+                value = value.Replace("#", "");
+                int number = int.Parse(value, NumberStyles.HexNumber);
+
+                int R = (((number & 0xFF0000) >> 16) / 8) & 0x1F;
+                int G = ((((number & 0x00FF00) >> 8) / 8) & 0x1F) << 5;
+                int B = ((((number & 0x0000FF)) / 8) & 0x1F) << 10;
+
+                ThumbnailColour = (ushort)(R + G + B);
             }
         }
 
