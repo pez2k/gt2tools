@@ -29,12 +29,22 @@ namespace GT2.CarInfoEditor
             list = new CarList();
             list.ReadFromFiles();
 
-            treeView.ItemsSource = list.Cars;
+            carsGrid.ItemsSource = list.Cars;
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             list.SaveToFiles();
+        }
+
+        private void InsertCarAbove_Click(object sender, RoutedEventArgs e)
+        {
+            //list.Cars.Insert(1, new Car());
+        }
+
+        private void InsertColour_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

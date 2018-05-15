@@ -6,31 +6,57 @@
         xmlns:local="clr-namespace:GT2.CarInfoEditor"
         mc:Ignorable="d"
         Title="CarInfo Editor" Height="527" Width="790">
+
+    <!--<Window.CommandBindings>
+        <CommandBinding Command="{InsertCarCommand}" />
+    </Window.CommandBindings>-->
+    
     <Grid>
-        <TreeView x:Name="treeView" HorizontalAlignment="Left" Height="460" Margin="10,27,0,0" VerticalAlignment="Top" Width="762">
-            <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type local:Car}" ItemsSource="{Binding Colours}">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox Text="{Binding CarName}" Width="50" />
-                        <TextBox Text="{Binding JPName}" Width="200" />
-                        <TextBox Text="{Binding USName}" Width="200" />
-                        <TextBox Text="{Binding EUName}" Width="200" />
-                        <CheckBox IsChecked="{Binding BlockedInJapan}" />
-                        <CheckBox IsChecked="{Binding BlockedInUSA}" />
-                        <CheckBox IsChecked="{Binding BlockedInPALFIGS}" />
-                        <CheckBox IsChecked="{Binding BlockedInPALEnglish}" />
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-                <DataTemplate DataType="{x:Type local:CarColour}">
-                    <StackPanel Orientation="Horizontal">
-                        <Rectangle Fill="{Binding HexColour}" Width="20" />
-                        <TextBox Text="{Binding Path=PaletteID,StringFormat={}{0:X2}}" Width="25" />
-                        <TextBox Text="{Binding JapaneseName}" Width="200" />
-                        <TextBox Text="{Binding LatinName}" Width="200" />
-                    </StackPanel>
+        <DataGrid Name="carsGrid" AutoGenerateColumns="False" Margin="10,27,10,10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding CarName}" />
+                <DataGridTextColumn Header="Japanese Name" Binding="{Binding JPName}" />
+                <DataGridTextColumn Header="USA Name" Binding="{Binding USName}" />
+                <DataGridTextColumn Header="European Name" Binding="{Binding EUName}" />
+                <DataGridCheckBoxColumn Header="JP" Binding="{Binding BlockedInJapan}" />
+                <DataGridCheckBoxColumn Header="US" Binding="{Binding BlockedInUSA}" />
+                <DataGridCheckBoxColumn Header="PAL FIGS" Binding="{Binding BlockedInPALFIGS}" />
+                <DataGridCheckBoxColumn Header="PAL English" Binding="{Binding BlockedInPALEnglish}" />
+            </DataGrid.Columns>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <DataGrid Name="coloursGrid" AutoGenerateColumns="False" ItemsSource="{Binding Colours}">
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="Thumbnail">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Rectangle Fill="{Binding HexColour}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Palette ID" Binding="{Binding Path=PaletteID,StringFormat={}{0:X2}}" />
+                            <DataGridTextColumn Header="Japanese Name" Binding="{Binding JapaneseName}" />
+                            <DataGridTextColumn Header="Latin Name" Binding="{Binding LatinName}" />
+                        </DataGrid.Columns>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Insert colour above" Click="InsertColour_Click" />
+                                <MenuItem Header="Insert colour below" />
+                                <MenuItem Header="Delete colour" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                    </DataGrid>
                 </DataTemplate>
-            </TreeView.Resources>
-        </TreeView>
+            </DataGrid.RowDetailsTemplate>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Insert car above" Click="InsertCarAbove_Click" />
+                    <MenuItem Header="Insert car below" />
+                    <MenuItem Header="Delete car" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+        
         <Menu x:Name="menu" HorizontalAlignment="Left" Height="22" VerticalAlignment="Top" Width="782">
             <MenuItem Header="File">
                 <MenuItem Header="Save" HorizontalAlignment="Left" Width="145" Click="Save_Click"/>
