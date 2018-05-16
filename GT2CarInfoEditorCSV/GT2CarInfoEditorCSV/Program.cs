@@ -1,5 +1,8 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
+using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -11,18 +14,33 @@ namespace GT2.CarInfoEditorCSV
     {
         static void Main(string[] args)
         {
-            CarList list = new CarList();
-
-            using (FileSet files = FileSet.OpenRead())
+            if (args.Length != 1)
             {
-                list.ReadFromFiles();
+                return;
             }
 
-            using (TextWriter output = new StreamWriter(File.Create("test.csv"), Encoding.UTF8))
+            string file = Path.GetFileName(args[0]);
+
+            if (file.StartsWith(".carinfo"))
+            {
+                Dump();
+            }
+            else if (file.EndsWith(".csv"))
+            {
+                Load();
+            }
+        }
+
+        static void Dump()
+        {
+            CarList list = new CarList();
+            list.ReadFromFiles();
+
+            using (TextWriter output = new StreamWriter(File.Create("Cars.csv"), Encoding.UTF8))
             {
                 using (CsvWriter csv = new CsvWriter(output))
                 {
-                    using (TextWriter colourOutput = new StreamWriter(File.Create("test2.csv"), Encoding.UTF8))
+                    using (TextWriter colourOutput = new StreamWriter(File.Create("Colours.csv"), Encoding.UTF8))
                     {
                         using (CsvWriter colourCsv = new CsvWriter(colourOutput))
                         {
@@ -32,25 +50,76 @@ namespace GT2.CarInfoEditorCSV
 
                             colourCsv.Configuration.RegisterClassMap<CarColourCSVMap>();
                             colourCsv.Configuration.QuoteAllFields = true;
-                            colourCsv.WriteField("CarName");
-                            colourCsv.WriteHeader<CarColour>();
+                            colourCsv.WriteHeader<CarColourWithName>();
 
                             foreach (Car car in list.Cars)
                             {
                                 csv.NextRecord();
                                 csv.WriteRecord(car);
-                                
+
                                 foreach (CarColour colour in car.Colours)
                                 {
+                                    CarColourWithName colourWithName = new CarColourWithName
+                                    {
+                                        CarName = car.CarName,
+                                        ThumbnailColour = colour.ThumbnailColour,
+                                        PaletteID = colour.PaletteID,
+                                        JapaneseName = colour.JapaneseName,
+                                        LatinName = colour.LatinName
+                                    };
+                                    
                                     colourCsv.NextRecord();
-                                    colourCsv.WriteField(car.CarName);
-                                    colourCsv.WriteRecord(colour);
+                                    colourCsv.WriteRecord(colourWithName);
                                 }
                             }
                         }
                     }
                 }
             }
+        }
+
+        static void Load()
+        {
+            CarList list = new CarList();
+            list.Cars = new List<Car>();
+
+            using (TextReader input = new StreamReader("Cars.csv", Encoding.UTF8))
+            {
+                using (CsvReader csv = new CsvReader(input))
+                {
+                    using (TextReader colourInput = new StreamReader("Colours.csv", Encoding.UTF8))
+                    {
+                        using (CsvReader colourCsv = new CsvReader(colourInput))
+                        {
+                            csv.Configuration.RegisterClassMap<CarCSVMap>();
+                            colourCsv.Configuration.RegisterClassMap<CarColourCSVMap>();
+
+                            while (csv.Read())
+                            {
+                                Car newCar = csv.GetRecord<Car>();
+                                newCar.Colours = new List<CarColour>();
+                                list.Cars.Add(newCar);
+                            }
+                            
+                            while (colourCsv.Read())
+                            {
+                                CarColourWithName newColourWithName = colourCsv.GetRecord<CarColourWithName>();
+                                string carName = newColourWithName.CarName;
+                                CarColour newColour = new CarColour
+                                {
+                                    ThumbnailColour = newColourWithName.ThumbnailColour,
+                                    PaletteID = newColourWithName.PaletteID,
+                                    JapaneseName = newColourWithName.JapaneseName,
+                                    LatinName = newColourWithName.LatinName
+                                };
+                                list.Cars.Find(car => car.CarName == carName).Colours.Add(newColour);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            list.SaveToFiles();
         }
     }
 
@@ -69,14 +138,33 @@ namespace GT2.CarInfoEditorCSV
         }
     }
 
-    public sealed class CarColourCSVMap : ClassMap<CarColour>
+    public class CarColourWithName : CarColour
+    {
+        public string CarName { get; set; }
+    }
+
+    public sealed class CarColourCSVMap : ClassMap<CarColourWithName>
     {
         public CarColourCSVMap()
         {
+            Map(m => m.CarName);
             Map(m => m.HexColour);
-            Map(m => m.PaletteID);
+            Map(m => m.PaletteID).TypeConverter<HexConverter>();
             Map(m => m.JapaneseName);
             Map(m => m.LatinName);
+        }
+    }
+
+    public sealed class HexConverter : ITypeConverter
+    {
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            return byte.Parse(text, NumberStyles.HexNumber);
+        }
+
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            return string.Format("{0:X2}", (byte)value);
         }
     }
 }
