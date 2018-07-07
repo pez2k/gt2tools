@@ -6,9 +6,14 @@ namespace GT1Decompress
     {
         static void Main(string[] args)
         {
-            using (FileStream input = new FileStream("in.dat", FileMode.Open))
+            if (args.Length != 1)
             {
-                using (FileStream output = new FileStream("out.dat", FileMode.Create))
+                return;
+            }
+
+            using (FileStream input = new FileStream(args[0], FileMode.Open))
+            {
+                using (FileStream output = new FileStream(args[0] + "_decompressed", FileMode.Create))
                 {
                     Decompress(input, output);
                 }
