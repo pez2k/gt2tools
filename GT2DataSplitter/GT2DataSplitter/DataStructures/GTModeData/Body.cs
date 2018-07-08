@@ -18,10 +18,8 @@ namespace GT2.DataSplitter
             {
                 Directory.CreateDirectory(filename);
             }
-
-            string number = Directory.GetFiles(filename).Length.ToString();
-
-            return filename + "\\" + number + "_stage" + Data.Stage.ToString() + "_" + Data.BodyId.ToCarName() + ".csv";
+            
+            return filename + "\\stage" + Data.Stage.ToString() + "_" + Data.BodyId.ToCarName() + ".csv";
         }
     }
 

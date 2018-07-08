@@ -16,9 +16,8 @@ namespace GT2.DataSplitter
             {
                 Directory.CreateDirectory(filename);
             }
-
-            string number = Directory.GetFiles(filename).Length.ToString();
-            return filename + "\\" + number + "_" + Utils.TyreStageConverter.ConvertToString(Data.Stage, null, null) + ".csv";
+            
+            return filename + "\\" + Utils.TyreStageConverter.ConvertToString(Data.Stage, null, null) + ".csv";
         }
     }
 
