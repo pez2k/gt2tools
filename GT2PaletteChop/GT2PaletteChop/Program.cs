@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GT2.PaletteChop
 {
@@ -51,31 +49,45 @@ namespace GT2.PaletteChop
                 }
             }
 
-            if (extension == ".cdp" || extension == ".cnp")
+            if (extension == ".cdp" || extension == ".cnp" || extension == ".tex")
             {
-                SplitPalettes(filename);
+                SplitPalettes(filename, extension == ".tex");
             }
         }
 
-        static void SplitPalettes(string filename)
+        static void SplitPalettes(string filename, bool isTEX)
         {
-            CDPHeader header;
-            var palettes = new List<CDPPalette>();
+            TextureHeader header;
+            var palettes = new List<TexturePalette>();
 
             using (FileStream infile = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
-                header = CDPHeader.ReadFromFile(infile);
+                if (isTEX)
+                {
+                    header = TextureHeader.ReadFromTEXFile(infile);
+                }
+                else
+                {
+                    header = TextureHeader.ReadFromCDPFile(infile);
+                }
                 
                 for (int i = 0; i < header.PaletteCount; i++)
                 {
-                    palettes.Add(CDPPalette.ReadFromFile(infile, i, header.PaletteIDs[i]));
+                    if (isTEX)
+                    {
+                        palettes.Add(TexturePalette.ReadFromFile<TEXPalette>(infile, i, header.PaletteIDs[i]));
+                    }
+                    else
+                    {
+                        palettes.Add(TexturePalette.ReadFromFile<CDPPalette>(infile, i, header.PaletteIDs[i]));
+                    }
                 }
             }
 
             filename = filename.Replace('.', '_');
             string paletteIDsText = "";
 
-            foreach (CDPPalette palette in palettes)
+            foreach (TexturePalette palette in palettes)
             {
                 string paletteID = string.Format("{0:X2}", palette.PaletteID);
                 paletteIDsText += paletteID + "\r\n";
@@ -118,7 +130,7 @@ namespace GT2.PaletteChop
             }
 
             string basePaletteName = Path.GetFileNameWithoutExtension(filename) + "_";
-            List<CDPPalette> palettes = new List<CDPPalette>();
+            List<TexturePalette> palettes = new List<TexturePalette>();
 
             foreach (byte paletteID in paletteIDs.ToList())
             {
@@ -129,29 +141,44 @@ namespace GT2.PaletteChop
                     continue;
                 }
                 
-                palettes.Add(CDPPalette.ReadFromGTP(paletteName, paletteID));
+                palettes.Add(TexturePalette.ReadFromGTP(paletteName, paletteID));
             }
 
             using (FileStream cdpFile = new FileStream(cdpName, FileMode.Open, FileAccess.ReadWrite))
             {
                 byte oldPaletteCount = (byte)cdpFile.ReadByte();
                 cdpFile.Write(new byte[0x20 - 1], 0, 0x20 - 1);
-
-                {
-                    byte[] blankData = new byte[oldPaletteCount * 0x240];
-                    cdpFile.Write(blankData, 0, blankData.Length);
-                }
-
+                
                 cdpFile.Position = 0;
                 cdpFile.WriteByte((byte)palettes.Count);
 
+                byte[] unknownData = new byte[0x40];
+                if (palettes.Count > oldPaletteCount)
+                {
+                    cdpFile.Position = 0x220;
+                    cdpFile.Read(unknownData, 0, unknownData.Length);
+                }
+                
                 for (int i = 0; i < palettes.Count; i++)
                 {
                     cdpFile.Position = 2 + i;
                     cdpFile.WriteByte(palettes[i].PaletteID);
-
+                    
                     cdpFile.Position = 0x20 + (i * 0x240);
                     cdpFile.Write(palettes[i].PaletteData, 0, palettes[i].PaletteData.Length);
+
+                    if (i >= oldPaletteCount)
+                    {
+                        cdpFile.Write(unknownData, 0, unknownData.Length);
+                    }
+                }
+
+                int leftovers = oldPaletteCount - palettes.Count;
+                if (leftovers > 0)
+                {
+                    cdpFile.Position = 0x20 + (palettes.Count * 0x240);
+                    byte[] blankData = new byte[leftovers * 0x240];
+                    cdpFile.Write(blankData, 0, blankData.Length);
                 }
 
                 cdpFile.Position = 0;
@@ -165,27 +192,37 @@ namespace GT2.PaletteChop
                 }
             }
         }
-
-        class CDPHeader
+        
+        class TextureHeader
         {
             public byte PaletteCount { get; set; }
             public List<byte> PaletteIDs { get; set; }
 
-            public CDPHeader()
+            public TextureHeader()
             {
                 PaletteIDs = new List<byte>();
             }
 
-            public static CDPHeader ReadFromFile(FileStream file)
+            public static TextureHeader ReadFromCDPFile(FileStream file)
             {
-                var header = new CDPHeader();
+                return ReadFromFile(file, 0, 2);
+            }
+
+            public static TextureHeader ReadFromTEXFile(FileStream file)
+            {
+                return ReadFromFile(file, 0x0E, 0x10);
+            }
+
+            protected static TextureHeader ReadFromFile(FileStream file, int paletteCountPosition, int paletteIDListPosition)
+            {
+                var header = new TextureHeader();
 
                 long originalPosition = file.Position;
 
-                file.Position = 0;
+                file.Position = paletteCountPosition;
                 header.PaletteCount = (byte)file.ReadByte();
-                file.Position = 2;
-                
+                file.Position = paletteIDListPosition;
+
                 for (int i = 0; i < header.PaletteCount; i++)
                 {
                     header.PaletteIDs.Add((byte)file.ReadByte());
@@ -197,40 +234,66 @@ namespace GT2.PaletteChop
             }
         }
 
-        class CDPPalette
+        class TexturePalette
         {
             public byte PaletteID { get; set; }
             public byte[] PaletteData { get; set; }
+            protected static int PaletteSize { get; set; }
+            protected static int PalettePosition { get; set; }
 
-            public CDPPalette()
+            public TexturePalette(int paletteSize, int palettePosition)
             {
-                PaletteData = new byte[0x240];
+                PaletteSize = paletteSize;
+                PalettePosition = palettePosition;
+                PaletteData = new byte[PaletteSize];
             }
 
-            public static CDPPalette ReadFromFile(FileStream file, int paletteNumber, byte paletteID)
+            public static TPalette ReadFromFile<TPalette>(FileStream file, int paletteNumber, byte paletteID) where TPalette : TexturePalette, new()
             {
-                var palette = new CDPPalette { PaletteID = paletteID };
+                var palette = new TPalette { PaletteID = paletteID };
 
                 long originalPosition = file.Position;
 
-                file.Position = 0x20 + (paletteNumber * 0x240);
+                file.Position = PalettePosition + (paletteNumber * PaletteSize);
 
-                file.Read(palette.PaletteData, 0, 0x240);
+                file.Read(palette.PaletteData, 0, PaletteSize);
 
                 file.Position = originalPosition;
 
                 return palette;
             }
 
-            public static CDPPalette ReadFromGTP(string filename, byte paletteID)
+            public static TexturePalette ReadFromGTP(string filename, byte paletteID)
             {
                 using (FileStream file = new FileStream(filename, FileMode.Open, FileAccess.Read))
                 {
-                    var palette = new CDPPalette { PaletteID = paletteID };
+                    TexturePalette palette;
+                    if (file.Length == 0x200)
+                    {
+                        palette = new TEXPalette { PaletteID = paletteID };
+                    }
+                    else
+                    {
+                        palette = new CDPPalette { PaletteID = paletteID };
+                    }
                     file.Position = 0;
-                    file.Read(palette.PaletteData, 0, 0x240);
+                    file.Read(palette.PaletteData, 0, PaletteSize);
                     return palette;
                 }
+            }
+        }
+
+        class CDPPalette : TexturePalette
+        {
+            public CDPPalette() : base(0x240, 0x20)
+            {
+            }
+        }
+
+        class TEXPalette : TexturePalette
+        {
+            public TEXPalette() : base(0x200, 0x8060)
+            {
             }
         }
     }
