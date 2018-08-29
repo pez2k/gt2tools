@@ -55,9 +55,24 @@
     <Compile Include="..\..\Common\StreamExtensions.cs">
       <Link>StreamExtensions.cs</Link>
     </Compile>
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown14.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown13.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown12.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown11.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown10.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown9.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown8.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown7.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown6.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown5.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown4.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown3.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown2.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown1.cs" />
     <Compile Include="DataStructures\CarCsvDataStructure.cs" />
     <Compile Include="DataStructures\CsvDataStructure.cs" />
     <Compile Include="DataStructures\CarDataStructure.cs" />
+    <Compile Include="DataStructures\ArcadeData.cs" />
     <Compile Include="DataStructures\LicenseData.cs" />
     <Compile Include="DataStructures\GTModeData\GenericEngineUpgrade.cs" />
     <Compile Include="DataStructures\GTModeRace.cs" />

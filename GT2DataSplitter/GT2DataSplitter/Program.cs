@@ -22,6 +22,11 @@ namespace GT2.DataSplitter
                 SplitLicenseFile(filename);
                 return;
             }
+            else if (filename.Contains("arcade_data"))
+            {
+                SplitArcadeFile(filename);
+                return;
+            }
 
             if (extension == ".gz")
             {
@@ -85,9 +90,18 @@ namespace GT2.DataSplitter
 
         static void SplitLicenseFile(string filename)
         {
+            StringTable.Read("eng_unistrdb.dat");
             LicenseData LicenseData = new LicenseData();
             LicenseData.ReadData(filename);
             LicenseData.DumpData();
+        }
+
+        static void SplitArcadeFile(string filename)
+        {
+            StringTable.Read("eng_unistrdb.dat");
+            ArcadeData ArcadeData = new ArcadeData();
+            ArcadeData.ReadData(filename);
+            ArcadeData.DumpData();
         }
     }
 }
