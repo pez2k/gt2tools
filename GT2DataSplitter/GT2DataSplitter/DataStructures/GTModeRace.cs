@@ -18,7 +18,7 @@ namespace GT2.DataSplitter
             {
                 var blocks = new List<DataBlock>();
 
-                for (int i = 1; i <= 31; i++)
+                for (int i = 1; i <= 4; i++)
                 {
                     file.Position = 8 * i;
                     uint blockStart = file.ReadUInt();

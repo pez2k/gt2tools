@@ -3,9 +3,9 @@ using GT2.StreamExtensions;
 
 namespace GT2.DataSplitter
 {
-    public class ArcadeUnknown8 : DataStructure
+    public class OpponentArcadeMaybe : DataStructure
     {
-        public ArcadeUnknown8()
+        public OpponentArcadeMaybe()
         {
             Size = 0x3C;
         }

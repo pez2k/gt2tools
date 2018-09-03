@@ -38,10 +38,10 @@ namespace GT2.DataSplitter
         public List<ArcadeUnknown4> Unknown4 { get; set; } = new List<ArcadeUnknown4>();
         public List<ArcadeUnknown5> Unknown5 { get; set; } = new List<ArcadeUnknown5>();
         public List<ArcadeUnknown6> Unknown6 { get; set; } = new List<ArcadeUnknown6>();
-        public List<ArcadeUnknown7> Unknown7 { get; set; } = new List<ArcadeUnknown7>();
-        public List<LicenseCar> Cars { get; set; } = new List<LicenseCar>(); // probably?
-        public List<ArcadeUnknown8> Unknown8 { get; set; } = new List<ArcadeUnknown8>();
-        public List<ArcadeUnknown9> Unknown9 { get; set; } = new List<ArcadeUnknown9>();
+        public List<Race> Races { get; set; } = new List<Race>();
+        public List<LicenseCar> Unknown7 { get; set; } = new List<LicenseCar>(); // unknown
+        public List<CarArcadeMaybe> CarsMaybe { get; set; } = new List<CarArcadeMaybe>();
+        public List<OpponentArcadeMaybe> OpponentsMaybe { get; set; } = new List<OpponentArcadeMaybe>();
         
         public void ReadData(string filename)
         {
@@ -87,10 +87,13 @@ namespace GT2.DataSplitter
                 Unknown4.Read(file, blocks[27].BlockStart, blocks[27].BlockSize);
                 Unknown5.Read(file, blocks[28].BlockStart, blocks[28].BlockSize);
                 Unknown6.Read(file, blocks[29].BlockStart, blocks[29].BlockSize);
-                Unknown7.Read(file, blocks[30].BlockStart, blocks[30].BlockSize);
-                Cars.Read(file, blocks[31].BlockStart, blocks[31].BlockSize);
-                Unknown8.Read(file, blocks[32].BlockStart, blocks[32].BlockSize);
-                Unknown9.Read(file, blocks[33].BlockStart, blocks[33].BlockSize);
+                Races.Read(file, blocks[30].BlockStart, blocks[30].BlockSize);
+                Unknown7.Read(file, blocks[31].BlockStart, blocks[31].BlockSize);
+                CarsMaybe.Read(file, blocks[32].BlockStart, blocks[32].BlockSize);
+                OpponentsMaybe.Read(file, blocks[33].BlockStart, blocks[33].BlockSize);
+
+                uint stringTableStart = blocks[33].BlockStart + blocks[33].BlockSize;
+                RaceStringTable.Read(file, stringTableStart, (uint)file.Length - stringTableStart);
             }
         }
 
@@ -126,10 +129,10 @@ namespace GT2.DataSplitter
             Unknown4.Dump();
             Unknown5.Dump();
             Unknown6.Dump();
+            Races.Dump();
             Unknown7.Dump();
-            Cars.Dump();
-            Unknown8.Dump();
-            Unknown9.Dump();
+            CarsMaybe.Dump();
+            OpponentsMaybe.Dump();
         }
 
         public void ImportData()

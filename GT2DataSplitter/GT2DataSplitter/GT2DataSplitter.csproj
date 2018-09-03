@@ -55,9 +55,8 @@
     <Compile Include="..\..\Common\StreamExtensions.cs">
       <Link>StreamExtensions.cs</Link>
     </Compile>
-    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown9.cs" />
-    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown8.cs" />
-    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown7.cs" />
+    <Compile Include="DataStructures\ArcadeData\OpponentArcadeMaybe.cs" />
+    <Compile Include="DataStructures\ArcadeData\CarArcadeMaybe.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeUnknown6.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeUnknown5.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeUnknown4.cs" />
