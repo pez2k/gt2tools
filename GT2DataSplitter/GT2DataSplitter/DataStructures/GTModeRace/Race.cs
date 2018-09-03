@@ -48,22 +48,37 @@ namespace GT2.DataSplitter
         public uint Opponent16; // 0x40
         public byte RollingStartSpeed; // (0x44) - 0 = normal standing start
         public byte Laps; // (0x45)
-        public byte Unknown1; // (0x46) - 1 = no control of car (but camera change, pausing still work)
+        public byte AutoDrive; // (0x46) - 1 = no control of car (but camera change, pausing still work)
         public byte Licence; // 1 = B, 2 = A, 3 = IC, 4 = IB, 5 = IA, 6 = S (0x47)
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 17)]
-        public byte[] Unknown2; // 17 0x64's (0x48), changing to all 0 = nothing
-        public ushort Unknown3; // (0x59) - changing to 0x100 didn't seem to do anything, likewise 0x1
-        public byte Unknown4; // (0x5b) - changing  it to 0 or 0xff doesn't seem to do anything
-        public ushort Unknown5; // (0x5c)
-        public byte Unknown6; // (0x5e) 
-        public byte Unknown7; // (0x5f)
-        public ushort Unknown8; // (0x60)
-        public ushort Unknown9; // 0x6400 above (0x62) - changed unk4 to unk10 to FF, spaced out opponents (power related?), changed all to 0, same as ff really
-        public uint Unknown10; // (0x64)
-        public uint Unknown11; // (0x68)
-        public uint Unknown12; // (0x6c)
-        public uint Unknown13; // (0x70)
-        public byte Unknown14; // (0x74)
+        public byte AIFrontGripRWD; // 17 0x64's (0x48), changing to all 0 = nothing
+        public byte AIFrontGripFWD;
+        public byte AIFrontGrip4WD;
+        public byte AIFrontGripSpecial4WD;
+        public byte AIRearGripRWD;
+        public byte AIRearGripFWD;
+        public byte AIRearGrip4WD;
+        public byte AIRearGripSpecial4WD;
+        public byte AIAccelerationRWD;
+        public byte AIAccelerationFWD;
+        public byte AIAcceleration4WD;
+        public byte AIAccelerationSpecial4WD;
+        public byte AIUnknownRWD;
+        public byte AIUnknownFWD;
+        public byte AIUnknown4WD;
+        public byte AIUnknownSpecial4WD;
+        public byte AIRubberBandMultiplier;
+        public ushort AIRubberBandUnknown1; // (0x59) - changing to 0x100 didn't seem to do anything, likewise 0x1
+        public byte AIRubberBandUnknown2; // (0x5b) - changing  it to 0 or 0xff doesn't seem to do anything
+        public ushort AIRubberBandUnknown3; // (0x5c)
+        public byte AIRubberBandUnknown4; // (0x5e) 
+        public byte AIRubberBandUnknown5; // (0x5f)
+        public ushort AIRubberBandUnknown6; // (0x60)
+        public ushort Unknown1; // 0x6400 above (0x62) - changed unk4 to unk10 to FF, spaced out opponents (power related?), changed all to 0, same as ff really
+        public uint Unknown2; // (0x64)
+        public uint Unknown3; // (0x68)
+        public uint Unknown4; // (0x6c)
+        public uint Unknown5; // (0x70)
+        public byte Unknown6; // (0x74)
         public byte IsRally; // 0x75 set to 1 for rally race - requires dirt tyres, only 1 opponent. Can award prize car
         public byte EligibleCarsRestriction; // (0x75) - index into allowable entrants list
         public byte DrivetrainRestriction; // (0x76) 1 = FF, 2 = FR, 3 = MR, 4 = RR, 5 = 4WD
@@ -75,7 +90,7 @@ namespace GT2.DataSplitter
         public ushort PrizeMoney6th; // multiply by 100 for non-JP / multiply by 10,000 for JP (0x82)
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public uint[] PrizeCars; // ids of cars (0x84)
-        public ushort Unknown15; // (0x94)
+        public ushort Unknown7; // (0x94)
         public ushort PSRestriction; // in ps units (hp = ps / 1.01427772651) (0x96)
         public ushort SeriesChampBonus; // multiply by 100 for non-JP / multiply by 10,000 for JP (0x98)
         public ushort CarRestrictionFlags; // (0x9a) flags to restrict the type of car you use for this race. 0x100 = non-race car, 0x200 = just race car
@@ -105,21 +120,43 @@ namespace GT2.DataSplitter
             Map(m => m.Opponent16);
             Map(m => m.RollingStartSpeed);
             Map(m => m.Laps);
-            Map(m => m.Unknown1);
+            Map(m => m.AutoDrive);
             Map(m => m.Licence).TypeConverter(Utils.LicenseConverter);
+            Map(m => m.AIFrontGripRWD);
+            Map(m => m.AIFrontGripFWD);
+            Map(m => m.AIFrontGrip4WD);
+            Map(m => m.AIFrontGripSpecial4WD);
+            Map(m => m.AIRearGripRWD);
+            Map(m => m.AIRearGripFWD);
+            Map(m => m.AIRearGrip4WD);
+            Map(m => m.AIRearGripSpecial4WD);
+            Map(m => m.AIAccelerationRWD);
+            Map(m => m.AIAccelerationFWD);
+            Map(m => m.AIAcceleration4WD);
+            Map(m => m.AIAccelerationSpecial4WD);
+            Map(m => m.AIUnknownRWD);
+            Map(m => m.AIUnknownFWD);
+            Map(m => m.AIUnknown4WD);
+            Map(m => m.AIUnknownSpecial4WD);
+            Map(m => m.AIRubberBandMultiplier);
+            Map(m => m.AIRubberBandUnknown1);
+            Map(m => m.AIRubberBandUnknown2);
+            Map(m => m.AIRubberBandUnknown3);
+            Map(m => m.AIRubberBandUnknown4);
+            Map(m => m.AIRubberBandUnknown5);
+            Map(m => m.AIRubberBandUnknown6);
+            Map(m => m.AIRubberBandUnknown1);
+            Map(m => m.AIRubberBandUnknown2);
+            Map(m => m.AIRubberBandUnknown3);
+            Map(m => m.AIRubberBandUnknown4);
+            Map(m => m.AIRubberBandUnknown5);
+            Map(m => m.AIRubberBandUnknown6);
+            Map(m => m.Unknown1);
             Map(m => m.Unknown2);
             Map(m => m.Unknown3);
             Map(m => m.Unknown4);
             Map(m => m.Unknown5);
             Map(m => m.Unknown6);
-            Map(m => m.Unknown7);
-            Map(m => m.Unknown8);
-            Map(m => m.Unknown9);
-            Map(m => m.Unknown10);
-            Map(m => m.Unknown11);
-            Map(m => m.Unknown12);
-            Map(m => m.Unknown13);
-            Map(m => m.Unknown14);
             Map(m => m.IsRally);
             Map(m => m.EligibleCarsRestriction).TypeConverter(Utils.GetFileNameConverter("EligibleCars"));
             Map(m => m.DrivetrainRestriction).TypeConverter(Utils.DrivetrainRestrictionConverter);
@@ -130,7 +167,7 @@ namespace GT2.DataSplitter
             Map(m => m.PrizeMoney5th);
             Map(m => m.PrizeMoney6th);
             Map(m => m.PrizeCars).TypeConverter(Utils.CarIdArrayConverter);
-            Map(m => m.Unknown15).TypeConverter(RaceStringTable.Lookup);
+            Map(m => m.Unknown7).TypeConverter(RaceStringTable.Lookup);
             Map(m => m.PSRestriction);
             Map(m => m.SeriesChampBonus);
             Map(m => m.CarRestrictionFlags); // 1 for NA, 2 for Turbo, 256 for Normal, 512 for Race
