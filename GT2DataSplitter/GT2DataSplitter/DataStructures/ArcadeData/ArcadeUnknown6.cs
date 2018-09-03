@@ -4,7 +4,7 @@
     {
         public ArcadeUnknown6()
         {
-            Size = 0x360;
+            Size = 0x80;
         }
     }
 }

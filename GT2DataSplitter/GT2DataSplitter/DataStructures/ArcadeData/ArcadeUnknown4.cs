@@ -7,7 +7,7 @@ namespace GT2.DataSplitter
     {
         public ArcadeUnknown4()
         {
-            Size = 0x28;
+            Size = 0x10;
         }
 
         public override string CreateOutputFilename(byte[] data)

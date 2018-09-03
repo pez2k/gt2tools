@@ -8,11 +8,11 @@ namespace GT2.DataSplitter
 
     public class ArcadeData
     {
-        public List<ArcadeUnknown1> Unknown1 { get; set; } = new List<ArcadeUnknown1>();
-        public List<ArcadeUnknown2> Unknown2 { get; set; } = new List<ArcadeUnknown2>();
-        public List<ArcadeUnknown3> Unknown3 { get; set; } = new List<ArcadeUnknown3>();
-        public List<ArcadeUnknown4> Unknown4 { get; set; } = new List<ArcadeUnknown4>();
-        public List<ArcadeUnknown5> Unknown5 { get; set; } = new List<ArcadeUnknown5>();
+        public List<Brakes> BrakeParts { get; set; } = new List<Brakes>();
+        public List<BrakeBalanceController> BrakeBalanceControllerParts { get; set; } = new List<BrakeBalanceController>();
+        public List<Steering> SteeringParts { get; set; } = new List<Steering>();
+        public List<Dimensions> DimensionsParts { get; set; } = new List<Dimensions>();
+        public List<WeightReduction> WeightReductionParts { get; set; } = new List<WeightReduction>();
         public List<Body> BodyParts { get; set; } = new List<Body>();
         public List<Engine> EngineParts { get; set; } = new List<Engine>();
         public List<PortPolishing> PortPolishingParts { get; set; } = new List<PortPolishing>();
@@ -32,23 +32,16 @@ namespace GT2.DataSplitter
         public List<Differential> DifferentialParts { get; set; } = new List<Differential>();
         public List<TyresFront> TyresFrontParts { get; set; } = new List<TyresFront>();
         public List<TyresRear> TyresRearParts { get; set; } = new List<TyresRear>();
+        public List<ArcadeUnknown1> Unknown1 { get; set; } = new List<ArcadeUnknown1>();
+        public List<ArcadeUnknown2> Unknown2 { get; set; } = new List<ArcadeUnknown2>();
+        public List<ArcadeUnknown3> Unknown3 { get; set; } = new List<ArcadeUnknown3>();
+        public List<ArcadeUnknown4> Unknown4 { get; set; } = new List<ArcadeUnknown4>();
+        public List<ArcadeUnknown5> Unknown5 { get; set; } = new List<ArcadeUnknown5>();
         public List<ArcadeUnknown6> Unknown6 { get; set; } = new List<ArcadeUnknown6>();
         public List<ArcadeUnknown7> Unknown7 { get; set; } = new List<ArcadeUnknown7>();
+        public List<LicenseCar> Cars { get; set; } = new List<LicenseCar>(); // probably?
         public List<ArcadeUnknown8> Unknown8 { get; set; } = new List<ArcadeUnknown8>();
         public List<ArcadeUnknown9> Unknown9 { get; set; } = new List<ArcadeUnknown9>();
-        public List<ArcadeUnknown10> Unknown10 { get; set; } = new List<ArcadeUnknown10>();
-        public List<ArcadeUnknown11> Unknown11 { get; set; } = new List<ArcadeUnknown11>();
-        public List<ArcadeUnknown12> Unknown12 { get; set; } = new List<ArcadeUnknown12>();
-        public List<LicenseCar> Cars { get; set; } = new List<LicenseCar>(); // probably?
-        public List<ArcadeUnknown13> Unknown13 { get; set; } = new List<ArcadeUnknown13>();
-        public List<ArcadeUnknown14> Unknown14 { get; set; } = new List<ArcadeUnknown14>();
-
-
-        /*public List<Brakes> BrakeParts { get; set; } = new List<Brakes>();
-        public List<BrakeBalanceController> BrakeBalanceControllerParts { get; set; } = new List<BrakeBalanceController>();
-        public List<Steering> SteeringParts { get; set; } = new List<Steering>();
-        public List<Dimensions> DimensionsParts { get; set; } = new List<Dimensions>();
-        public List<WeightReduction> WeightReductionParts { get; set; } = new List<WeightReduction>();*/
         
         public void ReadData(string filename)
         {
@@ -63,12 +56,12 @@ namespace GT2.DataSplitter
                     uint blockSize = file.ReadUInt();
                     blocks.Add(new DataBlock { BlockStart = blockStart, BlockSize = blockSize });
                 }
-                
-                Unknown1.Read(file, blocks[0].BlockStart, blocks[0].BlockSize);
-                Unknown2.Read(file, blocks[1].BlockStart, blocks[1].BlockSize);
-                Unknown3.Read(file, blocks[2].BlockStart, blocks[2].BlockSize);
-                Unknown4.Read(file, blocks[3].BlockStart, blocks[3].BlockSize);
-                Unknown5.Read(file, blocks[4].BlockStart, blocks[4].BlockSize);
+
+                BrakeParts.Read(file, blocks[0].BlockStart, blocks[0].BlockSize);
+                BrakeBalanceControllerParts.Read(file, blocks[1].BlockStart, blocks[1].BlockSize);
+                SteeringParts.Read(file, blocks[2].BlockStart, blocks[2].BlockSize);
+                DimensionsParts.Read(file, blocks[3].BlockStart, blocks[3].BlockSize);
+                WeightReductionParts.Read(file, blocks[4].BlockStart, blocks[4].BlockSize);
                 BodyParts.Read(file, blocks[5].BlockStart, blocks[5].BlockSize);
                 EngineParts.Read(file, blocks[6].BlockStart, blocks[6].BlockSize);
                 PortPolishingParts.Read(file, blocks[7].BlockStart, blocks[7].BlockSize);
@@ -88,26 +81,26 @@ namespace GT2.DataSplitter
                 DifferentialParts.Read(file, blocks[21].BlockStart, blocks[21].BlockSize);
                 TyresFrontParts.Read(file, blocks[22].BlockStart, blocks[22].BlockSize);
                 TyresRearParts.Read(file, blocks[23].BlockStart, blocks[23].BlockSize);
-                Unknown6.Read(file, blocks[24].BlockStart, blocks[24].BlockSize);
-                Unknown7.Read(file, blocks[25].BlockStart, blocks[25].BlockSize);
-                Unknown8.Read(file, blocks[26].BlockStart, blocks[26].BlockSize);
-                Unknown9.Read(file, blocks[27].BlockStart, blocks[27].BlockSize);
-                Unknown10.Read(file, blocks[28].BlockStart, blocks[28].BlockSize);
-                Unknown11.Read(file, blocks[29].BlockStart, blocks[29].BlockSize);
-                Unknown12.Read(file, blocks[30].BlockStart, blocks[30].BlockSize);
+                Unknown1.Read(file, blocks[24].BlockStart, blocks[24].BlockSize);
+                Unknown2.Read(file, blocks[25].BlockStart, blocks[25].BlockSize);
+                Unknown3.Read(file, blocks[26].BlockStart, blocks[26].BlockSize);
+                Unknown4.Read(file, blocks[27].BlockStart, blocks[27].BlockSize);
+                Unknown5.Read(file, blocks[28].BlockStart, blocks[28].BlockSize);
+                Unknown6.Read(file, blocks[29].BlockStart, blocks[29].BlockSize);
+                Unknown7.Read(file, blocks[30].BlockStart, blocks[30].BlockSize);
                 Cars.Read(file, blocks[31].BlockStart, blocks[31].BlockSize);
-                Unknown13.Read(file, blocks[32].BlockStart, blocks[32].BlockSize);
-                Unknown14.Read(file, blocks[33].BlockStart, blocks[33].BlockSize);
+                Unknown8.Read(file, blocks[32].BlockStart, blocks[32].BlockSize);
+                Unknown9.Read(file, blocks[33].BlockStart, blocks[33].BlockSize);
             }
         }
 
         public void DumpData()
         {
-            Unknown1.Dump();
-            Unknown2.Dump();
-            Unknown3.Dump();
-            Unknown4.Dump();
-            Unknown5.Dump();
+            BrakeParts.Dump();
+            BrakeBalanceControllerParts.Dump();
+            SteeringParts.Dump();
+            DimensionsParts.Dump();
+            WeightReductionParts.Dump();
             BodyParts.Dump();
             EngineParts.Dump();
             PortPolishingParts.Dump();
@@ -127,16 +120,16 @@ namespace GT2.DataSplitter
             DifferentialParts.Dump();
             TyresFrontParts.Dump();
             TyresRearParts.Dump();
+            Unknown1.Dump();
+            Unknown2.Dump();
+            Unknown3.Dump();
+            Unknown4.Dump();
+            Unknown5.Dump();
             Unknown6.Dump();
             Unknown7.Dump();
+            Cars.Dump();
             Unknown8.Dump();
             Unknown9.Dump();
-            Unknown10.Dump();
-            Unknown11.Dump();
-            Unknown12.Dump();
-            Cars.Dump();
-            Unknown13.Dump();
-            Unknown14.Dump();
         }
 
         public void ImportData()
