@@ -39,9 +39,9 @@ namespace GT2.DataSplitter
         public List<ArcadeUnknown5> Unknown5 { get; set; } = new List<ArcadeUnknown5>();
         public List<ArcadeUnknown6> Unknown6 { get; set; } = new List<ArcadeUnknown6>();
         public List<Race> Races { get; set; } = new List<Race>();
-        public List<LicenseCar> Unknown7 { get; set; } = new List<LicenseCar>(); // unknown
-        public List<CarArcadeMaybe> CarsMaybe { get; set; } = new List<CarArcadeMaybe>();
-        public List<OpponentArcadeMaybe> OpponentsMaybe { get; set; } = new List<OpponentArcadeMaybe>();
+        public List<OpponentArcade> Opponents { get; set; } = new List<OpponentArcade>();
+        public List<CarArcade> Cars { get; set; } = new List<CarArcade>();
+        public List<CarArcadeSports> CarsSports { get; set; } = new List<CarArcadeSports>();
         
         public void ReadData(string filename)
         {
@@ -88,9 +88,9 @@ namespace GT2.DataSplitter
                 Unknown5.Read(file, blocks[28].BlockStart, blocks[28].BlockSize);
                 Unknown6.Read(file, blocks[29].BlockStart, blocks[29].BlockSize);
                 Races.Read(file, blocks[30].BlockStart, blocks[30].BlockSize);
-                Unknown7.Read(file, blocks[31].BlockStart, blocks[31].BlockSize);
-                CarsMaybe.Read(file, blocks[32].BlockStart, blocks[32].BlockSize);
-                OpponentsMaybe.Read(file, blocks[33].BlockStart, blocks[33].BlockSize);
+                Opponents.Read(file, blocks[31].BlockStart, blocks[31].BlockSize);
+                Cars.Read(file, blocks[32].BlockStart, blocks[32].BlockSize);
+                CarsSports.Read(file, blocks[33].BlockStart, blocks[33].BlockSize);
 
                 uint stringTableStart = blocks[33].BlockStart + blocks[33].BlockSize;
                 RaceStringTable.Read(file, stringTableStart, (uint)file.Length - stringTableStart);
@@ -130,9 +130,9 @@ namespace GT2.DataSplitter
             Unknown5.Dump();
             Unknown6.Dump();
             Races.Dump();
-            Unknown7.Dump();
-            CarsMaybe.Dump();
-            OpponentsMaybe.Dump();
+            Opponents.Dump();
+            Cars.Dump();
+            CarsSports.Dump();
         }
 
         public void ImportData()

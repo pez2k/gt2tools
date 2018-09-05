@@ -55,14 +55,15 @@
     <Compile Include="..\..\Common\StreamExtensions.cs">
       <Link>StreamExtensions.cs</Link>
     </Compile>
-    <Compile Include="DataStructures\ArcadeData\OpponentArcadeMaybe.cs" />
-    <Compile Include="DataStructures\ArcadeData\CarArcadeMaybe.cs" />
+    <Compile Include="DataStructures\ArcadeData\CarArcadeSports.cs" />
+    <Compile Include="DataStructures\ArcadeData\CarArcade.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeUnknown6.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeUnknown5.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeUnknown4.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeUnknown3.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeUnknown2.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeUnknown1.cs" />
+    <Compile Include="DataStructures\ArcadeData\OpponentArcade.cs" />
     <Compile Include="DataStructures\CarCsvDataStructure.cs" />
     <Compile Include="DataStructures\CsvDataStructure.cs" />
     <Compile Include="DataStructures\CarDataStructure.cs" />
