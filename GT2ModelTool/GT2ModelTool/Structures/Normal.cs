@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace GT2.ModelTool.Structures
 {
+    using StreamExtensions;
+
     public class Normal
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
@@ -10,7 +12,7 @@ namespace GT2.ModelTool.Structures
 
         public void ReadFromCDO(Stream stream)
         {
-            stream.Position += 0x04;
+            stream.Read(Unknown);
         }
     }
 }

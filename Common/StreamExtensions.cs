@@ -42,6 +42,18 @@ namespace GT2.StreamExtensions
             return byteArray;
         }
 
+        public static short ReadShort(this Stream stream)
+        {
+            byte[] rawValue = new byte[2];
+            stream.Read(rawValue);
+            int longValue = (rawValue[1] * 256 + rawValue[0]);
+            if (longValue > short.MaxValue)
+            {
+                longValue -= ushort.MaxValue;
+            }
+            return (short)longValue;
+        }
+
         public static ushort ReadUShort(this Stream stream)
         {
             byte[] rawValue = new byte[2];

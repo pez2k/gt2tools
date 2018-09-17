@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace GT2.ModelTool.Structures
 {
@@ -19,10 +20,20 @@ namespace GT2.ModelTool.Structures
         public byte Unknown9 { get; set; }
         public byte Unknown10 { get; set; }
         public byte Unknown11 { get; set; }
+        public byte Unknown12 { get; set; }
 
-        public void ReadFromCDO(Stream stream)
+        public virtual void ReadFromCDO(Stream stream, List<Vertex> vertices)
         {
-            stream.Position += 0x10;
+            byte vertex0Ref = (byte)stream.ReadByte();
+            Vertex0 = vertices[vertex0Ref];
+            byte vertex1Ref = (byte)stream.ReadByte();
+            Vertex1 = vertices[vertex1Ref];
+            byte vertex2Ref = (byte)stream.ReadByte();
+            Vertex2 = vertices[vertex2Ref];
+            byte vertex3Ref = (byte)stream.ReadByte();
+            Vertex3 = vertices[vertex3Ref];
+
+            stream.Position += 0x0C;
         }
     }
 }

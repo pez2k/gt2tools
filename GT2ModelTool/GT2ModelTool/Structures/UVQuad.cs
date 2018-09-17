@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace GT2.ModelTool.Structures
 {
@@ -16,9 +17,10 @@ namespace GT2.ModelTool.Structures
         public byte Vertex3UVX { get; set; }
         public byte Vertex3UVY { get; set; }
 
-        public new void ReadFromCDO(Stream stream)
+        public override void ReadFromCDO(Stream stream, List<Vertex> vertices)
         {
-            stream.Position += 0x1C;
+            base.ReadFromCDO(stream, vertices);
+            stream.Position += 0x0C;
         }
     }
 }
