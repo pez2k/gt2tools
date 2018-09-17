@@ -9,10 +9,10 @@ namespace GT2.ModelTool.Structures
     {
         public List<Vertex> Vertices { get; set; }
         public List<Normal> Normals { get; set; }
-        public List<Triangle> Triangles { get; set; }
-        public List<Quad> Quads { get; set; }
-        public List<UVTriangle> UVTriangles { get; set; }
-        public List<UVQuad> UVQuads { get; set; }
+        public List<Polygon> Triangles { get; set; }
+        public List<Polygon> Quads { get; set; }
+        public List<UVPolygon> UVTriangles { get; set; }
+        public List<UVPolygon> UVQuads { get; set; }
 
         public void ReadFromCDO(Stream stream)
         {
@@ -27,10 +27,10 @@ namespace GT2.ModelTool.Structures
 
             Vertices = new List<Vertex>(vertexCount);
             Normals = new List<Normal>(normalCount);
-            Triangles = new List<Triangle>(triangleCount);
-            Quads = new List<Quad>(quadCount);
-            UVTriangles = new List<UVTriangle>(uvTriangleCount);
-            UVQuads = new List<UVQuad>(uvQuadCount);
+            Triangles = new List<Polygon>(triangleCount);
+            Quads = new List<Polygon>(quadCount);
+            UVTriangles = new List<UVPolygon>(uvTriangleCount);
+            UVQuads = new List<UVPolygon>(uvQuadCount);
             
             for (int i = 0; i < vertexCount; i++)
             {
@@ -48,29 +48,29 @@ namespace GT2.ModelTool.Structures
 
             for (int i = 0; i < triangleCount; i++)
             {
-                var triangle = new Triangle();
-                triangle.ReadFromCDO(stream, Vertices);
+                var triangle = new Polygon();
+                triangle.ReadFromCDO(stream, false, Vertices);
                 Triangles.Add(triangle);
             }
 
             for (int i = 0; i < quadCount; i++)
             {
-                var quad = new Quad();
-                quad.ReadFromCDO(stream, Vertices);
+                var quad = new Polygon();
+                quad.ReadFromCDO(stream, true, Vertices);
                 Quads.Add(quad);
             }
 
             for (int i = 0; i < uvTriangleCount; i++)
             {
-                var uvTriangle = new UVTriangle();
-                uvTriangle.ReadFromCDO(stream, Vertices);
+                var uvTriangle = new UVPolygon();
+                uvTriangle.ReadFromCDO(stream, false, Vertices);
                 UVTriangles.Add(uvTriangle);
             }
 
             for (int i = 0; i < uvQuadCount; i++)
             {
-                var uvQuad = new UVQuad();
-                uvQuad.ReadFromCDO(stream, Vertices);
+                var uvQuad = new UVPolygon();
+                uvQuad.ReadFromCDO(stream, true, Vertices);
                 UVQuads.Add(uvQuad);
             }
         }

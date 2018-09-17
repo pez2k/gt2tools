@@ -52,10 +52,8 @@
     <Compile Include="Structures\LOD.cs" />
     <Compile Include="Structures\CDOHeader.cs" />
     <Compile Include="Structures\Normal.cs" />
-    <Compile Include="Structures\Quad.cs" />
-    <Compile Include="Structures\UVQuad.cs" />
-    <Compile Include="Structures\UVTriangle.cs" />
-    <Compile Include="Structures\Triangle.cs" />
+    <Compile Include="Structures\UVPolygon.cs" />
+    <Compile Include="Structures\Polygon.cs" />
     <Compile Include="Structures\WheelPosition.cs" />
     <Compile Include="Structures\Vertex.cs" />
   </ItemGroup>
