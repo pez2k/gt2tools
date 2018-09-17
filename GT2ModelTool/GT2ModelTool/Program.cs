@@ -12,6 +12,7 @@ namespace GT2.ModelTool
             {
                 var model = new Model();
                 model.ReadFromCDO(stream);
+                Polygon.values.Sort();
             }
         }
     }

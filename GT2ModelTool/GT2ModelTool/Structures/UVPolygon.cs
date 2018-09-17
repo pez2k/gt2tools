@@ -17,9 +17,9 @@ namespace GT2.ModelTool.Structures
         public byte Vertex3UVX { get; set; }
         public byte Vertex3UVY { get; set; }
 
-        public override void ReadFromCDO(Stream stream, bool isQuad, List<Vertex> vertices)
+        public override void ReadFromCDO(Stream stream, bool isQuad, List<Vertex> vertices, List<Normal> normals)
         {
-            base.ReadFromCDO(stream, isQuad, vertices);
+            base.ReadFromCDO(stream, isQuad, vertices, normals);
 
             Vertex0UVX = (byte)stream.ReadByte();
             Vertex0UVY = (byte)stream.ReadByte();

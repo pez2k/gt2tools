@@ -49,28 +49,28 @@ namespace GT2.ModelTool.Structures
             for (int i = 0; i < triangleCount; i++)
             {
                 var triangle = new Polygon();
-                triangle.ReadFromCDO(stream, false, Vertices);
+                triangle.ReadFromCDO(stream, false, Vertices, Normals);
                 Triangles.Add(triangle);
             }
 
             for (int i = 0; i < quadCount; i++)
             {
                 var quad = new Polygon();
-                quad.ReadFromCDO(stream, true, Vertices);
+                quad.ReadFromCDO(stream, true, Vertices, Normals);
                 Quads.Add(quad);
             }
 
             for (int i = 0; i < uvTriangleCount; i++)
             {
                 var uvTriangle = new UVPolygon();
-                uvTriangle.ReadFromCDO(stream, false, Vertices);
+                uvTriangle.ReadFromCDO(stream, false, Vertices, Normals);
                 UVTriangles.Add(uvTriangle);
             }
 
             for (int i = 0; i < uvQuadCount; i++)
             {
                 var uvQuad = new UVPolygon();
-                uvQuad.ReadFromCDO(stream, true, Vertices);
+                uvQuad.ReadFromCDO(stream, true, Vertices, Normals);
                 UVQuads.Add(uvQuad);
             }
         }
