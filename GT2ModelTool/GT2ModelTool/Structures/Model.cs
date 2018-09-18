@@ -7,21 +7,32 @@ namespace GT2.ModelTool.Structures
 
     public class Model
     {
+        public ushort Unknown1 { get; set; }
+        public ushort Unknown2 { get; set; }
+        public ushort Unknown3 { get; set; }
         public ushort Scale { get; set; }
         public List<WheelPosition> WheelPositions { get; set; } = new List<WheelPosition>(4);
         public List<LOD> LODs { get; set; }
 
         public void ReadFromCDO(Stream stream) {
-            ushort dataStart = 0x868;
             stream.Position = 0x08;
-            if (stream.ReadByte() > 0) {
-                dataStart -= 0x10;
+            Unknown1 = stream.ReadUShort();
+            if (Unknown1 == 0) {
+                stream.Position = 0x18;
+                Unknown1 = stream.ReadUShort();
             }
 
-            stream.Position = 0x1E;
+            Unknown2 = stream.ReadUShort();
+            Unknown3 = stream.ReadUShort();
             Scale = stream.ReadUShort();
 
-            stream.Position = dataStart;
+            for (int i = 0; i < 4; i++) {
+                var wheelPosition = new WheelPosition();
+                wheelPosition.ReadFromCDO(stream);
+                WheelPositions.Add(wheelPosition);
+            }
+
+            stream.Position += 0x828;
             ushort lodCount = stream.ReadUShort();
             LODs = new List<LOD>(lodCount);
 

@@ -2,16 +2,21 @@
 
 namespace GT2.ModelTool.Structures
 {
+    using StreamExtensions;
+
     public class WheelPosition
     {
-        public ushort X { get; set; }
-        public ushort Y { get; set; }
-        public ushort Z { get; set; }
+        public short X { get; set; }
+        public short Y { get; set; }
+        public short Z { get; set; }
         public ushort Scale { get; set; }
 
         public void ReadFromCDO(Stream stream)
         {
-            stream.Position += 0x08;
+            X = stream.ReadShort(); // these are probably in the wrong order
+            Y = stream.ReadShort();
+            Z = stream.ReadShort();
+            Scale = stream.ReadUShort();
         }
     }
 }

@@ -54,6 +54,7 @@
     <Compile Include="Structures\Normal.cs" />
     <Compile Include="Structures\UVPolygon.cs" />
     <Compile Include="Structures\Polygon.cs" />
+    <Compile Include="Structures\UVCoordinate.cs" />
     <Compile Include="Structures\WheelPosition.cs" />
     <Compile Include="Structures\Vertex.cs" />
   </ItemGroup>
