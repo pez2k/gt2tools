@@ -10,13 +10,14 @@ namespace GT2.ModelTool
         {
             if (true)
             {
-                using (FileStream stream = new FileStream("t-hvr.car", FileMode.Open, FileAccess.Read))
+                string gt1Model = "hn1lr";
+                using (FileStream stream = new FileStream($"{gt1Model}.car", FileMode.Open, FileAccess.Read))
                 {
                     var model = new Model();
                     model.ReadFromCAR(stream);
                     Polygon.values.Sort();
 
-                    using (FileStream outStream = new FileStream("t-hvr.cdo", FileMode.Create, FileAccess.ReadWrite))
+                    using (FileStream outStream = new FileStream($"{gt1Model}.cdo", FileMode.Create, FileAccess.ReadWrite))
                     {
                         model.WriteToCDO(outStream);
                     }

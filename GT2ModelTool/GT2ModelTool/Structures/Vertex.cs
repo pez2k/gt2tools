@@ -22,6 +22,7 @@ namespace GT2.ModelTool.Structures
         public void ReadFromCAR(Stream stream)
         {
             ReadFromCDO(stream);
+            Z = (short)(0 - Z);
         }
 
         public void WriteToCDO(Stream stream)

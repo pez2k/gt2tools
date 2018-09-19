@@ -70,7 +70,7 @@ namespace GT2.ModelTool.Structures
             base.WriteToCDO(stream, isQuad, vertices);
 
             Vertex0UV.WriteToCDO(stream);
-            stream.WriteUShort(0); // TODO
+            stream.WriteUShort((ushort)(((PaletteIndex & 0x0C) << 4) + (PaletteIndex & 0x03)));
             Vertex1UV.WriteToCDO(stream);
             stream.WriteByte(Unknown13);
             stream.WriteByte(Unknown14);
