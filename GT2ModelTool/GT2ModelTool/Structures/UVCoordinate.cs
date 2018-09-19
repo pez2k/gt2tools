@@ -12,5 +12,22 @@ namespace GT2.ModelTool.Structures
             X = (byte)stream.ReadByte();
             Y = (byte)stream.ReadByte();
         }
+
+        public void ReadFromCAR(Stream stream)
+        {
+            X = (byte)stream.ReadByte();
+            int y = stream.ReadByte();
+            if (y >= 32)
+            {
+                y -= 32;
+            }
+            Y = (byte)y;
+        }
+
+        public void WriteToCDO(Stream stream)
+        {
+            stream.WriteByte(X);
+            stream.WriteByte(Y);
+        }
     }
 }

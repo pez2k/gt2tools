@@ -8,11 +8,33 @@ namespace GT2.ModelTool
     {
         static void Main(string[] args)
         {
-            using (FileStream stream = new FileStream("bistn.cdo", FileMode.Open, FileAccess.Read))
+            if (true)
             {
-                var model = new Model();
-                model.ReadFromCDO(stream);
-                Polygon.values.Sort();
+                using (FileStream stream = new FileStream("t-hvr.car", FileMode.Open, FileAccess.Read))
+                {
+                    var model = new Model();
+                    model.ReadFromCAR(stream);
+                    Polygon.values.Sort();
+
+                    using (FileStream outStream = new FileStream("t-hvr.cdo", FileMode.Create, FileAccess.ReadWrite))
+                    {
+                        model.WriteToCDO(outStream);
+                    }
+                }
+            }
+            else
+            {
+                using (FileStream stream = new FileStream("bistn.cdo", FileMode.Open, FileAccess.Read))
+                {
+                    var model = new Model();
+                    model.ReadFromCDO(stream);
+                    Polygon.values.Sort();
+
+                    using (FileStream outStream = new FileStream("out.cdo", FileMode.Create, FileAccess.ReadWrite))
+                    {
+                        model.WriteToCDO(outStream);
+                    }
+                }
             }
         }
     }

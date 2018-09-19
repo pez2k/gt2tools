@@ -14,5 +14,15 @@ namespace GT2.ModelTool.Structures
         {
             stream.Read(Unknown);
         }
+
+        public void ReadFromCAR(Stream stream)
+        {
+            stream.Position += 0x08;
+        }
+
+        public void WriteToCDO(Stream stream)
+        {
+            stream.Write(Unknown);
+        }
     }
 }

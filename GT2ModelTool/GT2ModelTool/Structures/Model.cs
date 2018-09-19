@@ -45,5 +45,64 @@ namespace GT2.ModelTool.Structures
                 LODs.Add(lod);
             }
         }
+
+        public void ReadFromCAR(Stream stream)
+        {
+            stream.Position = 0x10;
+
+            for (int i = 0; i < 4; i++)
+            {
+                var wheelPosition = new WheelPosition();
+                wheelPosition.ReadFromCAR(stream);
+                WheelPositions.Add(wheelPosition);
+            }
+
+            Unknown1 = stream.ReadUShort();
+            Unknown2 = stream.ReadUShort();
+            Unknown3 = stream.ReadUShort();
+            Scale = stream.ReadUShort();
+
+            stream.Position += 0x04;
+            ushort lodCount = stream.ReadUShort();
+            //
+            lodCount = 1;
+            //
+            LODs = new List<LOD>(lodCount);
+
+            stream.Position += 0x42;
+
+            for (int i = 0; i < lodCount; i++)
+            {
+                var lod = new LOD();
+                lod.ReadFromCAR(stream);
+                LODs.Add(lod);
+            }
+        }
+
+        public void WriteToCDO(Stream stream)
+        {
+            // GT header
+            stream.Write(new byte[] { 0x47, 0x54, 0x02 });
+            stream.Position = 0x18;
+            stream.WriteUShort(Unknown1);
+            stream.WriteUShort(Unknown2);
+            stream.WriteUShort(Unknown3);
+            stream.WriteUShort(Scale);
+
+            foreach (WheelPosition wheelPosition in WheelPositions)
+            {
+                wheelPosition.WriteToCDO(stream);
+            }
+
+            stream.Position = 0x868;
+            stream.WriteUShort((ushort)LODs.Count);
+
+            stream.Position = 0x884;
+
+            foreach (LOD lod in LODs)
+            {
+                lod.WriteToCDO(stream);
+            }
+        }
     }
 }

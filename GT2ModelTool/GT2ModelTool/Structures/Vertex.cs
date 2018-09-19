@@ -18,5 +18,18 @@ namespace GT2.ModelTool.Structures
             Z = stream.ReadShort();
             Padding = stream.ReadUShort();
         }
+
+        public void ReadFromCAR(Stream stream)
+        {
+            ReadFromCDO(stream);
+        }
+
+        public void WriteToCDO(Stream stream)
+        {
+            stream.WriteShort(X);
+            stream.WriteShort(Y);
+            stream.WriteShort(Z);
+            stream.WriteUShort(Padding);
+        }
     }
 }

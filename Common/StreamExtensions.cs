@@ -44,14 +44,25 @@ namespace GT2.StreamExtensions
 
         public static short ReadShort(this Stream stream)
         {
-            byte[] rawValue = new byte[2];
-            stream.Read(rawValue);
-            int longValue = (rawValue[1] * 256 + rawValue[0]);
+            int longValue = stream.ReadUShort();
             if (longValue > short.MaxValue)
             {
                 longValue -= ushort.MaxValue;
             }
             return (short)longValue;
+        }
+
+        public static void WriteShort(this Stream stream, short value)
+        {
+            ushort fullValue;
+            if (value < 0) {
+                fullValue = (ushort)(value + ushort.MaxValue);
+            }
+            else
+            {
+                fullValue = (ushort)value;
+            }
+            stream.WriteUShort(fullValue);
         }
 
         public static ushort ReadUShort(this Stream stream)
