@@ -41,13 +41,39 @@ namespace GT2.CarInfoEditorCSV
                     output.WriteLine("==Colors==");
                     if (car.Colours.Count > 1)
                     {
-                        output.WriteLine($"There are {car.Colours.Count} colors available for this vehicle:");
+                        output.Write($"There are {GetNumber(car.Colours.Count)} colors");
                     }
                     else
                     {
-                        output.WriteLine($"There is one color available for this vehicle:");
+                        output.Write($"There is only one color");
+                    }
+                    output.Write(" available for this vehicle");
+
+                    bool hasColourNames = false;
+                    foreach (CarColour colour in car.Colours)
+                    {
+                        if (!string.IsNullOrWhiteSpace(colour.LatinName))
+                        {
+                            hasColourNames = true;
+                            break;
+                        }
                     }
 
+                    if (!hasColourNames)
+                    {
+                        if (car.Colours.Count > 1)
+                        {
+                            output.Write($", they are");
+                        }
+                        else
+                        {
+                            output.Write($", it is");
+                        }
+                        output.Write($" unnamed in-game");
+                    }
+
+                    output.WriteLine($":");
+                    
                     foreach (CarColour colour in car.Colours)
                     {
                         CarColourWithName colourWithName = new CarColourWithName
@@ -59,13 +85,52 @@ namespace GT2.CarInfoEditorCSV
                             LatinName = colour.LatinName
                         };
 
-                        output.WriteLine($"*{{ColorSquare|{colour.HexColour}}} {(string.IsNullOrWhiteSpace(colour.LatinName) ? "Unnamed" : colour.LatinName)}");
+                        output.WriteLine($"*{{{{ColorSquare|{colour.HexColour}}}}}{(string.IsNullOrWhiteSpace(colour.LatinName) ? "" : " " + colour.LatinName)}");
                     }
 
                     output.WriteLine();
                     output.WriteLine();
                 }
             }
+        }
+
+        static string GetNumber(long number) {
+            switch (number)
+            {
+                case 1:
+                    return "one";
+                case 2:
+                    return "two";
+                case 3:
+                    return "three";
+                case 4:
+                    return "four";
+                case 5:
+                    return "five";
+                case 6:
+                    return "six";
+                case 7:
+                    return "seven";
+                case 8:
+                    return "eight";
+                case 9:
+                    return "nine";
+                case 10:
+                    return "ten";
+                case 11:
+                    return "eleven";
+                case 12:
+                    return "twelve";
+                case 13:
+                    return "thirteen";
+                case 14:
+                    return "fourteen";
+                case 15:
+                    return "fifteen";
+                case 16:
+                    return "sixteen";
+            }
+            throw new System.Exception();
         }
 
         static void Load()
