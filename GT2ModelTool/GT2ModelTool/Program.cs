@@ -11,6 +11,11 @@ namespace GT2.ModelTool
             if (true)
             {
                 string gt1Model = "hn1lr";
+
+                if (args.Length == 1 && args[0].EndsWith(".car")) {
+                    gt1Model = args[0].Replace(".car", "");
+                }
+                
                 using (FileStream stream = new FileStream($"{gt1Model}.car", FileMode.Open, FileAccess.Read))
                 {
                     var model = new Model();
