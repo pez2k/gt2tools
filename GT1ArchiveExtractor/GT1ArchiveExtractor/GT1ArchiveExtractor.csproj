@@ -46,6 +46,10 @@
     <Compile Include="..\..\Common\StreamExtensions.cs">
       <Link>StreamExtensions.cs</Link>
     </Compile>
+    <Compile Include="ArchiveFileList.cs" />
+    <Compile Include="File.cs" />
+    <Compile Include="DirectoryFileList.cs" />
+    <Compile Include="FileList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

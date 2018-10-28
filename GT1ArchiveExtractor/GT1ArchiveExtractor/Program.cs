@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace GT2.GT1ArchiveExtractor
 {
@@ -10,111 +7,92 @@ namespace GT2.GT1ArchiveExtractor
 
     class Program
     {
-        static readonly byte[] ARCHeader = new byte[11] { 0x40, 0x28, 0x23, 0x29, 0x47, 0x54, 0x2D, 0x41, 0x52, 0x43, 0x00 };
-        static readonly byte[] TEXHeader = new byte[11] { 0x40, 0x28, 0x23, 0x29, 0x47, 0x54, 0x2D, 0x43, 0x54, 0x45, 0x58 };
-        static readonly byte[] CARHeader = new byte[11] { 0x40, 0x28, 0x23, 0x29, 0x47, 0x54, 0x2D, 0x43, 0x41, 0x52, 0x00 };
-
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            ProcessDirectory("./");
+            ExtractFiles(new DirectoryFileList("./"));
         }
-        
-        static void ProcessDirectory(string path)
+
+        private static void ExtractFiles(FileList fileList)
         {
-            Console.WriteLine($"Scanning {path}");
-            var directoryInfo = new DirectoryInfo(path);
-            IEnumerable<FileInfo> files = directoryInfo.EnumerateFiles();
-            foreach(FileInfo file in files)
+            Console.WriteLine($"Extracting {fileList.Name}");
+
+            if (!Directory.Exists(fileList.Name))
             {
-                byte[] header = new byte[11];
-                using (FileStream stream = file.OpenRead())
-                {
-                    stream.Read(header, 0, 11);
-                }
-
-                if (header.SequenceEqual(TEXHeader))
-                {
-                    Console.WriteLine($"Renaming TEX file {file.Name}");
-                    file.MoveTo(file.FullName.Replace(".dat", ".tex"));
-                }
-                else if (header.SequenceEqual(CARHeader))
-                {
-                    Console.WriteLine($"Renaming CAR file {file.Name}");
-                    file.MoveTo(file.FullName.Replace(".dat", ".car"));
-                }
-
-                // try decompressing
-
-                if (header.SequenceEqual(ARCHeader))
-                {
-                    Console.WriteLine($"Extracting {file.Name}");
-                    
-                    string directory = path + "\\" + file.Name.Replace(file.Extension, "");
-
-                    using (FileStream stream = file.OpenRead())
-                    {
-                        ExtractARC(directory, stream);
-                    }
-
-                    ProcessDirectory(directory);
-                }
+                Directory.CreateDirectory(fileList.Name);
             }
 
-            // foreach file in directory, sniff header and try adding extensions
-            // foreach file in directory, check for names in filelist.txt
-            // foreach arc in directory, extract and recurse into extracted directory
-        }
-
-        static void ExtractARC(string fileName, Stream file)
-        {
-            file.Position = 0x0E;
-            ushort fileCount = file.ReadUShort();
-
-            Directory.CreateDirectory(fileName);
-
-            for (ushort i = 0; i < fileCount; i++)
+            foreach (FileData file in fileList.GetFiles())
             {
-                uint offset = file.ReadUInt();
-                uint size = file.ReadUInt();
-                uint uncompressedSize = file.ReadUInt();
-
-                long indexPosition = file.Position;
-
-                file.Position = offset;
-                using (FileStream output = new FileStream(CreateOutputFilename(fileName), FileMode.Create, FileAccess.ReadWrite))
+                if (file.Compressed)
                 {
-                    byte[] buffer = new byte[size];
-                    file.Read(buffer);
-                    
-                    if (size != uncompressedSize)
+                    using (var compressed = new MemoryStream(file.Contents))
                     {
-                        using (MemoryStream memoryStream = new MemoryStream(buffer))
+                        using (var decompressed = new MemoryStream())
                         {
-                            Decompress(memoryStream, output);
+                            Decompress(compressed, decompressed);
+                            file.Contents = decompressed.GetBuffer();
                         }
                     }
-                    else
+                }
+
+                if (file.IsArchive())
+                {
+                    ExtractFiles(new ArchiveFileList(Path.Combine(fileList.Name, file.Name), file.Contents));
+                }
+                else
+                {
+                    string extension = "dat";
+                    if (file.IsTIM())
                     {
-                        output.Write(buffer);
+                        extension = "tim";
+                    }
+                    else if (file.IsModel())
+                    {
+                        extension = "car";
+                    }
+                    else if (file.IsTexture())
+                    {
+                        extension = "tex";
+                    }
+                    else if (file.IsInstrument())
+                    {
+                        extension = "ins";
+                    }
+                    else if (file.IsEngineSound())
+                    {
+                        extension = "engn";
+                    }
+                    else if (file.IsSky())
+                    {
+                        extension = "sky";
+                    }
+                    else if (file.IsCourse())
+                    {
+                        extension = "ps";
+                    }
+                    else if (file.IsSEQG())
+                    {
+                        extension = "seq";
+                    }
+                    else if (file.IsHTML())
+                    {
+                        extension = "gthtml";
+                    }
+                    else if (file.IsUsedCar())
+                    {
+                        extension = "usedcar";
+                    }
+
+                    using (FileStream output = File.OpenWrite(Path.Combine(fileList.Name, $"{file.Name}.{extension}")))
+                    {
+                        output.Write(file.Contents);
                     }
                 }
-                file.Position = indexPosition;
+
             }
         }
 
-        static string CreateOutputFilename(string directoryName)
-        {
-            string number = Directory.GetFiles(directoryName).Length.ToString();
-
-            for (int i = number.Length; i < 4; i++)
-            {
-                number = "0" + number;
-            }
-
-            return directoryName + "\\_unknown" + number + ".dat";
-        }
-
-        static void Decompress(Stream compressed, Stream output)
+        private static void Decompress(Stream compressed, Stream output)
         {
             byte ch;
             byte Temp;
