@@ -45,9 +45,22 @@ namespace GT2.GT1ArchiveExtractor
 
         private string CheckForName(string path)
         {
+            string filename = Path.GetFileName(path);
+            string directory = null;
+            if (filename.Length > 0)
+            {
+                directory = path.Replace($"\\{filename}", "");
+            }
+
             if (fileNames.ContainsKey(path))
             {
                 fileNames.TryGetValue(path, out path);
+            }
+            else if (directory != null && fileNames.ContainsKey(directory))
+            {
+                string newDirectory;
+                fileNames.TryGetValue(directory, out newDirectory);
+                path = path.Replace(directory, newDirectory);
             }
             return path;
         }
