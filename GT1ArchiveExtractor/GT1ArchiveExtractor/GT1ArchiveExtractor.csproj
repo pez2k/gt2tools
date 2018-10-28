@@ -47,6 +47,9 @@
       <Link>StreamExtensions.cs</Link>
     </Compile>
     <Compile Include="ArchiveFileList.cs" />
+    <Compile Include="FileListFileWriter.cs" />
+    <Compile Include="DiskFileWriter.cs" />
+    <Compile Include="IFileWriter.cs" />
     <Compile Include="FileData.cs" />
     <Compile Include="DirectoryFileList.cs" />
     <Compile Include="FileList.cs" />

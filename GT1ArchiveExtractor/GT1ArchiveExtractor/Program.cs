@@ -3,23 +3,29 @@ using System.IO;
 
 namespace GT2.GT1ArchiveExtractor
 {
-    using StreamExtensions;
-
-    class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
-            ExtractFiles(new DirectoryFileList("./"));
+            IFileWriter writer;
+
+            if (args.Length == 1 && args[0] == "-l")
+            {
+                writer = new FileListFileWriter();
+            }
+            else
+            {
+                writer = new DiskFileWriter();
+            }
+
+            ExtractFiles(new DirectoryFileList(".\\"), writer);
         }
 
-        private static void ExtractFiles(FileList fileList)
+        private static void ExtractFiles(FileList fileList, IFileWriter writer)
         {
             Console.WriteLine($"Extracting {fileList.Name}");
-
-            if (!Directory.Exists(fileList.Name))
-            {
-                Directory.CreateDirectory(fileList.Name);
-            }
+            
+            writer.CreateDirectory(fileList.Name);
 
             foreach (FileData file in fileList.GetFiles())
             {
@@ -37,16 +43,12 @@ namespace GT2.GT1ArchiveExtractor
 
                 if (file.IsArchive())
                 {
-                    ExtractFiles(new ArchiveFileList(Path.Combine(fileList.Name, file.Name), file.Contents));
+                    ExtractFiles(new ArchiveFileList(Path.Combine(fileList.Name, file.Name), file.Contents), writer);
                 }
                 else
                 {
-                    using (FileStream output = File.OpenWrite(Path.Combine(fileList.Name, $"{file.Name}.{file.GetExtension()}")))
-                    {
-                        output.Write(file.Contents);
-                    }
+                    writer.Write(Path.Combine(fileList.Name, $"{file.Name}.{file.GetExtension()}"), file.Contents);
                 }
-
             }
         }
 
