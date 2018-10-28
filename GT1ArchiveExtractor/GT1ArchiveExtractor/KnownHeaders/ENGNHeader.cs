@@ -4,7 +4,7 @@
     {
         public ENGNHeader()
         {
-            Extension = "engn";
+            Extension = "es";
             Header = FromString("ENGN");
         }
     }

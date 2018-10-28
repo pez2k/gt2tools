@@ -7,15 +7,18 @@ namespace GT2.GT1ArchiveExtractor
     {
         public static void Main(string[] args)
         {
-            IFileWriter writer;
+            IFileWriter writer = new DiskFileWriter();
 
-            if (args.Length == 1 && args[0] == "-l")
+            if (args.Length == 1)
             {
-                writer = new FileListFileWriter();
-            }
-            else
-            {
-                writer = new DiskFileWriter();
+                if (args[0] == "-l")
+                {
+                    writer = new FileListFileWriter();
+                }
+                else if (args[0].EndsWith(".txt"))
+                {
+                    writer = new DiskFileWriter(args[0]);
+                }
             }
 
             ExtractFiles(new DirectoryFileList(".\\"), writer);
