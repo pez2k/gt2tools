@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace GT2.GT1ArchiveExtractor
 {
@@ -23,6 +24,16 @@ namespace GT2.GT1ArchiveExtractor
                 if (file.IsArchive())
                 {
                     yield return file;
+                }
+                else
+                {
+                    var headerTest = new FileData { Contents = file.Contents.Skip(1).Take(8).Concat(file.Contents.Skip(10).Take(2)).ToArray() };
+
+                    if (headerTest.IsArchive())
+                    {
+                        file.Compressed = true;
+                        yield return file;
+                    }
                 }
             }
         }

@@ -41,49 +41,7 @@ namespace GT2.GT1ArchiveExtractor
                 }
                 else
                 {
-                    string extension = "dat";
-                    if (file.IsTIM())
-                    {
-                        extension = "tim";
-                    }
-                    else if (file.IsModel())
-                    {
-                        extension = "car";
-                    }
-                    else if (file.IsTexture())
-                    {
-                        extension = "tex";
-                    }
-                    else if (file.IsInstrument())
-                    {
-                        extension = "ins";
-                    }
-                    else if (file.IsEngineSound())
-                    {
-                        extension = "engn";
-                    }
-                    else if (file.IsSky())
-                    {
-                        extension = "sky";
-                    }
-                    else if (file.IsCourse())
-                    {
-                        extension = "ps";
-                    }
-                    else if (file.IsSEQG())
-                    {
-                        extension = "seq";
-                    }
-                    else if (file.IsHTML())
-                    {
-                        extension = "gthtml";
-                    }
-                    else if (file.IsUsedCar())
-                    {
-                        extension = "usedcar";
-                    }
-
-                    using (FileStream output = File.OpenWrite(Path.Combine(fileList.Name, $"{file.Name}.{extension}")))
+                    using (FileStream output = File.OpenWrite(Path.Combine(fileList.Name, $"{file.Name}.{file.GetExtension()}")))
                     {
                         output.Write(file.Contents);
                     }
