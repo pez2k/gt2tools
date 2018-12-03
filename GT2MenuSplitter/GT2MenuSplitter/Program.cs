@@ -47,7 +47,7 @@ namespace GT2MenuSplitter
                         stream.Write(data, 0, length);
                         stream.Position = 0;
 
-                        using (FileStream output = new FileStream($"gtmenudat\\{fileNumber}.dat", FileMode.Create, FileAccess.Write))
+                        using (FileStream output = new FileStream($"gtmenudat\\{fileNumber:X4}.dat", FileMode.Create, FileAccess.Write))
                         {
                             using (GZipStream unzip = new GZipStream(stream, CompressionMode.Decompress))
                             {
