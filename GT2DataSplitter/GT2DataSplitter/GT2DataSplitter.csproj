@@ -73,9 +73,9 @@
     <Compile Include="DataStructures\GTModeRace.cs" />
     <Compile Include="DataStructures\GTModeData.cs" />
     <Compile Include="DataStructures\GTModeData\Car.cs" />
-    <Compile Include="DataStructures\GTModeData\CarUnknown6.cs" />
-    <Compile Include="DataStructures\GTModeData\CarUnknown5.cs" />
     <Compile Include="DataStructures\GTModeData\CarUnknown4.cs" />
+    <Compile Include="DataStructures\GTModeData\TractionControlSystem.cs" />
+    <Compile Include="DataStructures\GTModeData\ActiveStabilityControl.cs" />
     <Compile Include="DataStructures\GTModeData\CarUnknown3.cs" />
     <Compile Include="DataStructures\GTModeData\CarUnknown2.cs" />
     <Compile Include="DataStructures\GTModeData\Clutch.cs" />

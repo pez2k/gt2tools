@@ -35,9 +35,9 @@ namespace GT2.DataSplitter
         public List<CarUnknown1> Unknown1 { get; set; } = new List<CarUnknown1>();
         public List<CarUnknown2> Unknown2 { get; set; } = new List<CarUnknown2>();
         public List<CarUnknown3> Unknown3 { get; set; } = new List<CarUnknown3>();
+        public List<ActiveStabilityControl> ActiveStabilityControlParts { get; set; } = new List<ActiveStabilityControl>();
+        public List<TractionControlSystem> TractionControlSystemParts { get; set; } = new List<TractionControlSystem>();
         public List<CarUnknown4> Unknown4 { get; set; } = new List<CarUnknown4>();
-        public List<CarUnknown5> Unknown5 { get; set; } = new List<CarUnknown5>();
-        public List<CarUnknown6> Unknown6 { get; set; } = new List<CarUnknown6>();
         public List<Car> Cars { get; set; } = new List<Car>();
         
         public void ReadData(string filename)
@@ -81,9 +81,9 @@ namespace GT2.DataSplitter
                 Unknown1.Read(file, blocks[24].BlockStart, blocks[24].BlockSize);
                 Unknown2.Read(file, blocks[25].BlockStart, blocks[25].BlockSize);
                 Unknown3.Read(file, blocks[26].BlockStart, blocks[26].BlockSize);
-                Unknown4.Read(file, blocks[27].BlockStart, blocks[27].BlockSize);
-                Unknown5.Read(file, blocks[28].BlockStart, blocks[28].BlockSize);
-                Unknown6.Read(file, blocks[29].BlockStart, blocks[29].BlockSize);
+                ActiveStabilityControlParts.Read(file, blocks[27].BlockStart, blocks[27].BlockSize);
+                TractionControlSystemParts.Read(file, blocks[28].BlockStart, blocks[28].BlockSize);
+                Unknown4.Read(file, blocks[29].BlockStart, blocks[29].BlockSize);
                 Cars.Read(file, blocks[30].BlockStart, blocks[30].BlockSize);
             }
         }
@@ -117,9 +117,9 @@ namespace GT2.DataSplitter
             Unknown1.Dump();
             Unknown2.Dump();
             Unknown3.Dump();
+            ActiveStabilityControlParts.Dump();
+            TractionControlSystemParts.Dump();
             Unknown4.Dump();
-            Unknown5.Dump();
-            Unknown6.Dump();
             Cars.Dump();
         }
 
@@ -152,9 +152,9 @@ namespace GT2.DataSplitter
             Unknown1.Import();
             Unknown2.Import();
             Unknown3.Import();
+            ActiveStabilityControlParts.Import();
+            TractionControlSystemParts.Import();
             Unknown4.Import();
-            Unknown5.Import();
-            Unknown6.Import();
             Cars.Import();
         }
 
@@ -197,9 +197,9 @@ namespace GT2.DataSplitter
                 Unknown1.Write(file, 8 * i++);
                 Unknown2.Write(file, 8 * i++);
                 Unknown3.Write(file, 8 * i++);
+                ActiveStabilityControlParts.Write(file, 8 * i++);
+                TractionControlSystemParts.Write(file, 8 * i++);
                 Unknown4.Write(file, 8 * i++);
-                Unknown5.Write(file, 8 * i++);
-                Unknown6.Write(file, 8 * i++);
                 Cars.Write(file, 8 * i++);
 
                 file.Position = 0;
