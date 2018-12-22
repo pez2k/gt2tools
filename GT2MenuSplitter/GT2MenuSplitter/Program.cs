@@ -8,7 +8,14 @@ namespace GT2MenuSplitter
     {
         static void Main(string[] args)
         {
-            Extract();
+            if (args.Length == 0)
+            {
+                Pack();
+            }
+            else
+            {
+                Extract();
+            }
         }
 
         static void Extract()
@@ -80,6 +87,24 @@ namespace GT2MenuSplitter
             }
 
             return file.Length;
+        }
+
+        static void Pack()
+        {
+            using (var output = new FileStream("new_gtmenudat.dat", FileMode.Create, FileAccess.Write))
+            {
+                using (var compression = new GZipStream(output, CompressionMode.Compress))
+                {
+                    foreach (string filename in Directory.EnumerateFiles("gtmenudat\\"))
+                    {
+                        using (var input = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                        {
+                            Console.WriteLine($"Adding {filename}");
+                            input.CopyTo(compression);
+                        }
+                    }
+                }
+            }
         }
     }
 }
