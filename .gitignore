@@ -8,3 +8,4 @@ obj/
 bin/
 *.TMP
 *.user
+.vs
