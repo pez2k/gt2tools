@@ -3,8 +3,10 @@ using System.IO;
 using System.IO.Compression;
 using ICSharpCode.SharpZipLib.GZip;
 
-namespace GT2MenuSplitter
+namespace GT2.MenuSplitter
 {
+    using StreamExtensions;
+
     class Program
     {
         static void Main(string[] args)
@@ -94,30 +96,42 @@ namespace GT2MenuSplitter
         {
             using (var output = new FileStream("new_gtmenudat.dat", FileMode.Create, FileAccess.Write))
             {
-                foreach (string filename in Directory.EnumerateFiles("gtmenudat\\"))
+                using (var index = new FileStream("new_gtmenudat.idx", FileMode.Create, FileAccess.Write))
                 {
-                    using (var memory = new MemoryStream())
+                    index.WriteUInt(0);
+                    uint fileCount = 0;
+
+                    foreach (string filename in Directory.EnumerateFiles("gtmenudat\\"))
                     {
-                        using (var compression = new GZipOutputStream(memory))
+                        fileCount++;
+                        index.WriteUInt((uint)output.Position);
+
+                        using (var memory = new MemoryStream())
                         {
-                            compression.SetLevel(8);
-                            compression.IsStreamOwner = false;
-                            using (var input = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                            using (var compression = new GZipOutputStream(memory))
                             {
-                                Console.WriteLine($"Adding {filename}");
-                                input.CopyTo(compression);
+                                compression.SetLevel(8);
+                                compression.IsStreamOwner = false;
+                                using (var input = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                                {
+                                    Console.WriteLine($"Adding {filename}");
+                                    input.CopyTo(compression);
+                                }
                             }
+                            memory.Position = 0;
+                            memory.CopyTo(output);
                         }
-                        memory.Position = 0;
-                        memory.CopyTo(output);
+
+                        long misalignedBytes = output.Length % 4;
+
+                        if (misalignedBytes != 0)
+                        {
+                            output.Position += 4 - misalignedBytes;
+                        }
                     }
 
-                    long misalignedBytes = output.Length % 4;
-
-                    if (misalignedBytes != 0)
-                    {
-                        output.Position += 4 - misalignedBytes;
-                    }
+                    index.Position = 0;
+                    index.WriteUInt(fileCount);
                 }
             }
         }
