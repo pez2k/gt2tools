@@ -92,18 +92,31 @@ namespace GT2MenuSplitter
 
         static void Pack()
         {
-            foreach (string filename in Directory.EnumerateFiles("gtmenudat\\"))
+            using (var output = new FileStream("new_gtmenudat.dat", FileMode.Create, FileAccess.Write))
             {
-                using (var output = new FileStream("new_gtmenudat.dat", FileMode.Append, FileAccess.Write))
+                foreach (string filename in Directory.EnumerateFiles("gtmenudat\\"))
                 {
-                    using (var compression = new GZipOutputStream(output))
+                    using (var memory = new MemoryStream())
                     {
-                        compression.SetLevel(8);
-                        using (var input = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                        using (var compression = new GZipOutputStream(memory))
                         {
-                            Console.WriteLine($"Adding {filename}");
-                            input.CopyTo(compression);
+                            compression.SetLevel(8);
+                            compression.IsStreamOwner = false;
+                            using (var input = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                            {
+                                Console.WriteLine($"Adding {filename}");
+                                input.CopyTo(compression);
+                            }
                         }
+                        memory.Position = 0;
+                        memory.CopyTo(output);
+                    }
+
+                    long misalignedBytes = output.Length % 4;
+
+                    if (misalignedBytes != 0)
+                    {
+                        output.Position += 4 - misalignedBytes;
                     }
                 }
             }
