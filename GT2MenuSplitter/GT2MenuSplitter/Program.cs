@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using ICSharpCode.SharpZipLib.GZip;
 
 namespace GT2MenuSplitter
 {
@@ -91,12 +92,13 @@ namespace GT2MenuSplitter
 
         static void Pack()
         {
-            using (var output = new FileStream("new_gtmenudat.dat", FileMode.Create, FileAccess.Write))
+            foreach (string filename in Directory.EnumerateFiles("gtmenudat\\"))
             {
-                using (var compression = new GZipStream(output, CompressionMode.Compress))
+                using (var output = new FileStream("new_gtmenudat.dat", FileMode.Append, FileAccess.Write))
                 {
-                    foreach (string filename in Directory.EnumerateFiles("gtmenudat\\"))
+                    using (var compression = new GZipOutputStream(output))
                     {
+                        compression.SetLevel(8);
                         using (var input = new FileStream(filename, FileMode.Open, FileAccess.Read))
                         {
                             Console.WriteLine($"Adding {filename}");
