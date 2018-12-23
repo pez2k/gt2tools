@@ -15,9 +15,13 @@ namespace GT2.MenuSplitter
             {
                 Pack();
             }
-            else
+            else if (args[0].Contains("gtmenudat."))
             {
                 Extract();
+            }
+            else if (args[0].Contains("commonpic."))
+            {
+                ExtractCommonpic();
             }
         }
 
@@ -94,6 +98,18 @@ namespace GT2.MenuSplitter
 
         static void Pack()
         {
+            if (Directory.Exists("gtmenudat"))
+            {
+                PackGTMenu();
+            }
+            else if (Directory.Exists("commonpic"))
+            {
+                PackCommonpic();
+            }
+        }
+
+        static void PackGTMenu()
+        {
             using (var output = new FileStream("new_gtmenudat.dat", FileMode.Create, FileAccess.Write))
             {
                 using (var index = new FileStream("new_gtmenudat.idx", FileMode.Create, FileAccess.Write))
@@ -130,6 +146,85 @@ namespace GT2.MenuSplitter
                         }
                     }
 
+                    index.Position = 0;
+                    index.WriteUInt(fileCount);
+                }
+            }
+        }
+
+        static void ExtractCommonpic()
+        {
+            using (FileStream index = new FileStream("commonpic.idx", FileMode.Open, FileAccess.Read))
+            {
+                uint fileCount = index.ReadUInt();
+                uint startPosition = index.ReadUInt();
+                uint nextPosition = index.ReadUInt();
+
+                using (FileStream file = new FileStream("commonpic.dat", FileMode.Open, FileAccess.Read))
+                {
+                    if (!Directory.Exists("commonpic"))
+                    {
+                        Directory.CreateDirectory("commonpic");
+                    }
+
+                    for (int fileNumber = 0; fileNumber < fileCount; fileNumber++)
+                    {
+                        string filename = $"cmnp{fileNumber:D4}.dat";
+
+                        Console.WriteLine($"File {filename} found from {startPosition} to {nextPosition}");
+
+                        file.Position = startPosition;
+                        byte[] data = new byte[nextPosition - startPosition];
+                        file.Read(data);
+
+                        using (FileStream output = new FileStream($"commonpic\\{filename}", FileMode.Create, FileAccess.Write))
+                        {
+                            output.Write(data);
+                        }
+
+                        startPosition = nextPosition;
+                        if (index.Position == index.Length)
+                        {
+                            nextPosition = (uint)file.Length;
+                        }
+                        else
+                        {
+                            nextPosition = index.ReadUInt();
+                        }
+                    }
+                }
+            }
+        }
+
+        static void PackCommonpic()
+        {
+            using (var output = new FileStream("new_commonpic.dat", FileMode.Create, FileAccess.Write))
+            {
+                using (var index = new FileStream("new_commonpic.idx", FileMode.Create, FileAccess.Write))
+                {
+                    index.WriteUInt(0);
+                    uint fileCount = 0;
+
+                    foreach (string filename in Directory.EnumerateFiles("commonpic"))
+                    {
+                        fileCount++;
+                        index.WriteUInt((uint)output.Position);
+
+                        using (var input = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                        {
+                            Console.WriteLine($"Adding {filename}");
+                            input.CopyTo(output);
+                        }
+
+                        long misalignedBytes = output.Length % 16;
+
+                        if (misalignedBytes != 0)
+                        {
+                            output.Position += 16 - misalignedBytes;
+                        }
+                    }
+
+                    index.WriteUInt((uint)output.Length);
                     index.Position = 0;
                     index.WriteUInt(fileCount);
                 }
