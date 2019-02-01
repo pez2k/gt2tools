@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -9,6 +10,7 @@ using System.Text;
 namespace GT2.CarInfoEditorCSV
 {
     using CarInfoEditor;
+    using CarNameConversion;
 
     class Program
     {
@@ -94,17 +96,29 @@ namespace GT2.CarInfoEditorCSV
                             csv.Configuration.RegisterClassMap<CarCSVMap>();
                             colourCsv.Configuration.RegisterClassMap<CarColourCSVMap>();
 
+                            string lastCarName = "";
                             while (csv.Read())
                             {
                                 Car newCar = csv.GetRecord<Car>();
+                                if (newCar.CarName.ToCarID() < lastCarName.ToCarID())
+                                {
+                                    throw new Exception($"Car ID {newCar.CarName} found after {lastCarName} in Cars.csv, not in alphabetical order.");
+                                }
+                                lastCarName = newCar.CarName;
                                 newCar.Colours = new List<CarColour>();
                                 list.Cars.Add(newCar);
                             }
-                            
+
+                            lastCarName = "";
                             while (colourCsv.Read())
                             {
                                 CarColourWithName newColourWithName = colourCsv.GetRecord<CarColourWithName>();
                                 string carName = newColourWithName.CarName;
+                                if (carName.ToCarID() < lastCarName.ToCarID())
+                                {
+                                    throw new Exception($"Car ID {carName} found after {lastCarName} in Colours.csv, not in alphabetical order.");
+                                }
+                                lastCarName = carName;
                                 CarColour newColour = new CarColour
                                 {
                                     ThumbnailColour = newColourWithName.ThumbnailColour,
