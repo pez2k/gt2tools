@@ -10,7 +10,7 @@ namespace GT2.UsedCarEditor
         public List<Manufacturer> Manufacturers { get; set; } = new List<Manufacturer>(39);
 
         protected string[] ManufacturerNames { get; set; } =
-            { "", "", "", "", "", "", "", "Daihatsu", "", "", "", "Honda", "", "", "", "", "", "", "Mazda", "", "", "", "Mitsubishi", "Nissan", "", "", "", "", "", "", "Subaru", "Suzuki", "", "Toyota", "", "", "", "", "" };
+            { "Acura", "Alfa Romeo", "Aston Martin", "Audi", "BMW", "Chevrolet", "Citroen", "Daihatsu", "Dodge", "Fiat", "Ford", "Honda", "Manufacturer12", "Jaguar", "Lancia", "Manufacturer15", "Lister", "Lotus", "Mazda", "Mercedes-Benz", "Manufacturer20", "Mini MG", "Mitsubishi", "Nissan", "Opel", "Peugeot", "Plymouth", "Renault", "RUF", "Shelby", "Subaru", "Suzuki", "Tommykaira", "Toyota", "TVR", "Vauxhall", "Vector", "Venturi", "Volkswagen" };
 
         public void Read(Stream stream, uint startPosition)
         {
