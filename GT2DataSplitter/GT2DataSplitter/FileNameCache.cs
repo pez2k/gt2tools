@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GT2.DataSplitter
 {
@@ -19,7 +20,7 @@ namespace GT2.DataSplitter
         {
             if (!Cache.ContainsKey(type) || Cache[type].Count < index)
             {
-                return "";
+                throw new Exception($"Filename {type}[{index}] not found.");
             }
 
             return Cache[type][index];
@@ -29,7 +30,7 @@ namespace GT2.DataSplitter
         {
             if (!Cache.ContainsKey(type) || !Cache[type].Contains(filename))
             {
-                return 0;
+                throw new Exception($"Filename {filename} of type {type} not found.");
             }
 
             return (ushort)Cache[type].IndexOf(filename);
