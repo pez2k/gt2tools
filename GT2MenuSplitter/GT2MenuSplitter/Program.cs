@@ -9,17 +9,35 @@ namespace GT2.MenuSplitter
 
     class Program
     {
+        static bool decompress = true;
+
         static void Main(string[] args)
         {
             if (args.Length == 0)
             {
                 Pack();
+                return;
             }
-            else if (args[0].Contains("gtmenudat."))
+
+            string filename;
+            if (args.Length == 1)
+            {
+                filename = args[0];
+            }
+            else
+            {
+                filename = args[1];
+                if (args[0] == "-c")
+                {
+                    decompress = false;
+                }
+            }
+
+            if (filename.Contains("gtmenudat."))
             {
                 Extract();
             }
-            else if (args[0].Contains("commonpic."))
+            else if (filename.Contains("commonpic."))
             {
                 ExtractCommonpic();
             }
@@ -42,7 +60,7 @@ namespace GT2.MenuSplitter
                 {
                     nextPosition = FindNextGzip(file, startPosition + 1);
 
-                    string filename = $"gt00{fileNumber:D4}.mdt";
+                    string filename = $"gt00{fileNumber:D4}.mdt{(decompress ? "" : ".gz")}";
 
                     Console.WriteLine($"File {filename} found from {startPosition} to {nextPosition}");
 
@@ -58,9 +76,16 @@ namespace GT2.MenuSplitter
 
                         using (FileStream output = new FileStream($"gtmenudat\\{filename}", FileMode.Create, FileAccess.Write))
                         {
-                            using (GZipStream unzip = new GZipStream(stream, CompressionMode.Decompress))
+                            if (decompress)
                             {
-                                unzip.CopyTo(output);
+                                using (GZipStream unzip = new GZipStream(stream, CompressionMode.Decompress))
+                                {
+                                    unzip.CopyTo(output);
+                                }
+                            }
+                            else
+                            {
+                                stream.CopyTo(output);
                             }
                         }
                     }
@@ -122,20 +147,27 @@ namespace GT2.MenuSplitter
                         fileCount++;
                         index.WriteUInt((uint)output.Position);
 
-                        using (var memory = new MemoryStream())
+                        Console.WriteLine($"Adding {filename}");
+                        using (var input = new FileStream(filename, FileMode.Open, FileAccess.Read))
                         {
-                            using (var compression = new GZipOutputStream(memory))
+                            if (filename.EndsWith(".gz"))
                             {
-                                compression.SetLevel(8);
-                                compression.IsStreamOwner = false;
-                                using (var input = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                                input.CopyTo(output);
+                            }
+                            else
+                            {
+                                using (var memory = new MemoryStream())
                                 {
-                                    Console.WriteLine($"Adding {filename}");
-                                    input.CopyTo(compression);
+                                    using (var compression = new GZipOutputStream(memory))
+                                    {
+                                        compression.SetLevel(8);
+                                        compression.IsStreamOwner = false;
+                                        input.CopyTo(compression);
+                                    }
+                                    memory.Position = 0;
+                                    memory.CopyTo(output);
                                 }
                             }
-                            memory.Position = 0;
-                            memory.CopyTo(output);
                         }
 
                         long misalignedBytes = output.Length % 4;
