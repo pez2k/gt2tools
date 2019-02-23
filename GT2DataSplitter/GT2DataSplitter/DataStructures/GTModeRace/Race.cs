@@ -8,20 +8,15 @@ namespace GT2.DataSplitter
     {
         public override string CreateOutputFilename(byte[] data)
         {
-            string filename = Name;
+            string directory = Name;
             
-            if (!Directory.Exists(filename))
+            if (!Directory.Exists(directory))
             {
-                Directory.CreateDirectory(filename);
+                Directory.CreateDirectory(directory);
             }
-            
-            string number = Directory.GetFiles(filename).Length.ToString();
-            for (int i = number.Length; i < 3; i++)
-            {
-                number = "0" + number;
-            }
-            return filename + "\\" + number + "_" + RaceStringTable.Lookup.ConvertToString(Data.RaceName, null, null) +
-                              "_" + RaceStringTable.Lookup.ConvertToString(Data.TrackName, null, null) + ".csv";
+
+            return directory + "\\" + RaceStringTable.Lookup.ConvertToString(Data.RaceName, null, null) +
+                   "_" + RaceStringTable.Lookup.ConvertToString(Data.TrackName, null, null) + ".csv";
         }
     }
     
