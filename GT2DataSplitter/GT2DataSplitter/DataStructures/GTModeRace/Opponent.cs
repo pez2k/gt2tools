@@ -9,7 +9,7 @@ namespace GT2.DataSplitter
     {
         public override string CreateOutputFilename(byte[] data)
         {
-            return base.CreateOutputFilename(data).Replace(".csv", "_" + Data.CarId.ToCarName() + ".csv");
+            return Name + "\\" + Data.OpponentId.ToString("D4") + "_" + Data.CarId.ToCarName() + ".csv";
         }
     }
     
