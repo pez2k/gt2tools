@@ -17,13 +17,13 @@ namespace GT2.DataSplitter
 
         public static void Export()
         {
-            string directory = "Strings\\CarNames";
+            string directory = $"Strings\\{Program.LanguagePrefix}";
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            using (TextWriter output = new StreamWriter(File.Create($"{directory}\\{Program.LanguagePrefix}.csv"), Encoding.UTF8))
+            using (TextWriter output = new StreamWriter(File.Create($"{directory}\\CarNames.csv"), Encoding.UTF8))
             {
                 using (CsvWriter csv = new CsvWriter(output))
                 {
@@ -41,7 +41,7 @@ namespace GT2.DataSplitter
 
         public static void Import()
         {
-            string filename = $"Strings\\CarNames\\{Program.LanguagePrefix}.csv";
+            string filename = $"Strings\\{Program.LanguagePrefix}\\CarNames.csv";
 
             using (TextReader input = new StreamReader(filename, Encoding.UTF8))
             {
@@ -58,6 +58,11 @@ namespace GT2.DataSplitter
         public static (string nameFirstPart, string nameSecondPart) Get(string carID)
         {
             return Strings.TryGetValue(carID, out (string nameFirstPart, string nameSecondPart) carName)? carName : throw new Exception($"Car name for {carID} not found.");
+        }
+
+        public static void Reset()
+        {
+            Strings.Clear();
         }
     }
 }

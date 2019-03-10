@@ -39,13 +39,13 @@ namespace GT2.DataSplitter
 
         public static void Export()
         {
-            string directory = "Strings\\PartStrings";
+            string directory = $"Strings\\{Program.LanguagePrefix}";
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            using (TextWriter output = new StreamWriter(File.Create($"{directory}\\{Program.LanguagePrefix}.csv"), Encoding.UTF8))
+            using (TextWriter output = new StreamWriter(File.Create($"{directory}\\PartStrings.csv"), Encoding.UTF8))
             {
                 using (CsvWriter csv = new CsvWriter(output))
                 {
@@ -66,7 +66,7 @@ namespace GT2.DataSplitter
 
         public static void Import()
         {
-            string filename = $"Strings\\PartStrings\\{Program.LanguagePrefix}.csv";
+            string filename = $"Strings\\{Program.LanguagePrefix}\\PartStrings.csv";
 
             using (TextReader input = new StreamReader(filename, Encoding.UTF8))
             {
@@ -86,7 +86,7 @@ namespace GT2.DataSplitter
 
             using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
             {
-                byte[] header = { 0xCA, 0x52, 0x00, 0x00, 0x57, 0x53, 0x44, 0x42 };
+                byte[] header = { 0x00, 0x00, 0x00, 0x00, 0x57, 0x53, 0x44, 0x42 };
                 file.Write(header, 0, header.Length);
                 file.WriteUShort((ushort)Strings.Count);
 
@@ -97,6 +97,9 @@ namespace GT2.DataSplitter
                     file.WriteUShort(length);
                     file.Write(characters, 0, characters.Length);
                 }
+
+                file.Position = 0;
+                file.WriteUShort((ushort)file.Length);
 
                 file.Position = 0;
                 using (FileStream zipFile = new FileStream(filename + ".gz", FileMode.Create, FileAccess.Write))
@@ -127,6 +130,12 @@ namespace GT2.DataSplitter
                 UnusedStrings[index] = null;
             }
             return Strings[index];
+        }
+
+        public static void Reset()
+        {
+            Strings.Clear();
+            UnusedStrings?.Clear();
         }
 
         public class StringTableLookup : ITypeConverter

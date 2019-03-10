@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.IO.Compression;
 
 namespace GT2.DataSplitter
@@ -11,7 +12,6 @@ namespace GT2.DataSplitter
         {
             if (args.Length != 1)
             {
-                LanguagePrefix = "eng";
                 BuildFile();
                 return;
             }
@@ -84,18 +84,36 @@ namespace GT2.DataSplitter
 
         static void BuildFile()
         {
-            StringTable.Import();
-            CarNameStringTable.Import();
+            var languageDirectories = Directory.GetDirectories("Strings");
+            foreach (string languageDirectory in languageDirectories)
+            {
+                string language = languageDirectory.Split('\\')[1];
+                Console.WriteLine($"Building language '{language}'...");
 
-            GTModeData CarData = new GTModeData();
-            CarData.ImportData();
-            CarData.WriteData($"{LanguagePrefix}_gtmode_data.dat");
+                LanguagePrefix = language;
+                StringTable.Import();
 
-            GTModeRace RaceData = new GTModeRace();
-            RaceData.ImportData();
-            RaceData.WriteData($"{LanguagePrefix}_gtmode_race.dat");
+                if (!File.Exists($"Strings\\{LanguagePrefix}\\CarNames.csv"))
+                {
+                    LanguagePrefix = "eng";
+                }
 
-            StringTable.Write($"{LanguagePrefix}_unistrdb.dat");
+                CarNameStringTable.Import();
+                LanguagePrefix = language;
+
+                GTModeData CarData = new GTModeData();
+                CarData.ImportData();
+                CarData.WriteData($"{LanguagePrefix}_gtmode_data.dat");
+
+                GTModeRace RaceData = new GTModeRace();
+                RaceData.ImportData();
+                RaceData.WriteData($"{LanguagePrefix}_gtmode_race.dat");
+
+                StringTable.Write($"{LanguagePrefix}_unistrdb.dat");
+
+                StringTable.Reset();
+                CarNameStringTable.Reset();
+            }
         }
 
         static void SplitLicenseFile(string filename)
