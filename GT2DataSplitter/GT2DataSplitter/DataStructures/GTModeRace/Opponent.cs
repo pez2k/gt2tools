@@ -7,6 +7,29 @@ namespace GT2.DataSplitter
 
     public class Opponent : CsvDataStructure<OpponentData, OpponentCSVMap>
     {
+        public Opponent()
+        {
+            CacheFilename = true;
+        }
+
+        public override void Dump()
+        {
+            if (!FileNameCache.Cache.ContainsKey(Name))
+            {
+                FileNameCache.Add(Name, "None");
+            }
+            base.Dump();
+        }
+
+        public override void Import(string filename)
+        {
+            if (!FileNameCache.Cache.ContainsKey(Name))
+            {
+                FileNameCache.Add(Name, "None");
+            }
+            base.Import(filename);
+        }
+
         public override string CreateOutputFilename(byte[] data)
         {
             return Name + "\\" + Data.OpponentId.ToString("D4") + "_" + Data.CarId.ToCarName() + ".csv";

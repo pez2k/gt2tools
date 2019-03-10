@@ -77,20 +77,24 @@ namespace GT2.DataSplitter
 
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
-            ushort stringNumber = FileNameCache.Get(Name, text);
+            int stringNumber = FileNameCache.Get(Name, text);
             if (Name == "EligibleCars")
             {
                 return (byte)stringNumber;
             }
+            else if (Name == "Opponent")
+            {
+                return (uint)stringNumber;
+            }
             else
             {
-                return stringNumber;
+                return (ushort)stringNumber;
             }
         }
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
-            ushort cacheIndex = ushort.Parse(value.ToString());
+            int cacheIndex = int.Parse(value.ToString());
             return FileNameCache.Get(Name, cacheIndex);
         }
     }

@@ -36,15 +36,15 @@ namespace GT2.DataSplitter
         public void DumpData()
         {
             EligibleCars.Dump();
-            Races.Dump();
             Opponents.Dump();
+            Races.Dump();
         }
 
         public void ImportData()
         {
             EligibleCars.Import();
-            Races.Import();
             Opponents.Import();
+            Races.Import();
         }
 
         public void WriteData(string filename)
