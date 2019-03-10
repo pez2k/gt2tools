@@ -39,29 +39,13 @@ namespace GT2.DataSplitter
 
         public static void Export()
         {
-            string directory = "Strings";
+            string directory = $"Strings\\{Program.LanguagePrefix}";
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
-            
-            string filename = directory + "\\_cache.dat";
-            using (TextWriter output = new StreamWriter(File.Create(filename), Encoding.UTF8))
-            {
-                using (CsvWriter csv = new CsvWriter(output))
-                {
-                    for (int i = 0; i < Strings.Count; i++)
-                    {
-                        csv.Configuration.QuoteAllFields = true;
-                        csv.WriteField(i.ToString());
-                        csv.WriteField(Strings[i]);
-                        csv.NextRecord();
-                    }
-                }
-            }
 
-            filename = directory + "\\PartStrings.csv";
-            using (TextWriter output = new StreamWriter(File.Create(filename), Encoding.UTF8))
+            using (TextWriter output = new StreamWriter(File.Create(directory + "\\PartStrings.csv"), Encoding.UTF8))
             {
                 using (CsvWriter csv = new CsvWriter(output))
                 {
@@ -82,7 +66,7 @@ namespace GT2.DataSplitter
 
         public static void Import()
         {
-            string directory = "Strings";
+            string directory = $"Strings\\{Program.LanguagePrefix}";
             string filename = directory + "\\PartStrings.csv";
 
             using (TextReader input = new StreamReader(filename, Encoding.UTF8))

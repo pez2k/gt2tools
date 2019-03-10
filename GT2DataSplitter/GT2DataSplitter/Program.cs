@@ -5,6 +5,8 @@ namespace GT2.DataSplitter
 {
     class Program
     {
+        public static string LanguagePrefix { get; set; }
+
         static void Main(string[] args)
         {
             if (args.Length != 1)
@@ -54,20 +56,25 @@ namespace GT2.DataSplitter
 
             if (extension == ".dat")
             {
-                SplitFile(filename);
+                LanguagePrefix = filename.Split('_')[0];
+                if (LanguagePrefix.Length != 3)
+                {
+                    LanguagePrefix = "jpn";
+                }
+                SplitFile();
             }
         }
 
-        static void SplitFile(string filename)
+        static void SplitFile()
         {
-            StringTable.Read("eng_unistrdb.dat");
+            StringTable.Read($"{LanguagePrefix}_unistrdb.dat");
 
             GTModeData CarData = new GTModeData();
-            CarData.ReadData(filename);
+            CarData.ReadData($"{LanguagePrefix}_gtmode_data.dat");
             CarData.DumpData();
 
             GTModeRace RaceData = new GTModeRace();
-            RaceData.ReadData("eng_gtmode_race.dat");
+            RaceData.ReadData($"{LanguagePrefix}_gtmode_race.dat");
             RaceData.DumpData();
 
             StringTable.Export();
