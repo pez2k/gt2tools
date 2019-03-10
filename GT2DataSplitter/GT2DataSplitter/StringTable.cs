@@ -39,13 +39,13 @@ namespace GT2.DataSplitter
 
         public static void Export()
         {
-            string directory = $"Strings\\{Program.LanguagePrefix}";
+            string directory = "Strings\\PartStrings";
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            using (TextWriter output = new StreamWriter(File.Create(directory + "\\PartStrings.csv"), Encoding.UTF8))
+            using (TextWriter output = new StreamWriter(File.Create($"{directory}\\{Program.LanguagePrefix}.csv"), Encoding.UTF8))
             {
                 using (CsvWriter csv = new CsvWriter(output))
                 {
@@ -66,8 +66,7 @@ namespace GT2.DataSplitter
 
         public static void Import()
         {
-            string directory = $"Strings\\{Program.LanguagePrefix}";
-            string filename = directory + "\\PartStrings.csv";
+            string filename = $"Strings\\PartStrings\\{Program.LanguagePrefix}.csv";
 
             using (TextReader input = new StreamReader(filename, Encoding.UTF8))
             {
