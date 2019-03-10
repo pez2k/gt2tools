@@ -1,4 +1,5 @@
 ﻿using CsvHelper.Configuration;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace GT2.DataSplitter
@@ -10,6 +11,22 @@ namespace GT2.DataSplitter
         public override string CreateOutputFilename(byte[] data)
         {
             return Name + "\\" + Data.CarId.ToCarName() + ".csv";
+        }
+
+        public override void Read(FileStream infile)
+        {
+            base.Read(infile);
+            CarNameStringTable.Add(Data.CarId.ToCarName(), StringTable.Get(Data.NameFirstPart), StringTable.Get(Data.NameSecondPart));
+        }
+
+        public override void Import(string filename)
+        {
+            base.Import(filename);
+            var (nameFirstPart, nameSecondPart) = CarNameStringTable.Get(Data.CarId.ToCarName());
+            CarData carData = Data;
+            carData.NameFirstPart = StringTable.Add(nameFirstPart);
+            carData.NameSecondPart = StringTable.Add(nameSecondPart);
+            Data = carData;
         }
     }
 
@@ -86,8 +103,8 @@ namespace GT2.DataSplitter
             Map(m => m.TCSLevel);
             Map(m => m.RimsCode3);
             Map(m => m.ManufacturerID);
-            Map(m => m.NameFirstPart).TypeConverter(StringTable.Lookup);
-            Map(m => m.NameSecondPart).TypeConverter(StringTable.Lookup);
+            //Map(m => m.NameFirstPart).TypeConverter(StringTable.Lookup);
+            //Map(m => m.NameSecondPart).TypeConverter(StringTable.Lookup);
             Map(m => m.IsSpecial);
             Map(m => m.Year);
             Map(m => m.Unknown);

@@ -68,6 +68,7 @@
     <Compile Include="DataStructures\CsvDataStructure.cs" />
     <Compile Include="DataStructures\CarDataStructure.cs" />
     <Compile Include="DataStructures\ArcadeData.cs" />
+    <Compile Include="DataStructures\GTModeData\CarNameStringTable.cs" />
     <Compile Include="DataStructures\LicenseData.cs" />
     <Compile Include="DataStructures\GTModeData\GenericEngineUpgrade.cs" />
     <Compile Include="DataStructures\GTModeRace.cs" />

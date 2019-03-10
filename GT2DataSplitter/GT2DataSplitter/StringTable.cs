@@ -109,27 +109,36 @@ namespace GT2.DataSplitter
             }
         }
 
+        public static ushort Add(string text)
+        {
+            if (Strings.Contains(text))
+            {
+                return (ushort)Strings.IndexOf(text);
+            }
+
+            Strings.Add(text);
+            return (ushort)(Strings.Count - 1);
+        }
+
+        public static string Get(ushort index)
+        {
+            if (UnusedStrings[index] != "-")
+            {
+                UnusedStrings[index] = null;
+            }
+            return Strings[index];
+        }
+
         public class StringTableLookup : ITypeConverter
         {
             public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
             {
-                if (Strings.Contains(text))
-                {
-                    return (ushort)Strings.IndexOf(text);
-                }
-                
-                Strings.Add(text);
-                return (ushort)(Strings.Count - 1);
+                return Add(text);
             }
 
             public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
             {
-                ushort i = Convert.ToUInt16(value);
-                if (UnusedStrings[i] != "-")
-                {
-                    UnusedStrings[i] = null;
-                }
-                return Strings[i];
+                return Get(Convert.ToUInt16(value));
             }
         }
     }

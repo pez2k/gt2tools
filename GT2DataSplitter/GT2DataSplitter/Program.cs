@@ -11,13 +11,14 @@ namespace GT2.DataSplitter
         {
             if (args.Length != 1)
             {
-                BuildFile("eng_gtmode_data.dat");
+                LanguagePrefix = "eng";
+                BuildFile();
                 return;
             }
 
             string filename = args[0];
             string extension = Path.GetExtension(filename);
-            
+
             //hack
             if (filename.Contains("license_data"))
             {
@@ -78,21 +79,23 @@ namespace GT2.DataSplitter
             RaceData.DumpData();
 
             StringTable.Export();
+            CarNameStringTable.Export();
         }
 
-        static void BuildFile(string filename)
+        static void BuildFile()
         {
             StringTable.Import();
+            CarNameStringTable.Import();
 
             GTModeData CarData = new GTModeData();
             CarData.ImportData();
-            CarData.WriteData(filename);
+            CarData.WriteData($"{LanguagePrefix}_gtmode_data.dat");
 
             GTModeRace RaceData = new GTModeRace();
             RaceData.ImportData();
-            RaceData.WriteData("eng_gtmode_race.dat");
+            RaceData.WriteData($"{LanguagePrefix}_gtmode_race.dat");
 
-            StringTable.Write("eng_unistrdb.dat");
+            StringTable.Write($"{LanguagePrefix}_unistrdb.dat");
         }
 
         static void SplitLicenseFile(string filename)
