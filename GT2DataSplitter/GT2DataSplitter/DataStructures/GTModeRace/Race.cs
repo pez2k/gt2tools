@@ -62,18 +62,23 @@ namespace GT2.DataSplitter
         public byte AIUnknown4WD;
         public byte AIUnknownSpecial4WD;
         public byte AIRubberBandMultiplier;
-        public ushort AIRubberBandUnknown1; // (0x59) - changing to 0x100 didn't seem to do anything, likewise 0x1
-        public byte AIRubberBandUnknown2; // (0x5b) - changing  it to 0 or 0xff doesn't seem to do anything
-        public ushort AIRubberBandUnknown3; // (0x5c)
-        public byte AIRubberBandUnknown4; // (0x5e) 
-        public byte AIRubberBandUnknown5; // (0x5f)
-        public ushort AIRubberBandUnknown6; // (0x60)
-        public ushort Unknown1; // 0x6400 above (0x62) - changed unk4 to unk10 to FF, spaced out opponents (power related?), changed all to 0, same as ff really
-        public uint Unknown2; // (0x64)
-        public uint Unknown3; // (0x68)
-        public uint Unknown4; // (0x6c)
-        public uint Unknown5; // (0x70)
-        public byte Unknown6; // (0x74)
+        public byte AIRubberBandUnknown1; // (0x59) - changing to 0x100 didn't seem to do anything, likewise 0x1
+        public byte AIRubberBandScaledPerCar;
+        public byte AIRubberBandLeadingSlowdownPercentage; // (0x5b) - changing  it to 0 or 0xff doesn't seem to do anything
+        public ushort AIRubberBandLeadingScalingDistance; // (0x5c)
+        public byte AIRubberBandTrailingSpeedupPercentage; // (0x5e) 
+        public ushort AIRubberBandTrailingScalingDistance; // (0x5f)
+        public byte TyreWearOrangeDurationMultiplier; // (0x60)
+        public byte TyreWearOrangeGripLoss; // 0x6400 above (0x62) - changed unk4 to unk10 to FF, spaced out opponents (power related?), changed all to 0, same as ff really
+        public byte TyreWearUnknown;
+        public byte TyreWearBlueDurationMultiplier;
+        public byte TyreWearBlueGripLoss;
+        public byte TyreWearGreenDurationMultiplier;
+        public byte TyreWearGreenGripLoss;
+        public uint Unknown1; // (0x68)
+        public uint Unknown2; // (0x6c)
+        public uint Unknown3; // (0x70)
+        public byte Unknown4; // (0x74)
         public byte IsRally; // 0x75 set to 1 for rally race - requires dirt tyres, only 1 opponent. Can award prize car
         public byte EligibleCarsRestriction; // (0x75) - index into allowable entrants list
         public byte DrivetrainRestriction; // (0x76) 1 = FF, 2 = FR, 3 = MR, 4 = RR, 5 = 4WD
@@ -85,7 +90,7 @@ namespace GT2.DataSplitter
         public ushort PrizeMoney6th; // multiply by 100 for non-JP / multiply by 10,000 for JP (0x82)
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public uint[] PrizeCars; // ids of cars (0x84)
-        public ushort Unknown7; // (0x94)
+        public ushort Unknown5; // (0x94)
         public ushort PSRestriction; // in ps units (hp = ps / 1.01427772651) (0x96)
         public ushort SeriesChampBonus; // multiply by 100 for non-JP / multiply by 10,000 for JP (0x98)
         public ushort CarRestrictionFlags; // (0x9a) flags to restrict the type of car you use for this race. 0x100 = non-race car, 0x200 = just race car
@@ -135,23 +140,22 @@ namespace GT2.DataSplitter
             Map(m => m.AIUnknownSpecial4WD);
             Map(m => m.AIRubberBandMultiplier);
             Map(m => m.AIRubberBandUnknown1);
-            Map(m => m.AIRubberBandUnknown2);
-            Map(m => m.AIRubberBandUnknown3);
-            Map(m => m.AIRubberBandUnknown4);
-            Map(m => m.AIRubberBandUnknown5);
-            Map(m => m.AIRubberBandUnknown6);
-            Map(m => m.AIRubberBandUnknown1);
-            Map(m => m.AIRubberBandUnknown2);
-            Map(m => m.AIRubberBandUnknown3);
-            Map(m => m.AIRubberBandUnknown4);
-            Map(m => m.AIRubberBandUnknown5);
-            Map(m => m.AIRubberBandUnknown6);
+            Map(m => m.AIRubberBandScaledPerCar);
+            Map(m => m.AIRubberBandLeadingSlowdownPercentage);
+            Map(m => m.AIRubberBandLeadingScalingDistance);
+            Map(m => m.AIRubberBandTrailingSpeedupPercentage);
+            Map(m => m.AIRubberBandTrailingScalingDistance);
+            Map(m => m.TyreWearOrangeDurationMultiplier);
+            Map(m => m.TyreWearOrangeGripLoss);
+            Map(m => m.TyreWearUnknown);
+            Map(m => m.TyreWearBlueDurationMultiplier);
+            Map(m => m.TyreWearBlueGripLoss);
+            Map(m => m.TyreWearGreenDurationMultiplier);
+            Map(m => m.TyreWearGreenGripLoss);
             Map(m => m.Unknown1);
             Map(m => m.Unknown2);
             Map(m => m.Unknown3);
             Map(m => m.Unknown4);
-            Map(m => m.Unknown5);
-            Map(m => m.Unknown6);
             Map(m => m.IsRally);
             Map(m => m.EligibleCarsRestriction).TypeConverter(Utils.GetFileNameConverter("EligibleCars"));
             Map(m => m.DrivetrainRestriction).TypeConverter(Utils.DrivetrainRestrictionConverter);
@@ -162,7 +166,7 @@ namespace GT2.DataSplitter
             Map(m => m.PrizeMoney5th);
             Map(m => m.PrizeMoney6th);
             Map(m => m.PrizeCars).TypeConverter(Utils.CarIdArrayConverter);
-            Map(m => m.Unknown7).TypeConverter(RaceStringTable.Lookup);
+            Map(m => m.Unknown5).TypeConverter(RaceStringTable.Lookup);
             Map(m => m.PSRestriction);
             Map(m => m.SeriesChampBonus);
             Map(m => m.CarRestrictionFlags); // 1 for NA, 2 for Turbo, 256 for Normal, 512 for Race
