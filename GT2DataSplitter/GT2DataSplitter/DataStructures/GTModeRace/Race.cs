@@ -57,10 +57,10 @@ namespace GT2.DataSplitter
         public byte AIAccelerationFWD;
         public byte AIAcceleration4WD;
         public byte AIAccelerationSpecial4WD;
-        public byte AIUnknownRWD;
-        public byte AIUnknownFWD;
-        public byte AIUnknown4WD;
-        public byte AIUnknownSpecial4WD;
+        public byte AIThrottleLiftReductionRWD;
+        public byte AIThrottleLiftReductionFWD;
+        public byte AIThrottleLiftReduction4WD;
+        public byte AIThrottleLiftReductionSpecial4WD;
         public byte AIRubberBandMultiplier;
         public byte AIRubberBandUnknown1; // (0x59) - changing to 0x100 didn't seem to do anything, likewise 0x1
         public byte AIRubberBandScaledPerCar;
@@ -134,10 +134,10 @@ namespace GT2.DataSplitter
             Map(m => m.AIAccelerationFWD);
             Map(m => m.AIAcceleration4WD);
             Map(m => m.AIAccelerationSpecial4WD);
-            Map(m => m.AIUnknownRWD);
-            Map(m => m.AIUnknownFWD);
-            Map(m => m.AIUnknown4WD);
-            Map(m => m.AIUnknownSpecial4WD);
+            Map(m => m.AIThrottleLiftReductionRWD);
+            Map(m => m.AIThrottleLiftReductionFWD);
+            Map(m => m.AIThrottleLiftReduction4WD);
+            Map(m => m.AIThrottleLiftReductionSpecial4WD);
             Map(m => m.AIRubberBandMultiplier);
             Map(m => m.AIRubberBandUnknown1);
             Map(m => m.AIRubberBandScaledPerCar);
