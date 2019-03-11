@@ -9,11 +9,11 @@ namespace GT2.DataSplitter
 {
     public static class CarNameStringTable
     {
-        public static Dictionary<string, (string NameFirstPart, string NameSecondPart)> Strings = new Dictionary<string, (string, string)>();
+        public static List<CarName> Strings = new List<CarName>();
 
-        public static void Add(string carID, string nameFirstPart, string nameSecondPart)
+        public static void Add(uint carID, string nameFirstPart, string nameSecondPart, byte year)
         {
-            Strings.Add(carID, (nameFirstPart, nameSecondPart));
+            Strings.Add(new CarName { CarID = carID, NameFirstPart = nameFirstPart, NameSecondPart = nameSecondPart, Year = year });
         }
 
         public static void Export()
@@ -28,12 +28,14 @@ namespace GT2.DataSplitter
             {
                 using (CsvWriter csv = new CsvWriter(output))
                 {
-                    foreach (var carName in Strings)
+                    csv.Configuration.RegisterClassMap<CarNameCSVMap>();
+                    csv.Configuration.QuoteAllFields = true;
+                    csv.WriteHeader<CarName>();
+                    csv.NextRecord();
+
+                    foreach (CarName carName in Strings)
                     {
-                        csv.Configuration.QuoteAllFields = true;
-                        csv.WriteField(carName.Key);
-                        csv.WriteField(carName.Value.NameFirstPart);
-                        csv.WriteField(carName.Value.NameSecondPart);
+                        csv.WriteRecord(carName);
                         csv.NextRecord();
                     }
                 }
@@ -59,22 +61,23 @@ namespace GT2.DataSplitter
             {
                 using (CsvReader csv = new CsvReader(input))
                 {
+                    csv.Configuration.RegisterClassMap<CarNameCSVMap>();
+                    csv.Read();
+                    csv.ReadHeader();
+                    
                     while (csv.Read())
                     {
-                        string carID = csv.GetField(0);
-                        if (Strings.ContainsKey(carID))
-                        {
-                            Strings.Remove(carID);
-                        }
-                        Strings.Add(carID, (csv.GetField(1), csv.GetField(2)));
+                        CarName carName = csv.GetRecord<CarName>();
+                        Strings.RemoveAll(existingCarName => existingCarName.CarID == carName.CarID);
+                        Strings.Add(carName);
                     }
                 }
             }
         }
 
-        public static (string nameFirstPart, string nameSecondPart) Get(string carID)
+        public static CarName Get(uint carID)
         {
-            return Strings.TryGetValue(carID, out (string nameFirstPart, string nameSecondPart) carName)? carName : throw new Exception($"Car name for {carID} not found.");
+            return Strings.SingleOrDefault(carName => carName.CarID == carID) ?? throw new Exception($"Car name for {carID} not found.");
         }
 
         public static void Reset()

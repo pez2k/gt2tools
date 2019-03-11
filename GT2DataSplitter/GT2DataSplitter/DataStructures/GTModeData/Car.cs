@@ -16,16 +16,17 @@ namespace GT2.DataSplitter
         public override void Read(FileStream infile)
         {
             base.Read(infile);
-            CarNameStringTable.Add(Data.CarId.ToCarName(), StringTable.Get(Data.NameFirstPart), StringTable.Get(Data.NameSecondPart));
+            CarNameStringTable.Add(Data.CarId, StringTable.Get(Data.NameFirstPart), StringTable.Get(Data.NameSecondPart), Data.Year);
         }
 
         public override void Import(string filename)
         {
             base.Import(filename);
-            var (nameFirstPart, nameSecondPart) = CarNameStringTable.Get(Data.CarId.ToCarName());
+            CarName carName = CarNameStringTable.Get(Data.CarId);
             CarData carData = Data;
-            carData.NameFirstPart = StringTable.Add(nameFirstPart);
-            carData.NameSecondPart = StringTable.Add(nameSecondPart);
+            carData.NameFirstPart = StringTable.Add(carName.NameFirstPart);
+            carData.NameSecondPart = StringTable.Add(carName.NameSecondPart);
+            carData.Year = carName.Year;
             Data = carData;
         }
     }
@@ -106,7 +107,7 @@ namespace GT2.DataSplitter
             //Map(m => m.NameFirstPart).TypeConverter(StringTable.Lookup);
             //Map(m => m.NameSecondPart).TypeConverter(StringTable.Lookup);
             Map(m => m.IsSpecial);
-            Map(m => m.Year);
+            //Map(m => m.Year);
             Map(m => m.Unknown);
             Map(m => m.Price);
         }
