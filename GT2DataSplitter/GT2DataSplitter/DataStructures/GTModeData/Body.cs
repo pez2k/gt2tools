@@ -34,7 +34,7 @@ namespace GT2.DataSplitter
         public byte Weight; // weight is a multiple of some car-indepenent value
         public byte BodyRollAmount;
         public byte Stage;
-        public byte Unknown2;
+        public byte Drag;
         public byte FrontDownforceMinimum;
         public byte FrontDownforceMaximum;
         public byte FrontDownforceDefault;
@@ -58,7 +58,7 @@ namespace GT2.DataSplitter
             Map(m => m.Weight);
             Map(m => m.BodyRollAmount);
             Map(m => m.Stage);
-            Map(m => m.Unknown2);
+            Map(m => m.Drag);
             Map(m => m.FrontDownforceMinimum);
             Map(m => m.FrontDownforceMaximum);
             Map(m => m.FrontDownforceDefault);

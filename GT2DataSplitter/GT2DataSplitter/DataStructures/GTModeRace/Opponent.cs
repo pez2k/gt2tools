@@ -84,8 +84,7 @@ namespace GT2.DataSplitter
         public ushort Unknown15; // 0x56
         public ushort Unknown16; // 0x58
         public ushort Unknown17; // 0x5a
-        public byte PowerPercentage; // 0x5c
-        public byte Unknown18; // 0x5d
+        public ushort PowerMultiplier; // 0x5c
         public ushort OpponentId; // 0x5e
     }
 
@@ -138,8 +137,7 @@ namespace GT2.DataSplitter
             Map(m => m.Unknown15);
             Map(m => m.Unknown16);
             Map(m => m.Unknown17);
-            Map(m => m.PowerPercentage);
-            Map(m => m.Unknown18);
+            Map(m => m.PowerMultiplier);
             Map(m => m.OpponentId);
         }
     }

@@ -27,8 +27,8 @@ namespace GT2.DataSplitter
         public byte DefaultClutchInertiaEngaged;
         public byte DefaultClutchInertialWeight;
         public byte DefaultClutchInertiaDisengaged;
-        public byte Unknown5;
-        public byte Unknown6;
+        public byte FrontDriveInertia;
+        public byte RearDriveInertia;
     }
 
     public sealed class DrivetrainCSVMap : ClassMap<DrivetrainData>
@@ -46,8 +46,8 @@ namespace GT2.DataSplitter
             Map(m => m.DefaultClutchInertiaEngaged);
             Map(m => m.DefaultClutchInertialWeight);
             Map(m => m.DefaultClutchInertiaDisengaged);
-            Map(m => m.Unknown5);
-            Map(m => m.Unknown6);
+            Map(m => m.FrontDriveInertia);
+            Map(m => m.RearDriveInertia);
         }
     }
 }

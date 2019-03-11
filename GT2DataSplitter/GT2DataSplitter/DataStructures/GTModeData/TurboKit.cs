@@ -24,8 +24,8 @@ namespace GT2.DataSplitter
         public byte Unknown1;
         public byte Unknown2;
         public byte Unknown3;
-        public byte RPMIncrease;
-        public byte RedlineIncrease;
+        public sbyte RPMIncrease;
+        public sbyte RedlineIncrease;
         public byte HighRPMPowerMultiplier;
         public byte LowRPMPowerMultiplier;
     }

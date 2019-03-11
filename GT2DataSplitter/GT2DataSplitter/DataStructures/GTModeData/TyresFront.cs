@@ -33,8 +33,8 @@ namespace GT2.DataSplitter
         public byte SteeringReaction2;
         public byte TyreCompound;
         public byte Unknown1;
-        public byte Unknown2;
-        public byte Unknown3;
+        public byte SlipMultiplier;
+        public byte GripMultiplier;
     }
 
     public sealed class TyresFrontCSVMap : ClassMap<TyresFrontData>
@@ -49,8 +49,8 @@ namespace GT2.DataSplitter
             Map(m => m.SteeringReaction2);
             Map(m => m.TyreCompound).TypeConverter(Utils.TyreCompoundConverter);
             Map(m => m.Unknown1);
-            Map(m => m.Unknown2);
-            Map(m => m.Unknown3);
+            Map(m => m.SlipMultiplier);
+            Map(m => m.GripMultiplier);
         }
     }
 }

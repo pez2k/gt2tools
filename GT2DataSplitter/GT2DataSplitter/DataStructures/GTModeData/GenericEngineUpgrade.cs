@@ -17,9 +17,9 @@ namespace GT2.DataSplitter
         public uint CarId;
         public uint Price;
         public byte Stage;
+        public sbyte PowerbandScaling;
+        public sbyte RPMIncrease;
         public byte PowerMultiplier;
-        public byte RPMIncrease;
-        public byte Unknown;
     }
 
     public sealed class GenericEngineUpgradeCSVMap : ClassMap<GenericEngineUpgradeData>
@@ -29,9 +29,9 @@ namespace GT2.DataSplitter
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Price);
             Map(m => m.Stage);
-            Map(m => m.PowerMultiplier);
+            Map(m => m.PowerbandScaling);
             Map(m => m.RPMIncrease);
-            Map(m => m.Unknown);
+            Map(m => m.PowerMultiplier);
         }
     }
 }

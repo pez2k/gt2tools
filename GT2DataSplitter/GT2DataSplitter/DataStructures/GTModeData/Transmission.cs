@@ -29,7 +29,7 @@ namespace GT2.DataSplitter
         public ushort DefaultFinalDriveRatio;
         public ushort MaxFinalDriveRatio;
         public ushort MinFinalDriveRatio;
-        public byte Unknown;
+        public byte AllowIndividualRatioAdjustments;
         public byte DefaultAutoSetting;
         public byte MinAutoSetting;
         public byte MaxAutoSetting;
@@ -54,7 +54,7 @@ namespace GT2.DataSplitter
             Map(m => m.DefaultFinalDriveRatio);
             Map(m => m.MaxFinalDriveRatio);
             Map(m => m.MinFinalDriveRatio);
-            Map(m => m.Unknown);
+            Map(m => m.AllowIndividualRatioAdjustments);
             Map(m => m.DefaultAutoSetting);
             Map(m => m.MinAutoSetting);
             Map(m => m.MaxAutoSetting);

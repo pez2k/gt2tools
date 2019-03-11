@@ -17,8 +17,8 @@ namespace GT2.DataSplitter
         public uint CarId;
         public uint Price;
         public byte Stage;
-        public byte PowerbandRPMIncrease;
-        public byte RPMIncrease;
+        public sbyte PowerbandRPMIncrease;
+        public sbyte RPMIncrease;
         public byte PowerMultiplier;
     }
 
