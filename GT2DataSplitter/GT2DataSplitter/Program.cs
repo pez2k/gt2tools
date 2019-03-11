@@ -16,7 +16,7 @@ namespace GT2.DataSplitter
                 return;
             }
 
-            string filename = args[0];
+            string filename = Path.GetFileName(args[0]);
             string extension = Path.GetExtension(filename);
 
             //hack
