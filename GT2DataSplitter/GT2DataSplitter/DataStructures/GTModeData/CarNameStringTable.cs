@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace GT2.DataSplitter
@@ -41,15 +42,31 @@ namespace GT2.DataSplitter
 
         public static void Import()
         {
-            string filename = $"Strings\\{Program.LanguagePrefix}\\CarNames.csv";
+            string directory = $"Strings\\{Program.LanguagePrefix}";
+            ImportCSV($"{directory}\\CarNames.csv");
 
+            var filenames = Directory.EnumerateFiles(directory).Where(file => !file.EndsWith("CarNames.csv") && !file.EndsWith("PartStrings.csv"));
+
+            foreach (string filename in filenames)
+            {
+                ImportCSV(filename);
+            }
+        }
+
+        private static void ImportCSV(string filename)
+        {
             using (TextReader input = new StreamReader(filename, Encoding.UTF8))
             {
                 using (CsvReader csv = new CsvReader(input))
                 {
                     while (csv.Read())
                     {
-                        Strings.Add(csv.GetField(0), (csv.GetField(1), csv.GetField(2)));
+                        string carID = csv.GetField(0);
+                        if (Strings.ContainsKey(carID))
+                        {
+                            Strings.Remove(carID);
+                        }
+                        Strings.Add(carID, (csv.GetField(1), csv.GetField(2)));
                     }
                 }
             }
