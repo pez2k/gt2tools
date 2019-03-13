@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
+using CsvHelper;
 
 namespace GT2.CourseInfoEditor
 {
@@ -15,21 +15,33 @@ namespace GT2.CourseInfoEditor
         {
             using (var file = new FileStream(".crsinfo", FileMode.Open, FileAccess.Read))
             {
-                Directory.CreateDirectory("Courses");
-                Directory.CreateDirectory("Names");
-
                 file.ReadUInt(); // CRS\0
                 file.ReadUShort(); // 0x0002
                 ushort courseCount = file.ReadUShort();
-
-                for (int i = 0; i < courseCount; i++)
+                using (var outFile = new FileStream($"Courses.csv", FileMode.Create, FileAccess.Write))
                 {
-                    byte[] buffer = new byte[8 * 3];
-                    file.Read(buffer);
-
-                    using (var outFile = new FileStream($"Courses\\{i:D3}.dat", FileMode.Create, FileAccess.Write))
+                    using (TextWriter output = new StreamWriter(outFile, Encoding.UTF8))
                     {
-                        outFile.Write(buffer);
+                        using (CsvWriter csv = new CsvWriter(output))
+                        {
+                            csv.Configuration.RegisterClassMap<CourseCSVMap>();
+                            csv.Configuration.ShouldQuote = (field, context) => true;
+                            csv.WriteHeader<Course>();
+                            csv.NextRecord();
+
+                            for (int i = 0; i < courseCount; i++)
+                            {
+                                byte[] buffer = new byte[8 * 3];
+                                file.Read(buffer);
+
+                                GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+                                Course course = (Course)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(Course));
+                                handle.Free();
+
+                                csv.WriteRecord(course);
+                                csv.NextRecord();
+                            }
+                        }
                     }
                 }
 
