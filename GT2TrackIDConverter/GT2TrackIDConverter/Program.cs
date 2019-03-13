@@ -19,7 +19,7 @@ namespace GT2.TrackIDConverter
 
             if (uint.TryParse(input, System.Globalization.NumberStyles.HexNumber, null, out uint hexID))
             {
-                plainID = hexID.ToTrackName();
+                plainID = hexID.ToTrackName() ?? "<Unknown hash>";
             }
             else
             {
