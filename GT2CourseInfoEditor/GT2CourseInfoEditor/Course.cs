@@ -5,6 +5,7 @@ using CsvHelper.TypeConversion;
 
 namespace GT2.CourseInfoEditor
 {
+    using System.Collections.Generic;
     using TrackNameConversion;
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -16,6 +17,7 @@ namespace GT2.CourseInfoEditor
         public uint Filename;
         public byte Unknown3;
         public byte Unknown4;
+        public ushort Skybox;
         public byte Unknown5;
         public byte Unknown6;
         public byte Unknown7;
@@ -27,8 +29,6 @@ namespace GT2.CourseInfoEditor
         public byte Unknown13;
         public byte Unknown14;
         public byte Unknown15;
-        public byte Unknown16;
-        public byte Unknown17;
     }
 
     public sealed class CourseCSVMap : ClassMap<Course>
@@ -39,21 +39,20 @@ namespace GT2.CourseInfoEditor
             Map(m => m.Unknown1);
             Map(m => m.Unknown2);
             Map(m => m.Filename).TypeConverter<TrackIdConverter>();
-            Map(m => m.Unknown3);
-            Map(m => m.Unknown4);
-            Map(m => m.Unknown5);
-            Map(m => m.Unknown6);
-            Map(m => m.Unknown7);
-            Map(m => m.Unknown8);
-            Map(m => m.Unknown9);
-            Map(m => m.Unknown10);
-            Map(m => m.Unknown11);
+            Map(m => m.Unknown3); // Lighting ushort? Flags? 1 = night, 8 = 2p?
+            Map(m => m.Unknown4); // ^
+            Map(m => m.Skybox).TypeConverter<SkyboxNameConverter>();
+            Map(m => m.Unknown5); // Car brightness ushort?
+            Map(m => m.Unknown6); // ^
+            Map(m => m.Unknown7); // ushort?
+            Map(m => m.Unknown8); // ^
+            Map(m => m.Unknown9); // ushort?
+            Map(m => m.Unknown10); // ^
+            Map(m => m.Unknown11); // uint pointer?
             Map(m => m.Unknown12);
             Map(m => m.Unknown13);
             Map(m => m.Unknown14);
             Map(m => m.Unknown15);
-            Map(m => m.Unknown16);
-            Map(m => m.Unknown17);
         }
     }
 
@@ -83,6 +82,22 @@ namespace GT2.CourseInfoEditor
             ushort textAddress = (ushort)value;
             Program.DisplayNames.TryGetValue(textAddress, out string name);
             return name;
+        }
+    }
+
+    public class SkyboxNameConverter : ITypeConverter
+    {
+        private readonly List<string> SkyboxNames = new List<string> { "au", "cartsky", "circle30sky", "circle80sky", "cloudtest", "dawn", "grinsky", "gv_sky", "indisky", "lagunasky", "licen_sky", "mskyX", "mskyX_2", "new_parmas_sky", "noon", "parma_sky", "romadark_sky", "romadsky", "roma_sh", "roma_sh_sky", "roma_sky", "sea_hare", "sea_ha_b", "sea_ha_c", "sea_ha_d", "sea_ha_e", "speedsky", "tesr_l2sky", "tl_sky2", "tl_sky2g", "tl_sky4", "tl_skyG", "tl_skyG2", "t_sky" };
+
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            return 0;
+        }
+
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            ushort textAddress = (ushort)value;
+            return SkyboxNames[textAddress];
         }
     }
 }
