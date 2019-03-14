@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
 using CsvHelper;
 
@@ -56,12 +55,42 @@ namespace GT2.CourseInfoEditor
 
                             for (int i = 0; i < courseCount; i++)
                             {
-                                byte[] buffer = new byte[8 * 3];
-                                file.Read(buffer);
+                                long blockStart = file.Position;
 
-                                GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-                                Course course = (Course)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(Course));
-                                handle.Free();
+                                Course course = new Course();
+                                course.DisplayName = file.ReadUShort();
+                                course.Unknown1 = (byte)file.ReadByte();
+                                course.Unknown2 = (byte)file.ReadByte();
+                                course.Filename = file.ReadUInt();
+
+                                byte flags = (byte)file.ReadByte();
+                                course.IsNight = IsBitSet(flags, 0);
+                                course.IsEvening = IsBitSet(flags, 1);
+                                course.IsDirt = IsBitSet(flags, 2);
+                                course.Is2Player = IsBitSet(flags, 3);
+                                course.IsReverse = IsBitSet(flags, 4);
+                                course.IsPointToPoint = IsBitSet(flags, 5);
+                                course.Flag7 = IsBitSet(flags, 6);
+
+                                course.Unknown4 = (byte)file.ReadByte();
+                                course.Skybox = file.ReadUShort();
+                                course.Unknown5 = (byte)file.ReadByte();
+                                course.Unknown6 = (byte)file.ReadByte();
+                                course.Unknown7 = (byte)file.ReadByte();
+                                course.Unknown8 = (byte)file.ReadByte();
+                                course.Unknown9 = (byte)file.ReadByte();
+                                course.Unknown10 = (byte)file.ReadByte();
+                                course.Unknown11 = (byte)file.ReadByte();
+                                course.Unknown12 = (byte)file.ReadByte();
+                                course.Unknown13 = (byte)file.ReadByte();
+                                course.Unknown14 = (byte)file.ReadByte();
+                                course.Unknown15 = (byte)file.ReadByte();
+                                course.Unknown16 = (byte)file.ReadByte();
+
+                                if (file.Position != blockStart + (8 * 3))
+                                {
+                                    throw new System.Exception("Block size incorrect.");
+                                }
 
                                 csv.WriteRecord(course);
                                 csv.NextRecord();
@@ -70,6 +99,14 @@ namespace GT2.CourseInfoEditor
                     }
                 }
             }
+        }
+
+        static bool IsBitSet(byte value, int position)
+        {
+            int flag = value;
+            flag = flag >> position;
+            flag = flag & 0x1;
+            return flag == 1;
         }
     }
 }

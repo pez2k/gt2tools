@@ -1,21 +1,25 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 
 namespace GT2.CourseInfoEditor
 {
-    using System.Collections.Generic;
     using TrackNameConversion;
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct Course
     {
         public ushort DisplayName;
         public byte Unknown1;
         public byte Unknown2;
         public uint Filename;
-        public byte Unknown3;
+        public bool IsNight;
+        public bool IsEvening;
+        public bool IsDirt;
+        public bool Is2Player;
+        public bool IsReverse;
+        public bool IsPointToPoint;
+        public bool Flag7;
         public byte Unknown4;
         public ushort Skybox;
         public byte Unknown5;
@@ -29,6 +33,7 @@ namespace GT2.CourseInfoEditor
         public byte Unknown13;
         public byte Unknown14;
         public byte Unknown15;
+        public byte Unknown16;
     }
 
     public sealed class CourseCSVMap : ClassMap<Course>
@@ -39,7 +44,13 @@ namespace GT2.CourseInfoEditor
             Map(m => m.Unknown1);
             Map(m => m.Unknown2);
             Map(m => m.Filename).TypeConverter<TrackIdConverter>();
-            Map(m => m.Unknown3); // Lighting ushort? Flags? 1 = night, 8 = 2p?
+            Map(m => m.IsNight);
+            Map(m => m.IsEvening);
+            Map(m => m.IsDirt);
+            Map(m => m.Is2Player);
+            Map(m => m.IsReverse);
+            Map(m => m.IsPointToPoint);
+            Map(m => m.Flag7);
             Map(m => m.Unknown4); // ^
             Map(m => m.Skybox).TypeConverter<SkyboxNameConverter>();
             Map(m => m.Unknown5); // Car brightness ushort?
@@ -53,6 +64,7 @@ namespace GT2.CourseInfoEditor
             Map(m => m.Unknown13);
             Map(m => m.Unknown14);
             Map(m => m.Unknown15);
+            Map(m => m.Unknown16);
         }
     }
 
