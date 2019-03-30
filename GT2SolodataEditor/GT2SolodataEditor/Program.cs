@@ -145,8 +145,12 @@ namespace GT2.SolodataEditor
                     while (csv.Read())
                     {
                         string key = csv.GetField(0);
+                        string value = csv.GetField(1);
                         Cars.Remove(key);
-                        Cars.Add(key, ushort.Parse(csv.GetField(1), System.Globalization.NumberStyles.HexNumber));
+                        if (!string.IsNullOrEmpty(value))
+                        {
+                            Cars.Add(key, ushort.Parse(value, System.Globalization.NumberStyles.HexNumber));
+                        }
                     }
                 }
             }
