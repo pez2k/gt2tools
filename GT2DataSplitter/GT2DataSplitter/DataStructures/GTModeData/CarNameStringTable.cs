@@ -47,7 +47,7 @@ namespace GT2.DataSplitter
             string directory = $"Strings\\{Program.LanguagePrefix}";
             ImportCSV($"{directory}\\CarNames.csv");
 
-            var filenames = Directory.EnumerateFiles(directory).Where(file => Path.GetFileName(file) != "CarNames.csv" && Path.GetFileName(file) != "PartStrings.csv");
+            var filenames = Directory.EnumerateFiles(directory, "*.csv").Where(file => Path.GetFileName(file) != "CarNames.csv" && Path.GetFileName(file) != "PartStrings.csv");
 
             foreach (string filename in filenames)
             {
