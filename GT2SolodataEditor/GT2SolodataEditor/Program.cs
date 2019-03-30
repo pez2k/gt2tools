@@ -15,7 +15,7 @@ namespace GT2.SolodataEditor
 
         static void Main(string[] args)
         {
-            if (args.Length == 0)
+            if (args.Length != 0)
             {
                 Dump();
             }
