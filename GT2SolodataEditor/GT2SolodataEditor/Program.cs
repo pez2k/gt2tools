@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CsvHelper;
+using ICSharpCode.SharpZipLib.GZip;
 
 namespace GT2.SolodataEditor
 {
@@ -88,7 +89,7 @@ namespace GT2.SolodataEditor
 
         static void Build()
         {
-            using (FileStream file = new FileStream("new_solodata.dat", FileMode.Create, FileAccess.Write))
+            using (FileStream file = new FileStream("new_solodata.dat", FileMode.Create, FileAccess.ReadWrite))
             {
                 using (TextReader input = new StreamReader(File.OpenRead("Menus.csv"), Encoding.UTF8))
                 {
@@ -132,6 +133,17 @@ namespace GT2.SolodataEditor
                 
                 file.Position = startPosition;
                 file.WriteUInt((uint)Cars.Count);
+
+                file.Position = 0;
+                using (var gzip = new FileStream("new_solodata.dat.gz", FileMode.Create, FileAccess.Write))
+                {
+                    using (var compression = new GZipOutputStream(gzip))
+                    {
+                        compression.SetLevel(8);
+                        compression.IsStreamOwner = false;
+                        file.CopyTo(compression);
+                    }
+                }
             }
         }
 
