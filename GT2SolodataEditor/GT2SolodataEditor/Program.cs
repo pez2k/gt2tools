@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using CsvHelper;
 
@@ -10,6 +11,8 @@ namespace GT2.SolodataEditor
 
     class Program
     {
+        static Dictionary<string, ushort> Cars = new Dictionary<string, ushort>();
+
         static void Main(string[] args)
         {
             if (args.Length == 0)
@@ -58,7 +61,12 @@ namespace GT2.SolodataEditor
                     }
                 }
 
-                using (TextWriter output = new StreamWriter(File.Create("Cars.csv"), Encoding.UTF8))
+                if (!Directory.Exists("Cars"))
+                {
+                    Directory.CreateDirectory("Cars");
+                }
+
+                using (TextWriter output = new StreamWriter(File.Create("Cars\\Cars.csv"), Encoding.UTF8))
                 {
                     using (CsvWriter csv = new CsvWriter(output))
                     {
@@ -82,9 +90,9 @@ namespace GT2.SolodataEditor
         {
             using (FileStream file = new FileStream("new_solodata.dat", FileMode.Create, FileAccess.Write))
             {
-                using (TextReader output = new StreamReader(File.OpenRead("Menus.csv"), Encoding.UTF8))
+                using (TextReader input = new StreamReader(File.OpenRead("Menus.csv"), Encoding.UTF8))
                 {
-                    using (CsvReader csv = new CsvReader(output))
+                    using (CsvReader csv = new CsvReader(input))
                     {
                         file.WriteUInt(0);
                         uint rowCount = 0;
@@ -92,7 +100,6 @@ namespace GT2.SolodataEditor
 
                         while (csv.Read())
                         {
-                            string key = csv.GetField(0);
                             string value = csv.GetField(1);
                             file.WriteUShort(ushort.Parse(value, System.Globalization.NumberStyles.HexNumber));
                             rowCount++;
@@ -104,29 +111,42 @@ namespace GT2.SolodataEditor
                         file.Position = filePosition;
                     }
                 }
-                
-                using (TextReader output = new StreamReader(File.OpenRead("Cars.csv"), Encoding.UTF8))
+
+                ImportCSV("Cars\\Cars.csv");
+
+                var filenames = Directory.EnumerateFiles("Cars", "*.csv").Where(csv => Path.GetFileName(csv) != "Cars.csv");
+
+                foreach (string filename in filenames)
                 {
-                    using (CsvReader csv = new CsvReader(output))
+                    ImportCSV(filename);
+                }
+
+                long startPosition = file.Position;
+                file.WriteUInt(0);
+
+                foreach (var car in Cars)
+                {
+                    file.WriteUInt(CarNameConversion.ToCarID(car.Key));
+                    file.WriteUInt(car.Value);
+                }
+                
+                file.Position = startPosition;
+                file.WriteUInt((uint)Cars.Count);
+            }
+        }
+
+        static void ImportCSV(string filename)
+        {
+            using (TextReader input = new StreamReader(File.OpenRead(filename), Encoding.UTF8))
+            {
+                using (CsvReader csv = new CsvReader(input))
+                {
+                    csv.Read();
+                    while (csv.Read())
                     {
-                        long startPosition = file.Position;
-                        file.WriteUInt(0);
-                        uint rowCount = 0;
-                        csv.Read();
-
-                        while (csv.Read())
-                        {
-                            string key = csv.GetField(0);
-                            file.WriteUInt(CarNameConversion.ToCarID(key));
-                            string value = csv.GetField(1);
-                            file.WriteUInt(ushort.Parse(value, System.Globalization.NumberStyles.HexNumber));
-                            rowCount++;
-                        }
-
-                        long filePosition = file.Position;
-                        file.Position = startPosition;
-                        file.WriteUInt(rowCount);
-                        file.Position = filePosition;
+                        string key = csv.GetField(0);
+                        Cars.Remove(key);
+                        Cars.Add(key, ushort.Parse(csv.GetField(1), System.Globalization.NumberStyles.HexNumber));
                     }
                 }
             }
