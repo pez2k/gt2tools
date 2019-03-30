@@ -18,7 +18,7 @@ namespace GT2.SolodataEditor
         {
             if (args.Length != 0)
             {
-                Dump();
+                Dump(args[0]);
             }
             else
             {
@@ -26,12 +26,12 @@ namespace GT2.SolodataEditor
             }
         }
 
-        static void Dump()
+        static void Dump(string filename)
         {
             var menus = new Dictionary<string, ushort>();
             var cars = new Dictionary<string, uint>();
 
-            using (FileStream file = new FileStream("solodata.dat", FileMode.Open, FileAccess.Read))
+            using (FileStream file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
                 uint menuCount = file.ReadUInt();
                 for (int i = 0; i < menuCount; i++)
@@ -89,7 +89,7 @@ namespace GT2.SolodataEditor
 
         static void Build()
         {
-            using (FileStream file = new FileStream("new_solodata.dat", FileMode.Create, FileAccess.ReadWrite))
+            using (FileStream file = new FileStream("solodata.dat", FileMode.Create, FileAccess.ReadWrite))
             {
                 using (TextReader input = new StreamReader(File.OpenRead("Menus.csv"), Encoding.UTF8))
                 {
@@ -135,7 +135,7 @@ namespace GT2.SolodataEditor
                 file.WriteUInt((uint)Cars.Count);
 
                 file.Position = 0;
-                using (var gzip = new FileStream("new_solodata.dat.gz", FileMode.Create, FileAccess.Write))
+                using (var gzip = new FileStream("solodata.dat.gz", FileMode.Create, FileAccess.Write))
                 {
                     using (var compression = new GZipOutputStream(gzip))
                     {
