@@ -2,7 +2,7 @@
 using System.IO;
 using Force.Crc32;
 
-namespace GT2.SaveFixer
+namespace GT2.SaveChecksumFixer
 {
     using StreamExtensions;
 
