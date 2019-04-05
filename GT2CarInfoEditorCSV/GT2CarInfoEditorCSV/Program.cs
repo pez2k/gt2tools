@@ -1,10 +1,10 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace GT2.CarInfoEditorCSV
@@ -82,8 +82,7 @@ namespace GT2.CarInfoEditorCSV
 
         static void Load()
         {
-            CarList list = new CarList();
-            list.Cars = new List<Car>();
+            CarList list = new CarList { Cars = new List<Car>() };
 
             using (TextReader input = new StreamReader("Cars.csv", Encoding.UTF8))
             {
@@ -95,30 +94,18 @@ namespace GT2.CarInfoEditorCSV
                         {
                             csv.Configuration.RegisterClassMap<CarCSVMap>();
                             colourCsv.Configuration.RegisterClassMap<CarColourCSVMap>();
-
-                            string lastCarName = "";
+                            
                             while (csv.Read())
                             {
                                 Car newCar = csv.GetRecord<Car>();
-                                if (newCar.CarName.ToCarID() < lastCarName.ToCarID())
-                                {
-                                    throw new Exception($"Car ID {newCar.CarName} found after {lastCarName} in Cars.csv, not in alphabetical order.");
-                                }
-                                lastCarName = newCar.CarName;
                                 newCar.Colours = new List<CarColour>();
                                 list.Cars.Add(newCar);
                             }
-
-                            lastCarName = "";
+                            list.Cars = list.Cars.OrderBy(car => car.CarName.ToCarID()).ToList();
+                            
                             while (colourCsv.Read())
                             {
                                 CarColourWithName newColourWithName = colourCsv.GetRecord<CarColourWithName>();
-                                string carName = newColourWithName.CarName;
-                                if (carName.ToCarID() < lastCarName.ToCarID())
-                                {
-                                    throw new Exception($"Car ID {carName} found after {lastCarName} in Colours.csv, not in alphabetical order.");
-                                }
-                                lastCarName = carName;
                                 CarColour newColour = new CarColour
                                 {
                                     ThumbnailColour = newColourWithName.ThumbnailColour,
@@ -126,7 +113,7 @@ namespace GT2.CarInfoEditorCSV
                                     JapaneseName = newColourWithName.JapaneseName,
                                     LatinName = newColourWithName.LatinName
                                 };
-                                list.Cars.Find(car => car.CarName == carName).Colours.Add(newColour);
+                                list.Cars.Find(car => car.CarName == newColourWithName.CarName).Colours.Add(newColour);
                             }
                         }
                     }
