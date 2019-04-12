@@ -57,62 +57,51 @@ namespace GT2.GT1ArchiveExtractor
 
         private static void Decompress(Stream compressed, Stream output)
         {
-            byte ch;
-            byte Temp;
-            byte Temp1;
-            byte Temp2;
-            int i;
-            int jump;
-            int size;
-            int flag;
-            byte[] b = new byte[258];
-            long Temp_Offset;
-            long Last_Offset;
-
-            flag = 1;
+            byte[] decompressedBytes = new byte[258];
+            byte isCompressedFlag = 1;
             compressed.Position = 0;
 
             while (compressed.Position < compressed.Length)
             {
-                if (flag == 1)
+                if (isCompressedFlag == 1) // if flag is 1 (we've run out of bits), read new flag
                 {
-                    Temp = (byte)compressed.ReadByte();
-                    flag = Temp | 0x100;
+                    isCompressedFlag = (byte)(compressed.ReadByte() | 0x100);
                 }
-                ch = (byte)compressed.ReadByte();
 
-                if ((flag & 1) != 1)
+                if ((isCompressedFlag & 1) != 1) // not compressed, shorter than dictionary size? next byte is data
                 {
-                    output.WriteByte(ch);
+                    byte uncompressedByte = (byte)compressed.ReadByte();
+                    output.WriteByte(uncompressedByte);
                 }
-                else
+                else // compressed, next byte is length - 3 (3 being dict size)
                 {
-                    Temp1 = (byte)compressed.ReadByte();
-                    if ((Temp1 & 0x80) != 0x80)
+                    ushort distance;
+                    ushort lengthOfDecompressedData = (ushort)(compressed.ReadByte() + 3);
+                    byte distanceFirstByte = (byte)compressed.ReadByte(); // next byte(s) must be step back distance
+                    if ((distanceFirstByte & 0x80) != 0x80) // 1 byte distance?
                     {
-                        jump = (Temp1 & 0x7F) + 1;
+                        distance = (ushort)((distanceFirstByte & 0x7F) + 1);
                     }
-                    else
+                    else // 2 byte distance?
                     {
-                        Temp2 = (byte)compressed.ReadByte();
-                        jump = ((Temp1 & 0x7F) * 256) + Temp2 + 1;
+                        byte distanceSecondByte = (byte)compressed.ReadByte();
+                        distance = (ushort)(((distanceFirstByte & 0x7F) * 256) + distanceSecondByte + 1);
                     }
-                    size = ch + 3;
-                    Temp_Offset = output.Position;
-                    output.Position = output.Position - jump;
-                    Last_Offset = output.Position;
-                    for (i = 0; i < size; i++)
+                    long endOfOutput = output.Position; // store end of output position
+                    output.Position = output.Position - distance; // step back the distance / offset - no bound, therefore infinitely sized window
+                    long steppedBackPosition = output.Position;
+                    for (int i = 0; i < lengthOfDecompressedData; i++) // read for the the length, looping around if length > distance
                     {
-                        b[i] = (byte)output.ReadByte();
+                        decompressedBytes[i] = (byte)output.ReadByte(); // up to 8 bit max + 3 (258)
                         if (output.Position >= output.Length)
                         {
-                            output.Position = Last_Offset;
+                            output.Position = steppedBackPosition;
                         }
                     }
-                    output.Position = Temp_Offset;
-                    output.Write(b, 0, size);
+                    output.Position = endOfOutput; // write data at end of output
+                    output.Write(decompressedBytes, 0, lengthOfDecompressedData);
                 }
-                flag = flag >> 1;
+                isCompressedFlag = (byte)(isCompressedFlag >> 1); // bit handled, move on to the next one
             }
         }
     }
