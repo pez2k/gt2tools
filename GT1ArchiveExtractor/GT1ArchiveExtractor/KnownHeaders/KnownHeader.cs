@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace GT2.GT1ArchiveExtractor
+namespace GT1.ArchiveExtractor
 {
     public abstract class KnownHeader
     {

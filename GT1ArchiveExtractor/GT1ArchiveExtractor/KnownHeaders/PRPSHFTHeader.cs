@@ -1,4 +1,4 @@
-﻿namespace GT2.GT1ArchiveExtractor
+﻿namespace GT1.ArchiveExtractor
 {
     public class PRPSHFTHeader : KnownHeader
     {

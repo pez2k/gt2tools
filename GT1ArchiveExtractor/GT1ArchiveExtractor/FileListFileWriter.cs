@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace GT2.GT1ArchiveExtractor
+namespace GT1.ArchiveExtractor
 {
     public class FileListFileWriter : IFileWriter
     {
