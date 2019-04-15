@@ -2,11 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using StreamExtensions;
 
 namespace GT3.StringEditor
 {
-    using GT2.StreamExtensions;
-
     class Program
     {
         static void Main(string[] args)

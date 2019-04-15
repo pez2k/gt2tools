@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 
-namespace GT2.StreamExtensions
+namespace StreamExtensions
 {
     public static class StreamExtensions
     {
@@ -14,6 +14,8 @@ namespace GT2.StreamExtensions
         {
             stream.Write(buffer, 0, buffer.Length);
         }
+
+        public static byte ReadSingleByte(this Stream stream) => (byte)stream.ReadByte();
 
         public static uint ReadUInt(this Stream stream)
         {
@@ -54,14 +56,7 @@ namespace GT2.StreamExtensions
 
         public static void WriteShort(this Stream stream, short value)
         {
-            ushort fullValue;
-            if (value < 0) {
-                fullValue = (ushort)(value + ushort.MaxValue);
-            }
-            else
-            {
-                fullValue = (ushort)value;
-            }
+            ushort fullValue = (ushort)(value < 0 ? (value + ushort.MaxValue) : value);
             stream.WriteUShort(fullValue);
         }
 

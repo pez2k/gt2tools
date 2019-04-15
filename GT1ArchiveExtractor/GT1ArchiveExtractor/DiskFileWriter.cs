@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using StreamExtensions;
 
 namespace GT1.ArchiveExtractor
 {
-    using GT2.StreamExtensions;
-
     public class DiskFileWriter : IFileWriter
     {
         private Dictionary<string, string> fileNames;
