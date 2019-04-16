@@ -46,6 +46,9 @@
     <Compile Include="..\..\Common\LZSS.cs">
       <Link>LZSS.cs</Link>
     </Compile>
+    <Compile Include="..\..\Common\StreamExtensions.cs">
+      <Link>StreamExtensions.cs</Link>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
