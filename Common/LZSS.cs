@@ -90,5 +90,18 @@ namespace GT1.LZSS
         }
 
         private static ushort ConsumeFlag(ushort compressionFlags) => (ushort)(compressionFlags >> 1);
+
+        public static void Compress(Stream input, Stream compressed)
+        {
+            const byte NoCompressionFlags = 0;
+            for (long i = 0; i < input.Length; i++)
+            {
+                if (i % 8 == 0)
+                {
+                    compressed.WriteByte(NoCompressionFlags);
+                }
+                compressed.WriteByte(input.ReadSingleByte());
+            }
+        }
     }
 }
