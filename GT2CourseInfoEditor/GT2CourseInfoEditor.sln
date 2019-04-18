@@ -5,7 +5,13 @@ VisualStudioVersion = 15.0.28307.438
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GT2CourseInfoEditor", "GT2CourseInfoEditor\GT2CourseInfoEditor.csproj", "{2E2C3787-6E16-41CC-B290-3859CFFE3EFA}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Common", "..\Common\Common.shproj", "{643A1287-D41C-4A10-8740-FC8DEDB2848E}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\Common\Common.projitems*{2e2c3787-6e16-41cc-b290-3859cffe3efa}*SharedItemsImports = 4
+		..\Common\Common.projitems*{643a1287-d41c-4a10-8740-fc8dedb2848e}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

@@ -1,5 +1,5 @@
 ﻿using GT2.CarNameConversion;
-using GT2.StreamExtensions;
+using StreamExtensions;
 
 namespace GT2.DataSplitter
 {

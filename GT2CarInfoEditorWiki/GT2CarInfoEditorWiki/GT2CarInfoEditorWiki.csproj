@@ -47,12 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\Common\CarNameConversion.cs">
-      <Link>CarNameConversion.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Common\StreamExtensions.cs">
-      <Link>StreamExtensions.cs</Link>
-    </Compile>
     <Compile Include="..\..\GT2CarInfoEditor\GT2CarInfoEditor\Car.cs">
       <Link>Car.cs</Link>
     </Compile>
@@ -72,6 +66,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <Import Project="..\..\Common\Common.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
