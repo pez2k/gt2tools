@@ -17,5 +17,11 @@ namespace GT3.VOLExtractor
             UncompressedSize = stream.ReadUInt();
             Size = stream.ReadUInt();
         }
+
+        public override void Extract(string path, Stream stream)
+        {
+            Name += ".gz";
+            base.Extract(path, stream);
+        }
     }
 }

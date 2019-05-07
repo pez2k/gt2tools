@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using StreamExtensions;
 
 namespace GT3.VOLExtractor
@@ -14,6 +15,19 @@ namespace GT3.VOLExtractor
             Name = Program.GetFilename(filenamePosition);
             Location = stream.ReadUInt();
             Size = stream.ReadUInt();
+        }
+
+        public override void Extract(string path, Stream stream)
+        {
+            path = Path.Combine(path, Name);
+            Console.WriteLine($"Extracting file: {path}");
+            stream.Position = Location * 0x800;
+            using (var output = new FileStream(path, FileMode.Create, FileAccess.Write))
+            {
+                byte[] buffer = new byte[Size];
+                stream.Read(buffer);
+                output.Write(buffer);
+            }
         }
     }
 }

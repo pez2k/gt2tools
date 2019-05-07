@@ -12,10 +12,15 @@ namespace GT3.VOLExtractor
 
         public static void Main(string[] args)
         {
-            Extract(args[0]);
+            string outputDirectory = "extracted";
+            if (args.Length > 1)
+            {
+                outputDirectory = args[1];
+            }
+            Extract(args[0], outputDirectory);
         }
 
-        private static void Extract(string filename)
+        private static void Extract(string filename, string outputDirectory)
         {
             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
@@ -33,6 +38,7 @@ namespace GT3.VOLExtractor
                 Entry rootDirectory = Entry.Create(file.ReadUInt());
                 file.Position -= 4;
                 rootDirectory.Read(file);
+                rootDirectory.Extract(outputDirectory, file);
             }
         }
 

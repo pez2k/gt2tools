@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using StreamExtensions;
 
@@ -32,6 +33,23 @@ namespace GT3.VOLExtractor
                 stream.Position -= 4;
                 Entries[i].Read(stream);
                 stream.Position = currentPosition;
+            }
+        }
+
+        public override void Extract(string path, Stream stream)
+        {
+            path = Path.Combine(path, Name);
+            Console.WriteLine($"Extracting directory: {path}");
+            if (!System.IO.Directory.Exists(path))
+            {
+                System.IO.Directory.CreateDirectory(path);
+            }
+            foreach (var entry in Entries)
+            {
+                if (entry.Name != "..")
+                {
+                    entry.Extract(path, stream);
+                }
             }
         }
     }
