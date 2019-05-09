@@ -87,10 +87,12 @@ namespace GT3.VOLExtractor
 
         public override void AllocateHeaderSpace(Stream stream)
         {
-            headerPosition = stream.Position;
-            Console.WriteLine($"{headerPosition}");
+            HeaderPosition = stream.Position;
+            Console.WriteLine($"{HeaderPosition}");
             stream.Position += 8;
             stream.Position += 4 * Entries.Count;
         }
+
+        public override uint GetFlag() => Flag;
     }
 }

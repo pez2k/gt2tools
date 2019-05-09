@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using StreamExtensions;
 
 namespace GT3.VOLExtractor
 {
     public abstract class Entry
     {
-        protected long headerPosition;
+        public long HeaderPosition { get; set; }
 
         public string Name { get; set; }
 
@@ -31,5 +34,26 @@ namespace GT3.VOLExtractor
         public abstract void Import(string path);
 
         public abstract void AllocateHeaderSpace(Stream stream);
+
+        public void WriteFilename(Stream stream, Dictionary<string, uint> existingNames)
+        {
+            uint filenamePosition = (uint)stream.Position;
+            stream.Position = HeaderPosition;
+            if (existingNames.TryGetValue(Name, out uint existingPosition))
+            {
+                stream.WriteUInt(existingPosition | GetFlag());
+                stream.Position = filenamePosition;
+            }
+            else
+            {
+                stream.WriteUInt(filenamePosition | GetFlag());
+                stream.Position = filenamePosition;
+                stream.Write(Encoding.ASCII.GetBytes(Name));
+                stream.WriteByte(0);
+                existingNames.Add(Name, filenamePosition);
+            }
+        }
+
+        public virtual uint GetFlag() => 0;
     }
 }

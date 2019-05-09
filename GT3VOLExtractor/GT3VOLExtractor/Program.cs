@@ -83,7 +83,7 @@ namespace GT3.VOLExtractor
 
             List<Entry> entries = BuildEntryList(rootDirectory);
 
-            using (var output = new FileStream("new_gt3.vol", FileMode.Create, FileAccess.Write))
+            using (var output = new FileStream("new_gt3.vol", FileMode.Create, FileAccess.ReadWrite))
             {
                 output.WriteUInt(0xACB990AD);
                 output.WriteUInt(0x00020002);
@@ -97,6 +97,35 @@ namespace GT3.VOLExtractor
 
                 //round up to nearest 8b, or just 4b gap?
                 output.WriteUInt(0);
+
+                uint stringTableStart = (uint)output.Position;
+                output.WriteByte(0xFF);
+
+                var newFilenames = new Dictionary<string, uint>();
+
+                foreach (var entry in entries)
+                {
+                    entry.WriteFilename(output, newFilenames);
+                }
+
+                uint headerEnd = (uint)output.Position;
+                output.Position = headerSizePosition;
+                output.WriteUInt(headerEnd);
+                output.WriteUInt(stringTableStart);
+                uint filenamesLength = headerEnd - stringTableStart;
+                output.WriteUInt(filenamesLength);
+
+                output.Position = stringTableStart;
+                byte[] filenameBytes = new byte[filenamesLength];
+                output.Read(filenameBytes);
+                for (int i = 0; i < filenamesLength; i++)
+                {
+                    filenameBytes[i] = (byte)~filenameBytes[i];
+                }
+                output.Position = stringTableStart;
+                output.Write(filenameBytes);
+
+                output.WriteByte(0);
             }
         }
 

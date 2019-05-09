@@ -25,11 +25,19 @@ namespace GT3.VOLExtractor
             base.Extract(path, stream);
         }
 
+        public override void Import(string path)
+        {
+            base.Import(path);
+            Name = Name.Replace(".gz", "");
+        }
+
         public override void AllocateHeaderSpace(Stream stream)
         {
-            headerPosition = stream.Position;
-            System.Console.WriteLine($"{headerPosition}");
+            HeaderPosition = stream.Position;
+            System.Console.WriteLine($"{HeaderPosition}");
             stream.Position += 16;
         }
+
+        public override uint GetFlag() => Flag;
     }
 }
