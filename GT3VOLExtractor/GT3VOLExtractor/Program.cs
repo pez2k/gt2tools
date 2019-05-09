@@ -14,12 +14,26 @@ namespace GT3.VOLExtractor
 
         public static void Main(string[] args)
         {
-            string outputDirectory = "extracted";
-            if (args.Length > 1)
+            if (args.Length < 2)
             {
-                outputDirectory = args[1];
+                return;
             }
-            Extract(args[0], outputDirectory);
+
+            if (args[0] == "-r")
+            {
+                Import(args[1]);
+                return;
+            }
+
+            if (args[0] == "-e")
+            {
+                string outputDirectory = "extracted";
+                if (args.Length > 2)
+                {
+                    outputDirectory = args[2];
+                }
+                Extract(args[1], outputDirectory);
+            }
         }
 
         private static void Extract(string filename, string outputDirectory)
