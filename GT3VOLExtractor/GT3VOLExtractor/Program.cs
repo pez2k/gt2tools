@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using StreamExtensions;
 
@@ -71,6 +73,47 @@ namespace GT3.VOLExtractor
                 filename.Append((char)character);
             }
             return $"{filename}";
+        }
+
+        public static void Import(string path)
+        {
+            var rootDirectory = new DirectoryEntry();
+            rootDirectory.Import(path);
+            rootDirectory.Name = ".";
+
+            List<Entry> entries = BuildEntryList(rootDirectory);
+
+            using (var output = new FileStream("new_gt3.vol", FileMode.Create, FileAccess.Write))
+            {
+                output.WriteUInt(0xACB990AD);
+                output.WriteUInt(0x00020002);
+                long headerSizePosition = output.Position;
+                output.Position += 12;
+
+                foreach (var entry in entries)
+                {
+                    entry.AllocateHeaderSpace(output);
+                }
+
+                //round up to nearest 8b, or just 4b gap?
+                output.WriteUInt(0);
+            }
+        }
+
+        public static List<Entry> BuildEntryList(Entry rootDirectory)
+        {
+            var entries = new List<Entry>();
+            entries.Add(rootDirectory);
+
+            for (int i = 0; i < entries.Count; i++)
+            {
+                if (entries[i] is DirectoryEntry directory)
+                {
+                    entries.AddRange(directory.Entries.Where(entry => entry.Name != ".."));
+                }
+            }
+
+            return entries;
         }
     }
 }

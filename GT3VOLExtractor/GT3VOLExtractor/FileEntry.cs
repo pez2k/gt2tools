@@ -4,13 +4,14 @@ using StreamExtensions;
 
 namespace GT3.VOLExtractor
 {
-    public class File : Entry
+    public class FileEntry : Entry
     {
         public uint Location { get; set; }
         public uint Size { get; set; }
 
         public override void Read(Stream stream)
         {
+            Console.WriteLine($"{stream.Position}");
             uint filenamePosition = stream.ReadUInt();
             Name = Program.GetFilename(filenamePosition);
             Location = stream.ReadUInt();
@@ -28,6 +29,19 @@ namespace GT3.VOLExtractor
                 stream.Read(buffer);
                 output.Write(buffer);
             }
+        }
+
+        public override void Import(string path)
+        {
+            Console.WriteLine(path);
+            Name = Path.GetFileName(path);
+        }
+
+        public override void AllocateHeaderSpace(Stream stream)
+        {
+            headerPosition = stream.Position;
+            Console.WriteLine($"{headerPosition}");
+            stream.Position += 12;
         }
     }
 }

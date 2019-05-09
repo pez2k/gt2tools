@@ -3,7 +3,7 @@ using StreamExtensions;
 
 namespace GT3.VOLExtractor
 {
-    public class Archive : File
+    public class ArchiveEntry : FileEntry
     {
         public const uint Flag = 0x02000000;
 
@@ -11,6 +11,7 @@ namespace GT3.VOLExtractor
 
         public override void Read(Stream stream)
         {
+            System.Console.WriteLine($"{stream.Position}");
             uint filenamePosition = stream.ReadUInt() - Flag;
             Name = Program.GetFilename(filenamePosition);
             Location = stream.ReadUInt();
@@ -22,6 +23,13 @@ namespace GT3.VOLExtractor
         {
             Name += ".gz";
             base.Extract(path, stream);
+        }
+
+        public override void AllocateHeaderSpace(Stream stream)
+        {
+            headerPosition = stream.Position;
+            System.Console.WriteLine($"{headerPosition}");
+            stream.Position += 16;
         }
     }
 }

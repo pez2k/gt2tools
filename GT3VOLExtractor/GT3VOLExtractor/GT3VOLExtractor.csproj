@@ -43,9 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Archive.cs" />
-    <Compile Include="Directory.cs" />
-    <Compile Include="File.cs" />
+    <Compile Include="ArchiveEntry.cs" />
+    <Compile Include="DirectoryEntry.cs" />
+    <Compile Include="FileEntry.cs" />
     <Compile Include="Entry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
