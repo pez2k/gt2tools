@@ -14,7 +14,7 @@ namespace GT3.VOLExtractor
 
         public override void Read(Stream stream)
         {
-            Console.WriteLine($"{stream.Position}");
+            //Console.WriteLine($"{stream.Position}");
             uint filenamePosition = stream.ReadUInt() - Flag;
             Name = Program.GetFilename(filenamePosition);
             uint numberOfEntries = stream.ReadUInt();
@@ -57,7 +57,7 @@ namespace GT3.VOLExtractor
 
         public override void Import(string path)
         {
-            Console.WriteLine(path);
+            //Console.WriteLine(path);
             Name = Path.GetFileName(path);
             List<string> childPaths = Directory.EnumerateFileSystemEntries(path).ToList();
             childPaths.Sort(StringComparer.Ordinal);
@@ -88,11 +88,24 @@ namespace GT3.VOLExtractor
         public override void AllocateHeaderSpace(Stream stream)
         {
             HeaderPosition = stream.Position;
-            Console.WriteLine($"{HeaderPosition}");
+            //Console.WriteLine($"{HeaderPosition}");
             stream.Position += 8;
             stream.Position += 4 * Entries.Count;
         }
 
         public override uint GetFlag() => Flag;
+
+        public override void Write(Stream stream)
+        {
+            Console.WriteLine($"Importing directory: {Name}");
+            uint currentPosition = (uint)stream.Position;
+            stream.Position = HeaderPosition + 4;
+            stream.WriteUInt((uint)Entries.Count);
+            foreach (var entry in Entries)
+            {
+                stream.WriteUInt((uint)entry.HeaderPosition);
+            }
+            stream.Position = currentPosition;
+        }
     }
 }

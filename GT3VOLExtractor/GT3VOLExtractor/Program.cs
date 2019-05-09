@@ -125,6 +125,13 @@ namespace GT3.VOLExtractor
                 output.Position = stringTableStart;
                 output.Write(filenameBytes);
 
+                output.Position += 0x800 - (output.Position % 0x800);
+
+                foreach (var entry in entries)
+                {
+                    entry.Write(output);
+                }
+                output.Position -= 1;
                 output.WriteByte(0);
             }
         }

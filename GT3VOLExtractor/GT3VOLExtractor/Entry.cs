@@ -55,5 +55,7 @@ namespace GT3.VOLExtractor
         }
 
         public virtual uint GetFlag() => 0;
+
+        public abstract void Write(Stream stream);
     }
 }
