@@ -12,6 +12,8 @@ namespace GT3.VOLExtractor
 
         public List<Entry> Entries { get; set; }
 
+        public DirectoryEntry ParentDirectory { get; set; }
+
         public override void Read(Stream stream)
         {
             //Console.WriteLine($"{stream.Position}");
@@ -70,7 +72,7 @@ namespace GT3.VOLExtractor
                 Entry entry;
                 if ((File.GetAttributes(childPath) & FileAttributes.Directory) != 0)
                 {
-                    entry = new DirectoryEntry();
+                    entry = new DirectoryEntry { ParentDirectory = this };
                 }
                 else if (Path.GetExtension(childPath) == ".gz")
                 {
@@ -91,6 +93,7 @@ namespace GT3.VOLExtractor
             //Console.WriteLine($"{HeaderPosition}");
             stream.Position += 8;
             stream.Position += 4 * Entries.Count;
+            Entries[0].HeaderPosition = ParentDirectory?.HeaderPosition ?? 0;
         }
 
         public override uint GetFlag() => Flag;
