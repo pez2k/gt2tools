@@ -14,26 +14,21 @@ namespace GT3.VOLExtractor
 
         public static void Main(string[] args)
         {
-            if (args.Length < 2)
+            if (args.Length > 1)
             {
-                return;
-            }
-
-            if (args[0] == "-r")
-            {
-                Import(args[1]);
-                return;
-            }
-
-            if (args[0] == "-e")
-            {
-                string outputDirectory = "extracted";
-                if (args.Length > 2)
+                if (args[0] == "-r")
                 {
-                    outputDirectory = args[2];
+                    Import(args[1], args.Length > 2 ? args[2] : "gt3.vol");
+                    return;
                 }
-                Extract(args[1], outputDirectory);
+
+                if (args[0] == "-e")
+                {
+                    Extract(args[1], args.Length > 2 ? args[2] : "extracted");
+                    return;
+                }
             }
+            Console.WriteLine("Usage:\r\nExtract: GT3VOLExtractor -e <VOL file> [<Output directory>]\r\nRebuild: GT3VOLExtractor -r <Input directory> [<VOL file>]");
         }
 
         private static void Extract(string filename, string outputDirectory)
@@ -89,7 +84,7 @@ namespace GT3.VOLExtractor
             return $"{filename}";
         }
 
-        public static void Import(string path)
+        public static void Import(string path, string outputFilename)
         {
             var rootDirectory = new DirectoryEntry();
             rootDirectory.Import(path);
@@ -97,7 +92,7 @@ namespace GT3.VOLExtractor
 
             List<Entry> entries = BuildEntryList(rootDirectory);
 
-            using (var output = new FileStream("new_gt3.vol", FileMode.Create, FileAccess.ReadWrite))
+            using (var output = new FileStream(outputFilename, FileMode.Create, FileAccess.ReadWrite))
             {
                 output.WriteUInt(0xACB990AD);
                 output.WriteUInt(0x00020002);
