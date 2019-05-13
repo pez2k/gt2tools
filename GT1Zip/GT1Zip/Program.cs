@@ -94,22 +94,9 @@ namespace GT1.Zip
                 output.WriteUInt(Version);
                 output.Position += 4;
                 output.WriteUInt((uint)file.Length);
-
-                uint paddedSize = 2;
-                while (paddedSize < file.Length)
-                {
-                    paddedSize <<= 1;
-                }
-
-                using (var paddedFile = new MemoryStream())
-                {
-                    file.CopyTo(paddedFile);
-                    paddedFile.SetLength(paddedSize);
-                    paddedFile.Position = 0;
-                    LZSS.Compress(paddedFile, output);
-                    output.Position = 8;
-                    output.WriteUInt((uint)(output.Length - 16));
-                }
+                LZSS.Compress(file, output);
+                output.Position = 8;
+                output.WriteUInt((uint)(output.Length - 16));
             }
         }
     }
