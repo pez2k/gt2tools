@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text;
 using StreamExtensions;
 
 namespace GT1ArchiveTool
@@ -13,7 +16,15 @@ namespace GT1ArchiveTool
         {
             if (args.Length == 1)
             {
-                Extract(args[0]);
+                string path = args[0];
+                if ((File.GetAttributes(path) & FileAttributes.Directory) != 0)
+                {
+                    Rebuild(path);
+                }
+                else
+                {
+                    Extract(path);
+                }
             }
         }
 
@@ -77,6 +88,79 @@ namespace GT1ArchiveTool
                 output.WriteUInt(uncompressedSize);
                 output.Write(contents);
             }
+        }
+
+        private static void Rebuild(string path)
+        {
+            using (var output = new FileStream($"{Path.GetFileName(path)}.dat", FileMode.Create, FileAccess.Write))
+            {
+                output.WriteCharacters("@(#)GT-ARC");
+                output.WriteUShort(0);
+                output.WriteUShort(0x8001); // 00 01 in CARINF.DAT, seems not to matter, but breaks CAR.DAT if 00 01
+                string[] files = Directory.EnumerateFiles(path).ToArray();
+                output.WriteUShort((ushort)files.Length);
+                output.SetLength(output.Position + (files.Length * 3 * 4));
+
+                foreach (string filename in files)
+                {
+                    if (Path.GetExtension(filename) == Extension)
+                    {
+                        ImportGTZip(filename, output);
+                    }
+                    else
+                    {
+                        ImportFile(filename, output);
+                    }
+                }
+            }
+        }
+
+        private static void ImportGTZip(string filename, Stream output)
+        {
+            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                byte[] existingHeader = new byte[4];
+                file.Read(existingHeader);
+                if (!existingHeader.SequenceEqual(Encoding.ASCII.GetBytes(Header)))
+                {
+                    throw new Exception("Not a GTZ");
+                }
+
+                if (file.ReadUInt() != Version)
+                {
+                    throw new Exception("Unknown GTZ version");
+                }
+
+                uint compressedSize = file.ReadUInt();
+                if (file.Length != compressedSize + 16)
+                {
+                    throw new Exception("Incorrect file size");
+                }
+
+                uint uncompressedSize = file.ReadUInt();
+                ImportData(file, output, compressedSize, uncompressedSize);
+            }
+        }
+
+        private static void ImportFile(string filename, Stream output)
+        {
+            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                uint size = (uint)file.Length;
+                ImportData(file, output, size, size);
+            }
+        }
+
+        private static void ImportData(Stream input, Stream output, uint compressedSize, uint uncompressedSize)
+        {
+            long offset = output.Length;
+            output.WriteUInt((uint)offset);
+            output.WriteUInt(compressedSize);
+            output.WriteUInt(uncompressedSize);
+            long indexPosition = output.Position;
+            output.Position = offset;
+            input.CopyTo(output);
+            output.Position = indexPosition;
         }
     }
 }
