@@ -72,6 +72,11 @@ namespace StreamExtensions
             stream.Write(value.ToByteArray(), 0, 2);
         }
 
+        public static void WriteCharacters(this Stream stream, string characters)
+        {
+            stream.Write(Encoding.ASCII.GetBytes(characters));
+        }
+
         public static byte[] ToByteArray(this ushort value)
         {
             byte[] byteArray = new byte[2];
