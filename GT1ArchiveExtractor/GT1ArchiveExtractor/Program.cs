@@ -41,7 +41,7 @@ namespace GT1.ArchiveExtractor
                         using (var decompressed = new MemoryStream())
                         {
                             LZSS.Decompress(compressed, decompressed);
-                            file.Contents = decompressed.GetBuffer();
+                            file.Contents = decompressed.ToArray();
                         }
                     }
                 }
