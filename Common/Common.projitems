@@ -9,9 +9,13 @@
     <Import_RootNamespace>Common</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="$(MSBuildThisFileDirectory)CarNameConversion.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LZSS.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GT2\CarNameConversion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GT1\LZSS.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StreamExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TrackNameConversion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GT2\TrackNameConversion.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)GT2\" />
+    <Folder Include="$(MSBuildThisFileDirectory)GT1\" />
   </ItemGroup>
 </Project>
