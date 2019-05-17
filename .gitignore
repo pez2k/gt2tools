@@ -10,3 +10,5 @@ bin/
 *.user
 .vs
 packages/
+
+/Tests/
