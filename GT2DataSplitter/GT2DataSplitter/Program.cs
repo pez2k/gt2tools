@@ -122,6 +122,8 @@ namespace GT2.DataSplitter
             LicenseData LicenseData = new LicenseData();
             LicenseData.ReadData(filename);
             LicenseData.DumpData();
+            StringTable.Export();
+            CarNameStringTable.Export();
         }
 
         static void SplitArcadeFile(string filename)
@@ -130,6 +132,8 @@ namespace GT2.DataSplitter
             ArcadeData ArcadeData = new ArcadeData();
             ArcadeData.ReadData(filename);
             ArcadeData.DumpData();
+            StringTable.Export();
+            CarNameStringTable.Export();
         }
     }
 }
