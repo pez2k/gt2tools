@@ -11,6 +11,7 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)GT2\CarNameConversion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GT1\LZSS.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)GT3\HashGenerator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StreamExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)GT2\TrackNameConversion.cs" />
   </ItemGroup>
