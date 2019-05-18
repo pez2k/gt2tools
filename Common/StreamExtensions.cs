@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace StreamExtensions
@@ -89,5 +90,14 @@ namespace StreamExtensions
         {
             return Encoding.Default.GetBytes(value.ToCharArray());
         }
+
+        public static ulong ReadULong(this Stream stream)
+        {
+            byte[] value = new byte[8];
+            stream.Read(value);
+            return ReadULong(value);
+        }
+
+        public static ulong ReadULong(this byte[] array) => BitConverter.ToUInt64(array, 0);
     }
 }
