@@ -79,11 +79,8 @@
     <Compile Include="DataStructures\ParamDB\Regulations.cs" />
     <Compile Include="DataStructures\ParamDB\Opponent.cs" />
     <Compile Include="DataStructures\ParamDB\Event.cs" />
-    <Compile Include="FileNameCache.cs" />
     <Compile Include="IDStringTable.cs" />
     <Compile Include="StringTable.cs" />
-    <Compile Include="Utils.cs" />
-    <Compile Include="MemberMapExtensions.cs" />
     <Compile Include="DataStructures\DataStructure.cs" />
     <Compile Include="DataStructures\ParamDB\Brakes.cs" />
     <Compile Include="Program.cs" />

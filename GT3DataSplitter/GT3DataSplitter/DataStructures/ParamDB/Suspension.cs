@@ -5,7 +5,6 @@
         public Suspension()
         {
             Size = 0x80;
-            HasId = true;
         }
     }
 }

@@ -5,7 +5,6 @@
         public Flywheel()
         {
             Size = 0x20;
-            HasId = true;
         }
     }
 }

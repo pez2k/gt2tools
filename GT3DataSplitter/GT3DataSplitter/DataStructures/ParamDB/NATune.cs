@@ -5,7 +5,6 @@
         public NATune()
         {
             Size = 0x20;
-            HasId = true;
         }
     }
 }

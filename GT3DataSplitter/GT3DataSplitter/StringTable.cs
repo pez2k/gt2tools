@@ -111,12 +111,6 @@ namespace GT3.DataSplitter
             return Strings[index];
         }
 
-        public void Reset()
-        {
-            Strings.Clear();
-            UnusedStrings?.Clear();
-        }
-
         public class StringTableLookup : ITypeConverter
         {
             private readonly StringTable table;

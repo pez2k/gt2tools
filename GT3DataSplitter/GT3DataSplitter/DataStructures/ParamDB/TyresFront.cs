@@ -5,7 +5,6 @@
         public TyresFront()
         {
             Size = 0x60;
-            HasId = true;
         }
     }
 }

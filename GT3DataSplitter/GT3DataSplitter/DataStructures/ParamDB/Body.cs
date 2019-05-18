@@ -5,7 +5,6 @@
         public Body()
         {
             Size = 0x48;
-            HasId = true;
         }
     }
 }

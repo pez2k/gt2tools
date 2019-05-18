@@ -5,7 +5,6 @@
         public Engine()
         {
             Size = 0x58;
-            HasId = true;
         }
     }
 }

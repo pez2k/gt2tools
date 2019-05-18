@@ -5,7 +5,6 @@
         public Drivetrain()
         {
             Size = 0x28;
-            HasId = true;
         }
     }
 }

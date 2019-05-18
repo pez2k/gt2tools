@@ -5,7 +5,6 @@
         public Brakes()
         {
             Size = 0x18;
-            HasId = true;
         }
     }
 }

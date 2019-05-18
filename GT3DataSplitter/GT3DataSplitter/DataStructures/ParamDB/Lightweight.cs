@@ -5,7 +5,6 @@
         public Lightweight()
         {
             Size = 0x18;
-            HasId = true;
         }
     }
 }

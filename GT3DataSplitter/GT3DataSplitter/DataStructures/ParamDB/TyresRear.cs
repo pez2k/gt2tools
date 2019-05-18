@@ -5,7 +5,6 @@
         public TyresRear()
         {
             Size = 0x60;
-            HasId = true;
         }
     }
 }

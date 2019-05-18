@@ -5,7 +5,6 @@
         public Car()
         {
             Size = 0x108;
-            HasId = true;
         }
     }
 }

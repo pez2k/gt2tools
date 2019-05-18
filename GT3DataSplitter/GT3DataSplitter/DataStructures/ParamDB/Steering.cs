@@ -5,7 +5,6 @@
         public Steering()
         {
             Size = 0x40;
-            HasId = true;
         }
     }
 }

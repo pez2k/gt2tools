@@ -27,7 +27,6 @@ namespace GT3.DataSplitter
             using (FileStream outfile = new FileStream(filename, FileMode.Create, FileAccess.Write))
             {
                 ExportStructure(RawData, outfile);
-                FileNameCache.Add(Name, filename);
             }
         }
 
@@ -54,26 +53,6 @@ namespace GT3.DataSplitter
         public virtual void ExportStructure(byte[] structure, FileStream output)
         {
             output.Write(structure, 0, structure.Length);
-        }
-
-        public virtual void Import(string filename)
-        {
-            using (FileStream infile = new FileStream(filename, FileMode.Open, FileAccess.Read))
-            {
-                ImportStructure(infile);
-                FileNameCache.Add(Name, filename);
-            }
-        }
-
-        public virtual void ImportStructure(FileStream file)
-        {
-            RawData = new byte[file.Length];
-            file.Read(RawData, 0, (int)file.Length);
-        }
-
-        public virtual void Write(FileStream outfile)
-        {
-            outfile.Write(RawData, 0, Size);
         }
     }
 

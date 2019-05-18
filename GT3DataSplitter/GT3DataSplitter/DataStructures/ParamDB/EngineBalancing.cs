@@ -5,7 +5,6 @@
         public EngineBalancing()
         {
             Size = 0x20;
-            HasId = true;
         }
     }
 }

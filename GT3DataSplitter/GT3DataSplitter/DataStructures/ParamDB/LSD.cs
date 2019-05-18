@@ -5,7 +5,6 @@
         public LSD()
         {
             Size = 0x30;
-            HasId = true;
         }
     }
 }

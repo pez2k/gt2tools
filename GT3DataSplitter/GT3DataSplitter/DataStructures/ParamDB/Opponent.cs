@@ -5,7 +5,6 @@
         public Opponent()
         {
             Size = 0x110;
-            HasId = true;
         }
     }
 }

@@ -5,7 +5,6 @@
         public Clutch()
         {
             Size = 0x20;
-            HasId = true;
         }
     }
 }
