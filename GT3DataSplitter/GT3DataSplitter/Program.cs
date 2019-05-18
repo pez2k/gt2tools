@@ -30,14 +30,17 @@ namespace GT3.DataSplitter
 
             var database = new ParamDB();
             database.ReadData("paramdb_eu.db");
-            database.DumpData();
 
             var raceDetails = new RaceDetailDB();
             raceDetails.ReadData("racedetail.db");
-            raceDetails.DumpData();
 
             var raceModes = new RaceModeDB();
             raceModes.ReadData("racemode.db");
+
+            Directory.CreateDirectory("Data");
+            Directory.SetCurrentDirectory("Data");
+            database.DumpData();
+            raceDetails.DumpData();
             raceModes.DumpData();
 
             Strings.Export("UnicodeStrings");
