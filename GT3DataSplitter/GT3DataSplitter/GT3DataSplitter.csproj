@@ -49,7 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataStructures\RaceDetail.cs" />
+    <Compile Include="DataStructures\RaceModeDB.cs" />
+    <Compile Include="DataStructures\RaceMode.cs" />
     <Compile Include="DataStructures\CarDataStructure.cs" />
+    <Compile Include="DataStructures\RaceDetailDB.cs" />
     <Compile Include="DataStructures\ParamDB\GenericEngineUpgrade.cs" />
     <Compile Include="DataStructures\ParamDB.cs" />
     <Compile Include="DataStructures\ParamDB\Car.cs" />

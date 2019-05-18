@@ -9,8 +9,10 @@ namespace GT3.DataSplitter
         public override string CreateOutputFilename(byte[] data)
         {
             ulong hexID = data.ReadULong();
-            string id = Program.IDStrings.Get(hexID);
-            return Path.Combine(Name, $"{id}.dat");
+            string filename = Program.IDStrings.Get(hexID) ?? GetFileCount();
+            return Path.Combine(Name, $"{filename}.dat");
         }
+
+        private string GetFileCount() => $"{Directory.GetFiles(Name).Length:D4}";
     }
 }

@@ -32,6 +32,14 @@ namespace GT3.DataSplitter
             database.ReadData("paramdb_eu.db");
             database.DumpData();
 
+            var raceDetails = new RaceDetailDB();
+            raceDetails.ReadData("racedetail.db");
+            raceDetails.DumpData();
+
+            var raceModes = new RaceModeDB();
+            raceModes.ReadData("racemode.db");
+            raceModes.DumpData();
+
             Strings.Export("UnicodeStrings");
         }
     }

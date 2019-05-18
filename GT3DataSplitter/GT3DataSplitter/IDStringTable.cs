@@ -42,7 +42,7 @@ namespace GT3.DataSplitter
             }
         }
 
-        public string Get(ulong id) => ids[id];
+        public string Get(ulong id) => ids.TryGetValue(id, out string value) ? value : null;
 
         public class IDStringTableLookup : ITypeConverter
         {
