@@ -35,7 +35,7 @@ namespace GT3.DataSplitter
                 Encoding encoding = Encoding.Default;
                 if (stringType == 0xFFFF)
                 {
-                    encoding = Encoding.UTF8;
+                    encoding = Encoding.GetEncoding("EUC-JP");
                 }
                 else if (stringType != 0x0001)
                 {
@@ -56,7 +56,7 @@ namespace GT3.DataSplitter
                     ushort stringLength = file.ReadUShort();
                     byte[] stringBytes = new byte[stringLength];
                     file.Read(stringBytes);
-                    Strings.Add(encoding.GetString(stringBytes));
+                    Strings.Add(encoding.GetString(stringBytes).TrimEnd('\0'));
                     file.Position = storedPosition;
                 }
             }

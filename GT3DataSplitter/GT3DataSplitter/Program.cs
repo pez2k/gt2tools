@@ -6,6 +6,7 @@ namespace GT3.DataSplitter
     {
         public static IDStringTable IDStrings = new IDStringTable();
         public static StringTable Strings = new StringTable();
+        public static StringTable UnicodeStrings = new StringTable();
 
         static void Main(string[] args)
         {
@@ -26,7 +27,8 @@ namespace GT3.DataSplitter
         static void SplitFile()
         {
             IDStrings.Read(".id_db_idx_eu.db", ".id_db_str_eu.db");
-            Strings.Read("paramunistr_eu.db");
+            Strings.Read("paramstr_eu.db");
+            UnicodeStrings.Read("paramunistr_eu.db");
 
             var database = new ParamDB();
             database.ReadData("paramdb_eu.db");
@@ -43,7 +45,8 @@ namespace GT3.DataSplitter
             raceDetails.DumpData();
             raceModes.DumpData();
 
-            Strings.Export("UnicodeStrings");
+            Strings.Export("Strings");
+            UnicodeStrings.Export("UnicodeStrings");
         }
     }
 }
