@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{93459E34-497B-4423-BC87-6573A16A1A9C}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GT3.DataSplitter</RootNamespace>
+    <AssemblyName>GT3DataSplitter</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CsvHelper, Version=6.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.6.1.1\lib\net45\CsvHelper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataStructures\CarDataStructure.cs" />
+    <Compile Include="DataStructures\ParamDB\GenericEngineUpgrade.cs" />
+    <Compile Include="DataStructures\ParamDB.cs" />
+    <Compile Include="DataStructures\ParamDB\Car.cs" />
+    <Compile Include="DataStructures\ParamDB\Clutch.cs" />
+    <Compile Include="DataStructures\ParamDB\TyresRear.cs" />
+    <Compile Include="DataStructures\ParamDB\TyresFront.cs" />
+    <Compile Include="DataStructures\ParamDB\LSD.cs" />
+    <Compile Include="DataStructures\ParamDB\Muffler.cs" />
+    <Compile Include="DataStructures\ParamDB\Intercooler.cs" />
+    <Compile Include="DataStructures\ParamDB\Suspension.cs" />
+    <Compile Include="DataStructures\ParamDB\Gearbox.cs" />
+    <Compile Include="DataStructures\ParamDB\Propshaft.cs" />
+    <Compile Include="DataStructures\ParamDB\Flywheel.cs" />
+    <Compile Include="DataStructures\ParamDB\Drivetrain.cs" />
+    <Compile Include="DataStructures\ParamDB\TurboKit.cs" />
+    <Compile Include="DataStructures\ParamDB\NATune.cs" />
+    <Compile Include="DataStructures\ParamDB\Computer.cs" />
+    <Compile Include="DataStructures\ParamDB\DisplacementIncrease.cs" />
+    <Compile Include="DataStructures\ParamDB\EngineBalancing.cs" />
+    <Compile Include="DataStructures\ParamDB\PortPolishing.cs" />
+    <Compile Include="DataStructures\ParamDB\Engine.cs" />
+    <Compile Include="DataStructures\ParamDB\Body.cs" />
+    <Compile Include="DataStructures\ParamDB\Lightweight.cs" />
+    <Compile Include="DataStructures\ParamDB\Chassis.cs" />
+    <Compile Include="DataStructures\ParamDB\Steering.cs" />
+    <Compile Include="DataStructures\ParamDB\BrakeBalanceController.cs" />
+    <Compile Include="DataStructures\ParamDB\Regulations.cs" />
+    <Compile Include="DataStructures\ParamDB\Opponent.cs" />
+    <Compile Include="DataStructures\ParamDB\Event.cs" />
+    <Compile Include="FileNameCache.cs" />
+    <Compile Include="IDStringTable.cs" />
+    <Compile Include="StringTable.cs" />
+    <Compile Include="Utils.cs" />
+    <Compile Include="MemberMapExtensions.cs" />
+    <Compile Include="DataStructures\DataStructure.cs" />
+    <Compile Include="DataStructures\ParamDB\Brakes.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="..\..\Common\Common.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
