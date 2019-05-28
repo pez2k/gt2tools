@@ -49,6 +49,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataStructures\ParamDB\Course.cs" />
+    <Compile Include="DataStructures\ParamDB\Opponent.cs" />
+    <Compile Include="DataStructures\ParamDB\TyreCompound.cs" />
+    <Compile Include="DataStructures\ParamDB\Unknown4.cs" />
+    <Compile Include="DataStructures\ParamDB\Unknown3.cs" />
+    <Compile Include="DataStructures\ParamDB\Wheels.cs" />
+    <Compile Include="DataStructures\ParamDB\Unknown2.cs" />
+    <Compile Include="DataStructures\ParamDB\Unknown1.cs" />
     <Compile Include="DataStructures\RaceDetail.cs" />
     <Compile Include="DataStructures\RaceModeDB.cs" />
     <Compile Include="DataStructures\RaceMode.cs" />
@@ -81,7 +89,7 @@
     <Compile Include="DataStructures\ParamDB\Steering.cs" />
     <Compile Include="DataStructures\ParamDB\BrakeBalanceController.cs" />
     <Compile Include="DataStructures\ParamDB\Regulations.cs" />
-    <Compile Include="DataStructures\ParamDB\Opponent.cs" />
+    <Compile Include="DataStructures\ParamDB\ArcadeCar.cs" />
     <Compile Include="DataStructures\ParamDB\Event.cs" />
     <Compile Include="IDStringTable.cs" />
     <Compile Include="StringTable.cs" />

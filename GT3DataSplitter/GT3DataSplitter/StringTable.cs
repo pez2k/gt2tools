@@ -5,11 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using StreamExtensions;
 
 namespace GT3.DataSplitter
 {
-    using StreamExtensions;
-
     public class StringTable
     {
         public List<string> Strings = new List<string>();

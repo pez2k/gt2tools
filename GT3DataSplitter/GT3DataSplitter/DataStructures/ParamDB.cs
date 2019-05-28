@@ -31,11 +31,19 @@ namespace GT3.DataSplitter
         public List<Intercooler> IntercoolerParts { get; set; } = new List<Intercooler>();
         public List<Muffler> MufflerParts { get; set; } = new List<Muffler>();
         public List<LSD> LSDParts { get; set; } = new List<LSD>();
+        public List<Unknown1> Unknown1Parts { get; set; } = new List<Unknown1>();
+        public List<Unknown2> Unknown2Parts { get; set; } = new List<Unknown2>();
+        public List<Wheels> WheelsParts { get; set; } = new List<Wheels>();
+        public List<Unknown3> Unknown3Parts { get; set; } = new List<Unknown3>();
+        public List<Unknown4> Unknown4Parts { get; set; } = new List<Unknown4>();
+        public List<TyreCompound> TyreCompounds { get; set; } = new List<TyreCompound>();
         public List<TyresFront> TyresFrontParts { get; set; } = new List<TyresFront>();
         public List<TyresRear> TyresRearParts { get; set; } = new List<TyresRear>();
         public List<Car> Cars { get; set; } = new List<Car>();
-        public List<Event> Events { get; set; } = new List<Event>();
         public List<Opponent> Opponents { get; set; } = new List<Opponent>();
+        public List<Event> Events { get; set; } = new List<Event>();
+        public List<Course> Courses { get; set; } = new List<Course>();
+        public List<ArcadeCar> ArcadeCars { get; set; } = new List<ArcadeCar>();
         public List<Regulations> Regulations { get; set; } = new List<Regulations>();
 
         public void ReadData(string filename)
@@ -90,20 +98,20 @@ namespace GT3.DataSplitter
                 IntercoolerParts.Read(dataTableStreams[19]);
                 MufflerParts.Read(dataTableStreams[20]);
                 LSDParts.Read(dataTableStreams[21]);
-                // 22 VCD? ASC?
-                // 23
-                // 24 wheels
-                // 25 sz?
-                // 26 n?
-                // 27 arc?
+                Unknown1Parts.Read(dataTableStreams[22]); // VCD? ASC?
+                Unknown2Parts.Read(dataTableStreams[23]);
+                WheelsParts.Read(dataTableStreams[24]);
+                Unknown3Parts.Read(dataTableStreams[25]); // sz?
+                Unknown4Parts.Read(dataTableStreams[26]); // n?
+                TyreCompounds.Read(dataTableStreams[27]);
                 TyresFrontParts.Read(dataTableStreams[28]);
                 TyresRearParts.Read(dataTableStreams[29]);
                 Cars.Read(dataTableStreams[30]);
-                // 31 arcade cars?
+                Opponents.Read(dataTableStreams[31]);
                 Events.Read(dataTableStreams[32]);
                 Regulations.Read(dataTableStreams[33]);
-                // 34 tracks
-                Opponents.Read(dataTableStreams[35]);
+                Courses.Read(dataTableStreams[34]);
+                ArcadeCars.Read(dataTableStreams[35]);
 
                 foreach (var stream in dataTableStreams)
                 {
@@ -136,11 +144,19 @@ namespace GT3.DataSplitter
             IntercoolerParts.Dump();
             MufflerParts.Dump();
             LSDParts.Dump();
+            Unknown1Parts.Dump();
+            Unknown2Parts.Dump();
+            WheelsParts.Dump();
+            Unknown3Parts.Dump();
+            Unknown4Parts.Dump();
+            TyreCompounds.Dump();
             TyresFrontParts.Dump();
             TyresRearParts.Dump();
             Cars.Dump();
-            Events.Dump();
             Opponents.Dump();
+            Events.Dump();
+            ArcadeCars.Dump();
+            Courses.Dump();
             Regulations.Dump();
         }
     }
