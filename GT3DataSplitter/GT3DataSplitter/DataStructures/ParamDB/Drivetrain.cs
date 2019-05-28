@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Drivetrain : CarDataStructure
+    public class Drivetrain : NamedDataStructure
     {
         public Drivetrain()
         {

@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Gearbox : CarDataStructure
+    public class Gearbox : NamedDataStructure
     {
         public Gearbox()
         {

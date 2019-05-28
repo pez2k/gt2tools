@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class BrakeBalanceController : CarDataStructure
+    public class BrakeBalanceController : NamedDataStructure
     {
         public BrakeBalanceController()
         {

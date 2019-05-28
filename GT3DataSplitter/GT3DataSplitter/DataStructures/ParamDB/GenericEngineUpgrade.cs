@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class GenericEngineUpgrade : CarDataStructure
+    public class GenericEngineUpgrade : NamedDataStructure
     {
         public GenericEngineUpgrade()
         {

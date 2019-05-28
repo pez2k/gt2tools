@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class TurboKit : CarDataStructure
+    public class TurboKit : NamedDataStructure
     {
         public TurboKit()
         {

@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class TyresFront : CarDataStructure
+    public class TyresFront : NamedDataStructure
     {
         public TyresFront()
         {

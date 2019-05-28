@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class NATune : CarDataStructure
+    public class NATune : NamedDataStructure
     {
         public NATune()
         {

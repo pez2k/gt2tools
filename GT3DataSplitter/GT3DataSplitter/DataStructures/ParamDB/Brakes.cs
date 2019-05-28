@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Brakes : CarDataStructure
+    public class Brakes : NamedDataStructure
     {
         public Brakes()
         {

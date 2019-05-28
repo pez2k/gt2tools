@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Propshaft : CarDataStructure
+    public class Propshaft : NamedDataStructure
     {
         public Propshaft()
         {

@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Opponent : CarDataStructure
+    public class Opponent : NamedDataStructure
     {
         public Opponent()
         {

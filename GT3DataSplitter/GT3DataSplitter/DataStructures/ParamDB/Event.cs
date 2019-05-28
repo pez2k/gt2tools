@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Event : CarDataStructure
+    public class Event : NamedDataStructure
     {
         public Event()
         {

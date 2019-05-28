@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Lightweight : CarDataStructure
+    public class Lightweight : NamedDataStructure
     {
         public Lightweight()
         {

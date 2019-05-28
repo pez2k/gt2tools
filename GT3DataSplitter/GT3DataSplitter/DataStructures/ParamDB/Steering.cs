@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Steering : CarDataStructure
+    public class Steering : NamedDataStructure
     {
         public Steering()
         {

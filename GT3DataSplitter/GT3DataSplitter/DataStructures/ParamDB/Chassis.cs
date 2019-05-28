@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Chassis : CarDataStructure
+    public class Chassis : NamedDataStructure
     {
         public Chassis()
         {

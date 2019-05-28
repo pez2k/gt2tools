@@ -1,6 +1,6 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class RaceMode : CarDataStructure
+    public class RaceMode : NamedDataStructure
     {
         public RaceMode()
         {

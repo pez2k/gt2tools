@@ -4,7 +4,7 @@ namespace GT3.DataSplitter
 {
     using StreamExtensions;
 
-    public class CarDataStructure : DataStructure
+    public class NamedDataStructure : DataStructure
     {
         public override string CreateOutputFilename(byte[] data)
         {
