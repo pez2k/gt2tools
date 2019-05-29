@@ -12,6 +12,7 @@ namespace GT3.DataSplitter
         {
             if (args.Length != 1)
             {
+                BuildFile();
                 return;
             }
 
@@ -47,6 +48,16 @@ namespace GT3.DataSplitter
 
             Strings.Export("Strings");
             UnicodeStrings.Export("UnicodeStrings");
+        }
+
+        static void BuildFile()
+        {
+            var database = new ParamDB();
+            Directory.SetCurrentDirectory("Data");
+            database.ImportData();
+            Directory.CreateDirectory("..\\Output");
+            Directory.SetCurrentDirectory("..\\Output");
+            database.WriteData();
         }
     }
 }
