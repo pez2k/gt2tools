@@ -48,16 +48,19 @@ namespace GT3.DataSplitter
 
             Strings.Export("Strings");
             UnicodeStrings.Export("UnicodeStrings");
+            IDStrings.Export();
         }
 
         static void BuildFile()
         {
             var database = new ParamDB();
             Directory.SetCurrentDirectory("Data");
+            IDStrings.Import();
             database.ImportData();
             Directory.CreateDirectory("..\\Output");
             Directory.SetCurrentDirectory("..\\Output");
             database.WriteData();
+            IDStrings.Write();
         }
     }
 }

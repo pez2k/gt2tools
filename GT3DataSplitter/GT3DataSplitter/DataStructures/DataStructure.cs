@@ -16,7 +16,7 @@ namespace GT3.DataSplitter
 
         public bool IsDuplicate { get; set; }
 
-        private const string DuplicateTag = "___DUPLICATE";
+        protected const string DuplicateTag = "___DUPLICATE";
 
         public virtual void Read(Stream infile)
         {

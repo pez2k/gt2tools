@@ -90,6 +90,22 @@ namespace GT3.DataSplitter
             }
         }
 
+        public void Import(string filename)
+        {
+            filename = $"Strings\\{filename}.csv";
+
+            using (TextReader input = new StreamReader(filename, Encoding.UTF8))
+            {
+                using (CsvReader csv = new CsvReader(input))
+                {
+                    while (csv.Read())
+                    {
+                        Strings.Add(csv.GetField(1));
+                    }
+                }
+            }
+        }
+
         public ushort Add(string text)
         {
             if (Strings.Contains(text))
