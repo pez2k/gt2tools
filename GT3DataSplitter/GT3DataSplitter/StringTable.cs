@@ -106,13 +106,13 @@ namespace GT3.DataSplitter
             }
         }
 
-        public void Write(string filename, uint mysteryValue)
+        public void Write(string filename, bool unicode)
         {
             using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
             {
                 file.WriteCharacters("STDB");
                 file.WriteUInt((uint)Strings.Count);
-                file.WriteUInt(mysteryValue);
+                file.WriteUInt((uint)(unicode ? 0xFFFF : 0x01));
                 file.Position += 4;
 
                 file.Position += Strings.Count * 4;
@@ -126,7 +126,7 @@ namespace GT3.DataSplitter
                     {
                         terminator += "\0";
                     }
-                    byte[] characters = Encoding.ASCII.GetBytes((newString + terminator).ToCharArray());
+                    byte[] characters = (unicode ? Encoding.Unicode : Encoding.ASCII).GetBytes((newString + terminator).ToCharArray());
                     ushort length = (ushort)(characters.Length - terminator.Length);
                     file.WriteUShort(length);
                     file.Write(characters, 0, characters.Length);

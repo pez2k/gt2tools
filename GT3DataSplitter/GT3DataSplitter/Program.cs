@@ -56,11 +56,13 @@ namespace GT3.DataSplitter
             var database = new ParamDB();
             Directory.SetCurrentDirectory("Data");
             IDStrings.Import();
+            Strings.Import("Strings");
             database.ImportData();
             Directory.CreateDirectory("..\\Output");
             Directory.SetCurrentDirectory("..\\Output");
             database.WriteData();
             IDStrings.Write();
+            Strings.Write("paramstr_eu.db", false);
         }
     }
 }

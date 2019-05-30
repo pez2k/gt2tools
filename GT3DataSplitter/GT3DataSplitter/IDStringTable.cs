@@ -84,7 +84,7 @@ namespace GT3.DataSplitter
                 }
             }
 
-            stringTable.Write(".id_db_str_eu.db", 0x01);
+            stringTable.Write(".id_db_str_eu.db", false);
         }
 
         public class IDStringTableLookup : ITypeConverter
