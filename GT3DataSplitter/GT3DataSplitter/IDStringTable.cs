@@ -84,6 +84,11 @@ namespace GT3.DataSplitter
                 }
             }
 
+            stringTable.Strings.Clear();
+            foreach (string name in ids.Values)
+            {
+                stringTable.Add(name);
+            }
             stringTable.Write(".id_db_str_eu.db", false);
         }
 
