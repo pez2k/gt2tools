@@ -7,6 +7,7 @@ namespace GT3.DataSplitter
         public static IDStringTable IDStrings = new IDStringTable();
         public static StringTable Strings = new StringTable();
         public static StringTable UnicodeStrings = new StringTable();
+        public static StringTable ColourStrings = new StringTable();
 
         static void Main(string[] args)
         {
@@ -30,6 +31,7 @@ namespace GT3.DataSplitter
             IDStrings.Read(".id_db_idx_eu.db", ".id_db_str_eu.db");
             Strings.Read("paramstr_eu.db");
             UnicodeStrings.Read("paramunistr_eu.db");
+            ColourStrings.Read("carcolor.sdb");
 
             var database = new ParamDB();
             database.ReadData("paramdb_eu.db");
@@ -48,6 +50,7 @@ namespace GT3.DataSplitter
 
             Strings.Export("Strings");
             UnicodeStrings.Export("UnicodeStrings");
+            ColourStrings.Export("ColourStrings");
             IDStrings.Export();
         }
 
@@ -58,6 +61,7 @@ namespace GT3.DataSplitter
             IDStrings.Import();
             Strings.Import("Strings");
             UnicodeStrings.Import("UnicodeStrings");
+            ColourStrings.Import("ColourStrings");
             database.ImportData();
             Directory.CreateDirectory("..\\Output");
             Directory.SetCurrentDirectory("..\\Output");
@@ -65,6 +69,7 @@ namespace GT3.DataSplitter
             IDStrings.Write();
             Strings.Write("paramstr_eu.db", false);
             UnicodeStrings.Write("paramunistr_eu.db", true);
+            ColourStrings.Write("carcolor.sdb", true);
         }
     }
 }
