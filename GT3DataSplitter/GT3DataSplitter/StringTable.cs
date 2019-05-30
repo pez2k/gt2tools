@@ -126,8 +126,8 @@ namespace GT3.DataSplitter
                     {
                         terminator += "\0";
                     }
-                    byte[] characters = (unicode ? Encoding.Unicode : Encoding.ASCII).GetBytes((newString + terminator).ToCharArray());
-                    ushort length = (ushort)(characters.Length - terminator.Length);
+                    byte[] characters = (unicode ? Encoding.GetEncoding("EUC-JP") : Encoding.ASCII).GetBytes((newString + terminator).ToCharArray());
+                    ushort length = (ushort)(characters.Length - (unicode ? 0 : terminator.Length));
                     file.WriteUShort(length);
                     file.Write(characters, 0, characters.Length);
 

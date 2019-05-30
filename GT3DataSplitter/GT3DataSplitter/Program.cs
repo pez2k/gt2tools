@@ -57,12 +57,14 @@ namespace GT3.DataSplitter
             Directory.SetCurrentDirectory("Data");
             IDStrings.Import();
             Strings.Import("Strings");
+            UnicodeStrings.Import("UnicodeStrings");
             database.ImportData();
             Directory.CreateDirectory("..\\Output");
             Directory.SetCurrentDirectory("..\\Output");
             database.WriteData();
             IDStrings.Write();
             Strings.Write("paramstr_eu.db", false);
+            UnicodeStrings.Write("paramunistr_eu.db", true);
         }
     }
 }
