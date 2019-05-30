@@ -106,6 +106,41 @@ namespace GT3.DataSplitter
             }
         }
 
+        public void Write(string filename, uint mysteryValue)
+        {
+            using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
+            {
+                file.WriteCharacters("STDB");
+                file.WriteUInt((uint)Strings.Count);
+                file.WriteUInt(mysteryValue);
+                file.Position += 4;
+
+                file.Position += Strings.Count * 4;
+
+                int i = 0;
+                foreach (string newString in Strings)
+                {
+                    uint startPosition = (uint)file.Position;
+                    string terminator = "\0";
+                    if (newString.Length % 2 == 0)
+                    {
+                        terminator += "\0";
+                    }
+                    byte[] characters = Encoding.ASCII.GetBytes((newString + terminator).ToCharArray());
+                    ushort length = (ushort)(characters.Length - terminator.Length);
+                    file.WriteUShort(length);
+                    file.Write(characters, 0, characters.Length);
+
+                    file.Position = 0x10 + (4 * i++);
+                    file.WriteUInt(startPosition);
+                    file.Position = file.Length;
+                }
+
+                file.Position = 0x0C;
+                file.WriteUInt((uint)file.Length);
+            }
+        }
+
         public ushort Add(string text)
         {
             if (Strings.Contains(text))

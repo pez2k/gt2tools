@@ -83,6 +83,8 @@ namespace GT3.DataSplitter
                     file.WriteULong(i++);
                 }
             }
+
+            stringTable.Write(".id_db_str_eu.db", 0x01);
         }
 
         public class IDStringTableLookup : ITypeConverter
