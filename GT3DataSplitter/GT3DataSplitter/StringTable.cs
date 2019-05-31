@@ -121,15 +121,22 @@ namespace GT3.DataSplitter
                 foreach (string newString in Strings)
                 {
                     uint startPosition = (uint)file.Position;
-                    string terminator = "\0";
-                    if (newString.Length % 2 == 0)
+                    byte[] characters = (unicode ? Encoding.GetEncoding("EUC-JP") : Encoding.ASCII).GetBytes((newString + "\0").ToCharArray());
+                    ushort length = (ushort)characters.Length;
+                    if (unicode)
                     {
-                        terminator += "\0";
+                        length += (ushort)(length % 2);
                     }
-                    byte[] characters = (unicode ? Encoding.GetEncoding("EUC-JP") : Encoding.ASCII).GetBytes((newString + terminator).ToCharArray());
-                    ushort length = (ushort)(characters.Length - (unicode ? 0 : terminator.Length));
+                    else
+                    {
+                        length -= 1;
+                    }
                     file.WriteUShort(length);
                     file.Write(characters, 0, characters.Length);
+                    if (file.Position % 2 != 0)
+                    {
+                        file.WriteByte(0);
+                    }
 
                     file.Position = 0x10 + (4 * i++);
                     file.WriteUInt(startPosition);
