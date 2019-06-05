@@ -53,12 +53,14 @@ namespace GT3.DataSplitter
 
         public string Get(ulong id) => ids.TryGetValue(id, out string value) ? value : null;
 
-        public void Add(string name)
+        public ulong Add(string name)
         {
+            ulong hash = HashGenerator.GenerateHash(name);
             if (!ids.ContainsValue(name))
             {
-                ids.Add(HashGenerator.GenerateHash(name), name);
+                ids.Add(hash, name);
             }
+            return hash;
         }
 
         public void Import()

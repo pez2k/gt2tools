@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataStructures\CsvDataStructure.cs" />
     <Compile Include="DataStructures\ParamDB\Course.cs" />
     <Compile Include="DataStructures\ParamDB\Opponent.cs" />
     <Compile Include="DataStructures\ParamDB\TyreCompound.cs" />
@@ -92,6 +93,7 @@
     <Compile Include="DataStructures\ParamDB\ArcadeCar.cs" />
     <Compile Include="DataStructures\ParamDB\Event.cs" />
     <Compile Include="IDStringTable.cs" />
+    <Compile Include="Utils.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="DataStructures\DataStructure.cs" />
     <Compile Include="DataStructures\ParamDB\Brakes.cs" />
