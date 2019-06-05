@@ -10,8 +10,8 @@ namespace GT3.DataSplitter
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x30
     public struct GearboxData
     {
-        public ulong PartId;
-        public ulong CarId;
+        public ulong Part;
+        public ulong Car;
         public byte Stage;
         public byte NumberOfGears;
         public ushort ReverseGearRatio;
@@ -36,8 +36,8 @@ namespace GT3.DataSplitter
     {
         public GearboxCSVMap()
         {
-            Map(m => m.PartId).TypeConverter(Utils.IdConverter);
-            Map(m => m.CarId).TypeConverter(Utils.IdConverter);
+            Map(m => m.Part).TypeConverter(Utils.IdConverter);
+            Map(m => m.Car).TypeConverter(Utils.IdConverter);
             Map(m => m.Stage);
             Map(m => m.NumberOfGears);
             Map(m => m.ReverseGearRatio);
