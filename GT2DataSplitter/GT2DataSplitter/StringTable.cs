@@ -82,8 +82,6 @@ namespace GT2.DataSplitter
 
         public static void Write(string filename)
         {
-            filename = "new_" + filename;
-
             using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
             {
                 byte[] header = { 0x00, 0x00, 0x00, 0x00, 0x57, 0x53, 0x44, 0x42 };

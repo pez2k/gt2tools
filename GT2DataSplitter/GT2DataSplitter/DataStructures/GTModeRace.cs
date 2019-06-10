@@ -49,8 +49,6 @@ namespace GT2.DataSplitter
 
         public void WriteData(string filename)
         {
-            filename = "new_" + filename;
-
             using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
             {
                 file.Write(new byte[] { 0x47, 0x54, 0x44, 0x54, 0x6C, 0x00, 0x06, 0x00 }, 0, 8); // The 0x06 is the number of indices
