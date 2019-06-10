@@ -9,38 +9,38 @@ namespace GT3.DataSplitter
 
     public class ParamDB
     {
-        public List<Brakes> BrakeParts { get; set; } = new List<Brakes>();
-        public List<BrakeBalanceController> BrakeBalanceControllerParts { get; set; } = new List<BrakeBalanceController>();
-        public List<Steering> SteeringParts { get; set; } = new List<Steering>();
+        public List<Brake> BrakeParts { get; set; } = new List<Brake>();
+        public List<BrakeController> BrakeBalanceControllerParts { get; set; } = new List<BrakeController>();
+        public List<Steer> SteeringParts { get; set; } = new List<Steer>();
         public List<Chassis> ChassisParts { get; set; } = new List<Chassis>();
-        public List<Lightweight> LightweightParts { get; set; } = new List<Lightweight>();
-        public List<Body> BodyParts { get; set; } = new List<Body>();
+        public List<Lightweight> WeightReductionParts { get; set; } = new List<Lightweight>();
+        public List<RacingModify> BodyParts { get; set; } = new List<RacingModify>();
         public List<Engine> EngineParts { get; set; } = new List<Engine>();
-        public List<PortPolishing> PortPolishingParts { get; set; } = new List<PortPolishing>();
-        public List<EngineBalancing> EngineBalancingParts { get; set; } = new List<EngineBalancing>();
-        public List<DisplacementIncrease> DisplacementIncreaseParts { get; set; } = new List<DisplacementIncrease>();
+        public List<PortPolish> PortPolishingParts { get; set; } = new List<PortPolish>();
+        public List<EngineBalance> EngineBalancingParts { get; set; } = new List<EngineBalance>();
+        public List<Displacement> DisplacementIncreaseParts { get; set; } = new List<Displacement>();
         public List<Computer> ComputerParts { get; set; } = new List<Computer>();
         public List<NATune> NATuneParts { get; set; } = new List<NATune>();
-        public List<TurboKit> TurboKitParts { get; set; } = new List<TurboKit>();
+        public List<TurbineKit> TurboKitParts { get; set; } = new List<TurbineKit>();
         public List<Drivetrain> DrivetrainParts { get; set; } = new List<Drivetrain>();
         public List<Flywheel> FlywheelParts { get; set; } = new List<Flywheel>();
         public List<Clutch> ClutchParts { get; set; } = new List<Clutch>();
-        public List<Propshaft> PropshaftParts { get; set; } = new List<Propshaft>();
-        public List<Gearbox> GearboxParts { get; set; } = new List<Gearbox>();
+        public List<PropellerShaft> PropellerShaftParts { get; set; } = new List<PropellerShaft>();
+        public List<Gear> GearboxParts { get; set; } = new List<Gear>();
         public List<Suspension> SuspensionParts { get; set; } = new List<Suspension>();
         public List<Intercooler> IntercoolerParts { get; set; } = new List<Intercooler>();
         public List<Muffler> MufflerParts { get; set; } = new List<Muffler>();
         public List<LSD> LSDParts { get; set; } = new List<LSD>();
-        public List<Unknown1> Unknown1Parts { get; set; } = new List<Unknown1>();
-        public List<Unknown2> Unknown2Parts { get; set; } = new List<Unknown2>();
+        public List<TCSCMaybe> TCSCParts { get; set; } = new List<TCSCMaybe>();
+        public List<ASCCMaybe> ASCCParts { get; set; } = new List<ASCCMaybe>();
         public List<Wheels> WheelsParts { get; set; } = new List<Wheels>();
-        public List<Unknown3> Unknown3Parts { get; set; } = new List<Unknown3>();
-        public List<Unknown4> Unknown4Parts { get; set; } = new List<Unknown4>();
-        public List<TyreCompound> TyreCompounds { get; set; } = new List<TyreCompound>();
-        public List<TyresFront> TyresFrontParts { get; set; } = new List<TyresFront>();
-        public List<TyresRear> TyresRearParts { get; set; } = new List<TyresRear>();
+        public List<TireSize> TyreSizeParts { get; set; } = new List<TireSize>();
+        public List<TireForceVol> TyreForceVolParts { get; set; } = new List<TireForceVol>();
+        public List<TireCompound> TyreCompounds { get; set; } = new List<TireCompound>();
+        public List<FrontTire> TyresFrontParts { get; set; } = new List<FrontTire>();
+        public List<RearTire> TyresRearParts { get; set; } = new List<RearTire>();
         public List<Car> Cars { get; set; } = new List<Car>();
-        public List<Opponent> Opponents { get; set; } = new List<Opponent>();
+        public List<EnemyCars> Opponents { get; set; } = new List<EnemyCars>();
         public List<Event> Events { get; set; } = new List<Event>();
         public List<Course> Courses { get; set; } = new List<Course>();
         public List<ArcadeCar> ArcadeCars { get; set; } = new List<ArcadeCar>();
@@ -80,7 +80,7 @@ namespace GT3.DataSplitter
                 BrakeBalanceControllerParts.Read(dataTableStreams[1]);
                 SteeringParts.Read(dataTableStreams[2]);
                 ChassisParts.Read(dataTableStreams[3]);
-                LightweightParts.Read(dataTableStreams[4]);
+                WeightReductionParts.Read(dataTableStreams[4]);
                 BodyParts.Read(dataTableStreams[5]);
                 EngineParts.Read(dataTableStreams[6]);
                 PortPolishingParts.Read(dataTableStreams[7]);
@@ -92,17 +92,17 @@ namespace GT3.DataSplitter
                 DrivetrainParts.Read(dataTableStreams[13]);
                 FlywheelParts.Read(dataTableStreams[14]);
                 ClutchParts.Read(dataTableStreams[15]);
-                PropshaftParts.Read(dataTableStreams[16]);
+                PropellerShaftParts.Read(dataTableStreams[16]);
                 GearboxParts.Read(dataTableStreams[17]);
                 SuspensionParts.Read(dataTableStreams[18]);
                 IntercoolerParts.Read(dataTableStreams[19]);
                 MufflerParts.Read(dataTableStreams[20]);
                 LSDParts.Read(dataTableStreams[21]);
-                Unknown1Parts.Read(dataTableStreams[22]); // VCD? ASC?
-                Unknown2Parts.Read(dataTableStreams[23]);
+                TCSCParts.Read(dataTableStreams[22]); // VCD? ASC?
+                ASCCParts.Read(dataTableStreams[23]);
                 WheelsParts.Read(dataTableStreams[24]);
-                Unknown3Parts.Read(dataTableStreams[25]); // sz?
-                Unknown4Parts.Read(dataTableStreams[26]); // n?
+                TyreSizeParts.Read(dataTableStreams[25]); // sz?
+                TyreForceVolParts.Read(dataTableStreams[26]); // n?
                 TyreCompounds.Read(dataTableStreams[27]);
                 TyresFrontParts.Read(dataTableStreams[28]);
                 TyresRearParts.Read(dataTableStreams[29]);
@@ -126,7 +126,7 @@ namespace GT3.DataSplitter
             BrakeBalanceControllerParts.Dump();
             SteeringParts.Dump();
             ChassisParts.Dump();
-            LightweightParts.Dump();
+            WeightReductionParts.Dump();
             BodyParts.Dump();
             EngineParts.Dump();
             PortPolishingParts.Dump();
@@ -138,17 +138,17 @@ namespace GT3.DataSplitter
             DrivetrainParts.Dump();
             FlywheelParts.Dump();
             ClutchParts.Dump();
-            PropshaftParts.Dump();
+            PropellerShaftParts.Dump();
             GearboxParts.Dump();
             SuspensionParts.Dump();
             IntercoolerParts.Dump();
             MufflerParts.Dump();
             LSDParts.Dump();
-            Unknown1Parts.Dump();
-            Unknown2Parts.Dump();
+            TCSCParts.Dump();
+            ASCCParts.Dump();
             WheelsParts.Dump();
-            Unknown3Parts.Dump();
-            Unknown4Parts.Dump();
+            TyreSizeParts.Dump();
+            TyreForceVolParts.Dump();
             TyreCompounds.Dump();
             TyresFrontParts.Dump();
             TyresRearParts.Dump();
@@ -166,7 +166,7 @@ namespace GT3.DataSplitter
             BrakeBalanceControllerParts.Import();
             SteeringParts.Import();
             ChassisParts.Import();
-            LightweightParts.Import();
+            WeightReductionParts.Import();
             BodyParts.Import();
             EngineParts.Import();
             PortPolishingParts.Import();
@@ -178,17 +178,17 @@ namespace GT3.DataSplitter
             DrivetrainParts.Import();
             FlywheelParts.Import();
             ClutchParts.Import();
-            PropshaftParts.Import();
+            PropellerShaftParts.Import();
             GearboxParts.Import();
             SuspensionParts.Import();
             IntercoolerParts.Import();
             MufflerParts.Import();
             LSDParts.Import();
-            Unknown1Parts.Import();
-            Unknown2Parts.Import();
+            TCSCParts.Import();
+            ASCCParts.Import();
             WheelsParts.Import();
-            Unknown3Parts.Import();
-            Unknown4Parts.Import();
+            TyreSizeParts.Import();
+            TyreForceVolParts.Import();
             TyreCompounds.Import();
             TyresFrontParts.Import();
             TyresRearParts.Import();
@@ -216,7 +216,7 @@ namespace GT3.DataSplitter
                 BrakeBalanceControllerParts.Write(file, dataStart, tableNumber++);
                 SteeringParts.Write(file, dataStart, tableNumber++);
                 ChassisParts.Write(file, dataStart, tableNumber++);
-                LightweightParts.Write(file, dataStart, tableNumber++);
+                WeightReductionParts.Write(file, dataStart, tableNumber++);
                 BodyParts.Write(file, dataStart, tableNumber++);
                 EngineParts.Write(file, dataStart, tableNumber++);
                 PortPolishingParts.Write(file, dataStart, tableNumber++);
@@ -228,17 +228,17 @@ namespace GT3.DataSplitter
                 DrivetrainParts.Write(file, dataStart, tableNumber++);
                 FlywheelParts.Write(file, dataStart, tableNumber++);
                 ClutchParts.Write(file, dataStart, tableNumber++);
-                PropshaftParts.Write(file, dataStart, tableNumber++);
+                PropellerShaftParts.Write(file, dataStart, tableNumber++);
                 GearboxParts.Write(file, dataStart, tableNumber++);
                 SuspensionParts.Write(file, dataStart, tableNumber++);
                 IntercoolerParts.Write(file, dataStart, tableNumber++);
                 MufflerParts.Write(file, dataStart, tableNumber++);
                 LSDParts.Write(file, dataStart, tableNumber++);
-                Unknown1Parts.Write(file, dataStart, tableNumber++);
-                Unknown2Parts.Write(file, dataStart, tableNumber++);
+                TCSCParts.Write(file, dataStart, tableNumber++);
+                ASCCParts.Write(file, dataStart, tableNumber++);
                 WheelsParts.Write(file, dataStart, tableNumber++);
-                Unknown3Parts.Write(file, dataStart, tableNumber++);
-                Unknown4Parts.Write(file, dataStart, tableNumber++);
+                TyreSizeParts.Write(file, dataStart, tableNumber++);
+                TyreForceVolParts.Write(file, dataStart, tableNumber++);
                 TyreCompounds.Write(file, dataStart, tableNumber++);
                 TyresFrontParts.Write(file, dataStart, tableNumber++);
                 TyresRearParts.Write(file, dataStart, tableNumber++);

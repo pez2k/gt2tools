@@ -1,8 +1,8 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Propshaft : NamedDataStructure
+    public class BrakeController : NamedDataStructure
     {
-        public Propshaft()
+        public BrakeController()
         {
             Size = 0x20;
         }

@@ -1,8 +1,8 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class EngineBalancing : NamedDataStructure
+    public class TCSCMaybe : NamedDataStructure
     {
-        public EngineBalancing()
+        public TCSCMaybe()
         {
             Size = 0x20;
         }

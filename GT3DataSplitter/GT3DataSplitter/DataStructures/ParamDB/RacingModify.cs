@@ -1,8 +1,8 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Body : NamedDataStructure
+    public class RacingModify : NamedDataStructure
     {
-        public Body()
+        public RacingModify()
         {
             Size = 0x48;
         }

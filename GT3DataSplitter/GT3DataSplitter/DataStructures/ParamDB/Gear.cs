@@ -3,12 +3,12 @@ using System.Runtime.InteropServices;
 
 namespace GT3.DataSplitter
 {
-    public class Gearbox : CsvDataStructure<GearboxData, GearboxCSVMap>
+    public class Gear : CsvDataStructure<GearData, GearCSVMap>
     {
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x30
-    public struct GearboxData
+    public struct GearData
     {
         public ulong Part;
         public ulong Car;
@@ -32,9 +32,9 @@ namespace GT3.DataSplitter
         public uint Price;
     }
 
-    public sealed class GearboxCSVMap : ClassMap<GearboxData>
+    public sealed class GearCSVMap : ClassMap<GearData>
     {
-        public GearboxCSVMap()
+        public GearCSVMap()
         {
             Map(m => m.Part).TypeConverter(Utils.IdConverter);
             Map(m => m.Car).TypeConverter(Utils.IdConverter);

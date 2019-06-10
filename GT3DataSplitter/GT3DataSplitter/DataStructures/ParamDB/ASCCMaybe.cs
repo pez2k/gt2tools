@@ -1,8 +1,8 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Unknown2 : NamedDataStructure
+    public class ASCCMaybe : NamedDataStructure
     {
-        public Unknown2()
+        public ASCCMaybe()
         {
             Size = 0x30;
         }

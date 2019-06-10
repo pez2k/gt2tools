@@ -1,8 +1,8 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class TyreCompound : NamedDataStructure
+    public class TireCompound : NamedDataStructure
     {
-        public TyreCompound()
+        public TireCompound()
         {
             Size = 0x58;
         }

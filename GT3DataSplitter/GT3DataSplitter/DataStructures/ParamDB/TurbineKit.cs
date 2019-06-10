@@ -1,8 +1,8 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class TurboKit : NamedDataStructure
+    public class TurbineKit : NamedDataStructure
     {
-        public TurboKit()
+        public TurbineKit()
         {
             Size = 0x28;
         }

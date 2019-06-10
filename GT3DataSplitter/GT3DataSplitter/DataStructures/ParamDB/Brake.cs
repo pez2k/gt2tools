@@ -1,8 +1,8 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Unknown4 : NamedDataStructure
+    public class Brake : NamedDataStructure
     {
-        public Unknown4()
+        public Brake()
         {
             Size = 0x18;
         }

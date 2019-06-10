@@ -1,8 +1,8 @@
 ﻿namespace GT3.DataSplitter
 {
-    public class Opponent : NamedDataStructure
+    public class EnemyCars : NamedDataStructure
     {
-        public Opponent()
+        public EnemyCars()
         {
             Size = 0x110;
         }
