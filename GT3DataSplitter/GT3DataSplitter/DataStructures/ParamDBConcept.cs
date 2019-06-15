@@ -7,15 +7,15 @@ namespace GT3.DataSplitter
 {
     using StreamExtensions;
 
-    public class ParamDB
+    public class ParamDBConcept
     {
         public List<Brake> BrakeParts { get; set; } = new List<Brake>();
         public List<BrakeController> BrakeBalanceControllerParts { get; set; } = new List<BrakeController>();
         public List<Steer> SteeringParts { get; set; } = new List<Steer>();
-        public List<Chassis> ChassisParts { get; set; } = new List<Chassis>();
+        public List<ChassisConcept> ChassisParts { get; set; } = new List<ChassisConcept>();
         public List<Lightweight> WeightReductionParts { get; set; } = new List<Lightweight>();
         public List<RacingModify> BodyParts { get; set; } = new List<RacingModify>();
-        public List<Engine> EngineParts { get; set; } = new List<Engine>();
+        public List<EngineConcept> EngineParts { get; set; } = new List<EngineConcept>();
         public List<PortPolish> PortPolishingParts { get; set; } = new List<PortPolish>();
         public List<EngineBalance> EngineBalancingParts { get; set; } = new List<EngineBalance>();
         public List<Displacement> DisplacementIncreaseParts { get; set; } = new List<Displacement>();
@@ -26,7 +26,7 @@ namespace GT3.DataSplitter
         public List<Flywheel> FlywheelParts { get; set; } = new List<Flywheel>();
         public List<Clutch> ClutchParts { get; set; } = new List<Clutch>();
         public List<PropellerShaft> PropellerShaftParts { get; set; } = new List<PropellerShaft>();
-        public List<Gear> GearboxParts { get; set; } = new List<Gear>();
+        public List<GearConcept> GearboxParts { get; set; } = new List<GearConcept>();
         public List<Suspension> SuspensionParts { get; set; } = new List<Suspension>();
         public List<Intercooler> IntercoolerParts { get; set; } = new List<Intercooler>();
         public List<Muffler> MufflerParts { get; set; } = new List<Muffler>();
@@ -39,12 +39,12 @@ namespace GT3.DataSplitter
         public List<TireCompound> TyreCompounds { get; set; } = new List<TireCompound>();
         public List<FrontTire> TyresFrontParts { get; set; } = new List<FrontTire>();
         public List<RearTire> TyresRearParts { get; set; } = new List<RearTire>();
-        public List<Car> Cars { get; set; } = new List<Car>();
         public List<EnemyCars> Opponents { get; set; } = new List<EnemyCars>();
         public List<Event> Events { get; set; } = new List<Event>();
         public List<Regulations> Regulations { get; set; } = new List<Regulations>();
         public List<Course> Courses { get; set; } = new List<Course>();
         public List<ArcadeCar> ArcadeCars { get; set; } = new List<ArcadeCar>();
+        public List<Car> Cars { get; set; } = new List<Car>();
 
         public void ReadData(string filename)
         {
@@ -106,12 +106,12 @@ namespace GT3.DataSplitter
                 TyreCompounds.Read(dataTableStreams[27]);
                 TyresFrontParts.Read(dataTableStreams[28]);
                 TyresRearParts.Read(dataTableStreams[29]);
-                Cars.Read(dataTableStreams[30]);
-                Opponents.Read(dataTableStreams[31]);
-                Events.Read(dataTableStreams[32]);
-                Regulations.Read(dataTableStreams[33]);
-                Courses.Read(dataTableStreams[34]);
-                ArcadeCars.Read(dataTableStreams[35]);
+                Opponents.Read(dataTableStreams[30]);
+                Events.Read(dataTableStreams[31]);
+                Regulations.Read(dataTableStreams[32]);
+                Courses.Read(dataTableStreams[33]);
+                ArcadeCars.Read(dataTableStreams[34]);
+                Cars.Read(dataTableStreams[35]);
 
                 foreach (var stream in dataTableStreams)
                 {
@@ -152,12 +152,12 @@ namespace GT3.DataSplitter
             TyreCompounds.Dump();
             TyresFrontParts.Dump();
             TyresRearParts.Dump();
-            Cars.Dump();
             Opponents.Dump();
             Events.Dump();
             Regulations.Dump();
             Courses.Dump();
             ArcadeCars.Dump();
+            Cars.Dump();
         }
 
         public void ImportData()
@@ -192,17 +192,17 @@ namespace GT3.DataSplitter
             TyreCompounds.Import();
             TyresFrontParts.Import();
             TyresRearParts.Import();
-            Cars.Import();
             Opponents.Import();
             Events.Import();
             Regulations.Import();
             Courses.Import();
             ArcadeCars.Import();
+            Cars.Import();
         }
 
         public void WriteData()
         {
-            using (FileStream file = new FileStream("paramdb_eu.db", FileMode.Create, FileAccess.ReadWrite))
+            using (FileStream file = new FileStream("paramdb_gtc_eu.db", FileMode.Create, FileAccess.ReadWrite))
             {
                 const uint DataTableCount = 0x24;
                 file.WriteCharacters("GTAR");
@@ -242,12 +242,12 @@ namespace GT3.DataSplitter
                 TyreCompounds.Write(file, dataStart, tableNumber++);
                 TyresFrontParts.Write(file, dataStart, tableNumber++);
                 TyresRearParts.Write(file, dataStart, tableNumber++);
-                Cars.Write(file, dataStart, tableNumber++);
                 Opponents.Write(file, dataStart, tableNumber++);
                 Events.Write(file, dataStart, tableNumber++);
                 Regulations.Write(file, dataStart, tableNumber++);
                 Courses.Write(file, dataStart, tableNumber++);
                 ArcadeCars.Write(file, dataStart, tableNumber++);
+                Cars.Write(file, dataStart, tableNumber++);
 
                 file.Position = dataStart - 8;
                 file.WriteUInt((uint)file.Length - dataStart);

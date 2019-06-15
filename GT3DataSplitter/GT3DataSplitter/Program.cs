@@ -22,6 +22,11 @@ namespace GT3.DataSplitter
             
             if (extension == ".db")
             {
+                if (filename.Contains("_gtc_"))
+                {
+                    SplitFileGTC();
+                    return;
+                }
                 SplitFile();
             }
         }
@@ -70,6 +75,34 @@ namespace GT3.DataSplitter
             Strings.Write("paramstr_eu.db", false);
             UnicodeStrings.Write("paramunistr_eu.db", true);
             ColourStrings.Write("carcolor.sdb", true);
+        }
+
+        static void SplitFileGTC()
+        {
+            IDStrings.Read(".id_db_idx_gtc_eu.db", ".id_db_str_gtc_eu.db");
+            Strings.Read("paramstr_gtc_eu.db");
+            UnicodeStrings.Read("paramunistr_gtc_eu.db");
+            ColourStrings.Read("carcolor.sdb");
+
+            var database = new ParamDBConcept();
+            database.ReadData("paramdb_gtc_eu.db");
+
+            var raceDetails = new RaceDetailDB();
+            raceDetails.ReadData("racedetail.db");
+
+            var raceModes = new RaceModeDB();
+            raceModes.ReadData("racemode.db");
+
+            Directory.CreateDirectory("Data");
+            Directory.SetCurrentDirectory("Data");
+            database.DumpData();
+            raceDetails.DumpData();
+            raceModes.DumpData();
+
+            Strings.Export("Strings");
+            UnicodeStrings.Export("UnicodeStrings");
+            ColourStrings.Export("ColourStrings");
+            IDStrings.Export();
         }
     }
 }

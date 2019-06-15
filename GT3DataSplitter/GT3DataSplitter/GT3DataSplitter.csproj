@@ -50,6 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataStructures\CsvDataStructure.cs" />
+    <Compile Include="DataStructures\ParamDBConcept.cs" />
+    <Compile Include="DataStructures\ParamDBConcept\ChassisConcept.cs" />
+    <Compile Include="DataStructures\ParamDBConcept\EngineConcept.cs" />
+    <Compile Include="DataStructures\ParamDBConcept\GearConcept.cs" />
     <Compile Include="DataStructures\ParamDB\Course.cs" />
     <Compile Include="DataStructures\ParamDB\EnemyCars.cs" />
     <Compile Include="DataStructures\ParamDB\TireCompound.cs" />
