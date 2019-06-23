@@ -1,10 +1,5 @@
-﻿using StreamExtensions;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+using StreamExtensions;
 
 namespace GT3.GameConfigEditor
 {
@@ -12,9 +7,11 @@ namespace GT3.GameConfigEditor
     {
         static void Main(string[] args)
         {
-            using (var file = new FileStream("product_eu.gcf", FileMode.Open, FileAccess.Read))
+            string filename = args[0];
+            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
-                Directory.CreateDirectory("output");
+                string directory = Path.GetFileNameWithoutExtension(filename);
+                Directory.CreateDirectory(directory);
                 uint unknown = file.ReadUInt();
                 uint unknown2 = file.ReadUInt();
                 uint unknown3 = file.ReadUInt();
@@ -43,7 +40,7 @@ namespace GT3.GameConfigEditor
                     byte[] buffer = new byte[structureSize];
                     file.Read(buffer);
 
-                    using (var output = new FileStream($"output\\Pos_0x{structurePos:X4}_Unk_0x{unknown4:X4}.dat", FileMode.Create, FileAccess.Write))
+                    using (var output = new FileStream(Path.Combine(directory, $"0x{unknown4:X4}_Pos_0x{structurePos:X4}.dat"), FileMode.Create, FileAccess.Write))
                     {
                         output.Write(buffer);
                     }
