@@ -5,6 +5,25 @@ namespace GT3.GameConfigEditor
 {
     class Program
     {
+        private enum ListType : byte {
+            Unknown00,
+            Unknown01,
+            Unknown02,
+            DemoDemos,
+            Events,
+            Unknown05,
+            Courses,
+            DemoCarClasses,
+            TrackAvailability,
+            DemoCarUnknown,
+            GTAutoPrices,
+            Unknown0B,
+            Demos,
+            GhostsMaybe,
+            CarClasses,
+            Prizes
+        }
+
         static void Main(string[] args)
         {
             string filename = args[0];
@@ -40,7 +59,7 @@ namespace GT3.GameConfigEditor
                     byte[] buffer = new byte[structureSize];
                     file.Read(buffer);
 
-                    using (var output = new FileStream(Path.Combine(directory, $"0x{unknown4:X4}_Pos_0x{structurePos:X4}.dat"), FileMode.Create, FileAccess.Write))
+                    using (var output = new FileStream(Path.Combine(directory, $"{(ListType)unknown4}.dat"), FileMode.Create, FileAccess.Write))
                     {
                         output.Write(buffer);
                     }
