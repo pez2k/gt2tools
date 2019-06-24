@@ -31,21 +31,20 @@ namespace GT3.GameConfigEditor
             {
                 string directory = Path.GetFileNameWithoutExtension(filename);
                 Directory.CreateDirectory(directory);
-                uint unknown = file.ReadUInt();
-                uint unknown2 = file.ReadUInt();
-                uint unknown3 = file.ReadUInt();
-                uint headerSize = file.ReadUInt();
+                uint listCount = file.ReadUInt();
+                uint startOfIndexes = file.ReadUInt();
 
-                while (file.Position < headerSize)
+                for (int i = 0; i < listCount; i++)
                 {
-                    uint unknown4 = file.ReadUInt();
+                    file.Position = startOfIndexes + (i * 8);
+
+                    uint listType = file.ReadUInt();
                     uint structurePos = file.ReadUInt();
-                    long currentPos = file.Position;
 
                     uint nextStructurePos;
-                    if (file.Position < headerSize)
+                    if (i + 1 < listCount)
                     {
-                        uint nextUnknown4 = file.ReadUInt();
+                        uint nextListType = file.ReadUInt();
                         nextStructurePos = file.ReadUInt();
                     }
                     else
@@ -59,11 +58,10 @@ namespace GT3.GameConfigEditor
                     byte[] buffer = new byte[structureSize];
                     file.Read(buffer);
 
-                    using (var output = new FileStream(Path.Combine(directory, $"{(ListType)unknown4}.dat"), FileMode.Create, FileAccess.Write))
+                    using (var output = new FileStream(Path.Combine(directory, $"{(ListType)listType}.dat"), FileMode.Create, FileAccess.Write))
                     {
                         output.Write(buffer);
                     }
-                    file.Position = currentPos;
                 }
             }
         }
