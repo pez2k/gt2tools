@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using StreamExtensions;
 
 namespace GT3.GameConfigEditor
@@ -27,6 +30,18 @@ namespace GT3.GameConfigEditor
         static void Main(string[] args)
         {
             string filename = args[0];
+            if (new DirectoryInfo(filename).Attributes.HasFlag(FileAttributes.Directory))
+            {
+                Build(filename);
+            }
+            else
+            {
+                Dump(filename);
+            }
+        }
+
+        static void Dump(string filename)
+        {
             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
                 string directory = Path.GetFileNameWithoutExtension(filename);
@@ -51,7 +66,7 @@ namespace GT3.GameConfigEditor
                     {
                         nextStructurePos = (uint)file.Length;
                     }
-                    
+
                     uint structureSize = nextStructurePos - structurePos;
 
                     file.Position = structurePos;
@@ -62,6 +77,38 @@ namespace GT3.GameConfigEditor
                     {
                         output.Write(buffer);
                     }
+                }
+            }
+        }
+
+        static void Build(string directory)
+        {
+            using (var output = new FileStream($"{directory}.gcf", FileMode.Create, FileAccess.Write))
+            {
+                List<string> files = Directory.EnumerateFiles(directory).ToList();
+
+                output.WriteUInt((uint)files.Count);
+                output.WriteUInt(8);
+
+                long dataStart = output.Position + (files.Count * 8);
+                long headerPos = 0;
+
+                foreach (string filename in files)
+                {
+                    string listName = Path.GetFileNameWithoutExtension(filename);
+                    ListType listType = (ListType)Enum.Parse(typeof(ListType), listName);
+                    output.WriteUInt((uint)listType);
+                    output.WriteUInt((uint)dataStart);
+                    headerPos = output.Position;
+                    output.Position = dataStart;
+
+                    using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                    {
+                        file.CopyTo(output);
+                    }
+
+                    dataStart = output.Position;
+                    output.Position = headerPos;
                 }
             }
         }
