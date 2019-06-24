@@ -19,7 +19,7 @@ namespace GT3.GameConfigEditor
             GTAutoPrices,
             Unknown0B,
             Demos,
-            GhostsMaybe,
+            Replays,
             CarClasses,
             Prizes
         }
