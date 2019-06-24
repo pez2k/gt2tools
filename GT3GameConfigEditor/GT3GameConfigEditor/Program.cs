@@ -17,7 +17,7 @@ namespace GT3.GameConfigEditor
             Unknown05,
             Courses,
             DemoCarClasses,
-            TrackAvailability,
+            CourseSelection,
             DemoCarUnknown,
             GTAutoPrices,
             Unknown0B,
@@ -73,7 +73,7 @@ namespace GT3.GameConfigEditor
                     byte[] buffer = new byte[structureSize];
                     file.Read(buffer);
 
-                    using (var output = new FileStream(Path.Combine(directory, $"{(ListType)listType}.dat"), FileMode.Create, FileAccess.Write))
+                    using (var output = new FileStream(Path.Combine(directory, $"{i}_{(ListType)listType}.dat"), FileMode.Create, FileAccess.Write))
                     {
                         output.Write(buffer);
                     }
@@ -95,7 +95,7 @@ namespace GT3.GameConfigEditor
 
                 foreach (string filename in files)
                 {
-                    string listName = Path.GetFileNameWithoutExtension(filename);
+                    string listName = Path.GetFileNameWithoutExtension(filename).Substring(2);
                     ListType listType = (ListType)Enum.Parse(typeof(ListType), listName);
                     output.WriteUInt((uint)listType);
                     output.WriteUInt((uint)dataStart);
