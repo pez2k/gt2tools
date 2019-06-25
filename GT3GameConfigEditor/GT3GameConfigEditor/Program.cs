@@ -53,7 +53,7 @@ namespace GT3.GameConfigEditor
                 {
                     file.Position = startOfIndexes + (i * 8);
 
-                    uint listType = file.ReadUInt();
+                    ListType listType = (ListType)file.ReadUInt();
                     uint structurePos = file.ReadUInt();
 
                     uint nextStructurePos;
@@ -73,9 +73,19 @@ namespace GT3.GameConfigEditor
                     byte[] buffer = new byte[structureSize];
                     file.Read(buffer);
 
-                    using (var output = new FileStream(Path.Combine(directory, $"{i}_{(ListType)listType}.dat"), FileMode.Create, FileAccess.Write))
+                    if (listType == ListType.Demos)
                     {
-                        output.Write(buffer);
+                        using (var memoryStream = new MemoryStream(buffer))
+                        {
+                            Demos.Dump(memoryStream, directory, i);
+                        }
+                    }
+                    else
+                    {
+                        using (var output = new FileStream(Path.Combine(directory, $"{i}_{listType}.dat"), FileMode.Create, FileAccess.Write))
+                        {
+                            output.Write(buffer);
+                        }
                     }
                 }
             }
