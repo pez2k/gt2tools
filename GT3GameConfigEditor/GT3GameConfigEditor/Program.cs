@@ -73,19 +73,28 @@ namespace GT3.GameConfigEditor
                     byte[] buffer = new byte[structureSize];
                     file.Read(buffer);
 
-                    if (listType == ListType.Demos)
+                    switch (listType)
                     {
-                        using (var memoryStream = new MemoryStream(buffer))
-                        {
-                            Demos.Dump(memoryStream, directory, i);
-                        }
-                    }
-                    else
-                    {
-                        using (var output = new FileStream(Path.Combine(directory, $"{i}_{listType}.dat"), FileMode.Create, FileAccess.Write))
-                        {
-                            output.Write(buffer);
-                        }
+                        case ListType.Demos:
+                            using (var memoryStream = new MemoryStream(buffer))
+                            {
+                                Demos.Dump(memoryStream, directory, i);
+                            }
+                            break;
+
+                        case ListType.Events:
+                            using (var memoryStream = new MemoryStream(buffer))
+                            {
+                                Events.Dump(memoryStream, directory, i);
+                            }
+                            break;
+
+                        default:
+                            using (var output = new FileStream(Path.Combine(directory, $"{i}_{listType}.dat"), FileMode.Create, FileAccess.Write))
+                            {
+                                output.Write(buffer);
+                            }
+                            break;
                     }
                 }
             }
