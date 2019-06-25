@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -65,6 +66,22 @@ namespace StreamExtensions
         }
 
         public static byte[] ToByteArray(this ushort value) => BitConverter.GetBytes(value);
+
+        public static string ReadCharacters(this Stream stream)
+        {
+            byte characterByte;
+            List<byte> bytes = new List<byte>();
+            while(true)
+            {
+                characterByte = stream.ReadSingleByte();
+                if (characterByte == 0)
+                {
+                    break;
+                }
+                bytes.Add(characterByte);
+            }
+            return Encoding.ASCII.GetString(bytes.ToArray());
+        }
 
         public static void WriteCharacters(this Stream stream, string characters)
         {
