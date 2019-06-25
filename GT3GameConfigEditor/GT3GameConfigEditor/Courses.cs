@@ -5,24 +5,19 @@ using StreamExtensions;
 
 namespace GT3.GameConfigEditor
 {
-    static class Demos
+    static class Courses
     {
         public static void Dump(Stream file, string directory, int fileNumber)
         {
             uint structureCount = file.ReadUInt();
             uint startOfIndexes = file.ReadUInt();
-            using (var outFile = new FileStream(Path.Combine(directory, $"{fileNumber}_Demos.csv"), FileMode.Create, FileAccess.Write))
+            using (var outFile = new FileStream(Path.Combine(directory, $"{fileNumber}_Courses.csv"), FileMode.Create, FileAccess.Write))
             {
                 using (TextWriter output = new StreamWriter(outFile, Encoding.UTF8))
                 {
                     using (var csv = new CsvWriter(output))
                     {
                         csv.Configuration.QuoteAllFields = true;
-                        csv.WriteField("Unknown");
-                        csv.WriteField("Unknown2");
-                        csv.WriteField("Unknown3");
-                        csv.WriteField("Unknown4");
-                        csv.WriteField("Filename");
                         csv.WriteField("Course");
                         csv.NextRecord();
 
@@ -46,17 +41,7 @@ namespace GT3.GameConfigEditor
 
                             file.Position = structurePos;
                             
-                            file.ReadUInt(); // always 0x20
-                            csv.WriteField(file.ReadUInt());
-                            csv.WriteField(file.ReadUInt());
-                            csv.WriteField(file.ReadUInt());
-                            csv.WriteField(file.ReadUInt());
-                            csv.WriteField(file.ReadCharacters());
-                            long gap = file.Position % 4;
-                            if (gap > 0)
-                            {
-                                file.Position += 4 - gap;
-                            }
+                            file.ReadUInt(); // always 0x04
                             csv.WriteField(file.ReadCharacters());
                             csv.NextRecord();
                         }

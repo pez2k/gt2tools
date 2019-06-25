@@ -18,8 +18,7 @@ namespace GT3.GameConfigEditor
                     using (var csv = new CsvWriter(output))
                     {
                         csv.Configuration.QuoteAllFields = true;
-                        csv.WriteField("Unknown1");
-                        csv.WriteField("Unknown2");
+                        csv.WriteField("Unknown");
                         csv.WriteField("Event");
                         csv.NextRecord();
 
@@ -43,7 +42,7 @@ namespace GT3.GameConfigEditor
 
                             file.Position = structurePos;
                             
-                            csv.WriteField(file.ReadUInt());
+                            file.ReadUInt(); // always 0x08
                             csv.WriteField(file.ReadUInt());
                             csv.WriteField(file.ReadCharacters());
                             csv.NextRecord();

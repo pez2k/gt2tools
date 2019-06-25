@@ -89,6 +89,20 @@ namespace GT3.GameConfigEditor
                             }
                             break;
 
+                        case ListType.Courses:
+                            using (var memoryStream = new MemoryStream(buffer))
+                            {
+                                Courses.Dump(memoryStream, directory, i);
+                            }
+                            break;
+
+                        case ListType.Prizes:
+                            using (var memoryStream = new MemoryStream(buffer))
+                            {
+                                Prizes.Dump(memoryStream, directory, i);
+                            }
+                            break;
+
                         default:
                             using (var output = new FileStream(Path.Combine(directory, $"{i}_{listType}.dat"), FileMode.Create, FileAccess.Write))
                             {
