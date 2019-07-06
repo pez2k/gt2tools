@@ -124,6 +124,13 @@ namespace GT3.GameConfigEditor
                             }
                             break;
 
+                        case ListType.CarClasses:
+                            using (var memoryStream = new MemoryStream(buffer))
+                            {
+                                CarClasses.Dump(memoryStream, directory, i);
+                            }
+                            break;
+
                         default:
                             using (var output = new FileStream(Path.Combine(directory, $"{i}_{listType}.dat"), FileMode.Create, FileAccess.Write))
                             {
