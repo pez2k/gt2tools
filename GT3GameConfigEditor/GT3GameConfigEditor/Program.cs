@@ -103,6 +103,20 @@ namespace GT3.GameConfigEditor
                             }
                             break;
 
+                        case ListType.GTAutoPrices:
+                            using (var memoryStream = new MemoryStream(buffer))
+                            {
+                                GTAutoPrices.Dump(memoryStream, directory, i);
+                            }
+                            break;
+
+                        case ListType.Replays:
+                            using (var memoryStream = new MemoryStream(buffer))
+                            {
+                                Replays.Dump(memoryStream, directory, i);
+                            }
+                            break;
+
                         default:
                             using (var output = new FileStream(Path.Combine(directory, $"{i}_{listType}.dat"), FileMode.Create, FileAccess.Write))
                             {
