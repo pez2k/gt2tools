@@ -8,13 +8,15 @@ namespace GT1.SpecSplitter
     {
         static void Main(string[] args)
         {
-            Dump();
+            if (args.Length != 1)
+            {
+                return;
+            }
+            Dump(args[0]);
         }
 
-        private static void Dump()
+        private static void Dump(string filename)
         {
-            string filename = "_unknown0013.spec";
-
             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
                 file.Position = 4; // skip header
@@ -37,8 +39,14 @@ namespace GT1.SpecSplitter
                         file.Read(buffer);
 
                         string outputName = $"{i:D4}";
-                        if (type == "SPEC") {
-                            outputName += $"_{Encoding.ASCII.GetString(buffer, 0, 5)}";
+                        switch (type)
+                        {
+                            case "SPEC":
+                                outputName += $"_{Encoding.ASCII.GetString(buffer, 0, 5)}";
+                                break;
+                            case "EQUIP":
+                                outputName += $"_{Encoding.ASCII.GetString(buffer, 0x60, 7)}";
+                                break;
                         }
                         using (var output = new FileStream($"{directory}\\{outputName}.dat", FileMode.Create, FileAccess.Write))
                         {
