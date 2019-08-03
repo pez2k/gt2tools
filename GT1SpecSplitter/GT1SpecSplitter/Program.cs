@@ -28,24 +28,12 @@ namespace GT1.SpecSplitter
                 Directory.CreateDirectory(directory);
 
                 file.Position = 0x0C;
-                while (file.Position < file.Length)
+                
+                file.ReadUShort(); // always 0x10?
+                DumpMainStruct(file, fileType, directory);
+                if (fileType == "SPEC" || fileType == "COLOR")
                 {
-                    ushort structType = file.ReadUShort();
-                    switch (structType)
-                    {
-                        case 0x10:
-                            DumpMainStruct(file, fileType, directory);
-                            break;
-                        case 0x02:
-                            DumpCarNameStrings(file, directory);
-                            break;
-                        case 0x00:
-                            DumpColourNameStrings(file, directory);
-                            break;
-                        default:
-                            Console.WriteLine($"Unknown struct type 0x{structType:X4}.");
-                            return;
-                    }
+                    DumpStringTables(file, directory);
                 }
             }
         }
@@ -78,42 +66,22 @@ namespace GT1.SpecSplitter
             }
         }
 
-        private static void DumpCarNameStrings(Stream file, string directory)
+        private static void DumpStringTables(Stream file, string directory)
         {
-            file.Position += 0x0A;
-            DumpStrings(file, directory, "strings1");
-            file.Position++;
-            DumpStrings(file, directory, "strings2");
-            file.Position++;
-        }
+            ushort tableCount = file.ReadUShort();
+            if (tableCount == 2)
+            {
+                file.Position += 10;
+            }
+            else if (tableCount == 16)
+            {
+                file.Position += 66;
+            }
 
-        private static void DumpColourNameStrings(Stream file, string directory)
-        {
-            file.Position += 0x36;
-            DumpStrings(file, directory, "strings1");
-            DumpStrings(file, directory, "strings2");
-            file.Position++;
-            DumpStrings(file, directory, "strings3");
-            DumpStrings(file, directory, "strings4");
-            file.Position++;
-            DumpStrings(file, directory, "strings5");
-            DumpStrings(file, directory, "strings6");
-            DumpStrings(file, directory, "strings7");
-            file.Position++;
-            DumpStrings(file, directory, "strings8");
-            DumpStrings(file, directory, "strings9");
-            file.Position++;
-            DumpStrings(file, directory, "strings10");
-            file.Position++;
-            DumpStrings(file, directory, "strings11");
-            file.Position++;
-            DumpStrings(file, directory, "strings12");
-            DumpStrings(file, directory, "strings13");
-            file.Position++;
-            DumpStrings(file, directory, "strings14");
-            file.Position++;
-            DumpStrings(file, directory, "strings15");
-            DumpStrings(file, directory, "strings16");
+            for (int i = 0; i < tableCount; i++)
+            {
+                DumpStrings(file, directory, $"strings{i}");
+            }
         }
 
         private static void DumpStrings(Stream file, string directory, string filename)
@@ -131,6 +99,10 @@ namespace GT1.SpecSplitter
                     file.Position++;
                 }
                 output.Flush();
+            }
+            if (file.Position % 2 > 0)
+            {
+                file.Position++;
             }
         }
     }
