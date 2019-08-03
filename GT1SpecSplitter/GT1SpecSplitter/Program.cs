@@ -31,7 +31,7 @@ namespace GT1.SpecSplitter
                 
                 file.ReadUShort(); // always 0x10?
                 DumpMainStruct(file, fileType, directory);
-                if (fileType == "SPEC" || fileType == "COLOR")
+                if (file.Position < file.Length)
                 {
                     DumpStringTables(file, directory);
                 }
