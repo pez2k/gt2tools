@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 using StreamExtensions;
 
@@ -10,6 +11,7 @@ namespace GT1.SpecSplitter
         {
             if (args.Length != 1)
             {
+                Console.WriteLine("No filename provided.");
                 return;
             }
             Dump(args[0]);
@@ -20,41 +22,82 @@ namespace GT1.SpecSplitter
             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
                 file.Position = 4; // skip header
-                string type = file.ReadCharacters();
+                string fileType = file.ReadCharacters();
 
-                string directory = $"{Path.GetFileNameWithoutExtension(filename)}_{Path.GetExtension(filename)}_{type}";
+                string directory = $"{Path.GetFileNameWithoutExtension(filename)}_{Path.GetExtension(filename)}_{fileType}";
                 Directory.CreateDirectory(directory);
 
                 file.Position = 0x0C;
-                ushort structType = file.ReadUShort();
-                if (structType == 0x10)
+                while (file.Position < file.Length)
                 {
-                    ushort structCount = file.ReadUShort();
-                    file.ReadUInt(); // always zero?
-                    uint structSize = file.ReadUInt();
-
-                    for (int i = 0; i < structCount; i++)
+                    ushort structType = file.ReadUShort();
+                    switch (structType)
                     {
-                        var buffer = new byte[structSize];
-                        file.Read(buffer);
-
-                        string outputName = $"{i:D4}";
-                        switch (type)
-                        {
-                            case "SPEC":
-                                outputName += $"_{Encoding.ASCII.GetString(buffer, 0, 5)}";
-                                break;
-                            case "EQUIP":
-                                outputName += $"_{Encoding.ASCII.GetString(buffer, 0x60, 7)}";
-                                break;
-                        }
-                        using (var output = new FileStream($"{directory}\\{outputName}.dat", FileMode.Create, FileAccess.Write))
-                        {
-                            output.Write(buffer);
-                        }
+                        case 0x10:
+                            DumpMainStruct(file, fileType, directory);
+                            break;
+                        case 0x02:
+                            DumpCarNameStrings(file, directory);
+                            break;
+                        default:
+                            Console.WriteLine($"Unknown struct type 0x{structType:X4}.");
+                            return;
                     }
                 }
             }
+        }
+
+        private static void DumpMainStruct(Stream file, string fileType, string directory)
+        {
+            ushort structCount = file.ReadUShort();
+            file.ReadUInt(); // always zero?
+            uint structSize = file.ReadUInt();
+
+            for (int i = 0; i < structCount; i++)
+            {
+                var buffer = new byte[structSize];
+                file.Read(buffer);
+
+                string outputName = $"{i:D4}";
+                switch (fileType)
+                {
+                    case "SPEC":
+                        outputName += $"_{Encoding.ASCII.GetString(buffer, 0, 5)}";
+                        break;
+                    case "EQUIP":
+                        outputName += $"_{Encoding.ASCII.GetString(buffer, 0x60, 7)}";
+                        break;
+                }
+                using (var output = new FileStream($"{directory}\\{outputName}.dat", FileMode.Create, FileAccess.Write))
+                {
+                    output.Write(buffer);
+                }
+            }
+        }
+
+        private static void DumpCarNameStrings(Stream file, string directory)
+        {
+            file.Position += 0x0A;
+            DumpStrings(file, directory, "strings1");
+            DumpStrings(file, directory, "strings2");
+        }
+
+        private static void DumpStrings(Stream file, string directory, string filename)
+        {
+            ushort stringCount = file.ReadUShort();
+            using (var output = new StreamWriter($"{directory}\\{filename}.txt"))
+            {
+                for (int i = 0; i < stringCount; i++)
+                {
+                    byte stringLength = file.ReadSingleByte();
+                    var buffer = new byte[stringLength];
+                    file.Read(buffer);
+                    string textString = Encoding.ASCII.GetString(buffer);
+                    output.WriteLine(textString);
+                    file.Position++;
+                }
+            }
+            file.Position++;
         }
     }
 }
