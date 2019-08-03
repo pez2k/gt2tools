@@ -39,6 +39,9 @@ namespace GT1.SpecSplitter
                         case 0x02:
                             DumpCarNameStrings(file, directory);
                             break;
+                        case 0x00:
+                            DumpColourNameStrings(file, directory);
+                            break;
                         default:
                             Console.WriteLine($"Unknown struct type 0x{structType:X4}.");
                             return;
@@ -79,7 +82,38 @@ namespace GT1.SpecSplitter
         {
             file.Position += 0x0A;
             DumpStrings(file, directory, "strings1");
+            file.Position++;
             DumpStrings(file, directory, "strings2");
+            file.Position++;
+        }
+
+        private static void DumpColourNameStrings(Stream file, string directory)
+        {
+            file.Position += 0x36;
+            DumpStrings(file, directory, "strings1");
+            DumpStrings(file, directory, "strings2");
+            file.Position++;
+            DumpStrings(file, directory, "strings3");
+            DumpStrings(file, directory, "strings4");
+            file.Position++;
+            DumpStrings(file, directory, "strings5");
+            DumpStrings(file, directory, "strings6");
+            DumpStrings(file, directory, "strings7");
+            file.Position++;
+            DumpStrings(file, directory, "strings8");
+            DumpStrings(file, directory, "strings9");
+            file.Position++;
+            DumpStrings(file, directory, "strings10");
+            file.Position++;
+            DumpStrings(file, directory, "strings11");
+            file.Position++;
+            DumpStrings(file, directory, "strings12");
+            DumpStrings(file, directory, "strings13");
+            file.Position++;
+            DumpStrings(file, directory, "strings14");
+            file.Position++;
+            DumpStrings(file, directory, "strings15");
+            DumpStrings(file, directory, "strings16");
         }
 
         private static void DumpStrings(Stream file, string directory, string filename)
@@ -96,8 +130,8 @@ namespace GT1.SpecSplitter
                     output.WriteLine(textString);
                     file.Position++;
                 }
+                output.Flush();
             }
-            file.Position++;
         }
     }
 }
