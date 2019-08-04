@@ -44,7 +44,7 @@ namespace GT1.SpecSplitter
             file.ReadUInt(); // always zero?
             uint structSize = file.ReadUInt();
 
-            for (int i = 0; i < structCount; i++)
+            for (ushort i = 0; i < structCount; i++)
             {
                 var buffer = new byte[structSize];
                 file.Read(buffer);
@@ -68,17 +68,10 @@ namespace GT1.SpecSplitter
 
         private static void DumpStringTables(Stream file, string directory)
         {
-            ushort tableCount = file.ReadUShort();
-            if (tableCount == 2)
-            {
-                file.Position += 10;
-            }
-            else if (tableCount == 16)
-            {
-                file.Position += 66;
-            }
+            uint tableCount = file.ReadUInt();
+            file.Position += tableCount * 4;
 
-            for (int i = 0; i < tableCount; i++)
+            for (uint i = 0; i < tableCount; i++)
             {
                 DumpStrings(file, directory, $"strings{i}");
             }
@@ -89,7 +82,7 @@ namespace GT1.SpecSplitter
             ushort stringCount = file.ReadUShort();
             using (var output = new StreamWriter($"{directory}\\{filename}.txt"))
             {
-                for (int i = 0; i < stringCount; i++)
+                for (ushort i = 0; i < stringCount; i++)
                 {
                     byte stringLength = file.ReadSingleByte();
                     var buffer = new byte[stringLength];
