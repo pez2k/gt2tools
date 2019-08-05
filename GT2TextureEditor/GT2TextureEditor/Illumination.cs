@@ -5,7 +5,7 @@ namespace GT2.TextureEditor
 {
     class Illumination
     {
-        private bool[] colours = new bool[16];
+        private readonly bool[] colours = new bool[16];
 
         public void LoadFromGameFile(Stream file)
         {

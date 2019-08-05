@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Drawing.Imaging;
+using System.IO;
 using StreamExtensions;
 
 namespace GT2.TextureEditor
@@ -6,9 +7,9 @@ namespace GT2.TextureEditor
     class CarColour
     {
         private byte colourID;
-        private Palette[] palettes = new Palette[16];
-        private Illumination[] illuminations = new Illumination[16];
-        private UnknownFlags[] unknowns = new UnknownFlags[16];
+        private readonly Palette[] palettes = new Palette[16];
+        private readonly Illumination[] illuminations = new Illumination[16];
+        private readonly UnknownFlags[] unknowns = new UnknownFlags[16];
 
         public void LoadFromGameFile(Stream file, GameFileLayout layout)
         {
@@ -35,5 +36,7 @@ namespace GT2.TextureEditor
             }
             file.Position = idPosition + 1;
         }
+
+        public void WriteFirstPaletteToBitmapPalette(ColorPalette palette) => palettes[0].WriteToBitmapPalette(palette);
     }
 }

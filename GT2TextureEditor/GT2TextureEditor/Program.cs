@@ -10,6 +10,10 @@ namespace GT2.TextureEditor
             {
                 var texture = new CarTexture();
                 texture.LoadFromGameFile(file, new CDPFileLayout());
+                using (var bitmap = new FileStream("a2azn.bmp", FileMode.Create, FileAccess.Write))
+                {
+                    texture.WriteToEditableFiles(bitmap);
+                }
             }
         }
     }

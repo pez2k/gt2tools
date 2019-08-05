@@ -1,17 +1,34 @@
-﻿using System.IO;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using StreamExtensions;
 
 namespace GT2.TextureEditor
 {
     class Palette
     {
-        private ushort[] colours = new ushort[16];
+        private const byte ColourCount = 16;
+
+        private readonly ushort[] colours = new ushort[ColourCount];
 
         public void LoadFromGameFile(Stream file)
         {
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < ColourCount; i++)
             {
                 colours[i] = file.ReadUShort();
+            }
+        }
+
+        public void WriteToBitmapPalette(ColorPalette palette)
+        {
+            for (int i = 0; i < ColourCount; i++)
+            {
+                ushort paletteColour = colours[i];
+                int R = paletteColour & 0x1F;
+                int G = (paletteColour >> 5) & 0x1F;
+                int B = (paletteColour >> 10) & 0x1F;
+
+                palette.Entries[i] = Color.FromArgb(R * 8, G * 8, B * 8);
             }
         }
     }
