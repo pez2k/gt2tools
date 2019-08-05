@@ -43,6 +43,8 @@ namespace GT2.TextureEditor
         {
             WriteToBitmapFile(bitmapFile);
             colours[0].WritePalettesToEditableFiles();
+            colours[0].WriteIlluminationToEditableFiles();
+            colours[0].WriteUnknownsToEditableFiles();
         }
 
         private void WriteToBitmapFile(Stream file)

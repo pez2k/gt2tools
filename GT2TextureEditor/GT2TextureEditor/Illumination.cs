@@ -16,5 +16,26 @@ namespace GT2.TextureEditor
                 flags = (ushort)(flags >> 1);
             }
         }
+
+        public void WriteToJASCPalette(Stream file)
+        {
+            using (var writer = new StreamWriter(file))
+            {
+                writer.WriteLine("JASC-PAL");
+                writer.WriteLine("0100");
+                writer.WriteLine("16");
+                foreach (bool colour in colours)
+                {
+                    if (colour)
+                    {
+                        writer.WriteLine($"248 248 248");
+                    }
+                    else
+                    {
+                        writer.WriteLine($"0 0 0");
+                    }
+                }
+            }
+        }
     }
 }

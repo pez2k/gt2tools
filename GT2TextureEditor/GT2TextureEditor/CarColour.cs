@@ -49,5 +49,27 @@ namespace GT2.TextureEditor
                 }
             }
         }
+
+        public void WriteIlluminationToEditableFiles()
+        {
+            for (int i = 0; i < illuminations.Length; i++)
+            {
+                using (var file = new FileStream($"illumination{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                {
+                    illuminations[i].WriteToJASCPalette(file);
+                }
+            }
+        }
+
+        public void WriteUnknownsToEditableFiles()
+        {
+            for (int i = 0; i < unknowns.Length; i++)
+            {
+                using (var file = new FileStream($"unknown{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                {
+                    unknowns[i].WriteToJASCPalette(file);
+                }
+            }
+        }
     }
 }
