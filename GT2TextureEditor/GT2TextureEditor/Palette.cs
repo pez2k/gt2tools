@@ -31,5 +31,22 @@ namespace GT2.TextureEditor
                 palette.Entries[i] = Color.FromArgb(R * 8, G * 8, B * 8);
             }
         }
+
+        public void WriteToJASCPalette(Stream file)
+        {
+            using (var writer = new StreamWriter(file))
+            {
+                writer.WriteLine("JASC-PAL");
+                writer.WriteLine("0100");
+                writer.WriteLine("16");
+                foreach (ushort colour in colours)
+                {
+                    int R = colour & 0x1F;
+                    int G = (colour >> 5) & 0x1F;
+                    int B = (colour >> 10) & 0x1F;
+                    writer.WriteLine($"{R * 8} {G * 8} {B * 8}");
+                }
+            }
+        }
     }
 }

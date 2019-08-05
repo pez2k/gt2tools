@@ -38,5 +38,16 @@ namespace GT2.TextureEditor
         }
 
         public void WriteFirstPaletteToBitmapPalette(ColorPalette palette) => palettes[0].WriteToBitmapPalette(palette);
+
+        public void WritePalettesToEditableFiles()
+        {
+            for (int i = 0; i < palettes.Length; i++)
+            {
+                using (var file = new FileStream($"palette{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                {
+                    palettes[i].WriteToJASCPalette(file);
+                }
+            }
+        }
     }
 }
