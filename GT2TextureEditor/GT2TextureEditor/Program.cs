@@ -6,8 +6,20 @@ namespace GT2.TextureEditor
     {
         static void Main(string[] args)
         {
-            Dump(args[0]);
-            //Build(args[0]);
+            if (args.Length != 1)
+            {
+                return;
+            }
+
+            string path = args[0];
+            if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
+            {
+                Build(path);
+            }
+            else
+            {
+                Dump(path);
+            }
         }
 
         static void Dump(string filename)
