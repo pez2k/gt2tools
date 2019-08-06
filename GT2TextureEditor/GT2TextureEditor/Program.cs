@@ -47,7 +47,7 @@ namespace GT2.TextureEditor
                 var texture = new CarTexture();
                 using (var bitmap = new FileStream(Path.Combine(carName, $"{carName}.bmp"), FileMode.Open, FileAccess.Read))
                 {
-                    texture.LoadFromEditableFiles(bitmap);
+                    texture.LoadFromEditableFiles(directory, bitmap);
                 }
                 texture.WriteToGameFile(file, new CDPFileLayout());
             }

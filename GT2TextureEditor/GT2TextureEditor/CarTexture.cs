@@ -72,9 +72,10 @@ namespace GT2.TextureEditor
             }
         }
 
-        public void LoadFromEditableFiles(Stream bitmapFile)
+        public void LoadFromEditableFiles(string directory, Stream bitmapFile)
         {
             LoadFromBitmapFile(bitmapFile);
+            LoadColoursFromEditableFiles(directory);
         }
 
         private void LoadFromBitmapFile(Stream file)
@@ -102,6 +103,17 @@ namespace GT2.TextureEditor
                     bitmapData[x, y] = (byte)(pixelPair >> 4);
                     bitmapData[x + 1, y] = (byte)(pixelPair & 0xF);
                 }
+            }
+        }
+
+        private void LoadColoursFromEditableFiles(string directory)
+        {
+            int i = 0;
+            foreach (string colourDirectory in Directory.EnumerateDirectories(directory, "Colour??"))
+            {
+                var colour = new CarColour();
+                colour.LoadFromEditableFiles(colourDirectory);
+                colours[i++] = colour;
             }
         }
 

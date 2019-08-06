@@ -90,5 +90,21 @@ namespace GT2.TextureEditor
                 }
             }
         }
+
+        public void LoadFromEditableFiles(string directory)
+        {
+            colourID = byte.Parse(Path.GetFileName(directory).Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+
+            foreach (string palettePath in Directory.EnumerateFiles(directory, "ColourPalette??.pal"))
+            {
+                byte number = byte.Parse(Path.GetFileName(palettePath).Substring(13, 2));
+                var palette = new Palette();
+                using (var file = new FileStream(palettePath, FileMode.Open, FileAccess.Read))
+                {
+                    palette.LoadFromEditableFile(file);
+                }
+                palettes[number] = palette;
+            }
+        }
     }
 }

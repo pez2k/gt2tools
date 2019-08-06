@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using StreamExtensions;
@@ -60,6 +61,23 @@ namespace GT2.TextureEditor
                     int G = (colour >> 5) & 0x1F;
                     int B = (colour >> 10) & 0x1F;
                     writer.WriteLine($"{R * 8} {G * 8} {B * 8}");
+                }
+            }
+        }
+
+        public void LoadFromEditableFile(Stream file)
+        {
+            using (var reader = new StreamReader(file))
+            {
+                if (reader.ReadLine() != "JASC-PAL" || reader.ReadLine() != "0100" || reader.ReadLine() != "16")
+                {
+                    throw new Exception("Invalid JASC palette.");
+                }
+
+                for (int i = 0; i < ColourCount; i++)
+                {
+                    string colourText = reader.ReadLine();
+                    colours[i] = 0; // TODO
                 }
             }
         }
