@@ -15,9 +15,12 @@ namespace GT2.TextureEditor
             {
                 var texture = new CarTexture();
                 texture.LoadFromGameFile(file, new CDPFileLayout());
-                using (var bitmap = new FileStream($"{Path.GetFileNameWithoutExtension(filename)}.bmp", FileMode.Create, FileAccess.Write))
+                string outputName = Path.GetFileNameWithoutExtension(filename);
+                string outputPath = Path.Combine(Path.GetDirectoryName(filename), outputName);
+                Directory.CreateDirectory(outputPath);
+                using (var bitmap = new FileStream(Path.Combine(outputPath, $"{outputName}.bmp"), FileMode.Create, FileAccess.Write))
                 {
-                    texture.WriteToEditableFiles(bitmap);
+                    texture.WriteToEditableFiles(outputPath, bitmap);
                 }
             }
         }

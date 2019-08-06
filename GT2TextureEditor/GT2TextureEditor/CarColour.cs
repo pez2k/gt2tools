@@ -39,13 +39,22 @@ namespace GT2.TextureEditor
 
         public void WriteFirstPaletteToBitmapPalette(ColorPalette palette) => palettes[0].WriteToBitmapPalette(palette);
 
-        public void WritePalettesToEditableFiles()
+        public void WriteToEditableFiles(string directory)
+        {
+            directory = Path.Combine(directory, $"Colour{colourID:X2}");
+            Directory.CreateDirectory(directory);
+            WritePalettesToEditableFiles(directory);
+            WriteIlluminationMasksToEditableFiles(directory);
+            WritePaintMasksToEditableFiles(directory);
+        }
+
+        public void WritePalettesToEditableFiles(string directory)
         {
             for (int i = 0; i < palettes.Length; i++)
             {
                 if (!palettes[i].IsEmpty)
                 {
-                    using (var file = new FileStream($"ColourPalette{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                    using (var file = new FileStream(Path.Combine(directory, $"ColourPalette{i:D2}.pal"), FileMode.Create, FileAccess.Write))
                     {
                         palettes[i].WriteToJASCPalette(file);
                     }
@@ -53,13 +62,13 @@ namespace GT2.TextureEditor
             }
         }
 
-        public void WriteIlluminationMasksToEditableFiles()
+        public void WriteIlluminationMasksToEditableFiles(string directory)
         {
             for (int i = 0; i < illuminationMasks.Length; i++)
             {
                 if (!illuminationMasks[i].IsEmpty)
                 {
-                    using (var file = new FileStream($"IlluminationMask{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                    using (var file = new FileStream(Path.Combine(directory, $"IlluminationMask{i:D2}.pal"), FileMode.Create, FileAccess.Write))
                     {
                         illuminationMasks[i].WriteToJASCPalette(file);
                     }
@@ -67,13 +76,13 @@ namespace GT2.TextureEditor
             }
         }
 
-        public void WritePaintMasksToEditableFiles()
+        public void WritePaintMasksToEditableFiles(string directory)
         {
             for (int i = 0; i < paintMasks.Length; i++)
             {
                 if (!paintMasks[i].IsEmpty)
                 {
-                    using (var file = new FileStream($"PaintMask{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                    using (var file = new FileStream(Path.Combine(directory, $"PaintMask{i:D2}.pal"), FileMode.Create, FileAccess.Write))
                     {
                         paintMasks[i].WriteToJASCPalette(file);
                     }

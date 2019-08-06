@@ -39,12 +39,13 @@ namespace GT2.TextureEditor
             }
         }
 
-        public void WriteToEditableFiles(Stream bitmapFile)
+        public void WriteToEditableFiles(string directory, Stream bitmapFile)
         {
             WriteToBitmapFile(bitmapFile);
-            colours[0].WritePalettesToEditableFiles();
-            colours[0].WriteIlluminationMasksToEditableFiles();
-            colours[0].WritePaintMasksToEditableFiles();
+            foreach (CarColour colour in colours)
+            {
+                colour?.WriteToEditableFiles(directory);
+            }
         }
 
         private void WriteToBitmapFile(Stream file)
