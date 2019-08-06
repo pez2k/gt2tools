@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -52,7 +53,7 @@ namespace GT2.TextureEditor
         {
             var texture = new byte[BitmapHeight, BitmapWidth];
             GCHandle memoryHandle = GCHandle.Alloc(texture, GCHandleType.Pinned);
-            using (var bitmap = new Bitmap(BitmapWidth, BitmapHeight, 256, PixelFormat.Format4bppIndexed, memoryHandle.AddrOfPinnedObject()))
+            using (var bitmap = new Bitmap(BitmapWidth, BitmapHeight, BitmapWidth, PixelFormat.Format4bppIndexed, memoryHandle.AddrOfPinnedObject()))
             {
                 ColorPalette palette = bitmap.Palette;
                 colours[0].WriteFirstPaletteToBitmapPalette(palette);
@@ -68,6 +69,52 @@ namespace GT2.TextureEditor
 
                 memoryHandle.Free();
                 bitmap.Save(file, ImageFormat.Bmp);
+            }
+        }
+
+        public void LoadFromEditableFiles(Stream bitmapFile)
+        {
+            LoadFromBitmapFile(bitmapFile);
+        }
+
+        private void LoadFromBitmapFile(Stream file)
+        {
+            byte[] buffer;
+            using (var bitmap = new Bitmap(file))
+            {
+                if (bitmap.Width != BitmapWidth || bitmap.Height != BitmapHeight || bitmap.PixelFormat != PixelFormat.Format4bppIndexed)
+                {
+                    throw new Exception("Invalid BMP.");
+                }
+
+                BitmapData rawData = bitmap.LockBits(new Rectangle(0, 0, BitmapWidth, BitmapHeight), ImageLockMode.ReadOnly, PixelFormat.Format4bppIndexed);
+                buffer = new byte[rawData.Stride * BitmapHeight];
+                Marshal.Copy(rawData.Scan0, buffer, 0, rawData.Stride * BitmapHeight);
+                bitmap.UnlockBits(rawData);
+            }
+
+            int i = 0;
+            for (int y = 0; y < BitmapHeight; y++)
+            {
+                for (int x = 0; x < BitmapWidth; x += 2)
+                {
+                    byte pixelPair = buffer[i++];
+                    bitmapData[x, y] = (byte)(pixelPair >> 4);
+                    bitmapData[x + 1, y] = (byte)(pixelPair & 0xF);
+                }
+            }
+        }
+
+        public void WriteToGameFile(Stream file, GameFileLayout layout)
+        {
+            file.Position = layout.BitmapStartIndex;
+
+            for (int y = 0; y < BitmapHeight; y++)
+            {
+                for (int x = 0; x < BitmapWidth; x += 2)
+                {
+                    file.WriteByte((byte)((bitmapData[x + 1, y] << 4) + (bitmapData[x, y] & 0xF)));
+                }
             }
         }
     }
