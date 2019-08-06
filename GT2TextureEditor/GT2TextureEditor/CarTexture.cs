@@ -22,7 +22,7 @@ namespace GT2.TextureEditor
             for (ushort i = 0; i < colourCount; i++)
             {
                 var colour = new CarColour();
-                colour.LoadFromGameFile(file, layout);
+                colour.LoadFromGameFile(file, layout, i);
                 colours[i] = colour;
             }
 

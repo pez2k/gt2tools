@@ -6,16 +6,18 @@ namespace GT2.TextureEditor
 {
     class CarColour
     {
+        private const ushort PaletteSize = 0x240;
+
         private byte colourID;
         private readonly Palette[] palettes = new Palette[16];
         private readonly IlluminationMask[] illuminationMasks = new IlluminationMask[16];
         private readonly PaintMask[] paintMasks = new PaintMask[16];
 
-        public void LoadFromGameFile(Stream file, GameFileLayout layout)
+        public void LoadFromGameFile(Stream file, GameFileLayout layout, ushort colourNumber)
         {
-            long idPosition = file.Position;
+            file.Position = layout.ColourCountIndex + 2 + colourNumber;
             colourID = file.ReadSingleByte();
-            file.Position = layout.PaletteStartIndex;
+            file.Position = layout.PaletteStartIndex + (PaletteSize * colourNumber);
             for (int i = 0; i < 16; i++)
             {
                 var palette = new Palette();
@@ -34,7 +36,6 @@ namespace GT2.TextureEditor
                 paintMask.LoadFromGameFile(file);
                 paintMasks[i] = paintMask;
             }
-            file.Position = idPosition + 1;
         }
 
         public void WriteFirstPaletteToBitmapPalette(ColorPalette palette) => palettes[0].WriteToBitmapPalette(palette);
