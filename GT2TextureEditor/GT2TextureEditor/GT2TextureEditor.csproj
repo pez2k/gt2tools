@@ -46,8 +46,8 @@
   <ItemGroup>
     <Compile Include="CDPFileLayout.cs" />
     <Compile Include="GameFileLayout.cs" />
-    <Compile Include="UnknownFlags.cs" />
-    <Compile Include="Illumination.cs" />
+    <Compile Include="PaintMask.cs" />
+    <Compile Include="IlluminationMask.cs" />
     <Compile Include="Palette.cs" />
     <Compile Include="CarColour.cs" />
     <Compile Include="CarTexture.cs" />

@@ -1,6 +1,6 @@
 ﻿namespace GT2.TextureEditor
 {
-    class UnknownFlags : Illumination
+    class PaintMask : IlluminationMask
     {
     }
 }

@@ -11,6 +11,21 @@ namespace GT2.TextureEditor
 
         private readonly ushort[] colours = new ushort[ColourCount];
 
+        public bool IsEmpty
+        {
+            get
+            {
+                foreach (ushort colour in colours)
+                {
+                    if (colour != 0xFFFF)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+
         public void LoadFromGameFile(Stream file)
         {
             for (int i = 0; i < ColourCount; i++)

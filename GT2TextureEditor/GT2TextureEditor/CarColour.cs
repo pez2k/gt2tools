@@ -8,8 +8,8 @@ namespace GT2.TextureEditor
     {
         private byte colourID;
         private readonly Palette[] palettes = new Palette[16];
-        private readonly Illumination[] illuminations = new Illumination[16];
-        private readonly UnknownFlags[] unknowns = new UnknownFlags[16];
+        private readonly IlluminationMask[] illuminationMasks = new IlluminationMask[16];
+        private readonly PaintMask[] paintMasks = new PaintMask[16];
 
         public void LoadFromGameFile(Stream file, GameFileLayout layout)
         {
@@ -24,15 +24,15 @@ namespace GT2.TextureEditor
             }
             for (int i = 0; i < 16; i++)
             {
-                var illumination = new Illumination();
-                illumination.LoadFromGameFile(file);
-                illuminations[i] = illumination;
+                var illuminationMask = new IlluminationMask();
+                illuminationMask.LoadFromGameFile(file);
+                illuminationMasks[i] = illuminationMask;
             }
             for (int i = 0; i < 16; i++)
             {
-                var unknown = new UnknownFlags();
-                unknown.LoadFromGameFile(file);
-                unknowns[i] = unknown;
+                var paintMask = new PaintMask();
+                paintMask.LoadFromGameFile(file);
+                paintMasks[i] = paintMask;
             }
             file.Position = idPosition + 1;
         }
@@ -43,31 +43,40 @@ namespace GT2.TextureEditor
         {
             for (int i = 0; i < palettes.Length; i++)
             {
-                using (var file = new FileStream($"palette{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                if (!palettes[i].IsEmpty)
                 {
-                    palettes[i].WriteToJASCPalette(file);
+                    using (var file = new FileStream($"ColourPalette{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                    {
+                        palettes[i].WriteToJASCPalette(file);
+                    }
                 }
             }
         }
 
-        public void WriteIlluminationToEditableFiles()
+        public void WriteIlluminationMasksToEditableFiles()
         {
-            for (int i = 0; i < illuminations.Length; i++)
+            for (int i = 0; i < illuminationMasks.Length; i++)
             {
-                using (var file = new FileStream($"illumination{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                if (!illuminationMasks[i].IsEmpty)
                 {
-                    illuminations[i].WriteToJASCPalette(file);
+                    using (var file = new FileStream($"IlluminationMask{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                    {
+                        illuminationMasks[i].WriteToJASCPalette(file);
+                    }
                 }
             }
         }
 
-        public void WriteUnknownsToEditableFiles()
+        public void WritePaintMasksToEditableFiles()
         {
-            for (int i = 0; i < unknowns.Length; i++)
+            for (int i = 0; i < paintMasks.Length; i++)
             {
-                using (var file = new FileStream($"unknown{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                if (!paintMasks[i].IsEmpty)
                 {
-                    unknowns[i].WriteToJASCPalette(file);
+                    using (var file = new FileStream($"PaintMask{i:D2}.pal", FileMode.Create, FileAccess.Write))
+                    {
+                        paintMasks[i].WriteToJASCPalette(file);
+                    }
                 }
             }
         }

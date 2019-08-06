@@ -3,9 +3,23 @@ using StreamExtensions;
 
 namespace GT2.TextureEditor
 {
-    class Illumination
+    class IlluminationMask
     {
         private readonly bool[] colours = new bool[16];
+
+        public bool IsEmpty {
+            get
+            {
+                foreach (bool colour in colours)
+                {
+                    if (colour)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
 
         public void LoadFromGameFile(Stream file)
         {
