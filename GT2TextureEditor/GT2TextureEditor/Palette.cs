@@ -101,5 +101,13 @@ namespace GT2.TextureEditor
                 colours[i] = 0xFFFF;
             }
         }
+
+        public void WriteToGameFile(Stream file)
+        {
+            foreach (ushort colour in colours)
+            {
+                file.WriteUShort(colour);
+            }
+        }
     }
 }

@@ -153,5 +153,24 @@ namespace GT2.TextureEditor
                 }
             }
         }
+
+        public void WriteToGameFile(Stream file, GameFileLayout layout, ushort colourNumber)
+        {
+            file.Position = layout.ColourCountIndex + 2 + colourNumber;
+            file.WriteByte(colourID);
+            file.Position = layout.PaletteStartIndex + (PaletteSize * colourNumber);
+            foreach (Palette palette in palettes)
+            {
+                palette.WriteToGameFile(file);
+            }
+            foreach (IlluminationMask illuminationMask in illuminationMasks)
+            {
+                illuminationMask.WriteToGameFile(file);
+            }
+            foreach (PaintMask paintMask in paintMasks)
+            {
+                paintMask.WriteToGameFile(file);
+            }
+        }
     }
 }

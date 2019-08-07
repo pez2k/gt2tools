@@ -29,9 +29,9 @@ namespace GT2.TextureEditor
 
             file.Position = layout.BitmapStartIndex;
 
-            for (int y = 0; y < BitmapHeight; y++)
+            for (ushort y = 0; y < BitmapHeight; y++)
             {
-                for (int x = 0; x < BitmapWidth; x += 2)
+                for (ushort x = 0; x < BitmapWidth; x += 2)
                 {
                     byte pixelPair = (byte)file.ReadByte();
                     bitmapData[x, y] = (byte)(pixelPair & 0xF);
@@ -59,9 +59,9 @@ namespace GT2.TextureEditor
                 colours[0].WriteFirstPaletteToBitmapPalette(palette);
                 bitmap.Palette = palette;
 
-                for (int x = 0; x < BitmapWidth; x += 2)
+                for (ushort x = 0; x < BitmapWidth; x += 2)
                 {
-                    for (int y = 0; y < BitmapHeight; y++)
+                    for (ushort y = 0; y < BitmapHeight; y++)
                     {
                         texture[y, x / 2] = (byte)((bitmapData[x, y] << 4) + (bitmapData[x + 1, y] & 0xF));
                     }
@@ -95,9 +95,9 @@ namespace GT2.TextureEditor
             }
 
             int i = 0;
-            for (int y = 0; y < BitmapHeight; y++)
+            for (ushort y = 0; y < BitmapHeight; y++)
             {
-                for (int x = 0; x < BitmapWidth; x += 2)
+                for (ushort x = 0; x < BitmapWidth; x += 2)
                 {
                     byte pixelPair = buffer[i++];
                     bitmapData[x, y] = (byte)(pixelPair >> 4);
@@ -119,11 +119,24 @@ namespace GT2.TextureEditor
 
         public void WriteToGameFile(Stream file, GameFileLayout layout)
         {
+            byte colourCount = 0;
+            for (ushort i = 0; i < colours.Length; i++)
+            {
+                if (colours[i] != null)
+                {
+                    colours[i].WriteToGameFile(file, layout, i);
+                    colourCount++;
+                }
+            }
+
+            file.Position = layout.ColourCountIndex;
+            file.WriteByte(colourCount);
+
             file.Position = layout.BitmapStartIndex;
 
-            for (int y = 0; y < BitmapHeight; y++)
+            for (ushort y = 0; y < BitmapHeight; y++)
             {
-                for (int x = 0; x < BitmapWidth; x += 2)
+                for (ushort x = 0; x < BitmapWidth; x += 2)
                 {
                     file.WriteByte((byte)((bitmapData[x + 1, y] << 4) + (bitmapData[x, y] & 0xF)));
                 }

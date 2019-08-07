@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using StreamExtensions;
 
 namespace GT2.TextureEditor
@@ -68,6 +69,20 @@ namespace GT2.TextureEditor
                     colours[i] = colourText != "0 0 0";
                 }
             }
+        }
+
+        public void WriteToGameFile(Stream file)
+        {
+            ushort flags = 0;
+            foreach (bool colour in colours.Reverse())
+            {
+                flags = (ushort)(flags << 1);
+                if (colour)
+                {
+                    flags++;
+                }
+            }
+            file.WriteUShort(flags);
         }
     }
 }
