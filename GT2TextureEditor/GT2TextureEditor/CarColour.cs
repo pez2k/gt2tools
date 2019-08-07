@@ -105,6 +105,53 @@ namespace GT2.TextureEditor
                 }
                 palettes[number] = palette;
             }
+
+            for (int i = 0; i < palettes.Length; i++)
+            {
+                if (palettes[i] == null)
+                {
+                    palettes[i] = new Palette();
+                    palettes[i].Empty();
+                }
+            }
+
+            foreach (string illuminationMaskPath in Directory.EnumerateFiles(directory, "IlluminationMask??.pal"))
+            {
+                byte number = byte.Parse(Path.GetFileName(illuminationMaskPath).Substring(16, 2));
+                var illuminationMask = new IlluminationMask();
+                using (var file = new FileStream(illuminationMaskPath, FileMode.Open, FileAccess.Read))
+                {
+                    illuminationMask.LoadFromEditableFile(file);
+                }
+                illuminationMasks[number] = illuminationMask;
+            }
+
+            for (int i = 0; i < illuminationMasks.Length; i++)
+            {
+                if (illuminationMasks[i] == null)
+                {
+                    illuminationMasks[i] = new IlluminationMask();
+                }
+            }
+
+            foreach (string paintMaskPath in Directory.EnumerateFiles(directory, "PaintMask??.pal"))
+            {
+                byte number = byte.Parse(Path.GetFileName(paintMaskPath).Substring(9, 2));
+                var paintMask = new PaintMask();
+                using (var file = new FileStream(paintMaskPath, FileMode.Open, FileAccess.Read))
+                {
+                    paintMask.LoadFromEditableFile(file);
+                }
+                paintMasks[number] = paintMask;
+            }
+
+            for (int i = 0; i < paintMasks.Length; i++)
+            {
+                if (paintMasks[i] == null)
+                {
+                    paintMasks[i] = new PaintMask();
+                }
+            }
         }
     }
 }

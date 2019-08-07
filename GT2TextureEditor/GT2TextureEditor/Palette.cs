@@ -77,8 +77,28 @@ namespace GT2.TextureEditor
                 for (int i = 0; i < ColourCount; i++)
                 {
                     string colourText = reader.ReadLine();
-                    colours[i] = 0; // TODO
+                    string[] parts = colourText.Split(' ');
+                    if (parts.Length != 3)
+                    {
+                        throw new Exception("Invalid colour.");
+                    }
+
+                    int R = int.Parse(parts[0]) / 8;
+                    int G = int.Parse(parts[1]) / 8;
+                    int B = int.Parse(parts[2]) / 8;
+
+                    int colour = (B << 10) + (G << 5) + R;
+                    colours[i] = (ushort)colour;
+                    string debug = $"{colour:X4}";
                 }
+            }
+        }
+
+        public void Empty()
+        {
+            for (int i = 0; i < ColourCount; i++)
+            {
+                colours[i] = 0xFFFF;
             }
         }
     }
