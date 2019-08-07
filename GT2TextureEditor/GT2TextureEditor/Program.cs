@@ -28,8 +28,9 @@ namespace GT2.TextureEditor
             {
                 var texture = new CarTexture();
                 texture.LoadFromGameFile(file, new CDPFileLayout());
+                bool isNight = Path.GetExtension(filename) == ".cnp";
                 string outputName = Path.GetFileNameWithoutExtension(filename);
-                string outputPath = Path.Combine(Path.GetDirectoryName(filename), outputName);
+                string outputPath = Path.Combine(Path.GetDirectoryName(filename), outputName + (isNight ? "_night" : ""));
                 Directory.CreateDirectory(outputPath);
                 using (var bitmap = new FileStream(Path.Combine(outputPath, $"{outputName}.bmp"), FileMode.Create, FileAccess.Write))
                 {
@@ -41,11 +42,13 @@ namespace GT2.TextureEditor
         static void Build(string directory)
         {
             string carName = Path.GetFileName(directory);
+            bool isNight = carName.EndsWith("_night");
+            string carNameNoSuffix = carName.Replace("_night", "");
 
-            using (var file = new FileStream($"{carName}.cdp", FileMode.Create, FileAccess.Write))
+            using (var file = new FileStream($"{carNameNoSuffix}.c{(isNight ? "n" : "d")}p", FileMode.Create, FileAccess.Write))
             {
                 var texture = new CarTexture();
-                using (var bitmap = new FileStream(Path.Combine(carName, $"{carName}.bmp"), FileMode.Open, FileAccess.Read))
+                using (var bitmap = new FileStream(Path.Combine(carName, $"{carNameNoSuffix}.bmp"), FileMode.Open, FileAccess.Read))
                 {
                     texture.LoadFromEditableFiles(directory, bitmap);
                 }
