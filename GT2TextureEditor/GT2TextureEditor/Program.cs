@@ -1,25 +1,55 @@
 ﻿using System.IO;
+using System.Linq;
 using StreamExtensions;
 
 namespace GT2.TextureEditor
 {
     class Program
     {
+        private enum OutputType
+        {
+            EditableFiles,
+            GT1,
+            GT2
+        }
+
         static void Main(string[] args)
         {
-            if (args.Length != 1)
+            if (args.Length < 1 || args.Length > 2)
             {
                 return;
             }
 
-            string path = args[0];
-            if (File.GetAttributes(path).HasFlag(FileAttributes.Directory))
+            string path = args.Last();
+            bool isDirectory = File.GetAttributes(path).HasFlag(FileAttributes.Directory);
+            OutputType outputType = isDirectory ? OutputType.GT2 : OutputType.EditableFiles;
+
+            if (args.Length == 2)
             {
-                WriteToGameFile(path, ReadFromEditableFiles(path), new CDPFileLayout());
+                switch (args[0])
+                {
+                    case "-o1":
+                        outputType = OutputType.GT1;
+                        break;
+                    case "-o2":
+                        outputType = OutputType.GT2;
+                        break;
+                    case "-oe":
+                        outputType = OutputType.EditableFiles;
+                        break;
+                    default:
+                        return;
+                }
+            }
+
+            CarTexture texture = isDirectory ? LoadFromEditableFiles(path) : LoadFromGameFile(path);
+            if (outputType == OutputType.EditableFiles)
+            {
+                WriteToEditableFiles(path, texture);
             }
             else
             {
-                WriteToEditableFiles(path, LoadFromGameFile(path));
+                WriteToGameFile(path, texture, outputType);
             }
         }
 
@@ -45,7 +75,7 @@ namespace GT2.TextureEditor
             }
         }
 
-        static CarTexture ReadFromEditableFiles(string directory)
+        static CarTexture LoadFromEditableFiles(string directory)
         {
             string carName = Path.GetFileName(directory);
             string carNameNoSuffix = carName.Replace("_night", "");
@@ -57,16 +87,25 @@ namespace GT2.TextureEditor
             return texture;
         }
 
-        static void WriteToGameFile(string directory, CarTexture texture, GameFileLayout layout)
+        static void WriteToGameFile(string directory, CarTexture texture, OutputType outputType)
         {
-            string carName = Path.GetFileName(directory);
-            bool isNight = carName.EndsWith("_night");
-            string carNameNoSuffix = carName.Replace("_night", "");
-            using (var file = new FileStream($"{carNameNoSuffix}.c{(isNight ? "n" : "d")}p", FileMode.Create, FileAccess.Write))
+            GameFileLayout layout = outputType == OutputType.GT2 ? (GameFileLayout)new CDPFileLayout() : new TEXFileLayout();
+            using (var file = new FileStream(CreateFilename(Path.GetFileNameWithoutExtension(directory), outputType), FileMode.Create, FileAccess.Write))
             {
                 file.Write(layout.HeaderData);
                 texture.WriteToGameFile(file, layout);
             }
+        }
+
+        static string CreateFilename(string carName, OutputType outputType)
+        {
+            if (outputType == OutputType.GT1)
+            {
+                return $"{carName}.tex";
+            }
+            bool isNight = carName.EndsWith("_night");
+            string carNameNoSuffix = carName.Replace("_night", "");
+            return $"{carNameNoSuffix}.c{(isNight ? "n" : "d")}p";
         }
     }
 }

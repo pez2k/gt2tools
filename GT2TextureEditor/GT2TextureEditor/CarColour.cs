@@ -183,11 +183,11 @@ namespace GT2.TextureEditor
 
             foreach (IlluminationMask illuminationMask in illuminationMasks)
             {
-                illuminationMask.WriteToGameFile(file);
+                illuminationMask?.WriteToGameFile(file);
             }
             foreach (PaintMask paintMask in paintMasks)
             {
-                paintMask.WriteToGameFile(file);
+                paintMask?.WriteToGameFile(file);
             }
         }
     }
