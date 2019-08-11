@@ -6,8 +6,6 @@ namespace GT2.TextureEditor
 {
     class CarColour
     {
-        private const ushort PaletteSize = 0x240;
-
         private byte colourID;
         private readonly Palette[] palettes = new Palette[16];
         private readonly IlluminationMask[] illuminationMasks = new IlluminationMask[16];
@@ -17,13 +15,23 @@ namespace GT2.TextureEditor
         {
             file.Position = layout.ColourCountIndex + 2 + colourNumber;
             colourID = file.ReadSingleByte();
-            file.Position = layout.PaletteStartIndex + (PaletteSize * colourNumber);
+            file.Position = layout.PaletteStartIndex + (layout.PaletteSize * colourNumber);
             for (int i = 0; i < 16; i++)
             {
                 var palette = new Palette();
                 palette.LoadFromGameFile(file);
                 palettes[i] = palette;
             }
+
+            if (layout.SingleInstanceOfFlagsStartIndex != 0)
+            {
+                if (colourNumber > 0)
+                {
+                    return;
+                }
+                file.Position = layout.SingleInstanceOfFlagsStartIndex;
+            }
+
             for (int i = 0; i < 16; i++)
             {
                 var illuminationMask = new IlluminationMask();
@@ -67,7 +75,7 @@ namespace GT2.TextureEditor
         {
             for (int i = 0; i < illuminationMasks.Length; i++)
             {
-                if (!illuminationMasks[i].IsEmpty)
+                if (illuminationMasks[i]?.IsEmpty == false)
                 {
                     using (var file = new FileStream(Path.Combine(directory, $"IlluminationMask{i:D2}.pal"), FileMode.Create, FileAccess.Write))
                     {
@@ -81,7 +89,7 @@ namespace GT2.TextureEditor
         {
             for (int i = 0; i < paintMasks.Length; i++)
             {
-                if (!paintMasks[i].IsEmpty)
+                if (paintMasks[i]?.IsEmpty == false)
                 {
                     using (var file = new FileStream(Path.Combine(directory, $"PaintMask{i:D2}.pal"), FileMode.Create, FileAccess.Write))
                     {
@@ -158,11 +166,21 @@ namespace GT2.TextureEditor
         {
             file.Position = layout.ColourCountIndex + 2 + colourNumber;
             file.WriteByte(colourID);
-            file.Position = layout.PaletteStartIndex + (PaletteSize * colourNumber);
+            file.Position = layout.PaletteStartIndex + (layout.PaletteSize * colourNumber);
             foreach (Palette palette in palettes)
             {
                 palette.WriteToGameFile(file);
             }
+
+            if (layout.SingleInstanceOfFlagsStartIndex != 0)
+            {
+                if (colourNumber > 0)
+                {
+                    return;
+                }
+                file.Position = layout.SingleInstanceOfFlagsStartIndex;
+            }
+
             foreach (IlluminationMask illuminationMask in illuminationMasks)
             {
                 illuminationMask.WriteToGameFile(file);

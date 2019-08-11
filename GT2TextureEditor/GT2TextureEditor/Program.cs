@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using StreamExtensions;
 
 namespace GT2.TextureEditor
 {
@@ -44,15 +45,17 @@ namespace GT2.TextureEditor
             string carName = Path.GetFileName(directory);
             bool isNight = carName.EndsWith("_night");
             string carNameNoSuffix = carName.Replace("_night", "");
+            var layout = new CDPFileLayout();
 
             using (var file = new FileStream($"{carNameNoSuffix}.c{(isNight ? "n" : "d")}p", FileMode.Create, FileAccess.Write))
             {
+                file.Write(layout.HeaderData);
                 var texture = new CarTexture();
                 using (var bitmap = new FileStream(Path.Combine(carName, $"{carNameNoSuffix}.bmp"), FileMode.Open, FileAccess.Read))
                 {
                     texture.LoadFromEditableFiles(directory, bitmap);
                 }
-                texture.WriteToGameFile(file, new CDPFileLayout());
+                texture.WriteToGameFile(file, layout);
             }
         }
     }

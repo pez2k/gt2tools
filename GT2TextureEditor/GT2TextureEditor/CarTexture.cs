@@ -27,7 +27,7 @@ namespace GT2.TextureEditor
                 colours[i] = colour;
             }
 
-            file.Position = layout.BitmapStartIndex;
+            file.Position = layout.BitmapStartIndex + layout.BitmapEmptyFillSize;
 
             for (ushort y = 0; y < BitmapHeight; y++)
             {
@@ -133,6 +133,7 @@ namespace GT2.TextureEditor
             file.WriteByte(colourCount);
 
             file.Position = layout.BitmapStartIndex;
+            WriteBitmapEmptyFill(file, layout);
 
             for (ushort y = 0; y < BitmapHeight; y++)
             {
@@ -140,6 +141,14 @@ namespace GT2.TextureEditor
                 {
                     file.WriteByte((byte)((bitmapData[x + 1, y] << 4) + (bitmapData[x, y] & 0xF)));
                 }
+            }
+        }
+
+        private void WriteBitmapEmptyFill(Stream file, GameFileLayout layout)
+        {
+            for (uint i = 0; i < layout.BitmapEmptyFillSize; i++)
+            {
+                file.WriteByte(0xFF);
             }
         }
     }
