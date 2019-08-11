@@ -28,7 +28,7 @@ namespace GT2.TextureEditor
             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
                 var texture = new CarTexture();
-                texture.LoadFromGameFile(file, new CDPFileLayout());
+                texture.LoadFromGameFile(file, Path.GetExtension(filename) == ".tex" ? (GameFileLayout)new TEXFileLayout() : new CDPFileLayout());
                 bool isNight = Path.GetExtension(filename) == ".cnp";
                 string outputName = Path.GetFileNameWithoutExtension(filename);
                 string outputPath = Path.Combine(Path.GetDirectoryName(filename), outputName + (isNight ? "_night" : ""));
