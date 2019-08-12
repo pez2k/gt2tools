@@ -1,5 +1,7 @@
-﻿using System.Drawing.Imaging;
+﻿using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using StreamExtensions;
 
 namespace GT2.TextureEditor
@@ -10,16 +12,21 @@ namespace GT2.TextureEditor
         private readonly Palette[] palettes = new Palette[16];
         private readonly IlluminationMask[] illuminationMasks = new IlluminationMask[16];
         private readonly PaintMask[] paintMasks = new PaintMask[16];
+        private readonly List<(byte, byte)> coloursWithAlpha = new List<(byte, byte)>();
 
         public void LoadFromGameFile(Stream file, GameFileLayout layout, ushort colourNumber)
         {
             file.Position = layout.ColourCountIndex + 2 + colourNumber;
             colourID = file.ReadSingleByte();
             file.Position = layout.PaletteStartIndex + (layout.PaletteSize * colourNumber);
-            for (int i = 0; i < 16; i++)
+            for (byte i = 0; i < 16; i++)
             {
                 var palette = new Palette();
-                palette.LoadFromGameFile(file);
+                List<byte> paletteColoursWithAlpha = palette.LoadFromGameFile(file);
+                foreach (byte colourID in paletteColoursWithAlpha)
+                {
+                    coloursWithAlpha.Add((i, colourID));
+                }
                 palettes[i] = palette;
             }
 
@@ -55,9 +62,10 @@ namespace GT2.TextureEditor
             WritePalettesToEditableFiles(directory);
             WriteIlluminationMasksToEditableFiles(directory);
             WritePaintMasksToEditableFiles(directory);
+            WriteAlphaBitsToEditableFile(directory);
         }
 
-        public void WritePalettesToEditableFiles(string directory)
+        private void WritePalettesToEditableFiles(string directory)
         {
             for (int i = 0; i < palettes.Length; i++)
             {
@@ -71,7 +79,7 @@ namespace GT2.TextureEditor
             }
         }
 
-        public void WriteIlluminationMasksToEditableFiles(string directory)
+        private void WriteIlluminationMasksToEditableFiles(string directory)
         {
             for (int i = 0; i < illuminationMasks.Length; i++)
             {
@@ -85,7 +93,7 @@ namespace GT2.TextureEditor
             }
         }
 
-        public void WritePaintMasksToEditableFiles(string directory)
+        private void WritePaintMasksToEditableFiles(string directory)
         {
             for (int i = 0; i < paintMasks.Length; i++)
             {
@@ -99,9 +107,41 @@ namespace GT2.TextureEditor
             }
         }
 
+        private void WriteAlphaBitsToEditableFile(string directory)
+        {
+            if (coloursWithAlpha.Count > 0)
+            {
+                using (var file = new StreamWriter(Path.Combine(directory, $"SetAlphaBits.txt")))
+                {
+                    foreach ((byte, byte) colour in coloursWithAlpha)
+                    {
+                        file.WriteLine($"{colour.Item1:D2},{colour.Item2:D2}");
+                    }
+                }
+            }
+        }
+
         public void LoadFromEditableFiles(string directory)
         {
             colourID = byte.Parse(Path.GetFileName(directory).Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+
+            string alphaBitsPath = Path.Combine(directory, "SetAlphaBits.txt");
+            if (File.Exists(alphaBitsPath))
+            {
+                using (var file = new StreamReader(alphaBitsPath))
+                {
+                    for (byte i = 0; i <= 255; i++)
+                    {
+                        string alphaBit = file.ReadLine();
+                        if (alphaBit == null)
+                        {
+                            break;
+                        }
+                        string[] bits = alphaBit.Split(',');
+                        coloursWithAlpha.Add((byte.Parse(bits[0]), byte.Parse(bits[1])));
+                    }
+                }
+            }
 
             foreach (string palettePath in Directory.EnumerateFiles(directory, "ColourPalette??.pal"))
             {
@@ -167,9 +207,12 @@ namespace GT2.TextureEditor
             file.Position = layout.ColourCountIndex + 2 + colourNumber;
             file.WriteByte(colourID);
             file.Position = layout.PaletteStartIndex + (layout.PaletteSize * colourNumber);
+            int i = 0;
             foreach (Palette palette in palettes)
             {
-                palette.WriteToGameFile(file);
+                List<byte> paletteColoursWithAlpha = coloursWithAlpha.Where(colour => colour.Item1 == i).Select(colour => colour.Item2).ToList();
+                palette.WriteToGameFile(file, paletteColoursWithAlpha);
+                i++;
             }
 
             if (layout.SingleInstanceOfFlagsStartIndex != 0)

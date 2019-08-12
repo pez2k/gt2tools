@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -9,6 +10,7 @@ namespace GT2.TextureEditor
     class Palette
     {
         private const byte ColourCount = 16;
+        private const ushort AlphaBit = 0x8000;
 
         private readonly ushort[] colours = new ushort[ColourCount];
 
@@ -27,12 +29,18 @@ namespace GT2.TextureEditor
             }
         }
 
-        public void LoadFromGameFile(Stream file)
+        public List<byte> LoadFromGameFile(Stream file)
         {
-            for (int i = 0; i < ColourCount; i++)
+            var coloursWithAlpha = new List<byte>();
+            for (byte i = 0; i < ColourCount; i++)
             {
                 colours[i] = file.ReadUShort();
+                if (colours[i] != 0xFFFF && (colours[i] & AlphaBit) != 0)
+                {
+                    coloursWithAlpha.Add(i);
+                }
             }
+            return coloursWithAlpha;
         }
 
         public void WriteToBitmapPalette(ColorPalette palette)
@@ -102,11 +110,13 @@ namespace GT2.TextureEditor
             }
         }
 
-        public void WriteToGameFile(Stream file)
+        public void WriteToGameFile(Stream file, List<byte> coloursWithAlpha)
         {
+            byte i = 0;
             foreach (ushort colour in colours)
             {
-                file.WriteUShort(colour);
+                file.WriteUShort(coloursWithAlpha.Contains(i) ? (ushort)(colour | AlphaBit) : colour);
+                i++;
             }
         }
     }
