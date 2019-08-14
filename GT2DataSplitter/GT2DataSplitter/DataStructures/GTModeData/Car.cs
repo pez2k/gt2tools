@@ -16,7 +16,7 @@ namespace GT2.DataSplitter
         public override void Read(FileStream infile)
         {
             base.Read(infile);
-            CarNameStringTable.Add(Data.CarId, StringTable.Get(Data.NameFirstPart), StringTable.Get(Data.NameSecondPart), Data.Year);
+            //CarNameStringTable.Add(Data.CarId, StringTable.Get(Data.NameFirstPart), StringTable.Get(Data.NameSecondPart), Data.Year);
         }
 
         public override void Import(string filename)

@@ -68,18 +68,18 @@ namespace GT2.DataSplitter
 
         static void SplitFile()
         {
-            StringTable.Read($"{LanguagePrefix}_unistrdb.dat");
+            //StringTable.Read($"{LanguagePrefix}_unistrdb.dat");
 
             GTModeData CarData = new GTModeData();
-            CarData.ReadData($"{LanguagePrefix}_gtmode_data.dat");
+            CarData.ReadData("gtmode_data.dat");
             CarData.DumpData();
 
-            GTModeRace RaceData = new GTModeRace();
-            RaceData.ReadData($"{LanguagePrefix}_gtmode_race.dat");
-            RaceData.DumpData();
+            //GTModeRace RaceData = new GTModeRace();
+            //RaceData.ReadData($"{LanguagePrefix}_gtmode_race.dat");
+            //RaceData.DumpData();
 
-            StringTable.Export();
-            CarNameStringTable.Export();
+            //StringTable.Export();
+            //CarNameStringTable.Export();
         }
 
         static void BuildFile()
