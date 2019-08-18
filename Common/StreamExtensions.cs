@@ -28,12 +28,22 @@ namespace StreamExtensions
 
         public static uint ReadUInt(this byte[] array) => BitConverter.ToUInt32(array, 0);
 
-        public static void WriteUInt(this Stream stream, uint value)
-        {
-            stream.Write(value.ToByteArray(), 0, sizeof(uint));
-        }
+        public static void WriteUInt(this Stream stream, uint value) => stream.Write(value.ToByteArray(), 0, sizeof(uint));
 
         public static byte[] ToByteArray(this uint value) => BitConverter.GetBytes(value);
+
+        public static int ReadInt(this Stream stream)
+        {
+            byte[] rawValue = new byte[sizeof(int)];
+            stream.Read(rawValue);
+            return rawValue.ReadInt();
+        }
+
+        public static int ReadInt(this byte[] array) => BitConverter.ToInt32(array, 0);
+
+        public static void WriteInt(this Stream stream, int value) => stream.Write(value.ToByteArray(), 0, sizeof(int));
+
+        public static byte[] ToByteArray(this int value) => BitConverter.GetBytes(value);
 
         public static short ReadShort(this Stream stream)
         {
