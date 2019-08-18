@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29201.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyphonyPS2Zip", "PolyphonyPS2Zip\PolyphonyPS2Zip.csproj", "{37DFCCEF-1E79-48EA-BD64-3ED4FA168151}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Common", "..\Common\Common.shproj", "{643A1287-D41C-4A10-8740-FC8DEDB2848E}"
+EndProject
+Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\Common\Common.projitems*{37dfccef-1e79-48ea-bd64-3ed4fa168151}*SharedItemsImports = 4
+		..\Common\Common.projitems*{643a1287-d41c-4a10-8740-fc8dedb2848e}*SharedItemsImports = 13
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{37DFCCEF-1E79-48EA-BD64-3ED4FA168151}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37DFCCEF-1E79-48EA-BD64-3ED4FA168151}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37DFCCEF-1E79-48EA-BD64-3ED4FA168151}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37DFCCEF-1E79-48EA-BD64-3ED4FA168151}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CFFEA2F0-88BD-404A-A0F7-624822D8A2DD}
+	EndGlobalSection
+EndGlobal
