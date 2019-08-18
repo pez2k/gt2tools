@@ -74,7 +74,7 @@ namespace GT3.VOLExtractor
                 {
                     entry = new DirectoryEntry { ParentDirectory = this };
                 }
-                else if (Path.GetExtension(childPath) == ".gz")
+                else if (ArchiveEntry.FileExtensions.Contains(Path.GetExtension(childPath)))
                 {
                     entry = new ArchiveEntry();
                 }

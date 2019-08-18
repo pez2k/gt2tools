@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using StreamExtensions;
 
 namespace GT3.VOLExtractor
@@ -7,6 +8,10 @@ namespace GT3.VOLExtractor
     public class ArchiveEntry : FileEntry
     {
         public const uint Flag = 0x02000000;
+        private const string GZipExtension = ".gz";
+        private const string PS2ZipExtension = ".ps2zip";
+        private const string UnknownCompressionExtension = ".compressed";
+        public static string[] FileExtensions = { GZipExtension, PS2ZipExtension, UnknownCompressionExtension };
 
         public uint UncompressedSize { get; set; }
 
@@ -23,14 +28,41 @@ namespace GT3.VOLExtractor
 
         public override void Extract(string path, Stream stream)
         {
-            Name += ".gz";
+            var magic = new byte[4];
+            stream.Position = Location * 0x800;
+            stream.Read(magic);
+            Name += GetExtension(magic);
             base.Extract(path, stream);
+        }
+
+        private string GetExtension(byte[] magic)
+        {
+            if (magic[0] == 0x1F && magic[1] == 0x8B)
+            {
+                return GZipExtension;
+            }
+            else if (magic.SequenceEqual(new byte[] { 0xC5, 0xEE, 0xF7, 0xFF }))
+            {
+                return PS2ZipExtension;
+            }
+            return UnknownCompressionExtension;
         }
 
         public override void Import(string path)
         {
             base.Import(path);
-            Name = Name.Replace(".gz", "");
+            if (Name.EndsWith(GZipExtension))
+            {
+                Name.Substring(0, Name.Length - GZipExtension.Length);
+            }
+            else if (Name.EndsWith(PS2ZipExtension))
+            {
+                Name.Substring(0, Name.Length - PS2ZipExtension.Length);
+            }
+            else if (Name.EndsWith(UnknownCompressionExtension))
+            {
+                Name.Substring(0, Name.Length - UnknownCompressionExtension.Length);
+            }
         }
 
         public override void AllocateHeaderSpace(Stream stream)
