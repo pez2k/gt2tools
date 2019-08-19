@@ -7,6 +7,9 @@ namespace PolyphonyPS2Zip
 {
     class Program
     {
+        private const string Extension = ".ps2zip";
+        private const uint Magic = 0xFFF7EEC5;
+
         static void Main(string[] args)
         {
             if (args.Length != 1)
@@ -15,30 +18,59 @@ namespace PolyphonyPS2Zip
                 return;
             }
 
-            Extract(args[0]);
+            CheckFile(args[0]);
         }
 
-        static void Extract(string filename)
+        static void CheckFile(string filePath)
         {
-            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            using (var file = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                if (file.ReadUInt() != 0xFFF7EEC5)
+                string filename = Path.GetFileName(filePath);
+                if (file.ReadUInt() == Magic)
                 {
-                    Console.WriteLine("Not a valid PS2Zip file.");
-                    return;
+                    Extract(file, filePath);
                 }
-                int uncompressedSize = -file.ReadInt();
-
-                using (var output = new FileStream($"decompressed_{Path.GetFileName(filename)}", FileMode.Create, FileAccess.Write))
+                else
                 {
-                    using (var decompression = new DeflateStream(file, CompressionMode.Decompress))
+                    if (Path.GetExtension(filePath) == Extension)
                     {
-                        decompression.CopyTo(output);
+                        Console.WriteLine("Not a valid PS2Zip file.");
+                        return;
                     }
-                    if (output.Position != uncompressedSize)
-                    {
-                        Console.WriteLine($"Warning: file size {output.Position} does not match expected size of {uncompressedSize}.");
-                    }
+                    file.Position = 0;
+                    Compress(file, filePath);
+                }
+            }
+        }
+
+        static void Extract(Stream file, string filePath)
+        {
+            int uncompressedSize = -file.ReadInt();
+
+            string outputFile = Path.GetExtension(filePath) == Extension ? filePath.Substring(0, filePath.Length - Extension.Length) : filePath + "_decompressed";
+            using (var output = new FileStream(outputFile, FileMode.Create, FileAccess.Write))
+            {
+                using (var decompression = new DeflateStream(file, CompressionMode.Decompress))
+                {
+                    decompression.CopyTo(output);
+                }
+                if (output.Position != uncompressedSize)
+                {
+                    Console.WriteLine($"Warning: file size {output.Position} does not match expected size of {uncompressedSize}.");
+                }
+            }
+        }
+
+        static void Compress(Stream file, string filePath)
+        {
+            using (var output = new FileStream(filePath + Extension, FileMode.Create, FileAccess.Write))
+            {
+                output.WriteUInt(Magic);
+                output.WriteInt(-(int)file.Length);
+
+                using (var compression = new DeflateStream(output, CompressionLevel.Optimal))
+                {
+                    file.CopyTo(compression);
                 }
             }
         }
