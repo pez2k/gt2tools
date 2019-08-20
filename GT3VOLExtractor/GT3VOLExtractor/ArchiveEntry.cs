@@ -53,15 +53,15 @@ namespace GT3.VOLExtractor
             base.Import(path);
             if (Name.EndsWith(GZipExtension))
             {
-                Name.Substring(0, Name.Length - GZipExtension.Length);
+                Name = Name.Substring(0, Name.Length - GZipExtension.Length);
             }
             else if (Name.EndsWith(PS2ZipExtension))
             {
-                Name.Substring(0, Name.Length - PS2ZipExtension.Length);
+                Name = Name.Substring(0, Name.Length - PS2ZipExtension.Length);
             }
             else if (Name.EndsWith(UnknownCompressionExtension))
             {
-                Name.Substring(0, Name.Length - UnknownCompressionExtension.Length);
+                Name = Name.Substring(0, Name.Length - UnknownCompressionExtension.Length);
             }
         }
 
