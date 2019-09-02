@@ -139,6 +139,10 @@ namespace GT2.CarInfoEditor
             name = name.Replace("[R]", ((char)0x7F).ToString()) + "\0";
             stream.WriteByte((byte)(name.Length - 1));
             stream.Write(name.ToByteArray());
+            if (stream.Length % 2 != 0)
+            {
+                stream.WriteByte(0);
+            }
         }
 
         public void WriteColoursToFiles(FileSet files, List<long> carInfoIndexes, int carNumber)
