@@ -84,7 +84,17 @@ namespace GT2.CarInfoEditorCSV
         {
             CarList list = new CarList { Cars = new List<Car>() };
             ReadCars(list, "Cars.csv");
+            foreach (string csvPath in Directory.EnumerateFiles(".\\", "Cars_*.csv"))
+            {
+                ReadCars(list, csvPath);
+            }
+
             ReadColours(list, "Colours.csv");
+            foreach (string csvPath in Directory.EnumerateFiles(".\\", "Colours_*.csv"))
+            {
+                ReadColours(list, csvPath);
+            }
+
             list.SaveToFiles();
         }
 
