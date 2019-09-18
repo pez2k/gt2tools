@@ -83,44 +83,60 @@ namespace GT2.CarInfoEditorCSV
         static void Load()
         {
             CarList list = new CarList { Cars = new List<Car>() };
+            ReadCars(list, "Cars.csv");
+            ReadColours(list, "Colours.csv");
+            list.SaveToFiles();
+        }
 
-            using (TextReader input = new StreamReader("Cars.csv", Encoding.UTF8))
+        static void ReadCars(CarList list, string csvPath)
+        {
+            using (TextReader input = new StreamReader(csvPath, Encoding.UTF8))
             {
                 using (CsvReader csv = new CsvReader(input))
                 {
-                    using (TextReader colourInput = new StreamReader("Colours.csv", Encoding.UTF8))
+                    csv.Configuration.RegisterClassMap<CarCSVMap>();
+
+                    while (csv.Read())
                     {
-                        using (CsvReader colourCsv = new CsvReader(colourInput))
+                        Car newCar = csv.GetRecord<Car>();
+                        newCar.Colours = new List<CarColour>();
+                        list.Cars.Remove(list.Cars.Where(car => car.CarName == newCar.CarName).SingleOrDefault());
+                        list.Cars.Add(newCar);
+                    }
+                    list.Cars = list.Cars.OrderBy(car => car.CarName.ToCarID()).ToList();
+                }
+            }
+        }
+
+        static void ReadColours(CarList list, string csvPath)
+        {
+            using (TextReader colourInput = new StreamReader(csvPath, Encoding.UTF8))
+            {
+                using (CsvReader colourCsv = new CsvReader(colourInput))
+                {
+                    colourCsv.Configuration.RegisterClassMap<CarColourCSVMap>();
+
+                    while (colourCsv.Read())
+                    {
+                        CarColourWithName newColourWithName = colourCsv.GetRecord<CarColourWithName>();
+                        CarColour newColour = new CarColour
                         {
-                            csv.Configuration.RegisterClassMap<CarCSVMap>();
-                            colourCsv.Configuration.RegisterClassMap<CarColourCSVMap>();
-                            
-                            while (csv.Read())
-                            {
-                                Car newCar = csv.GetRecord<Car>();
-                                newCar.Colours = new List<CarColour>();
-                                list.Cars.Add(newCar);
-                            }
-                            list.Cars = list.Cars.OrderBy(car => car.CarName.ToCarID()).ToList();
-                            
-                            while (colourCsv.Read())
-                            {
-                                CarColourWithName newColourWithName = colourCsv.GetRecord<CarColourWithName>();
-                                CarColour newColour = new CarColour
-                                {
-                                    ThumbnailColour = newColourWithName.ThumbnailColour,
-                                    PaletteID = newColourWithName.PaletteID,
-                                    JapaneseName = newColourWithName.JapaneseName,
-                                    LatinName = newColourWithName.LatinName
-                                };
-                                list.Cars.Find(car => car.CarName == newColourWithName.CarName).Colours.Add(newColour);
-                            }
-                        }
+                            ThumbnailColour = newColourWithName.ThumbnailColour,
+                            PaletteID = newColourWithName.PaletteID,
+                            JapaneseName = newColourWithName.JapaneseName,
+                            LatinName = newColourWithName.LatinName
+                        };
+                        Car existingCar = list.Cars.Find(car => car.CarName == newColourWithName.CarName);
+                        existingCar.Colours.Remove(existingCar.Colours.Where(colour => colour.PaletteID == newColour.PaletteID).SingleOrDefault());
+                        existingCar.Colours.Add(newColour);
+                    }
+
+                    foreach (Car car in list.Cars)
+                    {
+                        car.Colours = car.Colours.OrderBy(colour => colour.PaletteID).ToList();
                     }
                 }
             }
-            
-            list.SaveToFiles();
         }
     }
 
