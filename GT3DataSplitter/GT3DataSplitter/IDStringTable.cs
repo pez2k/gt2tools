@@ -56,7 +56,7 @@ namespace GT3.DataSplitter
         public ulong Add(string name)
         {
             ulong hash = HashGenerator.GenerateHash(name);
-            if (!ids.ContainsValue(name))
+            if (!string.IsNullOrEmpty(name) && !ids.ContainsValue(name))
             {
                 ids.Add(hash, name);
             }

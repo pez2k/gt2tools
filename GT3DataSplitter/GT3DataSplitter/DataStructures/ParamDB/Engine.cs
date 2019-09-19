@@ -12,11 +12,11 @@ namespace GT3.DataSplitter
     {
         public ulong Part;
         public ulong Car;
-        public ushort LayoutName; // V6 etc, index into unistringdb, 0x4
-        public ushort ValvetrainName; // DOHC etc, index into unistringdb, 0x6
-        public ushort Aspiration; // 
-        public ushort SoundFile; // 
-        public ushort TorqueCurve1; // 0xc - all these take part in garage HP calculation
+        public ushort LayoutName;
+        public ushort ValvetrainName;
+        public ushort Aspiration;
+        public ushort SoundFile;
+        public ushort TorqueCurve1;
         public ushort TorqueCurve2;
         public ushort TorqueCurve3;
         public ushort TorqueCurve4;
@@ -32,17 +32,17 @@ namespace GT3.DataSplitter
         public ushort TorqueCurve14;
         public ushort TorqueCurve15;
         public ushort TorqueCurve16;
-        public ushort Displacement; // 0x2c - not quite for those that have numberx2 displacements
-        public ushort DisplayedPower; // 0x2e - base ps. F. Ex. is 295hp for most of the rally cars, not 400+
-        public ushort MaxPowerRPM; // 0x30 - multipled by 10 by the game. E.g. a value of 850 is displayed as 8500
-        public ushort DisplayedTorque; // 0x32 - divided by 10 by the game. e.g. a value of 950 is displayed as 95.0
-        public ushort MaxTorqueRPM; // 0x34 - index into unistringdb!
-        public byte PowerMultiplier; // 0x36 - used in hp calculation
+        public ushort Displacement;
+        public ushort DisplayedPower;
+        public ushort MaxPowerRPM;
+        public ushort DisplayedTorque;
+        public ushort MaxTorqueRPM;
+        public byte PowerMultiplier;
         public byte ClutchReleaseRPM;
         public byte IdleRPM;
         public byte MaxRPM;
         public byte RedlineRPM;
-        public byte TorqueCurveRPM1; // 0x3b - rpms that the bandAcceleration values are for
+        public byte TorqueCurveRPM1;
         public byte TorqueCurveRPM2;
         public byte TorqueCurveRPM3;
         public byte TorqueCurveRPM4;
@@ -58,7 +58,7 @@ namespace GT3.DataSplitter
         public byte TorqueCurveRPM14;
         public byte TorqueCurveRPM15;
         public byte TorqueCurveRPM16;
-        public byte TorqueCurvePoints; // the number of values in both arrays that are used in hp calculations
+        public byte TorqueCurvePoints;
     }
 
     public sealed class EngineCSVMap : ClassMap<EngineData>

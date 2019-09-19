@@ -16,7 +16,7 @@ namespace GT3.DataSplitter
     {
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData) => Program.IDStrings.Add(text);
 
-        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData) => Program.IDStrings.Get((ulong)value);
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData) => Program.IDStrings.Get((ulong)value) ?? "";
     }
 
     public class IdArrayConverter : ITypeConverter
