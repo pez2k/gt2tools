@@ -34,8 +34,8 @@ namespace GT3.GameConfigEditor
                             csv.Configuration.QuoteAllFields = true;
                             csv.WriteField("Unknown");
                             csv.WriteField("UnlockLevel");
+                            csv.WriteField("OpponentGroup");
                             csv.WriteField("Unknown2");
-                            csv.WriteField("Unknown3");
                             csv.WriteField("Name");
                             csv.NextRecord();
 
