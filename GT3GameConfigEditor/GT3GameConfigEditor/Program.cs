@@ -174,6 +174,10 @@ namespace GT3.GameConfigEditor
                     {
                         Events.Import(output, filename);
                     }
+                    else if (listType == ListType.Courses)
+                    {
+                        Courses.Import(output, filename);
+                    }
                     else
                     {
                         using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
