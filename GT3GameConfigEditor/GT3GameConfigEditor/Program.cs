@@ -160,10 +160,6 @@ namespace GT3.GameConfigEditor
                     if (!Enum.TryParse(listName, out ListType listType)) {
                         continue;
                     }
-                    if (Path.GetExtension(filename) == ".csv" && listType != ListType.Demos)
-                    {
-                        continue;
-                    }
 
                     output.WriteUInt((uint)listType);
                     output.WriteUInt((uint)dataStart);
@@ -173,6 +169,10 @@ namespace GT3.GameConfigEditor
                     if (listType == ListType.Demos)
                     {
                         Demos.Import(output, filename);
+                    }
+                    else if (listType == ListType.Events)
+                    {
+                        Events.Import(output, filename);
                     }
                     else
                     {
