@@ -194,6 +194,9 @@ namespace GT3.GameConfigEditor
                         case ListType.CarClasses:
                             CarClasses.Import(output, filenames);
                             break;
+                        case ListType.CourseSelection:
+                            CourseSelection.Import(output, filenames);
+                            break;
                         default:
                             using (var file = new FileStream(filenames[0], FileMode.Open, FileAccess.Read))
                             {
