@@ -183,6 +183,9 @@ namespace GT3.GameConfigEditor
                         case ListType.Replays:
                             Replays.Import(output, filename);
                             break;
+                        case ListType.Prizes:
+                            Prizes.Import(output, filename);
+                            break;
                         default:
                             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
                             {
