@@ -166,28 +166,29 @@ namespace GT3.GameConfigEditor
                     headerPos = output.Position;
                     output.Position = dataStart;
 
-                    if (listType == ListType.Demos)
+                    switch (listType)
                     {
-                        Demos.Import(output, filename);
-                    }
-                    else if (listType == ListType.Events)
-                    {
-                        Events.Import(output, filename);
-                    }
-                    else if (listType == ListType.Courses)
-                    {
-                        Courses.Import(output, filename);
-                    }
-                    else if (listType == ListType.GTAutoPrices)
-                    {
-                        GTAutoPrices.Import(output, filename);
-                    }
-                    else
-                    {
-                        using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                        {
-                            file.CopyTo(output);
-                        }
+                        case ListType.Demos:
+                            Demos.Import(output, filename);
+                            break;
+                        case ListType.Events:
+                            Events.Import(output, filename);
+                            break;
+                        case ListType.Courses:
+                            Courses.Import(output, filename);
+                            break;
+                        case ListType.GTAutoPrices:
+                            GTAutoPrices.Import(output, filename);
+                            break;
+                        case ListType.Replays:
+                            Replays.Import(output, filename);
+                            break;
+                        default:
+                            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                            {
+                                file.CopyTo(output);
+                            }
+                            break;
                     }
 
                     dataStart = output.Position;
