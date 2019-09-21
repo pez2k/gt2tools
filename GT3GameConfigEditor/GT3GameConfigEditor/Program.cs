@@ -144,7 +144,7 @@ namespace GT3.GameConfigEditor
 
         static void Build(string directory)
         {
-            using (var output = new FileStream($"{directory}_new.gcf", FileMode.Create, FileAccess.Write))
+            using (var output = new FileStream($"{directory}.gcf", FileMode.Create, FileAccess.Write))
             {
                 List<string> files = Directory.EnumerateFiles(directory).ToList();
                 List<string> fileNumbers = files.Select(file => Path.GetFileNameWithoutExtension(file).Substring(0, 2)).Distinct().ToList();
