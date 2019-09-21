@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -89,11 +88,6 @@ namespace GT3.GameConfigEditor
             {
                 using (var csv = new CsvReader(csvFile))
                 {
-                    long startOfChunk = output.Position;
-
-                    output.WriteUInt(0);
-                    output.WriteUInt(8);
-
                     csv.Configuration.RegisterClassMap<DemoCSVMap>();
 
                     var rows = new List<DemoData>();
@@ -102,8 +96,12 @@ namespace GT3.GameConfigEditor
                         rows.Add(csv.GetRecord<DemoData>());
                     }
 
+                    long startOfChunk = output.Position;
+                    output.WriteUInt((uint)rows.Count);
+                    output.WriteUInt(8);
+
                     long headerPosition = output.Position;
-                    uint startOfData = (uint)((rows.Count() * 4) + 8);
+                    uint startOfData = (uint)((rows.Count * 4) + 8);
 
                     foreach (DemoData row in rows)
                     {
@@ -132,9 +130,6 @@ namespace GT3.GameConfigEditor
                         headerPosition += 4;
                         startOfData = (uint)(output.Length - startOfChunk);
                     }
-
-                    output.Position = startOfChunk;
-                    output.WriteUInt((uint)rows.Count());
                     output.Position = output.Length;
                 }
             }
