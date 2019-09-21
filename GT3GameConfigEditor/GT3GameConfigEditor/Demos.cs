@@ -1,12 +1,38 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
 using CsvHelper;
+using CsvHelper.Configuration;
 using StreamExtensions;
 
 namespace GT3.GameConfigEditor
 {
     static class Demos
     {
+        private struct DemoData
+        {
+            public uint Unknown;
+            public uint Unknown2;
+            public uint Unknown3;
+            public uint Unknown4;
+            public string Filename;
+            public string Course;
+        }
+
+        private sealed class DemoCSVMap : ClassMap<DemoData>
+        {
+            public DemoCSVMap()
+            {
+                Map(m => m.Unknown);
+                Map(m => m.Unknown2);
+                Map(m => m.Unknown3);
+                Map(m => m.Unknown4);
+                Map(m => m.Filename);
+                Map(m => m.Course);
+            }
+        }
+
         public static void Dump(Stream file, string directory, int fileNumber)
         {
             uint structureCount = file.ReadUInt();
@@ -18,10 +44,10 @@ namespace GT3.GameConfigEditor
                     using (var csv = new CsvWriter(output))
                     {
                         csv.Configuration.QuoteAllFields = true;
-                        csv.WriteField("Unknown");
-                        csv.WriteField("Unknown2");
-                        csv.WriteField("Unknown3");
-                        csv.WriteField("Unknown4");
+                        csv.WriteField("Unknown"); // start of course string
+                        csv.WriteField("Unknown2"); // start of 4b gap after struct
+                        csv.WriteField("Unknown3"); // always 0
+                        csv.WriteField("Unknown4"); // IsLocked
                         csv.WriteField("Filename");
                         csv.WriteField("Course");
                         csv.NextRecord();
@@ -46,7 +72,7 @@ namespace GT3.GameConfigEditor
 
                             file.Position = structurePos;
                             
-                            file.ReadUInt(); // always 0x20
+                            file.ReadUInt(); // always 0x14
                             csv.WriteField(file.ReadUInt());
                             csv.WriteField(file.ReadUInt());
                             csv.WriteField(file.ReadUInt());
@@ -61,6 +87,57 @@ namespace GT3.GameConfigEditor
                             csv.NextRecord();
                         }
                     }
+                }
+            }
+        }
+
+        public static void Import(Stream output, string filePath)
+        {
+            using (var csvFile = new StreamReader(filePath, Encoding.UTF8))
+            {
+                using (var csv = new CsvReader(csvFile))
+                {
+                    long startOfChunk = output.Position;
+
+                    output.WriteUInt(0);
+                    output.WriteUInt(8);
+
+                    csv.Configuration.RegisterClassMap<DemoCSVMap>();
+
+                    var rows = new List<DemoData>();
+                    while (csv.Read())
+                    {
+                        rows.Add(csv.GetRecord<DemoData>());
+                    }
+
+                    long headerPosition = output.Position;
+                    uint startOfData = (uint)((rows.Count() * 4) + 8);
+
+                    foreach (DemoData row in rows)
+                    {
+                        output.Position = headerPosition;
+                        output.WriteUInt(startOfData);
+                        output.Position = startOfChunk + startOfData;
+                        output.WriteUInt(0x14);
+                        output.WriteUInt(row.Unknown);
+                        output.WriteUInt(row.Unknown2);
+                        output.WriteUInt(row.Unknown3);
+                        output.WriteUInt(row.Unknown4);
+                        output.WriteCharacters(row.Filename);
+                        long gap = output.Position % 4;
+                        output.Position += 4 - gap;
+                        output.WriteCharacters(row.Course);
+                        gap = output.Position % 4;
+                        output.Position += 4 - gap;
+                        output.WriteUInt(0);
+
+                        headerPosition += 4;
+                        startOfData = (uint)(output.Position - startOfChunk);
+                    }
+
+                    output.Position = startOfChunk;
+                    output.WriteUInt((uint)rows.Count());
+                    output.Position = output.Length;
                 }
             }
         }

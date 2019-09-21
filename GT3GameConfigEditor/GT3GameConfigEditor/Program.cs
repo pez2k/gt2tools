@@ -144,7 +144,7 @@ namespace GT3.GameConfigEditor
 
         static void Build(string directory)
         {
-            using (var output = new FileStream($"{directory}.gcf", FileMode.Create, FileAccess.Write))
+            using (var output = new FileStream($"{directory}_new.gcf", FileMode.Create, FileAccess.Write))
             {
                 List<string> files = Directory.EnumerateFiles(directory).ToList();
 
@@ -157,15 +157,29 @@ namespace GT3.GameConfigEditor
                 foreach (string filename in files)
                 {
                     string listName = Path.GetFileNameWithoutExtension(filename).Substring(2);
-                    ListType listType = (ListType)Enum.Parse(typeof(ListType), listName);
+                    if (!Enum.TryParse(listName, out ListType listType)) {
+                        continue;
+                    }
+                    if (Path.GetExtension(filename) == ".csv" && listType != ListType.Demos)
+                    {
+                        continue;
+                    }
+
                     output.WriteUInt((uint)listType);
                     output.WriteUInt((uint)dataStart);
                     headerPos = output.Position;
                     output.Position = dataStart;
 
-                    using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                    if (listType == ListType.Demos)
                     {
-                        file.CopyTo(output);
+                        Demos.Import(output, filename);
+                    }
+                    else
+                    {
+                        using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                        {
+                            file.CopyTo(output);
+                        }
                     }
 
                     dataStart = output.Position;
