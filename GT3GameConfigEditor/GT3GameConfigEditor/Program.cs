@@ -147,17 +147,22 @@ namespace GT3.GameConfigEditor
             using (var output = new FileStream($"{directory}_new.gcf", FileMode.Create, FileAccess.Write))
             {
                 List<string> files = Directory.EnumerateFiles(directory).ToList();
+                List<string> fileNumbers = files.Select(file => Path.GetFileNameWithoutExtension(file).Substring(0, 2)).Distinct().ToList();
 
-                output.WriteUInt((uint)files.Count);
+                output.WriteUInt((uint)fileNumbers.Count);
                 output.WriteUInt(8);
 
-                long dataStart = output.Position + (files.Count * 8);
+                long dataStart = output.Position + (fileNumbers.Count * 8);
                 long headerPos = 0;
 
-                foreach (string filename in files)
+                foreach (string fileNumber in fileNumbers)
                 {
-                    string listName = Path.GetFileNameWithoutExtension(filename).Substring(2);
-                    if (!Enum.TryParse(listName, out ListType listType)) {
+                    List<string> filenames = files.Where(file => Path.GetFileNameWithoutExtension(file).StartsWith(fileNumber)).ToList();
+
+                    string listName = Path.GetFileNameWithoutExtension(filenames[0]);
+                    int secondUnderscore = listName.IndexOf('_', 2);
+                    secondUnderscore = secondUnderscore < 1 ? listName.Length : secondUnderscore;
+                    if (!Enum.TryParse(listName.Substring(2, secondUnderscore - 2), out ListType listType)) {
                         continue;
                     }
 
@@ -169,25 +174,28 @@ namespace GT3.GameConfigEditor
                     switch (listType)
                     {
                         case ListType.Demos:
-                            Demos.Import(output, filename);
+                            Demos.Import(output, filenames[0]);
                             break;
                         case ListType.Events:
-                            Events.Import(output, filename);
+                            Events.Import(output, filenames[0]);
                             break;
                         case ListType.Courses:
-                            Courses.Import(output, filename);
+                            Courses.Import(output, filenames[0]);
                             break;
                         case ListType.GTAutoPrices:
-                            GTAutoPrices.Import(output, filename);
+                            GTAutoPrices.Import(output, filenames[0]);
                             break;
                         case ListType.Replays:
-                            Replays.Import(output, filename);
+                            Replays.Import(output, filenames[0]);
                             break;
                         case ListType.Prizes:
-                            Prizes.Import(output, filename);
+                            Prizes.Import(output, filenames[0]);
+                            break;
+                        case ListType.CarClasses:
+                            CarClasses.Import(output, filenames);
                             break;
                         default:
-                            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                            using (var file = new FileStream(filenames[0], FileMode.Open, FileAccess.Read))
                             {
                                 file.CopyTo(output);
                             }
