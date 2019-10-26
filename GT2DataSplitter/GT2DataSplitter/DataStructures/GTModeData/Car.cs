@@ -59,8 +59,8 @@ namespace GT2.DataSplitter
         public ushort Exhaust; // 2e
         public ushort TyresFront; // 30
         public ushort TyresRear; // 32
-        public ushort ASMLevel; // 34
-        public ushort TCSLevel; // 36
+        public ushort ActiveStabilityControl; // 34
+        public ushort TractionControlSystem; // 36
         public ushort RimsCode3; // 38
         public ushort ManufacturerID; // 0x3a
         public ushort NameFirstPart; // 0x3c
@@ -100,14 +100,11 @@ namespace GT2.DataSplitter
             Map(m => m.Exhaust).PartFilename("Exhaust");
             Map(m => m.TyresFront).PartFilename("TyresFront");
             Map(m => m.TyresRear).PartFilename("TyresRear");
-            Map(m => m.ASMLevel);
-            Map(m => m.TCSLevel);
+            Map(m => m.ActiveStabilityControl);
+            Map(m => m.TractionControlSystem);
             Map(m => m.RimsCode3);
             Map(m => m.ManufacturerID);
-            //Map(m => m.NameFirstPart).TypeConverter(StringTable.Lookup);
-            //Map(m => m.NameSecondPart).TypeConverter(StringTable.Lookup);
             Map(m => m.IsSpecial);
-            //Map(m => m.Year);
             Map(m => m.Unknown);
             Map(m => m.Price);
         }
