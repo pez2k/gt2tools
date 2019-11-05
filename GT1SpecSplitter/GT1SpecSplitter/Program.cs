@@ -92,6 +92,12 @@ namespace GT1.SpecSplitter
 
         private static void ExportData(List<byte[]> structs, List<List<string>> stringTables, string fileType, string directory)
         {
+            if (fileType == "COLOR")
+            {
+                DumpColourData(structs, stringTables, directory);
+                return;
+            }
+
             DumpStructs(structs, directory, fileType);
             DumpStringTables(stringTables, directory);
         }
@@ -131,6 +137,36 @@ namespace GT1.SpecSplitter
                     }
                     output.Flush();
                 }
+            }
+        }
+
+        private static void DumpColourData(List<byte[]> structs, List<List<string>> stringTables, string directory)
+        {
+            using (var output = File.CreateText($"{directory}\\Colours.csv"))
+            {
+                output.WriteLine($"\"CarID\",\"ColourID\",\"ColourName\"");
+
+                foreach (byte[] structure in structs)
+                {
+                    using (var stream = new MemoryStream(structure))
+                    {
+                        ushort carID = stream.ReadUShort();
+                        for (int i = 0; i < 16; i++)
+                        {
+                            stream.Position = i + 2;
+                            byte colourID = stream.ReadSingleByte();
+                            stream.Position = (i * 4) + 20;
+                            ushort stringNumber = stream.ReadUShort();
+                            ushort tableNumber = stream.ReadUShort();
+                            string colourName = stringTables[tableNumber][stringNumber];
+                            if (colourID > 0)
+                            {
+                                output.WriteLine($"\"{carID}\",\"{colourID:X2}\",\"{colourName}\"");
+                            }
+                        }
+                    }
+                }
+                output.Flush();
             }
         }
     }
