@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using StreamExtensions;
@@ -30,25 +31,76 @@ namespace GT1.SpecSplitter
                 file.Position = 0x0C;
                 
                 file.ReadUShort(); // always 0x10?
-                DumpMainStruct(file, fileType, directory);
+                List<byte[]> structs = ReadMainStructs(file);
+                List<List<string>> stringTables = null;
                 if (file.Position < file.Length)
                 {
-                    DumpStringTables(file, directory);
+                    stringTables = ReadStringTables(file);
                 }
+                ExportData(structs, stringTables, fileType, directory);
             }
         }
 
-        private static void DumpMainStruct(Stream file, string fileType, string directory)
+        private static List<byte[]> ReadMainStructs(Stream file)
         {
             ushort structCount = file.ReadUShort();
             file.ReadUInt(); // always zero?
             uint structSize = file.ReadUInt();
 
+            var structs = new List<byte[]>(structCount);
             for (ushort i = 0; i < structCount; i++)
             {
                 var buffer = new byte[structSize];
                 file.Read(buffer);
+                structs.Add(buffer);
+            }
+            return structs;
+        }
 
+        private static List<List<string>> ReadStringTables(Stream file)
+        {
+            uint tableCount = file.ReadUInt();
+            file.Position += tableCount * 4;
+            var strings = new List<List<string>>((int)tableCount);
+
+            for (uint i = 0; i < tableCount; i++)
+            {
+                strings.Add(ReadStrings(file));
+            }
+            return strings;
+        }
+
+        private static List<string> ReadStrings(Stream file)
+        {
+            ushort stringCount = file.ReadUShort();
+            var strings = new List<string>(stringCount);
+            for (ushort i = 0; i < stringCount; i++)
+            {
+                byte stringLength = file.ReadSingleByte();
+                var buffer = new byte[stringLength];
+                file.Read(buffer);
+                string textString = Encoding.ASCII.GetString(buffer);
+                strings.Add(textString);
+                file.Position++;
+            }
+            if (file.Position % 2 > 0)
+            {
+                file.Position++;
+            }
+            return strings;
+        }
+
+        private static void ExportData(List<byte[]> structs, List<List<string>> stringTables, string fileType, string directory)
+        {
+            DumpStructs(structs, directory, fileType);
+            DumpStringTables(stringTables, directory);
+        }
+
+        private static void DumpStructs(List<byte[]> structs, string directory, string fileType)
+        {
+            int i = 0;
+            foreach (var buffer in structs)
+            {
                 string outputName = $"{i:D4}";
                 switch (fileType)
                 {
@@ -63,39 +115,22 @@ namespace GT1.SpecSplitter
                 {
                     output.Write(buffer);
                 }
+                i++;
             }
         }
 
-        private static void DumpStringTables(Stream file, string directory)
+        private static void DumpStringTables(List<List<string>> stringTables, string directory)
         {
-            uint tableCount = file.ReadUInt();
-            file.Position += tableCount * 4;
-
-            for (uint i = 0; i < tableCount; i++)
+            for (int i = 0; i < stringTables.Count; i++)
             {
-                DumpStrings(file, directory, $"strings{i}");
-            }
-        }
-
-        private static void DumpStrings(Stream file, string directory, string filename)
-        {
-            ushort stringCount = file.ReadUShort();
-            using (var output = new StreamWriter($"{directory}\\{filename}.txt"))
-            {
-                for (ushort i = 0; i < stringCount; i++)
+                using (var output = new StreamWriter($"{directory}\\strings{i}.txt"))
                 {
-                    byte stringLength = file.ReadSingleByte();
-                    var buffer = new byte[stringLength];
-                    file.Read(buffer);
-                    string textString = Encoding.ASCII.GetString(buffer);
-                    output.WriteLine(textString);
-                    file.Position++;
+                    foreach (string textString in stringTables[i])
+                    {
+                        output.WriteLine(textString);
+                    }
+                    output.Flush();
                 }
-                output.Flush();
-            }
-            if (file.Position % 2 > 0)
-            {
-                file.Position++;
             }
         }
     }
