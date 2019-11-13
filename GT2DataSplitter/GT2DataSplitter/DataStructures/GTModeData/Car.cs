@@ -65,7 +65,7 @@ namespace GT2.DataSplitter
         public ushort ManufacturerID; // 0x3a
         public ushort NameFirstPart; // 0x3c
         public ushort NameSecondPart; // 0x3e
-        public byte IsSpecial; // 0x40
+        public byte HasAllTiresBought; // 0x40
         public byte Year; // 0x41 
         public ushort Unknown; // 42
         public uint Price; // 0x44
@@ -104,7 +104,7 @@ namespace GT2.DataSplitter
             Map(m => m.TractionControlSystem).PartFilename(nameof(TractionControlSystem));
             Map(m => m.RimsCode3);
             Map(m => m.ManufacturerID);
-            Map(m => m.IsSpecial);
+            Map(m => m.HasAllTiresBought);
             Map(m => m.Unknown);
             Map(m => m.Price);
         }
