@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GT2.DataSplitter
 {
-    public class NATuning : CarCsvDataStructure<NATuningData, NATuningCSVMap>
+    public class PropellerShaft : CarCsvDataStructure<PropellerShaftData, PropellerShaftCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
@@ -11,27 +11,27 @@ namespace GT2.DataSplitter
         }
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x0C
-    public struct NATuningData
+    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0xC
+    public struct PropellerShaftData
     {
         public uint CarId;
         public uint Price;
         public byte Stage;
-        public sbyte PowerbandRPMIncrease;
-        public sbyte RPMIncrease;
-        public byte PowerMultiplier;
+        public byte RPMDropRate;
+        public byte Inertia;
+        public byte Inertia2;
     }
 
-    public sealed class NATuningCSVMap : ClassMap<NATuningData>
+    public sealed class PropellerShaftCSVMap : ClassMap<PropellerShaftData>
     {
-        public NATuningCSVMap()
+        public PropellerShaftCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Price);
             Map(m => m.Stage);
-            Map(m => m.PowerbandRPMIncrease);
-            Map(m => m.RPMIncrease);
-            Map(m => m.PowerMultiplier);
+            Map(m => m.RPMDropRate);
+            Map(m => m.Inertia);
+            Map(m => m.Inertia2);
         }
     }
 }

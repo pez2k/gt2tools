@@ -1,8 +1,8 @@
 ﻿namespace GT2.DataSplitter
 {
-    public class Steering : CarDataStructure
+    public class Steer : CarDataStructure
     {
-        public Steering()
+        public Steer()
         {
             Size = 0x18;
             HasCarId = false;

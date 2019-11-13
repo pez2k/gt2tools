@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GT2.DataSplitter
 {
-    public class BrakeBalanceController : CarCsvDataStructure<BrakeBalanceControllerData, BrakeBalanceControllerCSVMap>
+    public class BrakeController : CarCsvDataStructure<BrakeControllerData, BrakeControllerCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
@@ -12,7 +12,7 @@ namespace GT2.DataSplitter
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x10
-    public struct BrakeBalanceControllerData
+    public struct BrakeControllerData
     {
         public uint CarId;
         public uint Price;
@@ -26,9 +26,9 @@ namespace GT2.DataSplitter
         public byte Unknown4;
     }
 
-    public sealed class BrakeBalanceControllerCSVMap : ClassMap<BrakeBalanceControllerData>
+    public sealed class BrakeControllerCSVMap : ClassMap<BrakeControllerData>
     {
-        public BrakeBalanceControllerCSVMap()
+        public BrakeControllerCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Price);

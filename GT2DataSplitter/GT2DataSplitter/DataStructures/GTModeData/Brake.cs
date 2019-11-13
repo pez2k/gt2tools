@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GT2.DataSplitter
 {
-    public class Propshaft : CarCsvDataStructure<PropshaftData, PropshaftCSVMap>
+    public class Brake : CarCsvDataStructure<BrakeData, BrakeCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
@@ -12,26 +12,26 @@ namespace GT2.DataSplitter
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0xC
-    public struct PropshaftData
+    public struct BrakeData
     {
         public uint CarId;
         public uint Price;
         public byte Stage;
-        public byte RPMDropRate;
-        public byte Inertia;
-        public byte Inertia2;
+        public byte BrakingPower;
+        public byte FrontBrakesUnknown;
+        public byte RearBrakesUnknown;
     }
 
-    public sealed class PropshaftCSVMap : ClassMap<PropshaftData>
+    public sealed class BrakeCSVMap : ClassMap<BrakeData>
     {
-        public PropshaftCSVMap()
+        public BrakeCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Price);
             Map(m => m.Stage);
-            Map(m => m.RPMDropRate);
-            Map(m => m.Inertia);
-            Map(m => m.Inertia2);
+            Map(m => m.BrakingPower);
+            Map(m => m.FrontBrakesUnknown);
+            Map(m => m.RearBrakesUnknown);
         }
     }
 }

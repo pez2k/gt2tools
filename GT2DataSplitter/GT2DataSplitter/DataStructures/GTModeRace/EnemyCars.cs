@@ -5,9 +5,9 @@ namespace GT2.DataSplitter
 {
     using CarNameConversion;
 
-    public class Opponent : CsvDataStructure<OpponentData, OpponentCSVMap>
+    public class EnemyCars : CsvDataStructure<EnemyCarsData, EnemyCarsCSVMap>
     {
-        public Opponent()
+        public EnemyCars()
         {
             CacheFilename = true;
         }
@@ -37,33 +37,33 @@ namespace GT2.DataSplitter
     }
     
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x60
-    public struct OpponentData
+    public struct EnemyCarsData
     {
         public uint CarId; // standard thing (0)
-        public ushort Brakes; // (4)
-        public ushort BrakeBalanceController;
-        public ushort Steering;
-        public ushort Dimensions; // (a)
-        public ushort WeightReduction; // (c)
-        public ushort Body;// (e)
+        public ushort Brake; // (4)
+        public ushort BrakeController;
+        public ushort Steer;
+        public ushort Chassis; // (a)
+        public ushort Lightweight; // (c)
+        public ushort RacingModify;// (e)
         public ushort Engine; // (10)
-        public ushort PortPolishing; // 12
-        public ushort EngineBalancing; // 16
-        public ushort DisplacementIncrease; // 18
-        public ushort Chip; // 1a
-        public ushort NATuning; // 1a
-        public ushort TurboKit; // 1c
+        public ushort PortPolish; // 12
+        public ushort EngineBalance; // 16
+        public ushort Displacement; // 18
+        public ushort Computer; // 1a
+        public ushort NATune; // 1a
+        public ushort TurbineKit; // 1c
         public ushort Drivetrain; // 1e
         public ushort Flywheel; // 20
         public ushort Clutch; // 22
         public ushort Propshaft; // 24
-        public ushort Differential; // 26
-        public ushort Transmission; // 28
+        public ushort LSD; // 26
+        public ushort Gear; // 28
         public ushort Suspension; // 2a
         public ushort Intercooler; // 2c
-        public ushort Exhaust; // 2e
-        public ushort TyresFront; // 30
-        public ushort TyresRear; // 32
+        public ushort Muffler; // 2e
+        public ushort TiresFront; // 30
+        public ushort TiresRear; // 32
         public ushort ActiveStabilityControl; // 34
         public ushort TractionControlSystem; // 36
         public ushort RimsCode3; // 38
@@ -103,37 +103,37 @@ namespace GT2.DataSplitter
         public ushort OpponentId; // 0x5e
     }
 
-    public sealed class OpponentCSVMap : ClassMap<OpponentData>
+    public sealed class EnemyCarsCSVMap : ClassMap<EnemyCarsData>
     {
-        public OpponentCSVMap()
+        public EnemyCarsCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
-            Map(m => m.Brakes).PartFilename("Brakes");
-            Map(m => m.BrakeBalanceController).PartFilename("BrakeBalanceController");
-            Map(m => m.Steering).PartFilename("Steering");
-            Map(m => m.Dimensions).PartFilename("Dimensions");
-            Map(m => m.WeightReduction).PartFilename("WeightReduction");
-            Map(m => m.Body).PartFilename("Body");
-            Map(m => m.Engine).PartFilename("Engine");
-            Map(m => m.PortPolishing).PartFilename("PortPolishing");
-            Map(m => m.EngineBalancing).PartFilename("EngineBalancing");
-            Map(m => m.DisplacementIncrease).PartFilename("DisplacementIncrease");
-            Map(m => m.Chip).PartFilename("Chip");
-            Map(m => m.NATuning).PartFilename("NATuning");
-            Map(m => m.TurboKit).PartFilename("TurboKit");
-            Map(m => m.Drivetrain).PartFilename("Drivetrain");
-            Map(m => m.Flywheel).PartFilename("Flywheel");
-            Map(m => m.Clutch).PartFilename("Clutch");
-            Map(m => m.Propshaft).PartFilename("Propshaft");
-            Map(m => m.Differential).PartFilename("Differential");
-            Map(m => m.Transmission).PartFilename("Transmission");
-            Map(m => m.Suspension).PartFilename("Suspension");
-            Map(m => m.Intercooler).PartFilename("Intercooler");
-            Map(m => m.Exhaust).PartFilename("Exhaust");
-            Map(m => m.TyresFront).PartFilename("TyresFront");
-            Map(m => m.TyresRear).PartFilename("TyresRear");
-            Map(m => m.ActiveStabilityControl);
-            Map(m => m.TractionControlSystem);
+            Map(m => m.Brake).PartFilename(nameof(Brake));
+            Map(m => m.BrakeController).PartFilename(nameof(BrakeController));
+            Map(m => m.Steer).PartFilename(nameof(Steer));
+            Map(m => m.Chassis).PartFilename(nameof(Chassis));
+            Map(m => m.Lightweight).PartFilename(nameof(Lightweight));
+            Map(m => m.RacingModify).PartFilename(nameof(RacingModify));
+            Map(m => m.Engine).PartFilename(nameof(Engine));
+            Map(m => m.PortPolish).PartFilename(nameof(PortPolish));
+            Map(m => m.EngineBalance).PartFilename(nameof(EngineBalance));
+            Map(m => m.Displacement).PartFilename(nameof(Displacement));
+            Map(m => m.Computer).PartFilename(nameof(Computer));
+            Map(m => m.NATune).PartFilename(nameof(NATune));
+            Map(m => m.TurbineKit).PartFilename(nameof(TurbineKit));
+            Map(m => m.Drivetrain).PartFilename(nameof(Drivetrain));
+            Map(m => m.Flywheel).PartFilename(nameof(Flywheel));
+            Map(m => m.Clutch).PartFilename(nameof(Clutch));
+            Map(m => m.Propshaft).PartFilename(nameof(PropellerShaft));
+            Map(m => m.LSD).PartFilename(nameof(LSD));
+            Map(m => m.Gear).PartFilename(nameof(Gear));
+            Map(m => m.Suspension).PartFilename(nameof(Suspension));
+            Map(m => m.Intercooler).PartFilename(nameof(Intercooler));
+            Map(m => m.Muffler).PartFilename(nameof(Muffler));
+            Map(m => m.TiresFront).PartFilename(nameof(TiresFront));
+            Map(m => m.TiresRear).PartFilename(nameof(TiresRear));
+            Map(m => m.ActiveStabilityControl).PartFilename(nameof(ActiveStabilityControl));
+            Map(m => m.TractionControlSystem).PartFilename(nameof(TractionControlSystem));
             Map(m => m.RimsCode3);
             Map(m => m.FinalDriveRatio);
             Map(m => m.GearAutoSetting);

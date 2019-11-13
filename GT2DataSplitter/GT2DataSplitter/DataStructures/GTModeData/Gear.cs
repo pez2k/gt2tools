@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GT2.DataSplitter
 {
-    public class Transmission : CarCsvDataStructure<TransmissionData, TransmissionCSVMap>
+    public class Gear : CarCsvDataStructure<GearData, GearCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
@@ -12,7 +12,7 @@ namespace GT2.DataSplitter
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x24
-    public struct TransmissionData
+    public struct GearData
     {
         public uint CarId;
         public uint Price;
@@ -35,9 +35,9 @@ namespace GT2.DataSplitter
         public byte MaxAutoSetting;
     }
 
-    public sealed class TransmissionCSVMap : ClassMap<TransmissionData>
+    public sealed class GearCSVMap : ClassMap<GearData>
     {
-        public TransmissionCSVMap()
+        public GearCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Price);

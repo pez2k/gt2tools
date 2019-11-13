@@ -5,7 +5,7 @@ namespace GT2.DataSplitter
 {
     using CarNameConversion;
 
-    public class Dimensions : CarCsvDataStructure<DimensionsData, DimensionsCSVMap>
+    public class Chassis : CarCsvDataStructure<ChassisData, ChassisCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
@@ -14,7 +14,7 @@ namespace GT2.DataSplitter
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x14
-    public struct DimensionsData
+    public struct ChassisData
     {
         public uint CarId;
         public byte CentreOfMassLongitudinal;
@@ -31,9 +31,9 @@ namespace GT2.DataSplitter
         public byte Unknown8;
     }
 
-    public sealed class DimensionsCSVMap : ClassMap<DimensionsData>
+    public sealed class ChassisCSVMap : ClassMap<ChassisData>
     {
-        public DimensionsCSVMap()
+        public ChassisCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.CentreOfMassLongitudinal);

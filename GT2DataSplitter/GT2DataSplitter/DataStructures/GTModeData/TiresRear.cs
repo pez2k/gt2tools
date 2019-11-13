@@ -6,7 +6,7 @@ namespace GT2.DataSplitter
 {
     using CarNameConversion;
 
-    public class TyresFront : CarCsvDataStructure<TyresFrontData, TyresFrontCSVMap>
+    public class TiresRear : CarCsvDataStructure<TiresRearData, TiresRearCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
@@ -18,36 +18,34 @@ namespace GT2.DataSplitter
             }
 
             string number = Directory.GetFiles(filename).Length.ToString();
-            return filename + "\\" + number + "_" + Utils.TyreStageConverter.ConvertToString(Data.Stage, null, null) + ".csv";
+            return filename + "\\" + number + "_" + Utils.TireStageConverter.ConvertToString(Data.Stage, null, null) + ".csv";
         }
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x10
-    public struct TyresFrontData
+    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x0C
+    public struct TiresRearData
     {
         public uint CarId;
-        public uint Price;
         public byte Stage;
         public byte SteeringReaction1;
         public byte WheelSize;
         public byte SteeringReaction2;
-        public byte TyreCompound;
+        public byte TireCompound;
         public byte Unknown1;
         public byte SlipMultiplier;
         public byte GripMultiplier;
     }
 
-    public sealed class TyresFrontCSVMap : ClassMap<TyresFrontData>
+    public sealed class TiresRearCSVMap : ClassMap<TiresRearData>
     {
-        public TyresFrontCSVMap()
+        public TiresRearCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
-            Map(m => m.Price);
-            Map(m => m.Stage).TypeConverter(Utils.TyreStageConverter);
+            Map(m => m.Stage).TypeConverter(Utils.TireStageConverter);
             Map(m => m.SteeringReaction1);
             Map(m => m.WheelSize);
             Map(m => m.SteeringReaction2);
-            Map(m => m.TyreCompound).TypeConverter(Utils.TyreCompoundConverter);
+            Map(m => m.TireCompound).TypeConverter(Utils.TireCompoundConverter);
             Map(m => m.Unknown1);
             Map(m => m.SlipMultiplier);
             Map(m => m.GripMultiplier);

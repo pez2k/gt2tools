@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GT2.DataSplitter
 {
-    public class Differential : CarCsvDataStructure<DifferentialData, DifferentialCSVMap>
+    public class LSD : CarCsvDataStructure<LSDData, LSDCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
@@ -12,7 +12,7 @@ namespace GT2.DataSplitter
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x20
-    public struct DifferentialData
+    public struct LSDData
     {
         public uint CarId;
         public uint Price;
@@ -42,9 +42,9 @@ namespace GT2.DataSplitter
         public byte MaxDecelRear;
     }
 
-    public sealed class DifferentialCSVMap : ClassMap<DifferentialData>
+    public sealed class LSDCSVMap : ClassMap<LSDData>
     {
-        public DifferentialCSVMap()
+        public LSDCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Price);

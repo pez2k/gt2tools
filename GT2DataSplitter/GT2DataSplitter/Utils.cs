@@ -14,8 +14,8 @@ namespace GT2.DataSplitter
         public static CarIdConverter CarIdConverter { get; set; } = new CarIdConverter();
         public static CarIdArrayConverter CarIdArrayConverter { get; set; } = new CarIdArrayConverter();
         public static DrivetrainTypeConverter DrivetrainTypeConverter { get; set; } = new DrivetrainTypeConverter();
-        public static TyreStageConverter TyreStageConverter { get; set; } = new TyreStageConverter();
-        public static TyreCompoundConverter TyreCompoundConverter { get; set; } = new TyreCompoundConverter();
+        public static TireStageConverter TireStageConverter { get; set; } = new TireStageConverter();
+        public static TireCompoundConverter TireCompoundConverter { get; set; } = new TireCompoundConverter();
         public static LicenseConverter LicenseConverter { get; set; } = new LicenseConverter();
         public static DrivetrainRestrictionConverter DrivetrainRestrictionConverter { get; set; } = new DrivetrainRestrictionConverter();
 
@@ -115,35 +115,35 @@ namespace GT2.DataSplitter
         }
     }
 
-    public class TyreStageConverter : ITypeConverter
+    public class TireStageConverter : ITypeConverter
     {
-        protected List<string> TyreTypes = new List<string> { "Stock", "Sports", "Hard", "Medium", "Soft", "SuperSoft", "Simulation", "Dirt" };
+        protected List<string> TireTypes = new List<string> { "Stock", "Sports", "Hard", "Medium", "Soft", "SuperSoft", "Simulation", "Dirt" };
 
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
-            return (byte)TyreTypes.IndexOf(text);
+            return (byte)TireTypes.IndexOf(text);
         }
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
             byte tyreType = (byte)value;
-            return TyreTypes[tyreType];
+            return TireTypes[tyreType];
         }
     }
 
-    public class TyreCompoundConverter : ITypeConverter
+    public class TireCompoundConverter : ITypeConverter
     {
-        protected List<string> TyreTypes = new List<string> { "RoadFront", "RoadRear", "SportsFront", "SportsRear", "HardFront", "HardRear", "MediumFront", "MediumRear", "SoftFront", "SoftRear", "SuperSoftFront", "SuperSoftRear", "DirtFront", "DirtRear", "RWDDirtFront", "RWDDirtRear", "SimulationFront", "SimulationRear", "PikesPeakFront", "PikesPeakRear" };
+        protected List<string> TireCompounds = new List<string> { "RoadFront", "RoadRear", "SportsFront", "SportsRear", "HardFront", "HardRear", "MediumFront", "MediumRear", "SoftFront", "SoftRear", "SuperSoftFront", "SuperSoftRear", "DirtFront", "DirtRear", "RWDDirtFront", "RWDDirtRear", "SimulationFront", "SimulationRear", "PikesPeakFront", "PikesPeakRear" };
 
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
-            return (byte)(TyreTypes.IndexOf(text));
+            return (byte)TireCompounds.IndexOf(text);
         }
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
-            byte tyreType = (byte)value;
-            return TyreTypes[tyreType];
+            byte tyreCompound = (byte)value;
+            return TireCompounds[tyreCompound];
         }
     }
 

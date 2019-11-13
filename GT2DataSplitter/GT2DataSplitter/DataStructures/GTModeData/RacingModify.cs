@@ -6,7 +6,7 @@ namespace GT2.DataSplitter
 {
     using CarNameConversion;
 
-    public class Body : CarCsvDataStructure<BodyData, BodyCSVMap>
+    public class RacingModify : CarCsvDataStructure<RacingModifyData, RacingModifyCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
@@ -26,7 +26,7 @@ namespace GT2.DataSplitter
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x1C
-    public struct BodyData
+    public struct RacingModifyData
     {
         public uint CarId;
         public uint Price; // if 0 or low byte = 0, not possible
@@ -48,9 +48,9 @@ namespace GT2.DataSplitter
         public ushort Width; // rm car width - in mm
     }
 
-    public sealed class BodyCSVMap : ClassMap<BodyData>
+    public sealed class RacingModifyCSVMap : ClassMap<RacingModifyData>
     {
-        public BodyCSVMap()
+        public RacingModifyCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Price);

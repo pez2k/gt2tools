@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GT2.DataSplitter
 {
-    public class TurboKit : CarCsvDataStructure<TurboKitData, TurboKitCSVMap>
+    public class TurbineKit : CarCsvDataStructure<TurbineKitData, TurbineKitCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
@@ -12,7 +12,7 @@ namespace GT2.DataSplitter
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x14
-    public struct TurboKitData
+    public struct TurbineKitData
     {
         public uint CarId;
         public uint Price;
@@ -30,9 +30,9 @@ namespace GT2.DataSplitter
         public byte LowRPMPowerMultiplier;
     }
 
-    public sealed class TurboKitCSVMap : ClassMap<TurboKitData>
+    public sealed class TurbineKitCSVMap : ClassMap<TurbineKitData>
     {
-        public TurboKitCSVMap()
+        public TurbineKitCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Price);

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace GT2.DataSplitter
 {
-    public class WeightReduction : CarCsvDataStructure<WeightReductionData, WeightReductionCSVMap>
+    public class NATune : CarCsvDataStructure<NATuneData, NATuneCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
@@ -11,25 +11,27 @@ namespace GT2.DataSplitter
         }
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0xC
-    public struct WeightReductionData
+    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x0C
+    public struct NATuneData
     {
         public uint CarId;
         public uint Price;
-        public ushort Weight;
-        public byte Unknown;
         public byte Stage;
+        public sbyte PowerbandRPMIncrease;
+        public sbyte RPMIncrease;
+        public byte PowerMultiplier;
     }
 
-    public sealed class WeightReductionCSVMap : ClassMap<WeightReductionData>
+    public sealed class NATuneCSVMap : ClassMap<NATuneData>
     {
-        public WeightReductionCSVMap()
+        public NATuneCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
             Map(m => m.Price);
-            Map(m => m.Weight);
-            Map(m => m.Unknown);
             Map(m => m.Stage);
+            Map(m => m.PowerbandRPMIncrease);
+            Map(m => m.RPMIncrease);
+            Map(m => m.PowerMultiplier);
         }
     }
 }

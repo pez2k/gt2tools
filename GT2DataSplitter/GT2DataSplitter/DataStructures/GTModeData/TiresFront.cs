@@ -6,7 +6,7 @@ namespace GT2.DataSplitter
 {
     using CarNameConversion;
 
-    public class TyresRear : CarCsvDataStructure<TyresRearData, TyresRearCSVMap>
+    public class TiresFront : CarCsvDataStructure<TiresFrontData, TiresFrontCSVMap>
     {
         public override string CreateOutputFilename(byte[] data)
         {
@@ -18,14 +18,15 @@ namespace GT2.DataSplitter
             }
 
             string number = Directory.GetFiles(filename).Length.ToString();
-            return filename + "\\" + number + "_" + Utils.TyreStageConverter.ConvertToString(Data.Stage, null, null) + ".csv";
+            return filename + "\\" + number + "_" + Utils.TireStageConverter.ConvertToString(Data.Stage, null, null) + ".csv";
         }
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x0C
-    public struct TyresRearData
+    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x10
+    public struct TiresFrontData
     {
         public uint CarId;
+        public uint Price;
         public byte Stage;
         public byte SteeringReaction1;
         public byte WheelSize;
@@ -36,16 +37,17 @@ namespace GT2.DataSplitter
         public byte GripMultiplier;
     }
 
-    public sealed class TyresRearCSVMap : ClassMap<TyresRearData>
+    public sealed class TiresFrontCSVMap : ClassMap<TiresFrontData>
     {
-        public TyresRearCSVMap()
+        public TiresFrontCSVMap()
         {
             Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
-            Map(m => m.Stage).TypeConverter(Utils.TyreStageConverter);
+            Map(m => m.Price);
+            Map(m => m.Stage).TypeConverter(Utils.TireStageConverter);
             Map(m => m.SteeringReaction1);
             Map(m => m.WheelSize);
             Map(m => m.SteeringReaction2);
-            Map(m => m.TyreCompound).TypeConverter(Utils.TyreCompoundConverter);
+            Map(m => m.TyreCompound).TypeConverter(Utils.TireCompoundConverter);
             Map(m => m.Unknown1);
             Map(m => m.SlipMultiplier);
             Map(m => m.GripMultiplier);

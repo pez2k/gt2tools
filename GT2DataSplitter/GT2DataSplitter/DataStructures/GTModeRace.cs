@@ -8,9 +8,9 @@ namespace GT2.DataSplitter
 
     public class GTModeRace
     {
-        public List<Race> Races { get; set; } = new List<Race>();
-        public List<Opponent> Opponents { get; set; } = new List<Opponent>();
-        public List<EligibleCars> EligibleCars { get; set; } = new List<EligibleCars>();
+        public List<Event> Events { get; set; } = new List<Event>();
+        public List<EnemyCars> EnemyCars { get; set; } = new List<EnemyCars>();
+        public List<Regulations> Regulations { get; set; } = new List<Regulations>();
         
         public void ReadData(string filename)
         {
@@ -26,25 +26,25 @@ namespace GT2.DataSplitter
                     blocks.Add(new DataBlock { BlockStart = blockStart, BlockSize = blockSize });
                 }
 
-                Races.Read(file, blocks[0].BlockStart, blocks[0].BlockSize);
-                Opponents.Read(file, blocks[1].BlockStart, blocks[1].BlockSize);
-                EligibleCars.Read(file, blocks[2].BlockStart, blocks[2].BlockSize);
+                Events.Read(file, blocks[0].BlockStart, blocks[0].BlockSize);
+                EnemyCars.Read(file, blocks[1].BlockStart, blocks[1].BlockSize);
+                Regulations.Read(file, blocks[2].BlockStart, blocks[2].BlockSize);
                 RaceStringTable.Read(file, blocks[3].BlockStart, blocks[3].BlockSize);
             }
         }
 
         public void DumpData()
         {
-            EligibleCars.Dump();
-            Opponents.Dump();
-            Races.Dump();
+            Regulations.Dump();
+            EnemyCars.Dump();
+            Events.Dump();
         }
 
         public void ImportData()
         {
-            EligibleCars.Import();
-            Opponents.Import();
-            Races.Import();
+            Regulations.Import();
+            EnemyCars.Import();
+            Events.Import();
         }
 
         public void WriteData(string filename)
@@ -57,9 +57,9 @@ namespace GT2.DataSplitter
                 file.WriteByte(0x00); // Data starts at 0x38 so position EOF
 
                 uint i = 1;
-                Races.Write(file, 8 * i++);
-                Opponents.Write(file, 8 * i++);
-                EligibleCars.Write(file, 8 * i++);
+                Events.Write(file, 8 * i++);
+                EnemyCars.Write(file, 8 * i++);
+                Regulations.Write(file, 8 * i++);
                 RaceStringTable.Write(file, 8 * i++);
 
                 file.Position = 0;

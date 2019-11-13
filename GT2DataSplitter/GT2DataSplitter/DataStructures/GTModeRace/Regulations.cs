@@ -3,9 +3,9 @@ using System.Runtime.InteropServices;
 
 namespace GT2.DataSplitter
 {
-    public class EligibleCars : CsvDataStructure<EligibleCarsData, EligibleCarsCSVMap>
+    public class Regulations : CsvDataStructure<RegulationsData, RegulationsCSVMap>
     {
-        public EligibleCars()
+        public Regulations()
         {
             CacheFilename = true;
         }
@@ -30,15 +30,15 @@ namespace GT2.DataSplitter
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x80
-    public struct EligibleCarsData
+    public struct RegulationsData
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
         public uint[] EligibleCarIds;
     }
 
-    public sealed class EligibleCarsCSVMap : ClassMap<EligibleCarsData>
+    public sealed class RegulationsCSVMap : ClassMap<RegulationsData>
     {
-        public EligibleCarsCSVMap()
+        public RegulationsCSVMap()
         {
             Map(m => m.EligibleCarIds).TypeConverter(Utils.CarIdArrayConverter);
         }
