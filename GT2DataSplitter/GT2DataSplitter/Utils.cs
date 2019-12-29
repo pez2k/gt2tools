@@ -78,11 +78,11 @@ namespace GT2.DataSplitter
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
             int stringNumber = FileNameCache.Get(Name, text);
-            if (Name == "EligibleCars")
+            if (Name == nameof(Regulations))
             {
                 return (byte)stringNumber;
             }
-            else if (Name == "Opponent")
+            else if (Name == nameof(EnemyCars))
             {
                 return (uint)stringNumber;
             }
