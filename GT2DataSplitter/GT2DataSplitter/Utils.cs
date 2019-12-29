@@ -126,8 +126,8 @@ namespace GT2.DataSplitter
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
-            byte tyreType = (byte)value;
-            return TireTypes[tyreType];
+            byte tireType = (byte)value;
+            return TireTypes[tireType];
         }
     }
 
@@ -142,8 +142,8 @@ namespace GT2.DataSplitter
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
-            byte tyreCompound = (byte)value;
-            return TireCompounds[tyreCompound];
+            byte tireCompound = (byte)value;
+            return TireCompounds[tireCompound];
         }
     }
 

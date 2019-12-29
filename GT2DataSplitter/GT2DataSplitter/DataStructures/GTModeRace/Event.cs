@@ -68,13 +68,13 @@ namespace GT2.DataSplitter
         public ushort AIRubberBandLeadingScalingDistance; // (0x5c)
         public byte AIRubberBandTrailingSpeedupPercentage; // (0x5e) 
         public ushort AIRubberBandTrailingScalingDistance; // (0x5f)
-        public byte TyreWearOrangeDurationMultiplier; // (0x60)
-        public byte TyreWearOrangeGripLoss; // 0x6400 above (0x62) - changed unk4 to unk10 to FF, spaced out opponents (power related?), changed all to 0, same as ff really
-        public byte TyreWearUnknown;
-        public byte TyreWearBlueDurationMultiplier;
-        public byte TyreWearBlueGripLoss;
-        public byte TyreWearGreenDurationMultiplier;
-        public byte TyreWearGreenGripLoss;
+        public byte TireWearOrangeDurationMultiplier; // (0x60)
+        public byte TireWearOrangeGripLoss; // 0x6400 above (0x62) - changed unk4 to unk10 to FF, spaced out opponents (power related?), changed all to 0, same as ff really
+        public byte TireWearUnknown;
+        public byte TireWearBlueDurationMultiplier;
+        public byte TireWearBlueGripLoss;
+        public byte TireWearGreenDurationMultiplier;
+        public byte TireWearGreenGripLoss;
         public uint Unknown1; // (0x68)
         public uint Unknown2; // (0x6c)
         public uint Unknown3; // (0x70)
@@ -145,13 +145,13 @@ namespace GT2.DataSplitter
             Map(m => m.AIRubberBandLeadingScalingDistance);
             Map(m => m.AIRubberBandTrailingSpeedupPercentage);
             Map(m => m.AIRubberBandTrailingScalingDistance);
-            Map(m => m.TyreWearOrangeDurationMultiplier);
-            Map(m => m.TyreWearOrangeGripLoss);
-            Map(m => m.TyreWearUnknown);
-            Map(m => m.TyreWearBlueDurationMultiplier);
-            Map(m => m.TyreWearBlueGripLoss);
-            Map(m => m.TyreWearGreenDurationMultiplier);
-            Map(m => m.TyreWearGreenGripLoss);
+            Map(m => m.TireWearOrangeDurationMultiplier);
+            Map(m => m.TireWearOrangeGripLoss);
+            Map(m => m.TireWearUnknown);
+            Map(m => m.TireWearBlueDurationMultiplier);
+            Map(m => m.TireWearBlueGripLoss);
+            Map(m => m.TireWearGreenDurationMultiplier);
+            Map(m => m.TireWearGreenGripLoss);
             Map(m => m.Unknown1);
             Map(m => m.Unknown2);
             Map(m => m.Unknown3);

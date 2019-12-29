@@ -31,7 +31,7 @@ namespace GT2.DataSplitter
         public byte SteeringReaction1;
         public byte WheelSize;
         public byte SteeringReaction2;
-        public byte TyreCompound;
+        public byte TireCompound;
         public byte Unknown1;
         public byte SlipMultiplier;
         public byte GripMultiplier;
@@ -47,7 +47,7 @@ namespace GT2.DataSplitter
             Map(m => m.SteeringReaction1);
             Map(m => m.WheelSize);
             Map(m => m.SteeringReaction2);
-            Map(m => m.TyreCompound).TypeConverter(Utils.TireCompoundConverter);
+            Map(m => m.TireCompound).TypeConverter(Utils.TireCompoundConverter);
             Map(m => m.Unknown1);
             Map(m => m.SlipMultiplier);
             Map(m => m.GripMultiplier);
