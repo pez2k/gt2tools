@@ -53,18 +53,25 @@ namespace GT2.DataSplitter
 
         public override void Import(string filename)
         {
-            using (TextReader input = new StreamReader(filename, Encoding.UTF8))
+            try
             {
-                using (CsvReader csv = new CsvReader(input))
+                using (TextReader input = new StreamReader(filename, Encoding.UTF8))
                 {
-                    csv.Configuration.RegisterClassMap<TMap>();
-                    csv.Read();
-                    Data = csv.GetRecord<TStructure>();
-                    if (CacheFilename)
+                    using (CsvReader csv = new CsvReader(input))
                     {
-                        FileNameCache.Add(Name, filename);
+                        csv.Configuration.RegisterClassMap<TMap>();
+                        csv.Read();
+                        Data = csv.GetRecord<TStructure>();
+                        if (CacheFilename)
+                        {
+                            FileNameCache.Add(Name, filename);
+                        }
                     }
                 }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception($"Could not import CSV: {filename}", exception);
             }
         }
 
