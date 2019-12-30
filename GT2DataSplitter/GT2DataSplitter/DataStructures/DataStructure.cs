@@ -142,9 +142,12 @@ namespace GT2.DataSplitter
             {
                 foreach (string filename in Directory.EnumerateFiles(carName))
                 {
-                    T structure = new T();
-                    structure.Import(filename);
-                    structures.Add(structure);
+                    if (new FileInfo(filename).Length > 0)
+                    {
+                        T structure = new T();
+                        structure.Import(filename);
+                        structures.Add(structure);
+                    }
                 }
             }
         }
