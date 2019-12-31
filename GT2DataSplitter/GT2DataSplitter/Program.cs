@@ -71,11 +71,11 @@ namespace GT2.DataSplitter
             StringTable.Read($"{LanguagePrefix}_unistrdb.dat");
 
             GTModeData CarData = new GTModeData();
-            CarData.ReadData($"{LanguagePrefix}_gtmode_data.dat");
+            CarData.ReadData($"{GetDataFilePrefix()}gtmode_data.dat");
             CarData.DumpData();
 
             GTModeRace RaceData = new GTModeRace();
-            RaceData.ReadData($"{LanguagePrefix}_gtmode_race.dat");
+            RaceData.ReadData($"{GetDataFilePrefix()}gtmode_race.dat");
             RaceData.DumpData();
 
             StringTable.Export();
@@ -87,27 +87,19 @@ namespace GT2.DataSplitter
             var languageDirectories = Directory.GetDirectories("Strings");
             foreach (string languageDirectory in languageDirectories)
             {
-                string language = languageDirectory.Split('\\')[1];
-                Console.WriteLine($"Building language '{language}'...");
+                LanguagePrefix = languageDirectory.Split('\\')[1];
+                Console.WriteLine($"Building language '{LanguagePrefix}'...");
 
-                LanguagePrefix = language;
                 StringTable.Import();
-
-                if (!File.Exists($"Strings\\{LanguagePrefix}\\CarNames.csv"))
-                {
-                    LanguagePrefix = "eng";
-                }
-
                 CarNameStringTable.Import();
-                LanguagePrefix = language;
 
                 GTModeData CarData = new GTModeData();
                 CarData.ImportData();
-                CarData.WriteData($"{LanguagePrefix}_gtmode_data.dat");
+                CarData.WriteData($"{GetDataFilePrefix()}gtmode_data.dat");
 
                 GTModeRace RaceData = new GTModeRace();
                 RaceData.ImportData();
-                RaceData.WriteData($"{LanguagePrefix}_gtmode_race.dat");
+                RaceData.WriteData($"{GetDataFilePrefix()}gtmode_race.dat");
 
                 StringTable.Write($"{LanguagePrefix}_unistrdb.dat");
 
@@ -115,6 +107,8 @@ namespace GT2.DataSplitter
                 CarNameStringTable.Reset();
             }
         }
+
+        static string GetDataFilePrefix() => LanguagePrefix == "jpn" ? "" : $"{LanguagePrefix}_";
 
         static void SplitLicenseFile(string filename)
         {

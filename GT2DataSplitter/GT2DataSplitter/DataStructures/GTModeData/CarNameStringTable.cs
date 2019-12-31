@@ -9,12 +9,11 @@ namespace GT2.DataSplitter
 {
     public static class CarNameStringTable
     {
-        public static List<CarName> Strings = new List<CarName>();
+        private static readonly List<CarName> strings = new List<CarName>();
+        private static readonly List<CarName> defaultStrings = new List<CarName>();
 
-        public static void Add(uint carID, string nameFirstPart, string nameSecondPart, byte year)
-        {
-            Strings.Add(new CarName { CarID = carID, NameFirstPart = nameFirstPart, NameSecondPart = nameSecondPart, Year = year });
-        }
+        public static void Add(uint carID, string nameFirstPart, string nameSecondPart, byte year) =>
+            strings.Add(new CarName { CarID = carID, NameFirstPart = nameFirstPart, NameSecondPart = nameSecondPart, Year = year });
 
         public static void Export()
         {
@@ -33,7 +32,7 @@ namespace GT2.DataSplitter
                     csv.WriteHeader<CarName>();
                     csv.NextRecord();
 
-                    foreach (CarName carName in Strings)
+                    foreach (CarName carName in strings)
                     {
                         csv.WriteRecord(carName);
                         csv.NextRecord();
@@ -44,18 +43,33 @@ namespace GT2.DataSplitter
 
         public static void Import()
         {
-            string directory = $"Strings\\{Program.LanguagePrefix}";
-            ImportCSV($"{directory}\\CarNames.csv");
+            Import(Program.LanguagePrefix, strings);
+            Import("eng", defaultStrings);
+        }
+
+        private static void Import(string languagePrefix, List<CarName> strings)
+        {
+            string directory = $"Strings\\{languagePrefix}";
+            if (!Directory.Exists(directory))
+            {
+                return;
+            }
+
+            string carNamesPath = $"{directory}\\CarNames.csv";
+            if (File.Exists(carNamesPath))
+            {
+                ImportCSV(carNamesPath, strings);
+            }
 
             var filenames = Directory.EnumerateFiles(directory, "*.csv").Where(file => Path.GetFileName(file) != "CarNames.csv" && Path.GetFileName(file) != "PartStrings.csv");
 
             foreach (string filename in filenames)
             {
-                ImportCSV(filename);
+                ImportCSV(filename, strings);
             }
         }
 
-        private static void ImportCSV(string filename)
+        private static void ImportCSV(string filename, List<CarName> strings)
         {
             using (TextReader input = new StreamReader(filename, Encoding.UTF8))
             {
@@ -68,21 +82,27 @@ namespace GT2.DataSplitter
                     while (csv.Read())
                     {
                         CarName carName = csv.GetRecord<CarName>();
-                        Strings.RemoveAll(existingCarName => existingCarName.CarID == carName.CarID);
-                        Strings.Add(carName);
+                        strings.RemoveAll(existingCarName => existingCarName.CarID == carName.CarID);
+                        strings.Add(carName);
                     }
                 }
             }
         }
 
-        public static CarName Get(uint carID)
+        public static CarName Get(uint carID) => strings.SingleOrDefault(carName => carName.CarID == carID) ?? GetDefault(carID);
+
+        private static CarName GetDefault(uint carID)
         {
-            return Strings.SingleOrDefault(carName => carName.CarID == carID) ?? throw new Exception($"Car name for {carID} not found.");
+            CarName defaultName = defaultStrings.SingleOrDefault(carName => carName.CarID == carID) ?? throw new Exception($"Car name for {carID} not found.");
+            strings.Add(defaultName);
+            return defaultName;
+
         }
 
         public static void Reset()
         {
-            Strings.Clear();
+            strings.Clear();
+            defaultStrings.Clear();
         }
     }
 }
