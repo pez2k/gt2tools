@@ -38,12 +38,12 @@ namespace GT2.CarInfoEditor
         public static FileSet OpenWrite()
         {
             FileSet fileset = new FileSet();
-            fileset.JPCarInfo = new FileStream(".carinfoj", FileMode.Truncate, FileAccess.Write);
-            fileset.USCarInfo = new FileStream(".carinfoa", FileMode.Truncate, FileAccess.Write);
-            fileset.EUCarInfo = new FileStream(".carinfoe", FileMode.Truncate, FileAccess.Write);
-            fileset.CCLatin = new FileStream(".cclatain", FileMode.Truncate, FileAccess.Write);
-            fileset.CCJapanese = new FileStream(".ccjapanese", FileMode.Truncate, FileAccess.Write);
-            fileset.CarColours = new FileStream(".carcolor", FileMode.Truncate, FileAccess.Write);
+            fileset.JPCarInfo = new FileStream(".carinfoj", FileMode.Create, FileAccess.Write);
+            fileset.USCarInfo = new FileStream(".carinfoa", FileMode.Create, FileAccess.Write);
+            fileset.EUCarInfo = new FileStream(".carinfoe", FileMode.Create, FileAccess.Write);
+            fileset.CCLatin = new FileStream(".cclatain", FileMode.Create, FileAccess.Write);
+            fileset.CCJapanese = new FileStream(".ccjapanese", FileMode.Create, FileAccess.Write);
+            fileset.CarColours = new FileStream(".carcolor", FileMode.Create, FileAccess.Write);
             return fileset;
         }
 
