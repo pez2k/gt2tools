@@ -135,9 +135,9 @@ namespace GT2.MenuSplitter
 
         static void PackGTMenu()
         {
-            using (var output = new FileStream("new_gtmenudat.dat", FileMode.Create, FileAccess.Write))
+            using (var output = new FileStream("gtmenudat.dat", FileMode.Create, FileAccess.Write))
             {
-                using (var index = new FileStream("new_gtmenudat.idx", FileMode.Create, FileAccess.Write))
+                using (var index = new FileStream("gtmenudat.idx", FileMode.Create, FileAccess.Write))
                 {
                     index.WriteUInt(0);
                     uint fileCount = 0;
@@ -230,9 +230,9 @@ namespace GT2.MenuSplitter
 
         static void PackCommonpic()
         {
-            using (var output = new FileStream("new_commonpic.dat", FileMode.Create, FileAccess.Write))
+            using (var output = new FileStream("commonpic.dat", FileMode.Create, FileAccess.Write))
             {
-                using (var index = new FileStream("new_commonpic.idx", FileMode.Create, FileAccess.Write))
+                using (var index = new FileStream("commonpic.idx", FileMode.Create, FileAccess.Write))
                 {
                     index.WriteUInt(0);
                     uint fileCount = 0;
