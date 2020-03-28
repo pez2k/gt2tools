@@ -152,6 +152,10 @@ namespace GT2.MenuSplitter
                         {
                             if (filename.EndsWith(".gz"))
                             {
+                                if (File.Exists(filename.Substring(0, filename.Length - 3)))
+                                {
+                                    continue;
+                                }
                                 input.CopyTo(output);
                             }
                             else
