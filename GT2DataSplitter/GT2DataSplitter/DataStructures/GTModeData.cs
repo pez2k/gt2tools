@@ -112,9 +112,9 @@ namespace GT2.DataSplitter
             IntercoolerParts.Dump();
             MufflerParts.Dump();
             LSDParts.Dump();
+            TireSizes.Dump();
             TiresFrontParts.Dump();
             TiresRearParts.Dump();
-            TireSizes.Dump();
             Unknown2.Dump();
             Unknown3.Dump();
             ActiveStabilityControlParts.Dump();

@@ -6,6 +6,11 @@ namespace GT2.DataSplitter
 {
     public class TireSize : CsvDataStructure<TireSizeData, TireSizeCSVMap>
     {
+        public TireSize()
+        {
+            CacheFilename = true;
+        }
+
         public override string CreateOutputFilename(byte[] data)
         {
             string filename = base.CreateOutputFilename(data);
