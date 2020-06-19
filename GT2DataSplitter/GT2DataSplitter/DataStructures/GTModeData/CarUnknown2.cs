@@ -4,7 +4,7 @@
     {
         public CarUnknown2()
         {
-            Size = 0x500;
+            Size = 0x8;
             HasCarId = false;
         }
     }
