@@ -1,10 +1,32 @@
-﻿namespace GT3.DataSplitter
+﻿using CsvHelper.Configuration;
+using System.Runtime.InteropServices;
+
+namespace GT3.DataSplitter
 {
-    public class TireSize : NamedDataStructure
+    public class TireSize : CsvDataStructure<TireSizeData, TireSizeCSVMap>
     {
-        public TireSize()
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x10
+    public struct TireSizeData
+    {
+        public ulong Part;
+        public byte DiameterInches;
+        public byte Profile;
+        public byte WidthMM;
+
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]
+        public byte[] Padding;
+    }
+
+    public sealed class TireSizeCSVMap : ClassMap<TireSizeData>
+    {
+        public TireSizeCSVMap()
         {
-            Size = 0x10;
+            Map(m => m.Part).TypeConverter(Utils.IdConverter);
+            Map(m => m.DiameterInches);
+            Map(m => m.Profile); // * 5
+            Map(m => m.WidthMM); // * 5
         }
     }
 }
