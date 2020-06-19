@@ -147,9 +147,9 @@ namespace GT2.DataSplitter
             IntercoolerParts.Import();
             MufflerParts.Import();
             LSDParts.Import();
+            TireSizes.Import();
             TiresFrontParts.Import();
             TiresRearParts.Import();
-            TireSizes.Import();
             Unknown1.Import();
             Unknown2.Import();
             ActiveStabilityControlParts.Import();

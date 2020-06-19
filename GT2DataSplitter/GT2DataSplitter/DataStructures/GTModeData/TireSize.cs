@@ -25,7 +25,8 @@ namespace GT2.DataSplitter
     {
         public byte DiameterInches;
         public byte WidthMM;
-        public ushort Profile;
+        public byte Profile;
+        public byte Padding;
     }
 
     public sealed class TireSizeCSVMap : ClassMap<TireSizeData>

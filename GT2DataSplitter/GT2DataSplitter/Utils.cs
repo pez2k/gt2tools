@@ -80,7 +80,7 @@ namespace GT2.DataSplitter
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
             int stringNumber = FileNameCache.Get(Name, text);
-            if (Name == nameof(Regulations))
+            if (Name == nameof(Regulations) || Name == nameof(TireSize))
             {
                 return (byte)stringNumber;
             }
@@ -134,12 +134,12 @@ namespace GT2.DataSplitter
     {
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
-            return (ushort)(ushort.Parse(text) / 5);
+            return (byte)(ushort.Parse(text) / 5);
         }
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
-            return $"{((ushort)value) * 5}";
+            return $"{((byte)value) * 5}";
         }
     }
 
