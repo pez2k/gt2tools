@@ -32,7 +32,7 @@ namespace GT2.DataSplitter
         public List<LSD> LSDParts { get; set; } = new List<LSD>();
         public List<TiresFront> TiresFrontParts { get; set; } = new List<TiresFront>();
         public List<TiresRear> TiresRearParts { get; set; } = new List<TiresRear>();
-        public List<CarUnknown1> Unknown1 { get; set; } = new List<CarUnknown1>();
+        public List<TireSize> TireSizes { get; set; } = new List<TireSize>();
         public List<CarUnknown2> Unknown2 { get; set; } = new List<CarUnknown2>();
         public List<CarUnknown3> Unknown3 { get; set; } = new List<CarUnknown3>();
         public List<ActiveStabilityControl> ActiveStabilityControlParts { get; set; } = new List<ActiveStabilityControl>();
@@ -78,7 +78,7 @@ namespace GT2.DataSplitter
                 LSDParts.Read(file, blocks[21].BlockStart, blocks[21].BlockSize);
                 TiresFrontParts.Read(file, blocks[22].BlockStart, blocks[22].BlockSize);
                 TiresRearParts.Read(file, blocks[23].BlockStart, blocks[23].BlockSize);
-                Unknown1.Read(file, blocks[24].BlockStart, blocks[24].BlockSize);
+                TireSizes.Read(file, blocks[24].BlockStart, blocks[24].BlockSize);
                 Unknown2.Read(file, blocks[25].BlockStart, blocks[25].BlockSize);
                 Unknown3.Read(file, blocks[26].BlockStart, blocks[26].BlockSize);
                 ActiveStabilityControlParts.Read(file, blocks[27].BlockStart, blocks[27].BlockSize);
@@ -114,7 +114,7 @@ namespace GT2.DataSplitter
             LSDParts.Dump();
             TiresFrontParts.Dump();
             TiresRearParts.Dump();
-            Unknown1.Dump();
+            TireSizes.Dump();
             Unknown2.Dump();
             Unknown3.Dump();
             ActiveStabilityControlParts.Dump();
@@ -149,7 +149,7 @@ namespace GT2.DataSplitter
             LSDParts.Import();
             TiresFrontParts.Import();
             TiresRearParts.Import();
-            Unknown1.Import();
+            TireSizes.Import();
             Unknown2.Import();
             Unknown3.Import();
             ActiveStabilityControlParts.Import();
@@ -192,7 +192,7 @@ namespace GT2.DataSplitter
                 LSDParts.Write(file, 8 * i++);
                 TiresFrontParts.Write(file, 8 * i++);
                 TiresRearParts.Write(file, 8 * i++);
-                Unknown1.Write(file, 8 * i++);
+                TireSizes.Write(file, 8 * i++);
                 Unknown2.Write(file, 8 * i++);
                 Unknown3.Write(file, 8 * i++);
                 ActiveStabilityControlParts.Write(file, 8 * i++);
