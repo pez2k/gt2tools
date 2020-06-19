@@ -14,6 +14,8 @@ namespace GT2.DataSplitter
         public static CarIdConverter CarIdConverter { get; set; } = new CarIdConverter();
         public static CarIdArrayConverter CarIdArrayConverter { get; set; } = new CarIdArrayConverter();
         public static DrivetrainTypeConverter DrivetrainTypeConverter { get; set; } = new DrivetrainTypeConverter();
+        public static TireWidthConverter TireWidthConverter { get; set; } = new TireWidthConverter();
+        public static TireProfileConverter TireProfileConverter { get; set; } = new TireProfileConverter();
         public static TireStageConverter TireStageConverter { get; set; } = new TireStageConverter();
         public static TireCompoundConverter TireCompoundConverter { get; set; } = new TireCompoundConverter();
         public static LicenseConverter LicenseConverter { get; set; } = new LicenseConverter();
@@ -112,6 +114,32 @@ namespace GT2.DataSplitter
         {
             byte drivetrainType = (byte)value;
             return DrivetrainTypes[drivetrainType];
+        }
+    }
+
+    public class TireWidthConverter : ITypeConverter
+    {
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            return (byte)(ushort.Parse(text) / 10);
+        }
+
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            return $"{(((byte)value) * 10) + 5}";
+        }
+    }
+
+    public class TireProfileConverter : ITypeConverter
+    {
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            return (ushort)(ushort.Parse(text) / 5);
+        }
+
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
+        {
+            return $"{((ushort)value) * 5}";
         }
     }
 
