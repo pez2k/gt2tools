@@ -95,13 +95,14 @@ namespace GT2.DataSplitter
 
                 GTModeData CarData = new GTModeData();
                 CarData.ImportData();
-                CarData.WriteData($"{GetDataFilePrefix()}gtmode_data.dat");
+                Directory.CreateDirectory("Output");
+                CarData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}gtmode_data.dat"));
 
                 GTModeRace RaceData = new GTModeRace();
                 RaceData.ImportData();
-                RaceData.WriteData($"{GetDataFilePrefix()}gtmode_race.dat");
+                RaceData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}gtmode_race.dat"));
 
-                StringTable.Write($"{LanguagePrefix}_unistrdb.dat");
+                StringTable.Write(Path.Combine("Output", $"{LanguagePrefix}_unistrdb.dat"));
 
                 StringTable.Reset();
                 CarNameStringTable.Reset();
