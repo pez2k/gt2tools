@@ -138,7 +138,10 @@ namespace GT2.CarInfoEditorCSV
                         };
                         Car existingCar = list.Cars.Find(car => car.CarName == newColourWithName.CarName);
                         existingCar.Colours.Remove(existingCar.Colours.Where(colour => colour.PaletteID == newColour.PaletteID).SingleOrDefault());
-                        existingCar.Colours.Add(newColour);
+                        if (newColour.JapaneseName != "Delete")
+                        {
+                            existingCar.Colours.Add(newColour);
+                        }
                     }
 
                     foreach (Car car in list.Cars)
