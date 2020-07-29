@@ -33,11 +33,11 @@ namespace GT2.DataSplitter
         public List<TiresFront> TiresFrontParts { get; set; } = new List<TiresFront>();
         public List<TiresRear> TiresRearParts { get; set; } = new List<TiresRear>();
         public List<TireSize> TireSizes { get; set; } = new List<TireSize>();
-        public List<CarUnknown1> Unknown1 { get; set; } = new List<CarUnknown1>();
-        public List<CarUnknown2> Unknown2 { get; set; } = new List<CarUnknown2>();
+        public List<TireCompound> TireCompounds { get; set; } = new List<TireCompound>();
+        public List<TireForceVol> TireForceVols { get; set; } = new List<TireForceVol>();
         public List<ActiveStabilityControl> ActiveStabilityControlParts { get; set; } = new List<ActiveStabilityControl>();
         public List<TractionControlSystem> TractionControlSystemParts { get; set; } = new List<TractionControlSystem>();
-        public List<CarUnknown3> Unknown3 { get; set; } = new List<CarUnknown3>();
+        public List<CarUnknown> Unknown { get; set; } = new List<CarUnknown>();
         public List<Car> Cars { get; set; } = new List<Car>();
         
         public void ReadData(string filename)
@@ -79,11 +79,11 @@ namespace GT2.DataSplitter
                 TiresFrontParts.Read(file, blocks[22].BlockStart, blocks[22].BlockSize);
                 TiresRearParts.Read(file, blocks[23].BlockStart, blocks[23].BlockSize);
                 TireSizes.Read(file, blocks[24].BlockStart, blocks[24].BlockSize);
-                Unknown1.Read(file, blocks[25].BlockStart, blocks[25].BlockSize);
-                Unknown2.Read(file, blocks[26].BlockStart, blocks[26].BlockSize);
+                TireCompounds.Read(file, blocks[25].BlockStart, blocks[25].BlockSize);
+                TireForceVols.Read(file, blocks[26].BlockStart, blocks[26].BlockSize);
                 ActiveStabilityControlParts.Read(file, blocks[27].BlockStart, blocks[27].BlockSize);
                 TractionControlSystemParts.Read(file, blocks[28].BlockStart, blocks[28].BlockSize);
-                Unknown3.Read(file, blocks[29].BlockStart, blocks[29].BlockSize);
+                Unknown.Read(file, blocks[29].BlockStart, blocks[29].BlockSize);
                 Cars.Read(file, blocks[30].BlockStart, blocks[30].BlockSize);
             }
         }
@@ -115,11 +115,11 @@ namespace GT2.DataSplitter
             TireSizes.Dump();
             TiresFrontParts.Dump();
             TiresRearParts.Dump();
-            Unknown1.Dump();
-            Unknown2.Dump();
+            TireCompounds.Dump();
+            TireForceVols.Dump();
             ActiveStabilityControlParts.Dump();
             TractionControlSystemParts.Dump();
-            Unknown3.Dump();
+            Unknown.Dump();
             Cars.Dump();
         }
 
@@ -150,11 +150,11 @@ namespace GT2.DataSplitter
             TireSizes.Import();
             TiresFrontParts.Import();
             TiresRearParts.Import();
-            Unknown1.Import();
-            Unknown2.Import();
+            TireCompounds.Import();
+            TireForceVols.Import();
             ActiveStabilityControlParts.Import();
             TractionControlSystemParts.Import();
-            Unknown3.Import();
+            Unknown.Import();
             Cars.Import();
         }
 
@@ -193,11 +193,11 @@ namespace GT2.DataSplitter
                 TiresFrontParts.Write(file, 8 * i++);
                 TiresRearParts.Write(file, 8 * i++);
                 TireSizes.Write(file, 8 * i++);
-                Unknown1.Write(file, 8 * i++);
-                Unknown2.Write(file, 8 * i++);
+                TireCompounds.Write(file, 8 * i++);
+                TireForceVols.Write(file, 8 * i++);
                 ActiveStabilityControlParts.Write(file, 8 * i++);
                 TractionControlSystemParts.Write(file, 8 * i++);
-                Unknown3.Write(file, 8 * i++);
+                Unknown.Write(file, 8 * i++);
                 Cars.Write(file, 8 * i++);
 
                 file.Position = 0;

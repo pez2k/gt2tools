@@ -1,8 +1,8 @@
 ﻿namespace GT2.DataSplitter
 {
-    public class CarUnknown3 : CarDataStructure
+    public class CarUnknown : CarDataStructure
     {
-        public CarUnknown3()
+        public CarUnknown()
         {
             Size = 0x628;
             HasCarId = false;
