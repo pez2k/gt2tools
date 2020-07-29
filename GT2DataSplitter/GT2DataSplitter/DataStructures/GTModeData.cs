@@ -113,10 +113,10 @@ namespace GT2.DataSplitter
             MufflerParts.Dump();
             LSDParts.Dump();
             TireSizes.Dump();
-            TiresFrontParts.Dump();
-            TiresRearParts.Dump();
             TireCompounds.Dump();
             TireForceVols.Dump();
+            TiresFrontParts.Dump();
+            TiresRearParts.Dump();
             ActiveStabilityControlParts.Dump();
             TractionControlSystemParts.Dump();
             Unknown.Dump();
@@ -148,10 +148,10 @@ namespace GT2.DataSplitter
             MufflerParts.Import();
             LSDParts.Import();
             TireSizes.Import();
-            TiresFrontParts.Import();
-            TiresRearParts.Import();
             TireCompounds.Import();
             TireForceVols.Import();
+            TiresFrontParts.Import();
+            TiresRearParts.Import();
             ActiveStabilityControlParts.Import();
             TractionControlSystemParts.Import();
             Unknown.Import();

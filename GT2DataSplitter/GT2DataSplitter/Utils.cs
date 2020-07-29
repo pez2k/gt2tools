@@ -17,7 +17,6 @@ namespace GT2.DataSplitter
         public static TireWidthConverter TireWidthConverter { get; set; } = new TireWidthConverter();
         public static TireProfileConverter TireProfileConverter { get; set; } = new TireProfileConverter();
         public static TireStageConverter TireStageConverter { get; set; } = new TireStageConverter();
-        public static TireCompoundConverter TireCompoundConverter { get; set; } = new TireCompoundConverter();
         public static LicenseConverter LicenseConverter { get; set; } = new LicenseConverter();
         public static DrivetrainRestrictionConverter DrivetrainRestrictionConverter { get; set; } = new DrivetrainRestrictionConverter();
 
@@ -156,22 +155,6 @@ namespace GT2.DataSplitter
         {
             byte tireType = (byte)value;
             return TireTypes[tireType];
-        }
-    }
-
-    public class TireCompoundConverter : ITypeConverter
-    {
-        protected List<string> TireCompounds = new List<string> { "RoadFront", "RoadRear", "SportsFront", "SportsRear", "HardFront", "HardRear", "MediumFront", "MediumRear", "SoftFront", "SoftRear", "SuperSoftFront", "SuperSoftRear", "DirtFront", "DirtRear", "RWDDirtFront", "RWDDirtRear", "SimulationFront", "SimulationRear", "PikesPeakFront", "PikesPeakRear" };
-
-        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
-        {
-            return (byte)TireCompounds.IndexOf(text);
-        }
-
-        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
-        {
-            byte tireCompound = (byte)value;
-            return TireCompounds[tireCompound];
         }
     }
 
