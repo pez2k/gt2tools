@@ -17,6 +17,7 @@ namespace GT1.MenuTextureEditor
         private const int BottomRowHeight = 224;
         private const int BitmapWidth = (ColumnWidth + ColumnWidth + RightColumnWidth) * 2;
         private const int BitmapHeight = TopRowHeight + BottomRowHeight;
+        private const ushort AlphaFlag = 0x8000;
 
         static void Main(string[] args)
         {
@@ -62,11 +63,16 @@ namespace GT1.MenuTextureEditor
                             for (int i = 0; i < PaletteSize; i++)
                             {
                                 ushort paletteColour = stream.ReadUShort();
-                                int R = paletteColour & 0x1F;
-                                int G = (paletteColour >> 5) & 0x1F;
-                                int B = (paletteColour >> 10) & 0x1F;
+                                int R = (paletteColour & 0x1F) * 8;
+                                int G = ((paletteColour >> 5) & 0x1F) * 8;
+                                int B = ((paletteColour >> 10) & 0x1F) * 8;
 
-                                palette.Entries[i] = Color.FromArgb(R * 8, G * 8, B * 8);
+                                if ((paletteColour & AlphaFlag) > 0 && B < 255)
+                                {
+                                    B++;
+                                }
+
+                                palette.Entries[i] = Color.FromArgb(R, G, B);
                             }
                             bitmap.Palette = palette;
                         }
@@ -120,7 +126,14 @@ namespace GT1.MenuTextureEditor
                             int R = colour.R / 8;
                             int G = colour.G / 8;
                             int B = colour.B / 8;
-                            paletteFile.WriteUShort((ushort)((B << 10) + (G << 5) + R));
+                            ushort colourValue = (ushort)((B << 10) + (G << 5) + R);
+
+                            if (colour.B % 8 == 1)
+                            {
+                                colourValue += AlphaFlag;
+                            }
+
+                            paletteFile.WriteUShort(colourValue);
                         }
                     }
                 }
