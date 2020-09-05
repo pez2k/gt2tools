@@ -38,22 +38,22 @@ namespace GT3.DataSplitter
         public ulong ASCC;
         public ulong TCSC;
         public ulong WheelsMaybe;
-        public ushort Unknown1;
+        public ushort TunerIDMaybe;
         public ushort ManufacturerID;
-        public ushort NameFirstPartMaybe;
-        public ushort NameSecondPartMaybe;
+        public ushort NameFirstPartUS;
+        public ushort NameSecondPartUS;
         public ushort Unknown2;
         public ushort Year;
         public uint Price;
         public byte IsSpecialMaybe;
         public byte Unknown3;
-        public ushort Unknown4;
-        public ushort Unknown5;
+        public ushort NameFirstPartJP;
+        public ushort NameSecondPartJP;
         public ushort Unknown6;
         public ulong Unknown7;
-        public ushort Unknown8;
-        public ushort Unknown9;
-        public ushort Unknown10;
+        public ushort NameFirstPartEU;
+        public ushort NameSecondPartEU;
+        public ushort ManufacturerName;
         public ushort Unknown11;
     }
 
@@ -89,22 +89,22 @@ namespace GT3.DataSplitter
             Map(m => m.ASCC).TypeConverter(Utils.IdConverter);
             Map(m => m.TCSC).TypeConverter(Utils.IdConverter);
             Map(m => m.WheelsMaybe);
-            Map(m => m.Unknown1);
+            Map(m => m.TunerIDMaybe);
             Map(m => m.ManufacturerID);
-            Map(m => m.NameFirstPartMaybe).TypeConverter(Program.UnicodeStrings.Lookup);
-            Map(m => m.NameSecondPartMaybe).TypeConverter(Program.UnicodeStrings.Lookup);
+            Map(m => m.NameFirstPartUS).TypeConverter(Program.UnicodeStrings.Lookup);
+            Map(m => m.NameSecondPartUS).TypeConverter(Program.UnicodeStrings.Lookup);
             Map(m => m.Unknown2);
             Map(m => m.Year);
             Map(m => m.Price);
             Map(m => m.IsSpecialMaybe);
             Map(m => m.Unknown3);
-            Map(m => m.Unknown4);
-            Map(m => m.Unknown5);
+            Map(m => m.NameFirstPartJP).TypeConverter(Program.UnicodeStrings.Lookup);
+            Map(m => m.NameSecondPartJP).TypeConverter(Program.UnicodeStrings.Lookup);
             Map(m => m.Unknown6);
             Map(m => m.Unknown7);
-            Map(m => m.Unknown8);
-            Map(m => m.Unknown9);
-            Map(m => m.Unknown10);
+            Map(m => m.NameFirstPartEU).TypeConverter(Program.UnicodeStrings.Lookup);
+            Map(m => m.NameSecondPartEU).TypeConverter(Program.UnicodeStrings.Lookup);
+            Map(m => m.ManufacturerName).TypeConverter(Program.UnicodeStrings.Lookup);
             Map(m => m.Unknown11);
         }
     }
