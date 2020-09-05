@@ -149,6 +149,7 @@ namespace GT3.DataSplitter
             T example = new T();
             Console.WriteLine($"Importing {example.Name} structures from disk...");
 
+            // TODO: implement read ordering correctly - Engine for example was originally read by car manufacturer ID then ordinal part ID - can be deduced from unistr entries
             foreach (string filename in Directory.EnumerateFiles(example.Name))
             {
                 T structure = new T();
