@@ -58,7 +58,7 @@ namespace GT3.ModelSplitter
                     byte[] buffer = new byte[blockSize];
                     file.Read(buffer);
 
-                    string outputDirectory = Path.GetFileNameWithoutExtension(filename);
+                    string outputDirectory = Path.GetFileNameWithoutExtension(filename) + "_files";
                     Directory.CreateDirectory(outputDirectory);
                     using (var output = new FileStream(Path.Combine(outputDirectory, $"{i:D3}.{GetOutputFileExtension(buffer.Take(4).ToArray())}"), FileMode.Create, FileAccess.Write))
                     {
