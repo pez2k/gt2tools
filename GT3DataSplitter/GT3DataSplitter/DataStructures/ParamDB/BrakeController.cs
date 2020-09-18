@@ -5,10 +5,6 @@ namespace GT3.DataSplitter
 {
     public class BrakeController : CsvDataStructure<BrakeControllerData, BrakeControllerCSVMap>
     {
-        public BrakeController()
-        {
-            Size = 0x20;
-        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x20
