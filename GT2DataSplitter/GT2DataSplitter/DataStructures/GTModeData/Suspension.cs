@@ -75,13 +75,13 @@ namespace GT2.DataSplitter
         public byte Unknown26;
         public byte Unknown27;
         public byte Unknown28;
-        public byte MaxStabiliserFront;
-        public byte Unknown29;
-        public byte Unknown30;
+        public byte MaxStabiliserFront; // steps
+        public byte Unknown29; // probably min value
+        public byte Unknown30; // probably max value
         public byte DefaultStabiliserFront;
-        public byte MaxStabiliserRear;
-        public byte Unknown31;
-        public byte Unknown32;
+        public byte MaxStabiliserRear; // steps
+        public byte Unknown31; // probably min value
+        public byte Unknown32; // probably max value
         public byte DefaultStabiliserRear;
         public byte Unknown33;
     }
