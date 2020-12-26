@@ -41,13 +41,19 @@ namespace GT1.MenuTextureEditor
         {
             string[] filenames = Directory.EnumerateFiles(directory).ToArray();
             Assert(filenames.Length == 7, $"Expected 7 files in folder, found {filenames.Length}.");
-            Assert(new FileInfo(filenames[0]).Length == PaletteSize * 2);
-            Assert(new FileInfo(filenames[1]).Length == ColumnWidth * TopRowHeight);
-            Assert(new FileInfo(filenames[2]).Length == ColumnWidth * TopRowHeight);
-            Assert(new FileInfo(filenames[3]).Length == RightColumnWidth * TopRowHeight);
-            Assert(new FileInfo(filenames[4]).Length == ColumnWidth * BottomRowHeight);
-            Assert(new FileInfo(filenames[5]).Length == ColumnWidth * BottomRowHeight);
-            Assert(new FileInfo(filenames[6]).Length == RightColumnWidth * BottomRowHeight);
+            var expectedFileSizes = new int[] {
+                PaletteSize * 2,
+                ColumnWidth * TopRowHeight,
+                ColumnWidth * TopRowHeight,
+                RightColumnWidth * TopRowHeight,
+                ColumnWidth * BottomRowHeight,
+                ColumnWidth * BottomRowHeight,
+                RightColumnWidth * BottomRowHeight
+            };
+            for (int i = 0; i < 7; i++) {
+                long actualSize = new FileInfo(filenames[i]).Length;
+                Assert(actualSize == expectedFileSizes[i], $"File {i} should be {expectedFileSizes[i]} bytes, but is actually {actualSize} bytes.");
+            }
             
             var texture = new byte[BitmapHeight, BitmapWidth];
             GCHandle memoryHandle = GCHandle.Alloc(texture, GCHandleType.Pinned);
