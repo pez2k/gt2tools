@@ -9,10 +9,45 @@ using StreamExtensions;
 
 namespace GT3.CarColorEditor
 {
+    using HashGenerator;
+
     class Program
     {
         static void Main(string[] args)
         {
+            var modelIDs = new Dictionary<ulong, string>() // IDs that appear in the file but aren't in any ID table
+            {
+                [HashGenerator.GenerateHash("ar0019")] = "ar0019",
+                [HashGenerator.GenerateHash("fo0016")] = "fo0016",
+                [HashGenerator.GenerateHash("fo0024")] = "fo0024",
+                [HashGenerator.GenerateHash("ho0097")] = "ho0097",
+                [HashGenerator.GenerateHash("ma0097")] = "ma0097",
+                [HashGenerator.GenerateHash("ml0001")] = "ml0001",
+                [HashGenerator.GenerateHash("ni0120")] = "ni0120",
+                [HashGenerator.GenerateHash("pd0001")] = "pd0001",
+                [HashGenerator.GenerateHash("ro0003")] = "ro0003",
+                [HashGenerator.GenerateHash("wl1003")] = "wl1003"
+            };
+
+            var suffixes = new string[] { "", "_eu", "_us" };
+            foreach (string suffix in suffixes)
+            {
+                string indexFile = $".id_db_idx{suffix}.db";
+                string stringFile = $".id_db_str{suffix}.db";
+                if (File.Exists(indexFile) && File.Exists(stringFile))
+                {
+                    var hashes = new IDStringTable();
+                    hashes.Read(indexFile, stringFile);
+                    foreach (KeyValuePair<ulong, string> hashPair in hashes.AsDictionary())
+                    {
+                        if (!modelIDs.ContainsKey(hashPair.Key))
+                        {
+                            modelIDs.Add(hashPair.Key, hashPair.Value);
+                        }
+                    }
+                }
+            }
+
             var colourNames = new StringTable();
             colourNames.Read("carcolor.sdb");
 
@@ -30,6 +65,10 @@ namespace GT3.CarColorEditor
                     using (CsvWriter carCsv = new CsvWriter(carOutput))
                     {
                         carCsv.Configuration.QuoteAllFields = true;
+                        carCsv.WriteField("ModelID");
+                        carCsv.WriteField("ColourIDs");
+                        carCsv.NextRecord();
+
                         // car entry: 8b ID hash, 4b colour count, 4b offset in map? - ordered by ID hash
                         for (uint i = 0; i < carCount; i++)
                         {
@@ -49,11 +88,12 @@ namespace GT3.CarColorEditor
 
                             file.Position = currentOffset;
 
-                            carCsv.WriteField(i);
-                            carCsv.WriteField($"0x{carIDHash:X16}");
-                            carCsv.WriteField(carColourCount);
+                            //carCsv.WriteField(i);
+                            string carID = modelIDs.TryGetValue(carIDHash, out string carIDString) ? carIDString : $"0x{carIDHash:X16}";
+                            carCsv.WriteField(carID);
+                            //carCsv.WriteField(carColourCount);
                             //carCsv.WriteField(colourMapOffset);
-                            carCsv.WriteField(colourIDs);
+                            carCsv.WriteField(string.Join(",", colourIDs.Select(id => $"{id}")));
                             carCsv.NextRecord();
                         }
                     }
@@ -67,14 +107,20 @@ namespace GT3.CarColorEditor
                     using (CsvWriter colourCsv = new CsvWriter(colourOutput))
                     {
                         colourCsv.Configuration.QuoteAllFields = true;
+                        colourCsv.WriteField("ColourID");
+                        colourCsv.WriteField("LatinName");
+                        colourCsv.WriteField("JapaneseName");
+                        colourCsv.WriteField("ThumbnailColour");
+                        colourCsv.NextRecord();
+
                         for (uint i = 0; i < coloursCount; i++)
                         {
                             uint colourNumber = file.ReadUInt();
                             uint colourStringLatin = file.ReadUInt();
                             uint colourStringJapanese = file.ReadUInt();
-                            uint colourThumbnail = file.ReadUInt();
+                            uint colourThumbnail = file.ReadUInt(); // TODO: reverse bytes
 
-                            colourCsv.WriteField(i);
+                            //colourCsv.WriteField(i);
                             colourCsv.WriteField(colourNumber);
                             colourCsv.WriteField(colourNames.Get((ushort)colourStringLatin));
                             colourCsv.WriteField(colourNames.Get((ushort)colourStringJapanese));

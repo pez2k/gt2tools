@@ -94,6 +94,8 @@ namespace GT3.CarColorEditor
             stringTable.Write(".id_db_str_eu.db", false);
         }
 
+        public SortedDictionary<ulong, string> AsDictionary() => ids;
+
         public class IDStringTableLookup : ITypeConverter
         {
             private readonly IDStringTable table;
