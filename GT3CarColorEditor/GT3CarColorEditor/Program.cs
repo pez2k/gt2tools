@@ -118,13 +118,17 @@ namespace GT3.CarColorEditor
                             uint colourNumber = file.ReadUInt();
                             uint colourStringLatin = file.ReadUInt();
                             uint colourStringJapanese = file.ReadUInt();
-                            uint colourThumbnail = file.ReadUInt(); // TODO: reverse bytes
+
+                            byte thumbnailR = file.ReadSingleByte();
+                            byte thumbnailG = file.ReadSingleByte();
+                            byte thumbnailB = file.ReadSingleByte();
+                            byte thumbnailA = file.ReadSingleByte();
 
                             //colourCsv.WriteField(i);
                             colourCsv.WriteField(colourNumber);
                             colourCsv.WriteField(colourNames.Get((ushort)colourStringLatin));
                             colourCsv.WriteField(colourNames.Get((ushort)colourStringJapanese));
-                            colourCsv.WriteField($"#{colourThumbnail:X6}");
+                            colourCsv.WriteField($"#{thumbnailR:X2}{thumbnailG:X2}{thumbnailB:X2}");
                             colourCsv.NextRecord();
                         }
                     }
