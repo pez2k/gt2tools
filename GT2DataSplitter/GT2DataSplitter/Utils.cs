@@ -79,7 +79,7 @@ namespace GT2.DataSplitter
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
             int stringNumber = FileNameCache.Get(Name, text);
-            if (Name == nameof(Regulations) || Name == nameof(TireSize))
+            if (Name == nameof(Regulations) || Name == nameof(TireSize) || Name == nameof(TireCompound))
             {
                 return (byte)stringNumber;
             }
