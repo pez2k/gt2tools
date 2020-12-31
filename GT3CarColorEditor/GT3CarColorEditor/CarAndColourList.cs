@@ -105,7 +105,7 @@ namespace GT3.CarColorEditor
                     carCsv.WriteField("ColourIDs");
                     carCsv.NextRecord();
 
-                    foreach (Car car in Cars)
+                    foreach (Car car in Cars.OrderBy(car => car.ModelName))
                     {
                         car.WriteToCSV(carCsv);
                     }
