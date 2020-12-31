@@ -19,6 +19,7 @@ namespace GT3.CarColorEditor
             [HashGenerator.GenerateHash("fo0024")] = "fo0024",
             [HashGenerator.GenerateHash("ho0097")] = "ho0097",
             [HashGenerator.GenerateHash("ma0097")] = "ma0097",
+            [HashGenerator.GenerateHash("ma0121")] = "ma0121",
             [HashGenerator.GenerateHash("ml0001")] = "ml0001",
             [HashGenerator.GenerateHash("ni0120")] = "ni0120",
             [HashGenerator.GenerateHash("pd0001")] = "pd0001",
@@ -74,7 +75,7 @@ namespace GT3.CarColorEditor
 
         private void PopulateModelIDs()
         {
-            var suffixes = new string[] { "", "_eu", "_us" };
+            var suffixes = new string[] { "", "_eu", "_us", "_gtc", "_gtc_eu", "_gtc_kr", "_gtc_tw", "_gtc_us" };
             foreach (string suffix in suffixes)
             {
                 string indexFile = $".id_db_idx{suffix}.db";
