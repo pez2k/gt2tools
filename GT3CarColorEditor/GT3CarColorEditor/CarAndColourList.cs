@@ -130,5 +130,97 @@ namespace GT3.CarColorEditor
                 }
             }
         }
+
+        public void WriteToWikiText()
+        {
+            using (TextWriter output = new StreamWriter(File.Create("CarColours.txt"), Encoding.UTF8))
+            {
+                foreach (Car car in Cars.OrderBy(car => car.ModelName))
+                {
+                    output.WriteLine(car.ModelName);
+                    output.WriteLine();
+                    output.WriteLine("==Colors==");
+                    List<CarColour> carColours = car.ColourIDs.Select(id => Colours.TryGetValue(id, out CarColour colour) ? colour : throw new Exception("Missing colour.")).ToList();
+                    if (carColours.Count > 1)
+                    {
+                        output.Write($"There are {GetNumber(car.ColourIDs.Count)} colors");
+                    }
+                    else
+                    {
+                        output.Write($"There is only one color");
+                    }
+                    output.Write(" available for this vehicle");
+
+                    bool hasColourNames = false;
+                    foreach (CarColour colour in carColours)
+                    {
+                        if (colour.LatinName != "-")
+                        {
+                            hasColourNames = true;
+                            break;
+                        }
+                    }
+
+                    if (!hasColourNames)
+                    {
+                        if (carColours.Count > 1)
+                        {
+                            output.Write($", they are");
+                        }
+                        else
+                        {
+                            output.Write($", it is");
+                        }
+                        output.Write($" unnamed in-game");
+                    }
+
+                    output.WriteLine($":");
+
+                    foreach (CarColour colour in carColours)
+                    {
+                        output.WriteLine($"*{{{{ColorSquare|{colour.HexThumbnailColour}}}}}" +
+                                         $"{(string.IsNullOrWhiteSpace(colour.LatinName) ? "" : " " + (colour.LatinName == colour.JapaneseName ? colour.LatinName : $"{colour.LatinName} ({colour.JapaneseName})"))}");
+                    }
+
+                    output.WriteLine();
+                    output.WriteLine();
+                }
+            }
+        }
+
+        private string GetNumber(long number)
+        {
+            Dictionary<long, string> numbers = new Dictionary<long, string>
+            {
+                [1] = "one",
+                [2] = "two",
+                [3] = "three",
+                [4] = "four",
+                [5] = "five",
+                [6] = "six",
+                [7] = "seven",
+                [8] = "eight",
+                [9] = "nine",
+                [10] = "ten",
+                [11] = "eleven",
+                [12] = "twelve",
+                [13] = "thirteen",
+                [14] = "fourteen",
+                [15] = "fifteen",
+                [16] = "sixteen",
+                [17] = "seventeen",
+                [18] = "eighteen",
+                [19] = "nineteen",
+                [20] = "twenty",
+                [21] = "twenty-one",
+                [22] = "twenty-two",
+                [23] = "twenty-three",
+                [24] = "twenty-four",
+                [25] = "twenty-five",
+                [26] = "twenty-six",
+                [27] = "twenty-seven"
+            };
+            return numbers.TryGetValue(number, out string name) ? name : throw new Exception("Number not found");
+        }
     }
 }
