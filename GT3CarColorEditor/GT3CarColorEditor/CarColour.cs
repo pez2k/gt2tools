@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using CsvHelper;
+using CsvHelper.Configuration;
 using StreamExtensions;
 
 namespace GT3.CarColorEditor
@@ -20,6 +22,11 @@ namespace GT3.CarColorEditor
                 byte thumbnailB = colourBytes[2];
                 return $"#{thumbnailR:X2}{thumbnailG:X2}{thumbnailB:X2}";
             }
+            set
+            {
+                byte[] number = uint.Parse(value.Replace("#", ""), NumberStyles.HexNumber).ToByteArray();
+                ThumbnailColour = (uint)((number[0] + (number[1] * 256) + (number[2] * 256 * 256)) * 256);
+            }
         }
 
         public void ReadFromGameFiles(Stream file, StringTable colourNames)
@@ -30,13 +37,21 @@ namespace GT3.CarColorEditor
             ThumbnailColour = file.ReadUInt();
         }
 
-        public void WriteToCSV(CsvWriter colourCsv)
+        public void WriteToCSV(CsvWriter csv)
         {
-            colourCsv.WriteField(ColourID);
-            colourCsv.WriteField(LatinName);
-            colourCsv.WriteField(JapaneseName);
-            colourCsv.WriteField(HexThumbnailColour);
-            colourCsv.NextRecord();
+            csv.NextRecord();
+            csv.WriteRecord(this);
+        }
+
+        public sealed class CSVMap : ClassMap<CarColour>
+        {
+            public CSVMap()
+            {
+                Map(m => m.ColourID);
+                Map(m => m.LatinName);
+                Map(m => m.JapaneseName);
+                Map(m => m.HexThumbnailColour).Name("ThumbnailColour");
+            }
         }
     }
 }

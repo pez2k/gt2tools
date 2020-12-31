@@ -99,34 +99,30 @@ namespace GT3.CarColorEditor
         {
             using (TextWriter carOutput = new StreamWriter(File.Create("Cars.csv"), Encoding.UTF8))
             {
-                using (CsvWriter carCsv = new CsvWriter(carOutput))
+                using (CsvWriter csv = new CsvWriter(carOutput))
                 {
-                    carCsv.Configuration.QuoteAllFields = true;
-                    carCsv.WriteField("ModelID");
-                    carCsv.WriteField("ColourIDs");
-                    carCsv.NextRecord();
+                    csv.Configuration.RegisterClassMap<Car.CSVMap>();
+                    csv.Configuration.QuoteAllFields = true;
+                    csv.WriteHeader<Car>();
 
                     foreach (Car car in Cars.OrderBy(car => car.ModelName))
                     {
-                        car.WriteToCSV(carCsv);
+                        car.WriteToCSV(csv);
                     }
                 }
             }
 
             using (TextWriter colourOutput = new StreamWriter(File.Create("Colours.csv"), Encoding.UTF8))
             {
-                using (CsvWriter colourCsv = new CsvWriter(colourOutput))
+                using (CsvWriter csv = new CsvWriter(colourOutput))
                 {
-                    colourCsv.Configuration.QuoteAllFields = true;
-                    colourCsv.WriteField("ColourID");
-                    colourCsv.WriteField("LatinName");
-                    colourCsv.WriteField("JapaneseName");
-                    colourCsv.WriteField("ThumbnailColour");
-                    colourCsv.NextRecord();
+                    csv.Configuration.RegisterClassMap<CarColour.CSVMap>();
+                    csv.Configuration.QuoteAllFields = true;
+                    csv.WriteHeader<CarColour>();
 
                     foreach (CarColour colour in Colours.Values)
                     {
-                        colour.WriteToCSV(colourCsv);
+                        colour.WriteToCSV(csv);
                     }
                 }
             }
@@ -144,7 +140,7 @@ namespace GT3.CarColorEditor
                     List<CarColour> carColours = car.ColourIDs.Select(id => Colours.TryGetValue(id, out CarColour colour) ? colour : throw new Exception("Missing colour.")).ToList();
                     if (carColours.Count > 1)
                     {
-                        output.Write($"There are {GetNumber(car.ColourIDs.Count)} colors");
+                        output.Write($"There are {GetNumber(car.ColourIDs.Length)} colors");
                     }
                     else
                     {
@@ -222,6 +218,65 @@ namespace GT3.CarColorEditor
                 [27] = "twenty-seven"
             };
             return numbers.TryGetValue(number, out string name) ? name : throw new Exception("Number not found");
+        }
+
+        public void ReadFromCSV()
+        {
+            ReadColours("Colours.csv");
+            foreach (string csvPath in Directory.EnumerateFiles(".\\", "Colours_*.csv"))
+            {
+                ReadColours(csvPath);
+            }
+
+            ReadCars("Cars.csv");
+            foreach (string csvPath in Directory.EnumerateFiles(".\\", "Cars_*.csv"))
+            {
+                ReadCars(csvPath);
+            }
+        }
+
+        public void ReadColours(string csvPath)
+        {
+            using (TextReader file = new StreamReader(csvPath, Encoding.UTF8))
+            {
+                using (CsvReader csv = new CsvReader(file))
+                {
+                    csv.Configuration.RegisterClassMap<CarColour.CSVMap>();
+
+                    while (csv.Read())
+                    {
+                        CarColour newColour = csv.GetRecord<CarColour>();
+                        Colours.Remove(newColour.ColourID);
+                        if (newColour.JapaneseName != "Delete")
+                        {
+                            Colours.Add(newColour.ColourID, newColour);
+                        }
+                    }
+                }
+            }
+        }
+
+        public void ReadCars(string csvPath)
+        {
+            using (TextReader file = new StreamReader(csvPath, Encoding.UTF8))
+            {
+                using (CsvReader csv = new CsvReader(file))
+                {
+                    csv.Configuration.RegisterClassMap<Car.CSVMap>();
+
+                    while (csv.Read())
+                    {
+                        Car newCar = csv.GetRecord<Car>();
+                        if (newCar.ColourIDs.Any(id => !Colours.ContainsKey(id)))
+                        {
+                            throw new Exception($"Car {newCar.ModelName} uses invalid colour ID.");
+                        }
+                        Cars.Remove(Cars.Where(car => car.ModelName == newCar.ModelName).SingleOrDefault());
+                        Cars.Add(newCar);
+                    }
+                    Cars = Cars.OrderBy(car => car.ModelNameHash).ToList();
+                }
+            }
         }
     }
 }

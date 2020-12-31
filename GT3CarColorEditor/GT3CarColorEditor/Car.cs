@@ -1,17 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
-using System.Linq;
 using CsvHelper;
 using StreamExtensions;
 
 namespace GT3.CarColorEditor
 {
+    using CsvHelper.Configuration;
+    using HashGenerator;
+
     public class Car
     {
+        private string modelName;
+
         public ulong ModelNameHash { get; set; }
-        public string ModelName { get; set; }
-        public List<uint> ColourIDs { get; set; } = new List<uint>();
+        public string ModelName
+        {
+            get => modelName;
+            set
+            {
+                ModelNameHash = value.StartsWith("0x") ? ulong.Parse(value, NumberStyles.HexNumber) : HashGenerator.GenerateHash(value);
+                modelName = value;
+            }
+        }
+        public uint[] ColourIDs { get; set; }
 
         public void ReadFromGameFiles(Stream file, uint carToColoursMapIndex, Dictionary<ulong, string> modelIDs, SortedDictionary<uint, CarColour> colours)
         {
@@ -22,6 +35,7 @@ namespace GT3.CarColorEditor
             long currentOffset = file.Position;
             file.Position = carToColoursMapIndex + colourMapOffset;
 
+            ColourIDs = new uint[carColourCount];
             for (uint i = 0; i < carColourCount; i++)
             {
                 uint colourID = file.ReadUInt();
@@ -29,7 +43,7 @@ namespace GT3.CarColorEditor
                 {
                     throw new Exception("Invalid colour ID.");
                 }
-                ColourIDs.Add(colourID);
+                ColourIDs[i] = colourID;
             }
 
             file.Position = currentOffset;
@@ -37,11 +51,19 @@ namespace GT3.CarColorEditor
         }
 
 
-        public void WriteToCSV(CsvWriter carCsv)
+        public void WriteToCSV(CsvWriter csv)
         {
-            carCsv.WriteField(ModelName);
-            carCsv.WriteField(string.Join(",", ColourIDs.Select(id => $"{id}")));
-            carCsv.NextRecord();
+            csv.NextRecord();
+            csv.WriteRecord(this);
+        }
+
+        public sealed class CSVMap : ClassMap<Car>
+        {
+            public CSVMap()
+            {
+                Map(m => m.ModelName);
+                Map(m => m.ColourIDs).TypeConverter(new UIntArrayConverter());
+            }
         }
     }
 }

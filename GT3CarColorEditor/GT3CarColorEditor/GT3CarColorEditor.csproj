@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Car.cs" />
+    <Compile Include="UIntArrayConverter.cs" />
     <Compile Include="CarColour.cs" />
     <Compile Include="IDStringTable.cs" />
     <Compile Include="CarAndColourList.cs" />
