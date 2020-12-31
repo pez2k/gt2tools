@@ -46,7 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Car.cs" />
+    <Compile Include="CarColour.cs" />
     <Compile Include="IDStringTable.cs" />
+    <Compile Include="CarAndColourList.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
