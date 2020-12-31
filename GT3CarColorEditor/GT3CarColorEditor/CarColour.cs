@@ -8,6 +8,8 @@ namespace GT3.CarColorEditor
 {
     public class CarColour
     {
+        public const int RawSize = sizeof(uint) * 4;
+
         public uint ColourID { get; set; }
         public string LatinName { get; set; }
         public string JapaneseName { get; set; }
@@ -25,7 +27,7 @@ namespace GT3.CarColorEditor
             set
             {
                 byte[] number = uint.Parse(value.Replace("#", ""), NumberStyles.HexNumber).ToByteArray();
-                ThumbnailColour = (uint)((number[0] + (number[1] * 256) + (number[2] * 256 * 256)) * 256);
+                ThumbnailColour = (uint)(number[2] + (number[1] * 256) + (number[0] * 256 * 256));
             }
         }
 
@@ -41,6 +43,20 @@ namespace GT3.CarColorEditor
         {
             csv.NextRecord();
             csv.WriteRecord(this);
+        }
+
+        public void WriteToGameFiles(Stream file, StringTable colourNames)
+        {
+            file.WriteUInt(ColourID);
+            file.WriteUInt(colourNames.Add(LatinName));
+            file.WriteUInt(colourNames.Add(JapaneseName));
+            file.WriteUInt(ThumbnailColour);
+        }
+
+        public void WriteNameToGameFiles(StringTable colourNames)
+        {
+            colourNames.Add(LatinName);
+            colourNames.Add(JapaneseName);
         }
 
         public sealed class CSVMap : ClassMap<CarColour>

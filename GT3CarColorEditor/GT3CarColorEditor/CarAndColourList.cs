@@ -235,7 +235,7 @@ namespace GT3.CarColorEditor
             }
         }
 
-        public void ReadColours(string csvPath)
+        private void ReadColours(string csvPath)
         {
             using (TextReader file = new StreamReader(csvPath, Encoding.UTF8))
             {
@@ -256,7 +256,7 @@ namespace GT3.CarColorEditor
             }
         }
 
-        public void ReadCars(string csvPath)
+        private void ReadCars(string csvPath)
         {
             using (TextReader file = new StreamReader(csvPath, Encoding.UTF8))
             {
@@ -276,6 +276,59 @@ namespace GT3.CarColorEditor
                     }
                     Cars = Cars.OrderBy(car => car.ModelNameHash).ToList();
                 }
+            }
+        }
+
+        public void WriteToGameFiles()
+        {
+            using (var file = new FileStream("new_carcolor.db", FileMode.Create, FileAccess.Write))
+            {
+                file.WriteCharacters("GT2K");
+                file.WriteUInt(0);
+                file.WriteUInt((uint)Cars.Count);
+
+                uint colourMapOffset = (uint)(file.Position + (sizeof(uint) * 3) + (Cars.Count * Car.RawSize));
+                file.WriteUInt(colourMapOffset);
+
+                uint colourMapSize = (uint)((Cars.Sum(car => car.ColourIDs.Length) + 1) * sizeof(uint));
+                uint coloursOffset = colourMapOffset + colourMapSize;
+                file.WriteUInt(coloursOffset);
+
+                uint coloursSize = (uint)((Colours.Values.Count * CarColour.RawSize) + sizeof(uint));
+                file.WriteUInt(coloursOffset + coloursSize); // total file size
+                long carListOffset = file.Position;
+
+                file.Position = colourMapOffset;
+                Car[] alphabeticCars = Cars.OrderBy(car => car.ModelName).ToArray(); // colour names in string table and car to colour ID map are sorted by model name
+                uint[] carColours = alphabeticCars.SelectMany(car => car.ColourIDs).ToArray();
+                file.WriteUInt((uint)carColours.Length);
+                foreach (Car car in alphabeticCars)
+                {
+                    car.WriteColourIDsToGameFiles(file, colourMapOffset);
+                }
+
+                file.Position = carListOffset;
+                foreach (Car car in Cars)
+                {
+                    car.WriteToGameFiles(file);
+                }
+
+                file.Position = coloursOffset;
+                var colourNames = new StringTable();
+                foreach (uint colourID in carColours)
+                {
+                    if (!Colours.TryGetValue(colourID, out CarColour colour))
+                    {
+                        throw new Exception($"Invalid colour ID {colourID}.");
+                    }
+                    colour.WriteNameToGameFiles(colourNames);
+                }
+                file.WriteUInt((uint)Colours.Count);
+                foreach (CarColour colour in Colours.Values)
+                {
+                    colour.WriteToGameFiles(file, colourNames);
+                }
+                colourNames.Write("new_carcolor.sdb", true);
             }
         }
     }

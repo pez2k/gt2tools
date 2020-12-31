@@ -13,6 +13,9 @@ namespace GT3.CarColorEditor
     public class Car
     {
         private string modelName;
+        private uint colourMapOffset;
+
+        public const int RawSize = sizeof(ulong) + (sizeof(uint) * 2);
 
         public ulong ModelNameHash { get; set; }
         public string ModelName
@@ -55,6 +58,22 @@ namespace GT3.CarColorEditor
         {
             csv.NextRecord();
             csv.WriteRecord(this);
+        }
+
+        public void WriteToGameFiles(Stream file)
+        {
+            file.WriteULong(ModelNameHash);
+            file.WriteUInt((uint)ColourIDs.Length);
+            file.WriteUInt(colourMapOffset);
+        }
+
+        public void WriteColourIDsToGameFiles(Stream file, uint colourMapStart)
+        {
+            colourMapOffset = (uint)file.Position - colourMapStart;
+            foreach (uint colourID in ColourIDs)
+            {
+                file.WriteUInt(colourID);
+            }
         }
 
         public sealed class CSVMap : ClassMap<Car>
