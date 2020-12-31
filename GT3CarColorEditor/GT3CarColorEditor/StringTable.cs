@@ -11,6 +11,8 @@ namespace GT3.CarColorEditor
 {
     public class StringTable
     {
+        private readonly Dictionary<string, int> stringLookup = new Dictionary<string, int>();
+
         public List<string> Strings = new List<string>();
         public List<string> UnusedStrings;
         public StringTableLookup Lookup { get; set; }
@@ -55,7 +57,9 @@ namespace GT3.CarColorEditor
                     ushort stringLength = file.ReadUShort();
                     byte[] stringBytes = new byte[stringLength];
                     file.Read(stringBytes);
-                    Strings.Add(encoding.GetString(stringBytes).TrimEnd('\0'));
+                    string stringData = encoding.GetString(stringBytes).TrimEnd('\0');
+                    stringLookup.Add(stringData, Strings.Count);
+                    Strings.Add(stringData);
                     file.Position = storedPosition;
                 }
             }
@@ -100,7 +104,9 @@ namespace GT3.CarColorEditor
                 {
                     while (csv.Read())
                     {
-                        Strings.Add(csv.GetField(1));
+                        string stringData = csv.GetField(1);
+                        stringLookup.Add(stringData, Strings.Count);
+                        Strings.Add(stringData);
                     }
                 }
             }
@@ -150,13 +156,15 @@ namespace GT3.CarColorEditor
 
         public ushort Add(string text)
         {
-            if (Strings.Contains(text))
+            if (stringLookup.ContainsKey(text))
             {
-                return (ushort)Strings.IndexOf(text);
+                return stringLookup.TryGetValue(text, out int key) ? (ushort)key : throw new Exception();
             }
 
+            ushort index = (ushort)Strings.Count;
+            stringLookup.Add(text, index);
             Strings.Add(text);
-            return (ushort)(Strings.Count - 1);
+            return index;
         }
 
         public string Get(ushort index)
