@@ -16,7 +16,6 @@ namespace GT3.VOLExtractor
 
         public override void Read(Stream stream)
         {
-            //Console.WriteLine($"{stream.Position}");
             uint filenamePosition = stream.ReadUInt() - Flag;
             Name = Program.GetFilename(filenamePosition);
             uint numberOfEntries = stream.ReadUInt();
@@ -59,29 +58,18 @@ namespace GT3.VOLExtractor
 
         public override void Import(string path)
         {
-            //Console.WriteLine(path);
             Name = Path.GetFileName(path);
             List<string> childPaths = Directory.EnumerateFileSystemEntries(path).ToList();
             childPaths.Sort(StringComparer.Ordinal);
 
-            Entries = new List<Entry>();
-            Entries.Add(new DirectoryEntry { Name = ".." });
+            Entries = new List<Entry> { new DirectoryEntry { Name = ".." } };
 
             foreach (string childPath in childPaths)
             {
-                Entry entry;
-                if ((File.GetAttributes(childPath) & FileAttributes.Directory) != 0)
-                {
-                    entry = new DirectoryEntry { ParentDirectory = this };
-                }
-                else if (ArchiveEntry.FileExtensions.Contains(Path.GetExtension(childPath)))
-                {
-                    entry = new ArchiveEntry();
-                }
-                else
-                {
-                    entry = new FileEntry();
-                }
+                Entry entry = (File.GetAttributes(childPath) & FileAttributes.Directory) != 0
+                                  ? new DirectoryEntry { ParentDirectory = this }
+                                  : (Entry)(ArchiveEntry.FileExtensions.Contains(Path.GetExtension(childPath)) ? new ArchiveEntry()
+                                                                                                               : new FileEntry());
                 entry.Import(childPath);
                 Entries.Add(entry);
             }
@@ -90,7 +78,6 @@ namespace GT3.VOLExtractor
         public override void AllocateHeaderSpace(Stream stream)
         {
             HeaderPosition = stream.Position;
-            //Console.WriteLine($"{HeaderPosition}");
             stream.Position += 8;
             stream.Position += 4 * Entries.Count;
             Entries[0].HeaderPosition = ParentDirectory?.HeaderPosition ?? 0;

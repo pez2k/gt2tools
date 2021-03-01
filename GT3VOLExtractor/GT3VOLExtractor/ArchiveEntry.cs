@@ -17,19 +17,17 @@ namespace GT3.VOLExtractor
 
         public override void Read(Stream stream)
         {
-            //Console.WriteLine($"{stream.Position}");
             uint filenamePosition = stream.ReadUInt() - Flag;
             Name = Program.GetFilename(filenamePosition);
             Location = stream.ReadUInt();
             UncompressedSize = stream.ReadUInt();
             Size = stream.ReadUInt();
-            //Console.WriteLine($"{Location},{Size},{Name},Archive");
         }
 
         public override void Extract(string path, Stream stream)
         {
             var magic = new byte[4];
-            stream.Position = Location * 0x800;
+            stream.Position = Location * BlockSize;
             stream.Read(magic);
             Name += GetExtension(magic);
             base.Extract(path, stream);
@@ -68,7 +66,6 @@ namespace GT3.VOLExtractor
         public override void AllocateHeaderSpace(Stream stream)
         {
             HeaderPosition = stream.Position;
-            //Console.WriteLine($"{HeaderPosition}");
             stream.Position += 16;
         }
 
@@ -79,7 +76,7 @@ namespace GT3.VOLExtractor
             Console.WriteLine($"Importing file: {filePath}");
             uint filePosition = (uint)stream.Position;
             stream.Position = HeaderPosition + 4;
-            stream.WriteUInt(filePosition / 0x800);
+            stream.WriteUInt(filePosition / BlockSize);
 
             using (var input = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
@@ -92,7 +89,7 @@ namespace GT3.VOLExtractor
                 input.CopyTo(stream);
             }
 
-            stream.Position += 0x800 - (stream.Position % 0x800);
+            stream.Position += BlockSize - (stream.Position % BlockSize);
         }
     }
 }

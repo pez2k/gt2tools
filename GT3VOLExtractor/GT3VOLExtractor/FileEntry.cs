@@ -6,6 +6,8 @@ namespace GT3.VOLExtractor
 {
     public class FileEntry : Entry
     {
+        public const uint BlockSize = 0x800;
+
         public uint Location { get; set; }
         public uint Size { get; set; }
 
@@ -13,7 +15,6 @@ namespace GT3.VOLExtractor
 
         public override void Read(Stream stream)
         {
-            //Console.WriteLine($"{stream.Position}");
             uint filenamePosition = stream.ReadUInt();
             Name = Program.GetFilename(filenamePosition);
             Location = stream.ReadUInt();
@@ -24,8 +25,7 @@ namespace GT3.VOLExtractor
         {
             path = Path.Combine(path, Name);
             Console.WriteLine($"Extracting file: {path}");
-            //Console.WriteLine($"{Location},{Size},{path}");
-            stream.Position = Location * 0x800;
+            stream.Position = Location * BlockSize;
             using (var output = new FileStream(path, FileMode.Create, FileAccess.Write))
             {
                 byte[] buffer = new byte[Size];
@@ -36,7 +36,6 @@ namespace GT3.VOLExtractor
 
         public override void Import(string path)
         {
-            //Console.WriteLine(path);
             filePath = path;
             Name = Path.GetFileName(path);
         }
@@ -44,7 +43,6 @@ namespace GT3.VOLExtractor
         public override void AllocateHeaderSpace(Stream stream)
         {
             HeaderPosition = stream.Position;
-            //Console.WriteLine($"{HeaderPosition}");
             stream.Position += 12;
         }
 
@@ -53,7 +51,7 @@ namespace GT3.VOLExtractor
             Console.WriteLine($"Importing file: {filePath}");
             uint filePosition = (uint)stream.Position;
             stream.Position = HeaderPosition + 4;
-            stream.WriteUInt(filePosition / 0x800);
+            stream.WriteUInt(filePosition / BlockSize);
 
             using (var input = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
@@ -62,7 +60,7 @@ namespace GT3.VOLExtractor
                 input.CopyTo(stream);
             }
 
-            stream.Position += 0x800 - (stream.Position % 0x800);
+            stream.Position += BlockSize - (stream.Position % BlockSize);
         }
     }
 }
