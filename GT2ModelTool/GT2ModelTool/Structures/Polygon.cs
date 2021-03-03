@@ -92,6 +92,10 @@ namespace GT2.ModelTool.Structures
 
         public virtual void ReadFromCAR(Stream stream, bool isQuad, List<Vertex> vertices, List<Normal> normals)
         {
+            if (stream.Position >= 3848)
+            {
+            }
+
             byte vertexByte0 = (byte)stream.ReadByte();
             byte vertexByte1 = (byte)stream.ReadByte();
             byte vertexByte2 = (byte)stream.ReadByte();
@@ -166,18 +170,71 @@ namespace GT2.ModelTool.Structures
                 throw new System.Exception("Vertex 3 in Triangle not zero");
             }*/
 
-            //Unknown1 = (byte)stream.ReadByte();
-            //Unknown2 = (byte)stream.ReadByte();
-            Unknown3 = (byte)stream.ReadByte();
-            Unknown4 = (byte)stream.ReadByte();
-            Unknown5 = (byte)stream.ReadByte();
-            Unknown6 = (byte)stream.ReadByte();
-            Unknown7 = (byte)stream.ReadByte();
-            Unknown8 = (byte)stream.ReadByte();
-            Unknown9 = (byte)stream.ReadByte();
-            Unknown10 = (byte)stream.ReadByte();
-            Unknown11 = (byte)stream.ReadByte();
-            Unknown12 = (byte)stream.ReadByte();
+            Unknown3 = (byte)stream.ReadByte(); // many values - bottom bit tex only, top 5 tex only
+            Unknown4 = (byte)stream.ReadByte(); // 0, 1, 2, 3, 4, 5, 6, 128, 133 - top bit set on both unt and tex, not on tex quads but two tex tris
+                                                // bottom 3 bits set on tex only
+            // 0000 0000 - 0
+            // 0000 0001 - 1
+            // 0000 0010 - 2
+            // 0000 0011 - 3
+            // 0000 0100 - 4
+            // 0000 0101 - 5
+            // 0000 0110 - 6
+            // 1000 0000 - 128 + 0 - bottom bit of next normal index?
+            // 1000 0101 - 128 + 5
+            Unknown5 = (byte)stream.ReadByte(); // many values - very top bit set for any sort of tex poly, so normal 2 at most - all bits set at least once
+                                                // all bits set for tex only
+
+            Unknown6 = (byte)stream.ReadByte(); // many values - all 8 bits are only set for tex quads, so part of normal 3?
+            Unknown7 = (byte)stream.ReadByte(); // 0, 1, 2, 3 - top bit of final normal index? - only set for tex quads, so top of normal 3
+            Unknown8 = (byte)stream.ReadByte(); // always 0
+            //         8         7         6         5         4         3       vb5
+            // 0000 0000 0000 0xxx xxxx xxxx xxxx xxxx x000 xxxx xxxx x0xx ---- ---!
+            //                 ttt tttt tttt tttt tttt a    tttt tttt t tt tttt ttt
+            //                 qqq qqqq qqqq
+            //                 333 3333 33?2 2222 2222 ?    1111 1111 1 00 0000 000!
+
+            /*if ((vertexByte5 & 0b0000_0001) != 0)
+            {
+                Debug.WriteLine($"{GetType()} -- {isQuad}");
+            }*/
+
+            int normal0Maybe = vertexByte5 + (Unknown3 * 256);
+            normal0Maybe >>= 1;
+            normal0Maybe &= 0x1FF;
+            Vertex0Normal = normals[normal0Maybe];
+
+            int normal1Maybe = Unknown3 + (Unknown4 * 256);
+            normal1Maybe >>= 3;
+            normal1Maybe &= 0x1FF;
+            Vertex1Normal = normals[normal1Maybe];
+
+            int normal2Maybe = Unknown5 + (Unknown6 * 256);
+            normal2Maybe &= 0x1FF;
+            Vertex2Normal = normals[normal2Maybe];
+
+            int normal3Maybe = Unknown6 + (Unknown7 * 256);
+            normal3Maybe >>= 2;
+            normal3Maybe &= 0x1FF;
+            Vertex3Normal = normals[normal3Maybe];
+
+            Unknown9 = (byte)stream.ReadByte(); // 00 for untextured, FF for textured
+            Unknown10 = (byte)stream.ReadByte(); // 00 for untextured, FF for textured
+            Unknown11 = (byte)stream.ReadByte(); // 00 for untextured, FF for textured
+
+            Unknown12 = (byte)stream.ReadByte(); // 21 for unt tri, 29 unt quad, 25 tex tri, 2D tex quad
+            // 100001 / 21 unt tri - GT2 + 1
+            // 101001 / 29 unt quad - GT2 + 1
+            // 100101 / 25 tex tri
+            // 101101 / 2D tex quad
+            if (Unknown12 == 33 || Unknown12 == 41)
+            {
+                FaceType = Unknown12 - 1;
+            }
+            else
+            {
+                FaceType = Unknown12;
+            }
         }
 
         public virtual void WriteToCDO(Stream stream, bool isQuad, List<Vertex> vertices)
