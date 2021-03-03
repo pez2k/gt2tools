@@ -77,8 +77,16 @@ namespace GT2.ModelTool.Structures
         public void WriteToCDO(Stream stream)
         {
             double scale = 500; // From commongear's research
-            uint i = ((uint)(X * scale) << 2) + ((uint)(Y * scale) << 12) + ((uint)(Z * scale) << 22);
+            uint i = UnshiftSignedBits((int)(X * scale), 2) + UnshiftSignedBits((int)(Y * scale), 12) + UnshiftSignedBits((int)(Z * scale), 22);
             stream.WriteUInt(i);
+        }
+
+        private uint UnshiftSignedBits(int input, int distance)
+        {
+            int signBit = 1 << 9;
+            input = (input + signBit) ^ signBit;
+            uint packedBits = (uint)(input << distance);
+            return packedBits;
         }
     }
 }
