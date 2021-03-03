@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace GT2.ModelTool.Structures
 {
@@ -13,6 +14,9 @@ namespace GT2.ModelTool.Structures
         public static double maxX;
         public static double maxY;
         public static double maxZ;
+        public static double minX;
+        public static double minY;
+        public static double minZ;
 
         public void ReadFromCDO(Stream stream)
         {
@@ -23,26 +27,51 @@ namespace GT2.ModelTool.Structures
             // p 00
             double scale = 500; // From commongear's research
             uint i = stream.ReadUInt();
-            X = ((i >> 2) & 0x3FF) / scale;
-            Y = ((i >> 12) & 0x3FF) / scale;
-            Z = ((i >> 22) & 0x3FF) / scale;
+            X = ShiftSignedBits(i, 2) / scale;
+            Y = ShiftSignedBits(i, 12) / scale;
+            Z = ShiftSignedBits(i, 22) / scale;
+            ValidateUnitVector();
 
             if (X > maxX) { maxX = X; }
             if (Y > maxY) { maxY = Y; }
             if (Z > maxZ) { maxZ = Z; }
+            if (X < minX) { minX = X; }
+            if (Y < minY) { minY = Y; }
+            if (Z < minZ) { minZ = Z; }
+        }
+
+        private int ShiftSignedBits(uint input, int distance)
+        {
+            int signBit = 1 << 9; // 10 bits being selected
+            int selectedBits = (int)((input >> distance) & 0x3FF);
+            return (selectedBits ^ signBit) - signBit;
         }
 
         public void ReadFromCAR(Stream stream)
         {
-            double scale = 32768; // No idea if this is correct!
-            Z = stream.ReadUShort() / scale;
-            Y = stream.ReadUShort() / scale;
-            X = stream.ReadUShort() / scale;
-            stream.Position += sizeof(ushort);
+            double scale = 4000; // No idea if this is correct, but it validates
+            Z = stream.ReadShort() / scale;
+            Y = stream.ReadShort() / scale;
+            X = stream.ReadShort() / scale;
+            stream.Position += sizeof(short);
+            ValidateUnitVector();
 
             if (X > maxX) { maxX = X; }
             if (Y > maxY) { maxY = Y; }
             if (Z > maxZ) { maxZ = Z; }
+            if (X < minX) { minX = X; }
+            if (Y < minY) { minY = Y; }
+            if (Z < minZ) { minZ = Z; }
+
+        }
+
+        private void ValidateUnitVector()
+        {
+            double total = Math.Sqrt((X * X) + (Y * Y) + (Z * Z));
+            if (total < 0.995 || total > 1.005)
+            {
+                throw new Exception("Invalid unit vector.");
+            }
         }
 
         public void WriteToCDO(Stream stream)
