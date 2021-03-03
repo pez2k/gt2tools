@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using StreamExtensions;
 
 namespace GT2.ModelTool.Structures
 {
@@ -9,6 +12,11 @@ namespace GT2.ModelTool.Structures
         public Vertex Vertex1 { get; set; }
         public Vertex Vertex2 { get; set; }
         public Vertex Vertex3 { get; set; }
+        
+        public int RenderOrder { get; set; }
+        public int RenderFlags { get; set; }
+        public int FaceType { get; set; }
+
         public byte Unknown1 { get; set; }
         public byte Unknown2 { get; set; }
         public byte Unknown3 { get; set; }
@@ -42,69 +50,44 @@ namespace GT2.ModelTool.Structures
                 Vertex3 = vertices[vertex3Ref];
             }
             else if (vertex3Ref != 0x00) {
-                throw new System.Exception("Vertex 3 in Triangle not zero");
+                throw new Exception("Vertex 3 in Triangle not zero");
             }
 
-            Unknown1 = (byte)stream.ReadByte(); // 241 max, 22 values
-            Unknown2 = (byte)stream.ReadByte(); // 0 to 19 inclusive & complete in bistn
-            Unknown3 = (byte)stream.ReadByte(); // always 0
-            Unknown4 = (byte)stream.ReadByte(); // 0, 64, 128 or 192 - two bit flags?
-            Unknown5 = (byte)stream.ReadByte(); // 254 max - 114 values, all multiples of 2, not quite a full list
-            Unknown6 = (byte)stream.ReadByte(); // 253 max - 77 values, irregular
-            Unknown7 = (byte)stream.ReadByte(); // 249 max - 60 values, irregular
-            Unknown8 = (byte)stream.ReadByte(); // 0 in tris - 0, 1, 2, 3, 4, 5 values in bistn - three bit flags?
-            Unknown9 = (byte)stream.ReadByte(); // always 0
-            Unknown10 = (byte)stream.ReadByte(); // always 0
-            Unknown11 = (byte)stream.ReadByte(); // always 0
-            Unknown12 = (byte)stream.ReadByte(); // 32, 37, 40, 45
-            // zero out all normals in savestate, then zero one by one until it affects a given poly - then find that poly and work out the relationship
+            ushort a = stream.ReadUShort();
+            ushort b = stream.ReadUShort();
+            int c = stream.ReadInt();
+            int d = stream.ReadInt();
 
-            if (!values.Contains(Unknown12)) {
-                values.Add(Unknown12);
+            RenderOrder = a & 0x1F;
+            if (RenderOrder == 0b1000)
+            {
+                Debug.WriteLine($"Render order of 0b1000 found at {stream.Position}");
+            }
+            int normal0Ref = (a >> 5) & 0x1FF;
+            Vertex0Normal = normals[normal0Ref];
+
+            RenderFlags = b >> 12;
+            if (RenderFlags != 0b1100 && RenderFlags != 0b1000 && RenderFlags != 0)
+            {
+                Debug.WriteLine($"Render flags of {RenderFlags} found at {stream.Position}");
             }
 
-            // example numbers
-            // tri
-            // 144 -> 1001 0000
-            //   9 -> 0000 1001
-            //   0 -> 0000 0000
-            // 128 -> 1000 0000
-            // 154 -> 1001 1010
-            //  56 -> 0011 1000
-            //   1 -> 0000 0001
-            //   0 -> 0000 0000
-            //   0 -> 0000 0000
-            //   0 -> 0000 0000
-            //   0 -> 0000 0000
-            //  37 -> 0010 0101
+            int normal1Ref = (c >> 1) & 0x1FF;
+            Vertex1Normal = normals[normal1Ref];
+            int normal2Ref = (c >> 10) & 0x1FF;
+            Vertex2Normal = normals[normal2Ref];
+            int normal3Ref = (c >> 20) & 0x1FF;
+            Vertex3Normal = normals[normal3Ref];
 
-            // 1001 0000 0000 1001 0000 0000 1000 0000 1001 1010 0011 1000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0000 0010 0101
-
-            // quad
-            //  48 -> 0011 0000
-            //  18 -> 0001 0010
-            //   0 -> 0000 0000
-            // 128 -> 1000 0000
-            //  36 -> 0010 0100
-            //  77 -> 0100 1101
-            // 162 -> 1010 0010
-            //   4 -> 0000 0100
-            //   0 -> 0000 0000
-            //   0 -> 0000 0000
-            //   0 -> 0000 0000
-            //  45 -> 0010 1101
-
-            // 0011 0000 0001 0010 0000 0000 1000 0000 0010 0100 0100 1101 1010 0010 0000 0100 0000 0000 0000 0000 0000 0000 0010 1101
-
-            // 1010 0011 - max normal ID
-            // T 1001000000001001000000001000 0000100 1101000 1110000 0000001 0000000 000000000000000000000000000100101
-            // Q 0011000000010010000000001000 0000001 0010001 0011011 0100010 0000010 000000000000000000000000000101101
-            //                                 4 / 1  104/17  112/27  1 / 66  0 / 2
-
-            //Vertex0Normal = normals[Unknown12];
-            //Vertex1Normal = normals[Unknown6];
-            //Vertex2Normal = normals[Unknown7];
-            //Vertex3Normal = normals[Unknown8];
+            FaceType = d >> 24;
+            // 100000 (32) for untextured tri
+            // 100101 (37) for textured tri
+            // 101000 (40) for untextured quad
+            // 101101 (45) for textured quad
+            if (FaceType != 32 && FaceType != 37 && FaceType != 40 && FaceType != 45)
+            {
+                throw new Exception($"Unrecognised face type {FaceType}");
+            }
         }
 
         public virtual void ReadFromCAR(Stream stream, bool isQuad, List<Vertex> vertices, List<Normal> normals)
