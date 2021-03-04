@@ -12,8 +12,8 @@ namespace GT2.ModelTool.Structures
         public Vertex Vertex1 { get; set; }
         public Vertex Vertex2 { get; set; }
         public Vertex Vertex3 { get; set; }
-        
-        public int RenderOrder { get; set; }
+
+        public int RenderOrder { get; set; } = 0b10000;
         public int RenderFlags { get; set; }
         public int FaceType { get; set; }
 
@@ -38,18 +38,19 @@ namespace GT2.ModelTool.Structures
 
         public virtual void ReadFromCDO(Stream stream, bool isQuad, List<Vertex> vertices, List<Normal> normals)
         {
-            byte vertex0Ref = (byte)stream.ReadByte();
+            byte vertex0Ref = stream.ReadSingleByte();
             Vertex0 = vertices[vertex0Ref];
-            byte vertex1Ref = (byte)stream.ReadByte();
+            byte vertex1Ref = stream.ReadSingleByte();
             Vertex1 = vertices[vertex1Ref];
-            byte vertex2Ref = (byte)stream.ReadByte();
+            byte vertex2Ref = stream.ReadSingleByte();
             Vertex2 = vertices[vertex2Ref];
-            byte vertex3Ref = (byte)stream.ReadByte();
+            byte vertex3Ref = stream.ReadSingleByte();
             if (isQuad)
             {
                 Vertex3 = vertices[vertex3Ref];
             }
-            else if (vertex3Ref != 0x00) {
+            else if (vertex3Ref != 0x00)
+            {
                 throw new Exception("Vertex 3 in Triangle not zero");
             }
 
@@ -92,16 +93,12 @@ namespace GT2.ModelTool.Structures
 
         public virtual void ReadFromCAR(Stream stream, bool isQuad, List<Vertex> vertices, List<Normal> normals)
         {
-            if (stream.Position >= 3848)
-            {
-            }
-
-            byte vertexByte0 = (byte)stream.ReadByte();
-            byte vertexByte1 = (byte)stream.ReadByte();
-            byte vertexByte2 = (byte)stream.ReadByte();
-            byte vertexByte3 = (byte)stream.ReadByte();
-            byte vertexByte4 = (byte)stream.ReadByte();
-            byte vertexByte5 = (byte)stream.ReadByte();
+            byte vertexByte0 = stream.ReadSingleByte();
+            byte vertexByte1 = stream.ReadSingleByte();
+            byte vertexByte2 = stream.ReadSingleByte();
+            byte vertexByte3 = stream.ReadSingleByte();
+            byte vertexByte4 = stream.ReadSingleByte();
+            byte vertexByte5 = stream.ReadSingleByte();
 
             // example bytes:
             //  0  1  2  3  4  5
@@ -170,8 +167,8 @@ namespace GT2.ModelTool.Structures
                 throw new System.Exception("Vertex 3 in Triangle not zero");
             }*/
 
-            Unknown3 = (byte)stream.ReadByte(); // many values - bottom bit tex only, top 5 tex only
-            Unknown4 = (byte)stream.ReadByte(); // 0, 1, 2, 3, 4, 5, 6, 128, 133 - top bit set on both unt and tex, not on tex quads but two tex tris
+            Unknown3 = stream.ReadSingleByte(); // many values - bottom bit tex only, top 5 tex only
+            Unknown4 = stream.ReadSingleByte(); // 0, 1, 2, 3, 4, 5, 6, 128, 133 - top bit set on both unt and tex, not on tex quads but two tex tris
                                                 // bottom 3 bits set on tex only
             // 0000 0000 - 0
             // 0000 0001 - 1
@@ -182,22 +179,28 @@ namespace GT2.ModelTool.Structures
             // 0000 0110 - 6
             // 1000 0000 - 128 + 0 - bottom bit of next normal index?
             // 1000 0101 - 128 + 5
-            Unknown5 = (byte)stream.ReadByte(); // many values - very top bit set for any sort of tex poly, so normal 2 at most - all bits set at least once
+            Unknown5 = stream.ReadSingleByte(); // many values - very top bit set for any sort of tex poly, so normal 2 at most - all bits set at least once
                                                 // all bits set for tex only
 
-            Unknown6 = (byte)stream.ReadByte(); // many values - all 8 bits are only set for tex quads, so part of normal 3?
-            Unknown7 = (byte)stream.ReadByte(); // 0, 1, 2, 3 - top bit of final normal index? - only set for tex quads, so top of normal 3
-            Unknown8 = (byte)stream.ReadByte(); // always 0
+            Unknown6 = stream.ReadSingleByte(); // many values - all 8 bits are only set for tex quads, so part of normal 3? - bit 2 never set?
+            Unknown7 = stream.ReadSingleByte(); // 0, 1, 2, 3 - top bit of final normal index? - only set for tex quads, so top of normal 3
+            Unknown8 = stream.ReadSingleByte(); // always 0
             //         8         7         6         5         4         3       vb5
-            // 0000 0000 0000 0xxx xxxx xxxx xxxx xxxx x000 xxxx xxxx x0xx ---- ---!
-            //                 ttt tttt tttt tttt tttt a    tttt tttt t tt tttt ttt
-            //                 qqq qqqq qqqq
-            //                 333 3333 33?2 2222 2222 ?    1111 1111 1 00 0000 000!
+            // 0000 0000 0000 0xxx xxxx xx0x xxxx xxxx x000 xxxx xxxx x0xx ---- ---v
+            //                 ttt tttt tt t tttt tttt a    tttt tttt t tt tttt ttt
+            //                 qqq qqqq qq q
+            //                 333 3333 33 2 2222 2222 ?    1111 1111 1 00 0000 000v
 
             /*if ((vertexByte5 & 0b0000_0001) != 0)
             {
                 Debug.WriteLine($"{GetType()} -- {isQuad}");
             }*/
+
+            if ((Unknown4 & 0b1000_0000) != 0)
+            {
+                // faces with this bit set seem to be side windows, wheelarch interiors, wing mounts
+                RenderOrder = 0b10001;
+            }
 
             int normal0Maybe = vertexByte5 + (Unknown3 * 256);
             normal0Maybe >>= 1;
@@ -218,11 +221,11 @@ namespace GT2.ModelTool.Structures
             normal3Maybe &= 0x1FF;
             Vertex3Normal = normals[normal3Maybe];
 
-            Unknown9 = (byte)stream.ReadByte(); // 00 for untextured, FF for textured
-            Unknown10 = (byte)stream.ReadByte(); // 00 for untextured, FF for textured
-            Unknown11 = (byte)stream.ReadByte(); // 00 for untextured, FF for textured
+            Unknown9 = stream.ReadSingleByte(); // 00 for untextured, FF for textured
+            Unknown10 = stream.ReadSingleByte(); // 00 for untextured, FF for textured
+            Unknown11 = stream.ReadSingleByte(); // 00 for untextured, FF for textured
 
-            Unknown12 = (byte)stream.ReadByte(); // 21 for unt tri, 29 unt quad, 25 tex tri, 2D tex quad
+            Unknown12 = stream.ReadSingleByte(); // 21 for unt tri, 29 unt quad, 25 tex tri, 2D tex quad
             // 100001 / 21 unt tri - GT2 + 1
             // 101001 / 29 unt quad - GT2 + 1
             // 100101 / 25 tex tri
@@ -239,6 +242,13 @@ namespace GT2.ModelTool.Structures
 
         public virtual void WriteToCDO(Stream stream, bool isQuad, List<Vertex> vertices)
         {
+            // break selected faces to make it obvious which ones they are in GT2CarViewer
+            /*if (RenderOrder != 0b10000)
+            {
+                Vertex1 = Vertex0;
+                Vertex2 = Vertex0;
+            }*/
+
             stream.WriteByte((byte)vertices.IndexOf(Vertex0));
             stream.WriteByte((byte)vertices.IndexOf(Vertex1));
             stream.WriteByte((byte)vertices.IndexOf(Vertex2));
