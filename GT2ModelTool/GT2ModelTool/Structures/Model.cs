@@ -65,18 +65,19 @@ namespace GT2.ModelTool.Structures
 
             stream.Position += 0x04;
             ushort lodCount = stream.ReadUShort();
-            //
-            lodCount = 1;
-            //
             LODs = new List<LOD>(lodCount);
 
             stream.Position += 0x42;
 
-            for (int i = 0; i < lodCount; i++)
+            for (int i = 1; i <= lodCount; i++)
             {
                 var lod = new LOD();
                 lod.ReadFromCAR(stream);
                 LODs.Add(lod);
+                if (i != lodCount)
+                {
+                    stream.Position += 40; // gap between LODs
+                }
             }
         }
 
