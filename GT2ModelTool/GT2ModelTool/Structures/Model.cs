@@ -12,6 +12,7 @@ namespace GT2.ModelTool.Structures
         public ushort Unknown3 { get; set; }
         public ushort Scale { get; set; }
         public List<WheelPosition> WheelPositions { get; set; } = new List<WheelPosition>(4);
+        public byte[] Unknown4 { get; set; } = new byte[26];
         public List<LOD> LODs { get; set; }
 
         public void ReadFromCDO(Stream stream) {
@@ -36,7 +37,7 @@ namespace GT2.ModelTool.Structures
             ushort lodCount = stream.ReadUShort();
             LODs = new List<LOD>(lodCount);
 
-            stream.Position += 0x1A;
+            stream.Read(Unknown4);
 
             for (int i = 0; i < lodCount; i++)
             {
@@ -96,8 +97,7 @@ namespace GT2.ModelTool.Structures
 
             stream.Position = 0x868;
             stream.WriteUShort((ushort)LODs.Count);
-
-            stream.Position = 0x884;
+            stream.Write(Unknown4);
 
             foreach (LOD lod in LODs)
             {

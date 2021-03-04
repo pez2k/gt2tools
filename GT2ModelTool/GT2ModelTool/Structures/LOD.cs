@@ -7,6 +7,19 @@ namespace GT2.ModelTool.Structures
 
     public class LOD
     {
+        private byte[] unknown = new byte[44];
+        private ushort lowBoundX;
+        private ushort lowBoundY;
+        private ushort lowBoundZ;
+        private ushort lowBoundW;
+        private ushort highBoundX;
+        private ushort highBoundY;
+        private ushort highBoundZ;
+        private ushort highBoundW;
+        private ushort scale;
+        private byte unknown2;
+        private byte unknown3;
+
         public List<Vertex> Vertices { get; set; }
         public List<Normal> Normals { get; set; }
         public List<Polygon> Triangles { get; set; }
@@ -23,7 +36,18 @@ namespace GT2.ModelTool.Structures
             stream.Position += sizeof(ushort) * 2;
             ushort uvTriangleCount = stream.ReadUShort();
             ushort uvQuadCount = stream.ReadUShort();
-            stream.Position += sizeof(ushort) * 32;
+            stream.Read(unknown);
+            lowBoundX = stream.ReadUShort();
+            lowBoundY = stream.ReadUShort();
+            lowBoundZ = stream.ReadUShort();
+            lowBoundW = stream.ReadUShort();
+            highBoundX = stream.ReadUShort();
+            highBoundY = stream.ReadUShort();
+            highBoundZ = stream.ReadUShort();
+            highBoundW = stream.ReadUShort();
+            scale = stream.ReadUShort();
+            unknown2 = stream.ReadSingleByte();
+            unknown3 = stream.ReadSingleByte();
 
             Vertices = new List<Vertex>(vertexCount);
             Normals = new List<Normal>(normalCount);
@@ -145,7 +169,18 @@ namespace GT2.ModelTool.Structures
             stream.Position += sizeof(ushort) * 2;
             stream.WriteUShort((ushort)UVTriangles.Count);
             stream.WriteUShort((ushort)UVQuads.Count);
-            stream.Position += sizeof(ushort) * 32;
+            stream.Write(unknown);
+            stream.WriteUShort(lowBoundX);
+            stream.WriteUShort(lowBoundY);
+            stream.WriteUShort(lowBoundZ);
+            stream.WriteUShort(lowBoundW);
+            stream.WriteUShort(highBoundX);
+            stream.WriteUShort(highBoundY);
+            stream.WriteUShort(highBoundZ);
+            stream.WriteUShort(highBoundW);
+            stream.WriteUShort(scale);
+            stream.WriteByte(unknown2);
+            stream.WriteByte(unknown3);
 
             foreach (Vertex vertex in Vertices)
             {
