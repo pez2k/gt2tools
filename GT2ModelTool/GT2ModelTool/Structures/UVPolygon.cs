@@ -65,9 +65,9 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        public override void WriteToCDO(Stream stream, bool isQuad, List<Vertex> vertices)
+        public override void WriteToCDO(Stream stream, bool isQuad, List<Vertex> vertices, List<Normal> normals)
         {
-            base.WriteToCDO(stream, isQuad, vertices);
+            base.WriteToCDO(stream, isQuad, vertices, normals);
 
             Vertex0UV.WriteToCDO(stream);
             stream.WriteUShort((ushort)(((PaletteIndex & 0x0C) << 4) + (PaletteIndex & 0x03)));

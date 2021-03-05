@@ -12,23 +12,9 @@ namespace GT2.ModelTool.Structures
         public Vertex Vertex1 { get; set; }
         public Vertex Vertex2 { get; set; }
         public Vertex Vertex3 { get; set; }
-
         public int RenderOrder { get; set; } = 0b10000;
         public int RenderFlags { get; set; }
         public int FaceType { get; set; }
-
-        public byte Unknown1 { get; set; }
-        public byte Unknown2 { get; set; }
-        public byte Unknown3 { get; set; }
-        public byte Unknown4 { get; set; }
-        public byte Unknown5 { get; set; }
-        public byte Unknown6 { get; set; }
-        public byte Unknown7 { get; set; }
-        public byte Unknown8 { get; set; }
-        public byte Unknown9 { get; set; }
-        public byte Unknown10 { get; set; }
-        public byte Unknown11 { get; set; }
-        public byte Unknown12 { get; set; }
         public Normal Vertex0Normal { get; set; }
         public Normal Vertex1Normal { get; set; }
         public Normal Vertex2Normal { get; set; }
@@ -54,33 +40,33 @@ namespace GT2.ModelTool.Structures
                 throw new Exception("Vertex 3 in Triangle not zero");
             }
 
-            ushort a = stream.ReadUShort();
-            ushort b = stream.ReadUShort();
-            int c = stream.ReadInt();
-            int d = stream.ReadInt();
+            ushort renderOrderAndFirstNormalData = stream.ReadUShort();
+            ushort renderFlagsData = stream.ReadUShort();
+            int normalsData = stream.ReadInt();
+            int faceTypeData = stream.ReadInt();
 
-            RenderOrder = a & 0x1F;
+            RenderOrder = renderOrderAndFirstNormalData & 0x1F;
             if (RenderOrder == 0b1000)
             {
                 Debug.WriteLine($"Render order of 0b1000 found at {stream.Position}");
             }
-            int normal0Ref = (a >> 5) & 0x1FF;
+            int normal0Ref = (renderOrderAndFirstNormalData >> 5) & 0x1FF;
             Vertex0Normal = normals[normal0Ref];
 
-            RenderFlags = b >> 12;
+            RenderFlags = renderFlagsData >> 12;
             if (RenderFlags != 0b1100 && RenderFlags != 0b1000 && RenderFlags != 0)
             {
                 Debug.WriteLine($"Render flags of {RenderFlags} found at {stream.Position}");
             }
 
-            int normal1Ref = (c >> 1) & 0x1FF;
+            int normal1Ref = (normalsData >> 1) & 0x1FF;
             Vertex1Normal = normals[normal1Ref];
-            int normal2Ref = (c >> 10) & 0x1FF;
+            int normal2Ref = (normalsData >> 10) & 0x1FF;
             Vertex2Normal = normals[normal2Ref];
-            int normal3Ref = (c >> 20) & 0x1FF;
+            int normal3Ref = (normalsData >> 19) & 0x1FF;
             Vertex3Normal = normals[normal3Ref];
 
-            FaceType = d >> 24;
+            FaceType = faceTypeData >> 24;
             // 100000 (32) for untextured tri
             // 100101 (37) for textured tri
             // 101000 (40) for untextured quad
@@ -167,24 +153,24 @@ namespace GT2.ModelTool.Structures
                 throw new System.Exception("Vertex 3 in Triangle not zero");
             }*/
 
-            Unknown3 = stream.ReadSingleByte(); // many values - bottom bit tex only, top 5 tex only
-            Unknown4 = stream.ReadSingleByte(); // 0, 1, 2, 3, 4, 5, 6, 128, 133 - top bit set on both unt and tex, not on tex quads but two tex tris
-                                                // bottom 3 bits set on tex only
-            // 0000 0000 - 0
-            // 0000 0001 - 1
-            // 0000 0010 - 2
-            // 0000 0011 - 3
-            // 0000 0100 - 4
-            // 0000 0101 - 5
-            // 0000 0110 - 6
-            // 1000 0000 - 128 + 0 - bottom bit of next normal index?
-            // 1000 0101 - 128 + 5
-            Unknown5 = stream.ReadSingleByte(); // many values - very top bit set for any sort of tex poly, so normal 2 at most - all bits set at least once
-                                                // all bits set for tex only
+            byte normalsByte1 = stream.ReadSingleByte(); // many values - bottom bit tex only, top 5 tex only
+            byte normalsByte2 = stream.ReadSingleByte(); // 0, 1, 2, 3, 4, 5, 6, 128, 133 - top bit set on both unt and tex, not on tex quads but two tex tris
+                                                     // bottom 3 bits set on tex only
+                                                     // 0000 0000 - 0
+                                                     // 0000 0001 - 1
+                                                     // 0000 0010 - 2
+                                                     // 0000 0011 - 3
+                                                     // 0000 0100 - 4
+                                                     // 0000 0101 - 5
+                                                     // 0000 0110 - 6
+                                                     // 1000 0000 - 128 + 0 - bottom bit of next normal index?
+                                                     // 1000 0101 - 128 + 5
+            byte normalsByte3 = stream.ReadSingleByte(); // many values - very top bit set for any sort of tex poly, so normal 2 at most - all bits set at least once
+                                                     // all bits set for tex only
 
-            Unknown6 = stream.ReadSingleByte(); // many values - all 8 bits are only set for tex quads, so part of normal 3? - bit 2 never set?
-            Unknown7 = stream.ReadSingleByte(); // 0, 1, 2, 3 - top bit of final normal index? - only set for tex quads, so top of normal 3
-            Unknown8 = stream.ReadSingleByte(); // always 0
+            byte normalsByte4 = stream.ReadSingleByte(); // many values - all 8 bits are only set for tex quads, so part of normal 3? - bit 2 never set?
+            byte normalsByte5 = stream.ReadSingleByte(); // 0, 1, 2, 3 - top bit of final normal index? - only set for tex quads, so top of normal 3
+            byte normalsByte6 = stream.ReadSingleByte(); // always 0
             //         8         7         6         5         4         3       vb5
             // 0000 0000 0000 0xxx xxxx xx0x xxxx xxxx x000 xxxx xxxx x0xx ---- ---v
             //                 ttt tttt tt t tttt tttt a    tttt tttt t tt tttt ttt
@@ -196,51 +182,51 @@ namespace GT2.ModelTool.Structures
                 Debug.WriteLine($"{GetType()} -- {isQuad}");
             }*/
 
-            if ((Unknown4 & 0b1000_0000) != 0)
+            if ((normalsByte2 & 0b1000_0000) != 0)
             {
                 // faces with this bit set seem to be side windows, wheelarch interiors, wing mounts
                 RenderOrder = 0b10001;
             }
 
-            int normal0Maybe = vertexByte5 + (Unknown3 * 256);
+            int normal0Maybe = vertexByte5 + (normalsByte1 * 256);
             normal0Maybe >>= 1;
             normal0Maybe &= 0x1FF;
             Vertex0Normal = normals[normal0Maybe];
 
-            int normal1Maybe = Unknown3 + (Unknown4 * 256);
+            int normal1Maybe = normalsByte1 + (normalsByte2 * 256);
             normal1Maybe >>= 3;
             normal1Maybe &= 0x1FF;
             Vertex1Normal = normals[normal1Maybe];
 
-            int normal2Maybe = Unknown5 + (Unknown6 * 256);
+            int normal2Maybe = normalsByte3 + (normalsByte4 * 256);
             normal2Maybe &= 0x1FF;
             Vertex2Normal = normals[normal2Maybe];
 
-            int normal3Maybe = Unknown6 + (Unknown7 * 256);
+            int normal3Maybe = normalsByte4 + (normalsByte5 * 256);
             normal3Maybe >>= 2;
             normal3Maybe &= 0x1FF;
             Vertex3Normal = normals[normal3Maybe];
 
-            Unknown9 = stream.ReadSingleByte(); // 00 for untextured, FF for textured
-            Unknown10 = stream.ReadSingleByte(); // 00 for untextured, FF for textured
-            Unknown11 = stream.ReadSingleByte(); // 00 for untextured, FF for textured
+            byte isTextured1 = stream.ReadSingleByte(); // 00 for untextured, FF for textured
+            byte isTextured2 = stream.ReadSingleByte(); // 00 for untextured, FF for textured
+            byte isTextured3 = stream.ReadSingleByte(); // 00 for untextured, FF for textured
 
-            Unknown12 = stream.ReadSingleByte(); // 21 for unt tri, 29 unt quad, 25 tex tri, 2D tex quad
+            byte faceTypeData = stream.ReadSingleByte(); // 21 for unt tri, 29 unt quad, 25 tex tri, 2D tex quad
             // 100001 / 21 unt tri - GT2 + 1
             // 101001 / 29 unt quad - GT2 + 1
             // 100101 / 25 tex tri
             // 101101 / 2D tex quad
-            if (Unknown12 == 33 || Unknown12 == 41)
+            if (faceTypeData == 33 || faceTypeData == 41)
             {
-                FaceType = Unknown12 - 1;
+                FaceType = faceTypeData - 1;
             }
             else
             {
-                FaceType = Unknown12;
+                FaceType = faceTypeData;
             }
         }
 
-        public virtual void WriteToCDO(Stream stream, bool isQuad, List<Vertex> vertices)
+        public virtual void WriteToCDO(Stream stream, bool isQuad, List<Vertex> vertices, List<Normal> normals)
         {
             // break selected faces to make it obvious which ones they are in GT2CarViewer
             /*if (RenderOrder != 0b10000)
@@ -261,18 +247,14 @@ namespace GT2.ModelTool.Structures
                 stream.WriteByte(0x00);
             }
 
-            stream.WriteByte(Unknown1);
-            stream.WriteByte(Unknown2);
-            stream.WriteByte(Unknown3);
-            stream.WriteByte(Unknown4);
-            stream.WriteByte(Unknown5);
-            stream.WriteByte(Unknown6);
-            stream.WriteByte(Unknown7);
-            stream.WriteByte(Unknown8);
-            stream.WriteByte(Unknown9);
-            stream.WriteByte(Unknown10);
-            stream.WriteByte(Unknown11);
-            stream.WriteByte(Unknown12);
+            int normal0Ref = normals.IndexOf(Vertex0Normal);
+            int normal1Ref = normals.IndexOf(Vertex1Normal);
+            int normal2Ref = normals.IndexOf(Vertex2Normal);
+            int normal3Ref = Vertex3Normal == null ? 0 : normals.IndexOf(Vertex3Normal);
+            stream.WriteUShort((ushort)((normal0Ref << 5) + RenderOrder));
+            stream.WriteUShort((ushort)(RenderFlags << 12));
+            stream.WriteUInt((uint)((normal1Ref << 1) + (normal2Ref << 10) + (normal3Ref << 19)));
+            stream.WriteUInt((uint)(FaceType << 24));
         }
     }
 }

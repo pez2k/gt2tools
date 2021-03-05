@@ -194,22 +194,22 @@ namespace GT2.ModelTool.Structures
 
             foreach (Polygon triangle in Triangles)
             {
-                triangle.WriteToCDO(stream, false, Vertices);
+                triangle.WriteToCDO(stream, false, Vertices, Normals);
             }
 
             foreach (Polygon quad in Quads)
             {
-                quad.WriteToCDO(stream, true, Vertices);
+                quad.WriteToCDO(stream, true, Vertices, Normals);
             }
 
             foreach (UVPolygon uvTriangle in UVTriangles)
             {
-                uvTriangle.WriteToCDO(stream, false, Vertices);
+                uvTriangle.WriteToCDO(stream, false, Vertices, Normals);
             }
 
             foreach (UVPolygon uvQuad in UVQuads)
             {
-                uvQuad.WriteToCDO(stream, true, Vertices);
+                uvQuad.WriteToCDO(stream, true, Vertices, Normals);
             }
         }
     }
