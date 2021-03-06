@@ -50,9 +50,10 @@ namespace GT2.ModelTool.Structures
         public void ReadFromCAR(Stream stream)
         {
             double scale = 4000; // No idea if this is correct, but it validates
-            Z = stream.ReadShort() / scale;
-            Y = stream.ReadShort() / scale;
             X = stream.ReadShort() / scale;
+            Y = stream.ReadShort() / scale;
+            Z = stream.ReadShort() / scale;
+            Z = 0 - Z;
             stream.Position += sizeof(short);
             ValidateUnitVector();
 

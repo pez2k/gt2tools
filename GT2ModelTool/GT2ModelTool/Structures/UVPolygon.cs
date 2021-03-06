@@ -63,6 +63,9 @@ namespace GT2.ModelTool.Structures
             {
                 throw new System.Exception("Vertex 3 UVs in Triangle not zero");
             }
+
+            // GT1 temp hack
+            RenderFlags = 0b1000;
         }
 
         public override void WriteToCDO(Stream stream, bool isQuad, List<Vertex> vertices, List<Normal> normals)

@@ -58,6 +58,8 @@ namespace GT2.ModelTool.Structures
                 WheelPositions.Add(wheelPosition);
             }
 
+            WheelPositions = new List<WheelPosition> { WheelPositions[2], WheelPositions[3], WheelPositions[0], WheelPositions[1] };
+
             Unknown1 = stream.ReadUShort();
             Unknown2 = stream.ReadUShort();
             Unknown3 = stream.ReadUShort();
@@ -103,6 +105,12 @@ namespace GT2.ModelTool.Structures
             foreach (LOD lod in LODs)
             {
                 lod.WriteToCDO(stream);
+            }
+
+            // size of bistn shadow - hack
+            for (int i = 0; i < 196; i++)
+            {
+                stream.WriteByte(0);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace GT2.ModelTool.Structures
 {
@@ -8,14 +9,14 @@ namespace GT2.ModelTool.Structures
     public class LOD
     {
         private byte[] unknown = new byte[44];
-        private ushort lowBoundX;
-        private ushort lowBoundY;
-        private ushort lowBoundZ;
-        private ushort lowBoundW;
-        private ushort highBoundX;
-        private ushort highBoundY;
-        private ushort highBoundZ;
-        private ushort highBoundW;
+        private short lowBoundX;
+        private short lowBoundY;
+        private short lowBoundZ;
+        private short lowBoundW;
+        private short highBoundX;
+        private short highBoundY;
+        private short highBoundZ;
+        private short highBoundW;
         private ushort scale;
         private byte unknown2;
         private byte unknown3;
@@ -37,15 +38,15 @@ namespace GT2.ModelTool.Structures
             ushort uvTriangleCount = stream.ReadUShort();
             ushort uvQuadCount = stream.ReadUShort();
             stream.Read(unknown);
-            lowBoundX = stream.ReadUShort();
-            lowBoundY = stream.ReadUShort();
-            lowBoundZ = stream.ReadUShort();
-            lowBoundW = stream.ReadUShort();
-            highBoundX = stream.ReadUShort();
-            highBoundY = stream.ReadUShort();
-            highBoundZ = stream.ReadUShort();
-            highBoundW = stream.ReadUShort();
-            scale = stream.ReadUShort();
+            lowBoundX = stream.ReadShort(); // at 8C0
+            lowBoundY = stream.ReadShort();
+            lowBoundZ = stream.ReadShort();
+            lowBoundW = stream.ReadShort();
+            highBoundX = stream.ReadShort();
+            highBoundY = stream.ReadShort();
+            highBoundZ = stream.ReadShort();
+            highBoundW = stream.ReadShort();
+            scale = stream.ReadUShort(); // at 8D0
             unknown2 = stream.ReadSingleByte();
             unknown3 = stream.ReadSingleByte();
 
@@ -101,16 +102,16 @@ namespace GT2.ModelTool.Structures
 
         public void ReadFromCAR(Stream stream)
         {
-            ushort vertexCount = stream.ReadUShort();
+            ushort vertexCount = stream.ReadUShort(); // at 0x80
             ushort normalCount = stream.ReadUShort();
             ushort triangleCount = stream.ReadUShort();
             ushort quadCount = stream.ReadUShort();
             stream.Position += sizeof(ushort) * 2;
             ushort uvTriangleCount = stream.ReadUShort();
             ushort uvQuadCount = stream.ReadUShort();
-            stream.Position += sizeof(ushort) * 12;
+            stream.Position += sizeof(ushort) * 12; // at 0x90
 
-            Vertices = new List<Vertex>(vertexCount);
+            Vertices = new List<Vertex>(vertexCount); // at 0x9C
             Normals = new List<Normal>(normalCount);
             Triangles = new List<Polygon>(triangleCount);
             Quads = new List<Polygon>(quadCount);
@@ -158,6 +159,18 @@ namespace GT2.ModelTool.Structures
                 uvQuad.ReadFromCAR(stream, true, Vertices, Normals);
                 UVQuads.Add(uvQuad);
             }
+
+            // calculate model bounds - can't spot this sort of data in CAR
+            lowBoundX = Vertices.Select(v => v.X).Min();
+            lowBoundY = Vertices.Select(v => v.Y).Min();
+            lowBoundZ = Vertices.Select(v => v.Z).Min();
+            lowBoundW = 0;
+            highBoundX = Vertices.Select(v => v.X).Max();
+            highBoundY = Vertices.Select(v => v.Y).Max();
+            highBoundZ = Vertices.Select(v => v.Z).Max();
+            highBoundW = 0;
+
+            scale = 18; // seems to be consistently right?
         }
 
         public void WriteToCDO(Stream stream)
@@ -170,14 +183,14 @@ namespace GT2.ModelTool.Structures
             stream.WriteUShort((ushort)UVTriangles.Count);
             stream.WriteUShort((ushort)UVQuads.Count);
             stream.Write(unknown);
-            stream.WriteUShort(lowBoundX);
-            stream.WriteUShort(lowBoundY);
-            stream.WriteUShort(lowBoundZ);
-            stream.WriteUShort(lowBoundW);
-            stream.WriteUShort(highBoundX);
-            stream.WriteUShort(highBoundY);
-            stream.WriteUShort(highBoundZ);
-            stream.WriteUShort(highBoundW);
+            stream.WriteShort(lowBoundX);
+            stream.WriteShort(lowBoundY);
+            stream.WriteShort(lowBoundZ);
+            stream.WriteShort(lowBoundW);
+            stream.WriteShort(highBoundX);
+            stream.WriteShort(highBoundY);
+            stream.WriteShort(highBoundZ);
+            stream.WriteShort(highBoundW);
             stream.WriteUShort(scale);
             stream.WriteByte(unknown2);
             stream.WriteByte(unknown3);
