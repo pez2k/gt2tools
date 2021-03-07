@@ -7,21 +7,22 @@ namespace GT2.ModelTool.Structures
     public class WheelPosition
     {
         public short X { get; set; }
-        public short Y { get; set; }
-        public short Z { get; set; }
-        public ushort Scale { get; set; }
+        public short Y { get; set; } // vertical
+        public short Z { get; set; } // forwards / backwards
+        public short Scale { get; set; } // track width? probably signed?
 
         public void ReadFromCDO(Stream stream)
         {
             X = stream.ReadShort(); // these are probably in the wrong order
             Y = stream.ReadShort();
             Z = stream.ReadShort();
-            Scale = stream.ReadUShort();
+            Scale = stream.ReadShort();
         }
 
         public void ReadFromCAR(Stream stream)
         {
             ReadFromCDO(stream);
+            Scale = X; // zero in GT1, using the X value isn't totally correct but better than nothing
         }
 
         public void WriteToCDO(Stream stream)
@@ -29,7 +30,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(X);
             stream.WriteShort(Y);
             stream.WriteShort(Z);
-            stream.WriteUShort(Scale);
+            stream.WriteShort(Scale);
         }
     }
 }

@@ -109,9 +109,11 @@ namespace GT2.ModelTool.Structures
             stream.Position += sizeof(ushort) * 2;
             ushort uvTriangleCount = stream.ReadUShort();
             ushort uvQuadCount = stream.ReadUShort();
-            stream.Position += sizeof(ushort) * 12; // at 0x90
+            stream.Position += sizeof(ushort) * 10; // at 0x90
+            scale = stream.ReadUShort();
+            stream.Position += 2;
 
-            Vertices = new List<Vertex>(vertexCount); // at 0x9C
+            Vertices = new List<Vertex>(vertexCount); // at 0xA8
             Normals = new List<Normal>(normalCount);
             Triangles = new List<Polygon>(triangleCount);
             Quads = new List<Polygon>(quadCount);
@@ -169,8 +171,6 @@ namespace GT2.ModelTool.Structures
             highBoundY = Vertices.Select(v => v.Y).Max();
             highBoundZ = Vertices.Select(v => v.Z).Max();
             highBoundW = 0;
-
-            scale = 18; // seems to be consistently right?
         }
 
         public void WriteToCDO(Stream stream)

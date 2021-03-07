@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace GT2.ModelTool.Structures
@@ -14,6 +15,7 @@ namespace GT2.ModelTool.Structures
         public List<WheelPosition> WheelPositions { get; set; } = new List<WheelPosition>(4);
         public byte[] Unknown4 { get; set; } = new byte[26];
         public List<LOD> LODs { get; set; }
+        public Shadow Shadow { get; set; }
 
         public void ReadFromCDO(Stream stream) {
             stream.Position = 0x08;
@@ -44,6 +46,12 @@ namespace GT2.ModelTool.Structures
                 var lod = new LOD();
                 lod.ReadFromCDO(stream);
                 LODs.Add(lod);
+            }
+            Shadow = new Shadow();
+            Shadow.ReadFromCDO(stream);
+            if (stream.Position != stream.Length)
+            {
+                throw new Exception($"{stream.Length - stream.Position} trailing bytes after shadow");
             }
         }
 
@@ -81,6 +89,12 @@ namespace GT2.ModelTool.Structures
                     stream.Position += 40; // gap between LODs
                 }
             }
+            Shadow = new Shadow();
+            Shadow.ReadFromCAR(stream);
+            if (stream.Position != stream.Length)
+            {
+                throw new Exception($"{stream.Length - stream.Position} trailing bytes after shadow");
+            }
         }
 
         public void WriteToCDO(Stream stream)
@@ -107,11 +121,7 @@ namespace GT2.ModelTool.Structures
                 lod.WriteToCDO(stream);
             }
 
-            // size of bistn shadow - hack
-            for (int i = 0; i < 196; i++)
-            {
-                stream.WriteByte(0);
-            }
+            Shadow.WriteToCDO(stream);
         }
     }
 }
