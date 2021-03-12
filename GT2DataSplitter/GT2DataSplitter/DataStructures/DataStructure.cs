@@ -128,6 +128,8 @@ namespace GT2.DataSplitter
 
             Dictionary<uint, string> cars = new Dictionary<uint, string>();
 
+            bool hasOverrides = Program.OverridePath != null && Directory.Exists(Path.Combine(Program.OverridePath, example.Name));
+
             foreach (string carName in Directory.EnumerateDirectories(example.Name))
             {
                 cars.Add(carName.ToCarID(), carName);
@@ -140,8 +142,14 @@ namespace GT2.DataSplitter
             
             foreach (string carName in cars.Values)
             {
-                foreach (string filename in Directory.EnumerateFiles(carName))
+                foreach (string baseFilename in Directory.EnumerateFiles(carName))
                 {
+                    string filename = hasOverrides ? Path.Combine(Program.OverridePath, baseFilename) : baseFilename;
+                    if (!File.Exists(filename))
+                    {
+                        filename = baseFilename;
+                    }
+
                     if (new FileInfo(filename).Length > 0)
                     {
                         T structure = new T();
