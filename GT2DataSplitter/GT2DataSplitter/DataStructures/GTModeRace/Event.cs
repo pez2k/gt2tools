@@ -90,7 +90,7 @@ namespace GT2.DataSplitter
         public ushort PrizeMoney6th; // multiply by 100 for non-JP / multiply by 10,000 for JP (0x82)
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public uint[] PrizeCars; // ids of cars (0x84)
-        public ushort Unknown5; // (0x94)
+        public ushort TrackBannerPool; // (0x94)
         public ushort PSRestriction; // in ps units (hp = ps / 1.01427772651) (0x96)
         public ushort SeriesChampBonus; // multiply by 100 for non-JP / multiply by 10,000 for JP (0x98)
         public ushort CarRestrictionFlags; // (0x9a) flags to restrict the type of car you use for this race. 0x100 = non-race car, 0x200 = just race car
@@ -166,7 +166,7 @@ namespace GT2.DataSplitter
             Map(m => m.PrizeMoney5th);
             Map(m => m.PrizeMoney6th);
             Map(m => m.PrizeCars).TypeConverter(Utils.CarIdArrayConverter);
-            Map(m => m.Unknown5).TypeConverter(RaceStringTable.Lookup);
+            Map(m => m.TrackBannerPool).TypeConverter(RaceStringTable.Lookup); // references TIM list in .crstims.tsd, or "0" for static unrandomised banners
             Map(m => m.PSRestriction);
             Map(m => m.SeriesChampBonus);
             Map(m => m.CarRestrictionFlags); // 1 for NA, 2 for Turbo, 256 for Normal, 512 for Race
