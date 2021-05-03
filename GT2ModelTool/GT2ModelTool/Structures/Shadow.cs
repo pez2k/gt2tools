@@ -139,5 +139,21 @@ namespace GT2.ModelTool.Structures
                 quad.WriteToCDO(stream, true, Vertices);
             }
         }
+
+        public void WriteToOBJ(TextWriter writer, int firstVertexNumber)
+        {
+            // bounding box? scale?
+            writer.WriteLine($"g shadow");
+            writer.WriteLine($"# scale: {scale}");
+
+            writer.WriteLine("# vertices");
+            Vertices.ForEach(vertex => vertex.WriteToOBJ(writer));
+
+            writer.WriteLine("# triangles");
+            Triangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, firstVertexNumber));
+
+            writer.WriteLine("# quads");
+            Quads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, firstVertexNumber));
+        }
     }
 }

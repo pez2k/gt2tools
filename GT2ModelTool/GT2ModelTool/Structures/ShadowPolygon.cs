@@ -71,5 +71,14 @@ namespace GT2.ModelTool.Structures
             }
             stream.WriteUInt(data);
         }
+
+        public void WriteToOBJ(TextWriter writer, bool isQuad, List<ShadowVertex> vertices, int firstVertexNumber) =>
+            writer.WriteLine($"f {WriteVertexToOBJ(Vertex0, vertices, firstVertexNumber)} " +
+                             $"{WriteVertexToOBJ(Vertex1, vertices, firstVertexNumber)} " +
+                             $"{WriteVertexToOBJ(Vertex2, vertices, firstVertexNumber)}" +
+                             (isQuad ? $" {WriteVertexToOBJ(Vertex3, vertices, firstVertexNumber)}" : ""));
+
+        private string WriteVertexToOBJ(ShadowVertex vertex, List<ShadowVertex> vertices, int firstVertexNumber) =>
+            $"{vertices.IndexOf(vertex) + firstVertexNumber}";
     }
 }

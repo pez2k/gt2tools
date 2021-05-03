@@ -143,7 +143,7 @@ namespace GT2.ModelTool.Structures
                 normalNumber += LODs[i].Normals.Count;
             }
 
-            // shadow?
+            Shadow.WriteToOBJ(writer, vertexNumber);
         }
     }
 }

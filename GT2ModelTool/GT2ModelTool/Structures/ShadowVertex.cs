@@ -29,5 +29,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(X);
             stream.WriteShort(Z);
         }
+
+        public void WriteToOBJ(TextWriter writer) => writer.WriteLine($"v {(double)X / 10000} 0 {(double)Z / 10000}");
     }
 }
