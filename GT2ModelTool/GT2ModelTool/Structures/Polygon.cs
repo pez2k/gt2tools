@@ -257,7 +257,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteUInt((uint)(FaceType << 24));
         }
 
-        public virtual void WriteToOBJ(TextWriter writer, bool isQuad, List<Vertex> vertices, List<Normal> normals, int firstVertexNumber, int firstNormalNumber) =>
+        public void WriteToOBJ(TextWriter writer, bool isQuad, List<Vertex> vertices, List<Normal> normals, int firstVertexNumber, int firstNormalNumber) =>
             writer.WriteLine($"f {WriteVertexToOBJ(Vertex0, Vertex0Normal, vertices, normals, firstVertexNumber, firstNormalNumber)} " +
                              $"{WriteVertexToOBJ(Vertex1, Vertex1Normal, vertices, normals, firstVertexNumber, firstNormalNumber)} " +
                              $"{WriteVertexToOBJ(Vertex2, Vertex2Normal, vertices, normals, firstVertexNumber, firstNormalNumber)}" +

@@ -138,12 +138,14 @@ namespace GT2.ModelTool.Structures
 
             int vertexNumber = WheelPositions.Count + 1;
             int normalNumber = 1;
+            int coordNumber = 1;
 
             for (int i = 0; i < LODs.Count; i++)
             {
-                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber);
+                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber);
                 vertexNumber += LODs[i].Vertices.Count;
                 normalNumber += LODs[i].Normals.Count;
+                coordNumber += LODs[i].GetAllUVCoords().Count;
             }
 
             Shadow.WriteToOBJ(modelWriter, vertexNumber);
@@ -151,7 +153,7 @@ namespace GT2.ModelTool.Structures
             for (int i = 0; i < 16; i++)
             {
                 materialWriter.WriteLine($"newmtl palette{i}");
-                materialWriter.WriteLine($"map_Ka palette{i}.bmp");
+                materialWriter.WriteLine($"map_Kd palette{i}.bmp");
             }
         }
     }

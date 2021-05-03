@@ -143,7 +143,7 @@ namespace GT2.ModelTool.Structures
         public void WriteToOBJ(TextWriter writer, int firstVertexNumber)
         {
             // bounding box? scale?
-            writer.WriteLine($"g shadow");
+            writer.WriteLine($"o shadow");
             writer.WriteLine($"# scale: {scale}");
 
             writer.WriteLine("# vertices");

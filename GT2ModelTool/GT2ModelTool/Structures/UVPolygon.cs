@@ -81,10 +81,18 @@ namespace GT2.ModelTool.Structures
             Vertex3UV.WriteToCDO(stream);
         }
 
-        public override void WriteToOBJ(TextWriter writer, bool isQuad, List<Vertex> vertices, List<Normal> normals, int firstVertexNumber, int firstNormalNumber)
+        public void WriteToOBJ(TextWriter writer, bool isQuad, List<Vertex> vertices, List<Normal> normals, int firstVertexNumber,
+                               int firstNormalNumber, List<UVCoordinate> coords, int firstCoordNumber)
         {
             writer.WriteLine($"usemtl palette{PaletteIndex}");
-            base.WriteToOBJ(writer, isQuad, vertices, normals, firstVertexNumber, firstNormalNumber);
+            writer.WriteLine($"f {WriteVertexToOBJ(Vertex0, Vertex0Normal, vertices, normals, firstVertexNumber, firstNormalNumber, Vertex0UV, coords, firstCoordNumber)} " +
+                             $"{WriteVertexToOBJ(Vertex1, Vertex1Normal, vertices, normals, firstVertexNumber, firstNormalNumber, Vertex1UV, coords, firstCoordNumber)} " +
+                             $"{WriteVertexToOBJ(Vertex2, Vertex2Normal, vertices, normals, firstVertexNumber, firstNormalNumber, Vertex2UV, coords, firstCoordNumber)}" +
+                             (isQuad ? $" {WriteVertexToOBJ(Vertex3, Vertex3Normal, vertices, normals, firstVertexNumber, firstNormalNumber, Vertex3UV, coords, firstCoordNumber)}" : ""));
         }
+
+        private string WriteVertexToOBJ(Vertex vertex, Normal normal, List<Vertex> vertices, List<Normal> normals, int firstVertexNumber,
+                                        int firstNormalNumber, UVCoordinate coord, List<UVCoordinate> coords, int firstCoordNumber) =>
+            $"{vertices.IndexOf(vertex) + firstVertexNumber}/{coords.IndexOf(coord) + firstCoordNumber}/{normals.IndexOf(normal) + firstNormalNumber} ";
     }
 }

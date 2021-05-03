@@ -226,10 +226,10 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber)
+        public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber)
         {
             // bounding box? scale?
-            writer.WriteLine($"g lod{lodNumber}");
+            writer.WriteLine($"o lod{lodNumber}");
             writer.WriteLine($"# scale: {scale}");
 
             writer.WriteLine("# vertices");
@@ -238,17 +238,9 @@ namespace GT2.ModelTool.Structures
             writer.WriteLine("# normals");
             Normals.ForEach(normal => normal.WriteToOBJ(writer));
 
-            writer.WriteLine("# triangle UV coords");
-            foreach (UVCoordinate coord in UVTriangles.SelectMany(polygon => new UVCoordinate[] { polygon.Vertex0UV, polygon.Vertex1UV, polygon.Vertex2UV }))
-            {
-                coord.WriteToOBJ(writer);
-            }
-
-            writer.WriteLine("# quad UV coords");
-            foreach (UVCoordinate coord in UVQuads.SelectMany(polygon => new UVCoordinate[] { polygon.Vertex0UV, polygon.Vertex1UV, polygon.Vertex2UV, polygon.Vertex3UV }))
-            {
-                coord.WriteToOBJ(writer);
-            }
+            List<UVCoordinate> coords = GetAllUVCoords();
+            writer.WriteLine("# UV coords");
+            coords.ForEach(coord => coord.WriteToOBJ(writer));
 
             writer.WriteLine("# triangles");
             Triangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber));
@@ -257,10 +249,14 @@ namespace GT2.ModelTool.Structures
             Quads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber));
 
             writer.WriteLine("# UV triangles");
-            UVTriangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber));
+            UVTriangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber));
 
             writer.WriteLine("# UV quads");
-            UVQuads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber));
+            UVQuads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber));
         }
+
+        public List<UVCoordinate> GetAllUVCoords() =>
+            UVTriangles.SelectMany(polygon => new UVCoordinate[] { polygon.Vertex0UV, polygon.Vertex1UV, polygon.Vertex2UV })
+                       .Concat(UVQuads.SelectMany(polygon => new UVCoordinate[] { polygon.Vertex0UV, polygon.Vertex1UV, polygon.Vertex2UV, polygon.Vertex3UV })).ToList();
     }
 }
