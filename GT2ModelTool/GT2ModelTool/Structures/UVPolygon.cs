@@ -80,5 +80,11 @@ namespace GT2.ModelTool.Structures
             Vertex2UV.WriteToCDO(stream);
             Vertex3UV.WriteToCDO(stream);
         }
+
+        public override void WriteToOBJ(TextWriter writer, bool isQuad, List<Vertex> vertices, List<Normal> normals, int firstVertexNumber, int firstNormalNumber)
+        {
+            writer.WriteLine($"usemtl palette{PaletteIndex}");
+            base.WriteToOBJ(writer, isQuad, vertices, normals, firstVertexNumber, firstNormalNumber);
+        }
     }
 }

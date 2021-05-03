@@ -124,13 +124,16 @@ namespace GT2.ModelTool.Structures
             Shadow.WriteToCDO(stream);
         }
 
-        public void WriteToOBJ(TextWriter writer)
+        public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter)
         {
-            // scale, wheel dummies, etc?
+            modelWriter.WriteLine("mtllib out.mtl");
+
+            // scale, unknowns, etc?
+            modelWriter.WriteLine($"# scale: {Scale}");
 
             for (int i = 0; i < WheelPositions.Count; i++)
             {
-                WheelPositions[i].WriteToOBJ(writer, i);
+                WheelPositions[i].WriteToOBJ(modelWriter, i);
             }
 
             int vertexNumber = WheelPositions.Count + 1;
@@ -138,12 +141,18 @@ namespace GT2.ModelTool.Structures
 
             for (int i = 0; i < LODs.Count; i++)
             {
-                LODs[i].WriteToOBJ(writer, i, vertexNumber, normalNumber);
+                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber);
                 vertexNumber += LODs[i].Vertices.Count;
                 normalNumber += LODs[i].Normals.Count;
             }
 
-            Shadow.WriteToOBJ(writer, vertexNumber);
+            Shadow.WriteToOBJ(modelWriter, vertexNumber);
+
+            for (int i = 0; i < 16; i++)
+            {
+                materialWriter.WriteLine($"newmtl palette{i}");
+                materialWriter.WriteLine($"map_Ka palette{i}.bmp");
+            }
         }
     }
 }

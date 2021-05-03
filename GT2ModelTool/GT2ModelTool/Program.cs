@@ -77,9 +77,12 @@ namespace GT2.ModelTool
                 model.ReadFromCDO(stream);
                 //Polygon.values.Sort();
 
-                using (TextWriter writer = new StreamWriter("out.obj"))
+                using (TextWriter modelWriter = new StreamWriter("out.obj"))
                 {
-                    model.WriteToOBJ(writer);
+                    using (TextWriter materialWriter = new StreamWriter("out.mtl"))
+                    {
+                        model.WriteToOBJ(modelWriter, materialWriter);
+                    }
                 }
             }
         }
