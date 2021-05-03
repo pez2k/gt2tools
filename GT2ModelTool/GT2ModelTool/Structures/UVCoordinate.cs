@@ -19,7 +19,7 @@ namespace GT2.ModelTool.Structures
             int y = stream.ReadByte();
             if (y >= 32)
             {
-                y -= 32;
+                y -= 32; // why? other data?
             }
             Y = (byte)y;
         }
@@ -29,5 +29,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteByte(X);
             stream.WriteByte(Y);
         }
+
+        public void WriteToOBJ(TextWriter writer) => writer.WriteLine($"vt {X / 256M} {Y / 256M}");
     }
 }

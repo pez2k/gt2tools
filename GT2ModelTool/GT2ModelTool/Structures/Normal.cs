@@ -89,5 +89,7 @@ namespace GT2.ModelTool.Structures
             uint packedBits = (uint)(input << distance);
             return packedBits;
         }
+
+        public void WriteToOBJ(TextWriter writer) => writer.WriteLine($"vn {X} {Y} {Z}");
     }
 }

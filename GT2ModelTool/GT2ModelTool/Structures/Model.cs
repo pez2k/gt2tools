@@ -123,5 +123,27 @@ namespace GT2.ModelTool.Structures
 
             Shadow.WriteToCDO(stream);
         }
+
+        public void WriteToOBJ(TextWriter writer)
+        {
+            // scale, wheel dummies, etc?
+
+            for (int i = 0; i < WheelPositions.Count; i++)
+            {
+                WheelPositions[i].WriteToOBJ(writer, i);
+            }
+
+            int vertexNumber = WheelPositions.Count + 1;
+            int normalNumber = 1;
+
+            for (int i = 0; i < LODs.Count; i++)
+            {
+                LODs[i].WriteToOBJ(writer, i, vertexNumber, normalNumber);
+                vertexNumber += LODs[i].Vertices.Count;
+                normalNumber += LODs[i].Normals.Count;
+            }
+
+            // shadow?
+        }
     }
 }
