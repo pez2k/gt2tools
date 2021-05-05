@@ -150,6 +150,9 @@ namespace GT2.ModelTool.Structures
 
             Shadow.WriteToOBJ(modelWriter, vertexNumber);
 
+            materialWriter.WriteLine("newmtl untextured");
+            materialWriter.WriteLine("Kd 0 0 0");
+
             for (int i = 0; i < 16; i++)
             {
                 materialWriter.WriteLine($"newmtl palette{i}");
