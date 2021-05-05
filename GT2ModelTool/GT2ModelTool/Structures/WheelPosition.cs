@@ -36,7 +36,7 @@ namespace GT2.ModelTool.Structures
         public void WriteToOBJ(TextWriter writer, int wheelNumber)
         {
             writer.WriteLine($"# scale: {Scale}");
-            writer.WriteLine($"o wheelpos{wheelNumber}");
+            writer.WriteLine($"g wheelpos{wheelNumber}");
             writer.WriteLine($"v {(double)X / 10000} {(double)Y / 10000} {(double)Z / 10000}");
             wheelNumber++;
             writer.WriteLine($"f {wheelNumber} {wheelNumber} {wheelNumber}");

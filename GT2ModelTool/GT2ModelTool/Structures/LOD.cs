@@ -229,7 +229,7 @@ namespace GT2.ModelTool.Structures
         public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber)
         {
             // bounding box? scale?
-            writer.WriteLine($"o lod{lodNumber}");
+            writer.WriteLine($"g lod{lodNumber}");
             writer.WriteLine($"# scale: {scale}");
 
             writer.WriteLine("# vertices");
