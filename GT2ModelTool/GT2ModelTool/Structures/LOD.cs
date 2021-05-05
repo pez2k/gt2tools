@@ -226,11 +226,10 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber)
+        public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber, Dictionary<string, int?> materialNames)
         {
-            // bounding box? scale?
-            writer.WriteLine($"g lod{lodNumber}");
-            writer.WriteLine($"# scale: {scale}");
+            // bounding box?
+            writer.WriteLine($"g lod{lodNumber}/scale={scale}");
 
             writer.WriteLine("# vertices");
             Vertices.ForEach(vertex => vertex.WriteToOBJ(writer));
@@ -243,16 +242,16 @@ namespace GT2.ModelTool.Structures
             coords.ForEach(coord => coord.WriteToOBJ(writer));
 
             writer.WriteLine("# triangles");
-            Triangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber));
+            Triangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, materialNames));
 
             writer.WriteLine("# quads");
-            Quads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber));
+            Quads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, materialNames));
 
             writer.WriteLine("# UV triangles");
-            UVTriangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber));
+            UVTriangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialNames));
 
             writer.WriteLine("# UV quads");
-            UVQuads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber));
+            UVQuads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialNames));
         }
 
         public List<UVCoordinate> GetAllUVCoords() =>

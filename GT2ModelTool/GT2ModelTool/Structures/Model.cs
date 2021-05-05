@@ -139,10 +139,11 @@ namespace GT2.ModelTool.Structures
             int vertexNumber = WheelPositions.Count + 1;
             int normalNumber = 1;
             int coordNumber = 1;
+            var materialNames = new Dictionary<string, int?>();
 
             for (int i = 0; i < LODs.Count; i++)
             {
-                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber);
+                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber, materialNames);
                 vertexNumber += LODs[i].Vertices.Count;
                 normalNumber += LODs[i].Normals.Count;
                 coordNumber += LODs[i].GetAllUVCoords().Count;
@@ -153,10 +154,17 @@ namespace GT2.ModelTool.Structures
             materialWriter.WriteLine("newmtl untextured");
             materialWriter.WriteLine("Kd 0 0 0");
 
-            for (int i = 0; i < 16; i++)
+            foreach (var materialName in materialNames)
             {
-                materialWriter.WriteLine($"newmtl palette{i}");
-                materialWriter.WriteLine($"map_Kd palette{i}.bmp");
+                materialWriter.WriteLine($"newmtl {materialName.Key}");
+                if (materialName.Value == null)
+                {
+                    materialWriter.WriteLine("Kd 0 0 0");
+                }
+                else
+                {
+                    materialWriter.WriteLine($"map_Kd palette{materialName.Value}.bmp");
+                }
             }
         }
     }
