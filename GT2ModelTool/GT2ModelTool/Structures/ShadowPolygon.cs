@@ -12,6 +12,7 @@ namespace GT2.ModelTool.Structures
         public ShadowVertex Vertex2 { get; set; }
         public ShadowVertex Vertex3 { get; set; }
         public bool IsGradientShaded { get; set; }
+        public bool IsQuad => Vertex3 != null;
 
         public static List<byte> values = new List<byte>();
 
@@ -72,7 +73,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteUInt(data);
         }
 
-        public void WriteToOBJ(TextWriter writer, bool isQuad, List<ShadowVertex> vertices, int firstVertexNumber) =>
+        public void WriteToOBJ(TextWriter writer, bool isQuad, List<ShadowVertex> vertices, int firstVertexNumber) => // gradient shading?
             writer.WriteLine($"f {WriteVertexToOBJ(Vertex0, vertices, firstVertexNumber)} " +
                              $"{WriteVertexToOBJ(Vertex1, vertices, firstVertexNumber)} " +
                              $"{WriteVertexToOBJ(Vertex2, vertices, firstVertexNumber)}" +
@@ -80,5 +81,28 @@ namespace GT2.ModelTool.Structures
 
         private string WriteVertexToOBJ(ShadowVertex vertex, List<ShadowVertex> vertices, int firstVertexNumber) =>
             $"{vertices.IndexOf(vertex) + firstVertexNumber}";
+
+        public void ReadFromOBJ(string line, List<ShadowVertex> vertices, int startID)
+        {
+            string[] parts = line.Split(' ');
+            if (parts.Length < 4 || parts.Length > 5)
+            {
+                throw new Exception($"Line: {line}\r\nShadow face does not contain exactly three or four vertices.");
+            }
+            Vertex0 = ParseVertex(parts[1], vertices, startID);
+            Vertex1 = ParseVertex(parts[2], vertices, startID);
+            Vertex2 = ParseVertex(parts[3], vertices, startID);
+            if (parts.Length == 5)
+            {
+                Vertex3 = ParseVertex(parts[4], vertices, startID);
+            }
+        }
+
+        private ShadowVertex ParseVertex(string value, List<ShadowVertex> vertices, int startID)
+        {
+            string[] vertexData = value.Split('/');
+            int vertexID = int.Parse(vertexData[0]) - 1 - startID;
+            return vertices[vertexID];
+        }
     }
 }

@@ -185,6 +185,7 @@ namespace GT2.ModelTool.Structures
             var uvCoords = new List<UVCoordinate>();
             var usedVertexIDs = new List<int>();
             var usedNormalIDs = new List<int>();
+            int shadowVertexStartID = 0;
             do
             {
                 line = reader.ReadLine();
@@ -225,10 +226,11 @@ namespace GT2.ModelTool.Structures
                             throw new Exception("Expected three LOD objects before shadow object.");
                         }
                         currentLOD.Vertices = usedVertexIDs.OrderBy(id => id).Distinct().Select(id => vertices[id]).ToList();
-                        usedVertexIDs = new List<int>();
                         currentLOD.Normals = usedNormalIDs.OrderBy(id => id).Distinct().Select(id => normals[id]).ToList();
-                        usedNormalIDs = new List<int>();
                         shadow = true;
+                        Shadow = new Shadow();
+                        Shadow.PrepareForOBJRead();
+                        shadowVertexStartID = vertices.Count;
                     }
                 }
                 else if (line.StartsWith("v "))
@@ -237,13 +239,14 @@ namespace GT2.ModelTool.Structures
                     {
                         var vertex = new ShadowVertex();
                         vertex.ReadFromOBJ(line);
+                        Shadow.Vertices.Add(vertex);
                     }
                     else
                     {
                         var vertex = new Vertex();
                         vertex.ReadFromOBJ(line);
                         vertices.Add(vertex);
-                        if (/*currentWheelPosition == -1 && */currentLODNumber == -1)
+                        if (currentLODNumber == -1)
                         {
                             wheelPositionCandidate = vertex;
                         }
@@ -269,10 +272,18 @@ namespace GT2.ModelTool.Structures
                 {
                     if (shadow)
                     {
-                        continue;
+                        var polygon = new ShadowPolygon();
+                        polygon.ReadFromOBJ(line, Shadow.Vertices, shadowVertexStartID);
+                        if (polygon.IsQuad)
+                        {
+                            Shadow.Quads.Add(polygon);
+                        }
+                        else
+                        {
+                            Shadow.Triangles.Add(polygon);
+                        }
                     }
-
-                    if (currentLODNumber == -1)
+                    else if (currentLODNumber == -1)
                     {
                         continue;
                         //throw new Exception("Face found outside of a LOD or shadow.");

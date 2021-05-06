@@ -154,5 +154,12 @@ namespace GT2.ModelTool.Structures
             writer.WriteLine("# quads");
             Quads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, firstVertexNumber));
         }
+
+        public void PrepareForOBJRead()
+        {
+            Vertices = new List<ShadowVertex>();
+            Triangles = new List<ShadowPolygon>();
+            Quads = new List<ShadowPolygon>();
+        }
     }
 }
