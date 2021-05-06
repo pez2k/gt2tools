@@ -106,6 +106,7 @@ namespace GT2.ModelTool.Structures
             {
                 throw new Exception($"Line: {line}\r\nFace does not contain exactly three or four vertices.");
             }
+            ParseMaterial(currentMaterial.Split('/'));
             (Vertex0, Vertex0Normal, Vertex0UV) = ParseVertex(parts[1], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
             (Vertex1, Vertex1Normal, Vertex1UV) = ParseVertex(parts[2], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
             (Vertex2, Vertex2Normal, Vertex2UV) = ParseVertex(parts[3], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
@@ -113,6 +114,19 @@ namespace GT2.ModelTool.Structures
             {
                 (Vertex3, Vertex3Normal, Vertex3UV) = ParseVertex(parts[4], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
             }
+        }
+
+        protected override void ParseMaterial(string[] parts)
+        {
+            foreach (string part in parts)
+            {
+                string[] pair = part.Split('=');
+                if (pair[0] == "palette")
+                {
+                    PaletteIndex = ushort.Parse(pair[1]);
+                }
+            }
+            base.ParseMaterial(parts);
         }
 
         private (Vertex v, Normal n, UVCoordinate u) ParseVertex(string value, List<Vertex> vertices, List<Normal> normals, List<UVCoordinate> uvCoords,
