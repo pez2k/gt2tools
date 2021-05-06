@@ -19,6 +19,7 @@ namespace GT2.ModelTool.Structures
         public Normal Vertex1Normal { get; set; }
         public Normal Vertex2Normal { get; set; }
         public Normal Vertex3Normal { get; set; }
+        public bool IsQuad => Vertex3 != null;
 
         public static List<byte> values = new List<byte>();
 
@@ -270,6 +271,38 @@ namespace GT2.ModelTool.Structures
         }
 
         private string WriteVertexToOBJ(Vertex vertex, Normal normal, List<Vertex> vertices, List<Normal> normals, int firstVertexNumber, int firstNormalNumber) =>
-            $"{vertices.IndexOf(vertex) + firstVertexNumber}//{normals.IndexOf(normal) + firstNormalNumber} ";
+            $"{vertices.IndexOf(vertex) + firstVertexNumber}//{normals.IndexOf(normal) + firstNormalNumber}";
+
+        public void ReadFromOBJ(string line, List<Vertex> vertices, List<Normal> normals, string currentMaterial, List<int> usedVertexIDs, List<int> usedNormalIDs)
+        {
+            string[] parts = line.Split(' ');
+            if (parts.Length < 4 || parts.Length > 5)
+            {
+                throw new Exception($"Line: {line}\r\nFace does not contain exactly three or four vertices.");
+            }
+            (Vertex0, Vertex0Normal) = ParseVertex(parts[1], vertices, normals, usedVertexIDs, usedNormalIDs);
+            (Vertex1, Vertex1Normal) = ParseVertex(parts[2], vertices, normals, usedVertexIDs, usedNormalIDs);
+            (Vertex2, Vertex2Normal) = ParseVertex(parts[3], vertices, normals, usedVertexIDs, usedNormalIDs);
+            if (parts.Length == 5)
+            {
+                (Vertex3, Vertex3Normal) = ParseVertex(parts[4], vertices, normals, usedVertexIDs, usedNormalIDs);
+            }
+        }
+
+        private (Vertex v, Normal n) ParseVertex(string value, List<Vertex> vertices, List<Normal> normals, List<int> usedVertexIDs, List<int> usedNormalIDs)
+        {
+            string[] vertexData = value.Split('/');
+            int vertexID = int.Parse(vertexData[0]) - 1;
+            Vertex vertex = vertices[vertexID];
+            usedVertexIDs.Add(vertexID);
+            Normal normal = null;
+            if (vertexData.Length > 2 && vertexData[2] != "")
+            {
+                int normalID = int.Parse(vertexData[2]) - 1;
+                normal = normals[normalID];
+                usedNormalIDs.Add(normalID);
+            }
+            return (vertex, normal);
+        }
     }
 }

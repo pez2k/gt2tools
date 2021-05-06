@@ -91,5 +91,17 @@ namespace GT2.ModelTool.Structures
         }
 
         public void WriteToOBJ(TextWriter writer) => writer.WriteLine($"vn {X} {Y} {Z}");
+
+        public void ReadFromOBJ(string line)
+        {
+            string[] parts = line.Split(' ');
+            if (parts.Length != 4)
+            {
+                throw new Exception($"Line: {line}\r\nNormal does not contain exactly three axis values.");
+            }
+            X = double.Parse(parts[1]);
+            Y = double.Parse(parts[2]);
+            Z = double.Parse(parts[3]);
+        }
     }
 }

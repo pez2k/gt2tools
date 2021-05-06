@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace GT2.ModelTool.Structures
 {
@@ -31,5 +32,16 @@ namespace GT2.ModelTool.Structures
         }
 
         public void WriteToOBJ(TextWriter writer) => writer.WriteLine($"vt {X / 256M} {-Y / 224M}");
+
+        public void ReadFromOBJ(string line)
+        {
+            string[] parts = line.Split(' ');
+            if (parts.Length != 3)
+            {
+                throw new Exception($"Line: {line}\r\nUV coord does not contain exactly two coordinate values.");
+            }
+            X = (byte)(decimal.Parse(parts[1]) * 256);
+            Y = (byte)(decimal.Parse(parts[2]) * -224);
+        }
     }
 }

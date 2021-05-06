@@ -6,7 +6,7 @@ namespace GT2.ModelTool
 
     class Program
     {
-        private static int mode = 2;
+        private static int mode = 3;
 
         static void Main(string[] args)
         {
@@ -20,6 +20,9 @@ namespace GT2.ModelTool
                     break;
                 case 2:
                     ReadGT2WriteOBJ(args);
+                    break;
+                case 3:
+                    ReadOBJWriteGT2(args);
                     break;
             }
         }
@@ -84,6 +87,16 @@ namespace GT2.ModelTool
                         model.WriteToOBJ(modelWriter, materialWriter);
                     }
                 }
+            }
+        }
+
+        private static void ReadOBJWriteGT2(string[] args)
+        {
+            string objFile = "out.obj";
+            using (TextReader modelReader = new StreamReader(objFile))
+            {
+                var model = new Model();
+                model.ReadFromOBJ(modelReader);
             }
         }
     }

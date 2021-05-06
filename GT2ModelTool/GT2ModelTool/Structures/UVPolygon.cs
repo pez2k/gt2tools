@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace GT2.ModelTool.Structures
@@ -95,6 +96,45 @@ namespace GT2.ModelTool.Structures
 
         private string WriteVertexToOBJ(Vertex vertex, Normal normal, List<Vertex> vertices, List<Normal> normals, int firstVertexNumber,
                                         int firstNormalNumber, UVCoordinate coord, List<UVCoordinate> coords, int firstCoordNumber) =>
-            $"{vertices.IndexOf(vertex) + firstVertexNumber}/{coords.IndexOf(coord) + firstCoordNumber}/{normals.IndexOf(normal) + firstNormalNumber} ";
+            $"{vertices.IndexOf(vertex) + firstVertexNumber}/{coords.IndexOf(coord) + firstCoordNumber}/{normals.IndexOf(normal) + firstNormalNumber}";
+
+        public void ReadFromOBJ(string line, List<Vertex> vertices, List<Normal> normals, List<UVCoordinate> uvCoords, string currentMaterial,
+                                List<int> usedVertexIDs, List<int> usedNormalIDs)
+        {
+            string[] parts = line.Split(' ');
+            if (parts.Length < 4 || parts.Length > 5)
+            {
+                throw new Exception($"Line: {line}\r\nFace does not contain exactly three or four vertices.");
+            }
+            (Vertex0, Vertex0Normal, Vertex0UV) = ParseVertex(parts[1], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
+            (Vertex1, Vertex1Normal, Vertex1UV) = ParseVertex(parts[2], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
+            (Vertex2, Vertex2Normal, Vertex2UV) = ParseVertex(parts[3], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
+            if (parts.Length == 5)
+            {
+                (Vertex3, Vertex3Normal, Vertex3UV) = ParseVertex(parts[4], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
+            }
+        }
+
+        private (Vertex v, Normal n, UVCoordinate u) ParseVertex(string value, List<Vertex> vertices, List<Normal> normals, List<UVCoordinate> uvCoords,
+                                                                 List<int> usedVertexIDs, List<int> usedNormalIDs)
+        {
+            string[] vertexData = value.Split('/');
+            int vertexID = int.Parse(vertexData[0]) - 1;
+            Vertex vertex = vertices[vertexID];
+            usedVertexIDs.Add(vertexID);
+            UVCoordinate uvCoord = null;
+            if (vertexData.Length > 1 && vertexData[1] != "")
+            {
+                uvCoord = uvCoords[int.Parse(vertexData[1]) - 1];
+            }
+            Normal normal = null;
+            if (vertexData.Length > 2 && vertexData[2] != "")
+            {
+                int normalID = int.Parse(vertexData[2]) - 1;
+                normal = normals[normalID];
+                usedNormalIDs.Add(normalID);
+            }
+            return (vertex, normal, uvCoord);
+        }
     }
 }

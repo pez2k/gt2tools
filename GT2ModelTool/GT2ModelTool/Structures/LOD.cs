@@ -257,5 +257,15 @@ namespace GT2.ModelTool.Structures
         public List<UVCoordinate> GetAllUVCoords() =>
             UVTriangles.SelectMany(polygon => new UVCoordinate[] { polygon.Vertex0UV, polygon.Vertex1UV, polygon.Vertex2UV })
                        .Concat(UVQuads.SelectMany(polygon => new UVCoordinate[] { polygon.Vertex0UV, polygon.Vertex1UV, polygon.Vertex2UV, polygon.Vertex3UV })).ToList();
+
+        public void PrepareForOBJRead()
+        {
+            Vertices = new List<Vertex>();
+            Normals = new List<Normal>();
+            Triangles = new List<Polygon>();
+            Quads = new List<Polygon>();
+            UVTriangles = new List<UVPolygon>();
+            UVQuads = new List<UVPolygon>();
+        }
     }
 }

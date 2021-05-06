@@ -41,5 +41,12 @@ namespace GT2.ModelTool.Structures
             wheelNumber++;
             writer.WriteLine($"f {wheelNumber} {wheelNumber} {wheelNumber}");
         }
+
+        public void ReadFromOBJ(Vertex vertex)
+        {
+            X = vertex.X;
+            Y = vertex.Y;
+            Z = vertex.Z;
+        }
     }
 }

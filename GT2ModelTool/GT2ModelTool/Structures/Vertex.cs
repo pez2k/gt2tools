@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace GT2.ModelTool.Structures
 {
@@ -34,5 +35,17 @@ namespace GT2.ModelTool.Structures
         }
 
         public void WriteToOBJ(TextWriter writer) => writer.WriteLine($"v {(double)X / 10000} {(double)Y / 10000} {(double)Z / 10000}");
+
+        public void ReadFromOBJ(string line)
+        {
+            string[] parts = line.Split(' ');
+            if (parts.Length != 4)
+            {
+                throw new Exception($"Line: {line}\r\nVertex does not contain exactly three coordinate values.");
+            }
+            X = (short)(double.Parse(parts[1]) * 10000);
+            Y = (short)(double.Parse(parts[2]) * 10000);
+            Z = (short)(double.Parse(parts[3]) * 10000);
+        }
     }
 }
