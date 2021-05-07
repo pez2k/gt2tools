@@ -31,17 +31,18 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(Z);
         }
 
-        public void WriteToOBJ(TextWriter writer) => writer.WriteLine($"v {(double)X / 10000} 0 {(double)Z / 10000}");
+        public void WriteToOBJ(TextWriter writer, double scale) =>
+            writer.WriteLine($"v {X * scale * Vertex.UnitsToMetres} 0 {Z * scale * Vertex.UnitsToMetres}");
 
-        public void ReadFromOBJ(string line)
+        public void ReadFromOBJ(string line, double scale)
         {
             string[] parts = line.Split(' ');
             if (parts.Length != 4)
             {
                 throw new Exception($"Line: {line}\r\nShadow vertex does not contain exactly three coordinate values.");
             }
-            X = (short)Math.Round(double.Parse(parts[1]) * 10000);
-            Z = (short)Math.Round(double.Parse(parts[3]) * 10000);
+            X = (short)Math.Round(double.Parse(parts[1]) / scale / Vertex.UnitsToMetres);
+            Z = (short)Math.Round(double.Parse(parts[3]) / scale / Vertex.UnitsToMetres);
         }
     }
 }

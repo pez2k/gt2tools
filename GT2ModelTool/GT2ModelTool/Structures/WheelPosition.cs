@@ -37,7 +37,7 @@ namespace GT2.ModelTool.Structures
         {
             writer.WriteLine($"# scale: {Scale}");
             writer.WriteLine($"g wheelpos{wheelNumber}");
-            writer.WriteLine($"v {(double)X / 10000} {(double)Y / 10000} {(double)Z / 10000}");
+            writer.WriteLine($"v {X * Vertex.UnitsToMetres} {Y * Vertex.UnitsToMetres} {Z * Vertex.UnitsToMetres}");
             wheelNumber++;
             writer.WriteLine($"f {wheelNumber} {wheelNumber} {wheelNumber}");
         }

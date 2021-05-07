@@ -17,10 +17,10 @@ namespace GT2.ModelTool.Structures
         private short highBoundY;
         private short highBoundZ;
         private short highBoundW;
-        private ushort scale;
         private byte unknown2;
         private byte unknown3;
 
+        public ushort Scale { get; set; }
         public List<ShadowVertex> Vertices { get; set; }
         public List<ShadowPolygon> Triangles { get; set; }
         public List<ShadowPolygon> Quads { get; set; }
@@ -39,7 +39,7 @@ namespace GT2.ModelTool.Structures
             highBoundY = stream.ReadShort();
             highBoundZ = stream.ReadShort();
             highBoundW = stream.ReadShort();
-            scale = stream.ReadUShort();
+            Scale = stream.ReadUShort();
             unknown2 = stream.ReadSingleByte();
             unknown3 = stream.ReadSingleByte();
 
@@ -73,7 +73,7 @@ namespace GT2.ModelTool.Structures
         {
             ushort unknown = stream.ReadUShort(); ; // always 0?
             ushort quadCount = stream.ReadUShort();
-            scale = stream.ReadUShort();
+            Scale = stream.ReadUShort();
             ushort unknown2 = stream.ReadUShort(); ; // always 0?
 
             int vertexCount = 19; // always? //quadCount * 4;
@@ -120,7 +120,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(highBoundY);
             stream.WriteShort(highBoundZ);
             stream.WriteShort(highBoundW);
-            stream.WriteUShort(scale);
+            stream.WriteUShort(Scale);
             stream.WriteByte(unknown2);
             stream.WriteByte(unknown3);
 
@@ -142,11 +142,13 @@ namespace GT2.ModelTool.Structures
 
         public void WriteToOBJ(TextWriter writer, int firstVertexNumber)
         {
+            double scaleFactor = LOD.ConvertScale(Scale);
+
             // bounding box?
-            writer.WriteLine($"g shadow/scale={scale}");
+            writer.WriteLine($"g shadow/scale={scaleFactor}");
 
             writer.WriteLine("# vertices");
-            Vertices.ForEach(vertex => vertex.WriteToOBJ(writer));
+            Vertices.ForEach(vertex => vertex.WriteToOBJ(writer, scaleFactor));
 
             writer.WriteLine("# triangles");
             Triangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, firstVertexNumber));

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
@@ -17,10 +18,10 @@ namespace GT2.ModelTool.Structures
         private short highBoundY;
         private short highBoundZ;
         private short highBoundW;
-        private ushort scale;
         private byte unknown2;
         private byte unknown3;
 
+        public ushort Scale { get; set; }
         public List<Vertex> Vertices { get; set; }
         public List<Normal> Normals { get; set; }
         public List<Polygon> Triangles { get; set; }
@@ -46,7 +47,7 @@ namespace GT2.ModelTool.Structures
             highBoundY = stream.ReadShort();
             highBoundZ = stream.ReadShort();
             highBoundW = stream.ReadShort();
-            scale = stream.ReadUShort(); // at 8D0
+            Scale = stream.ReadUShort(); // at 8D0
             unknown2 = stream.ReadSingleByte();
             unknown3 = stream.ReadSingleByte();
 
@@ -110,7 +111,7 @@ namespace GT2.ModelTool.Structures
             ushort uvTriangleCount = stream.ReadUShort();
             ushort uvQuadCount = stream.ReadUShort();
             stream.Position += sizeof(ushort) * 10; // at 0x90
-            scale = stream.ReadUShort();
+            Scale = stream.ReadUShort();
             stream.Position += 2;
 
             Vertices = new List<Vertex>(vertexCount); // at 0xA8
@@ -191,7 +192,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(highBoundY);
             stream.WriteShort(highBoundZ);
             stream.WriteShort(highBoundW);
-            stream.WriteUShort(scale);
+            stream.WriteUShort(Scale);
             stream.WriteByte(unknown2);
             stream.WriteByte(unknown3);
 
@@ -228,11 +229,12 @@ namespace GT2.ModelTool.Structures
 
         public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber, Dictionary<string, int?> materialNames)
         {
+            double scaleFactor = ConvertScale(Scale);
             // bounding box?
-            writer.WriteLine($"g lod{lodNumber}/scale={scale}");
+            writer.WriteLine($"g lod{lodNumber}/scale={scaleFactor}");
 
             writer.WriteLine("# vertices");
-            Vertices.ForEach(vertex => vertex.WriteToOBJ(writer));
+            Vertices.ForEach(vertex => vertex.WriteToOBJ(writer, scaleFactor));
 
             writer.WriteLine("# normals");
             Normals.ForEach(normal => normal.WriteToOBJ(writer));
@@ -252,6 +254,33 @@ namespace GT2.ModelTool.Structures
 
             writer.WriteLine("# UV quads");
             UVQuads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialNames));
+        }
+
+        public static double ConvertScale(ushort scale) // from commongear's research
+        {
+            int scaleAmount = scale - 16;
+            return scaleAmount < 0 ? 1D / (1 << -scaleAmount) : 1 << scaleAmount;
+        }
+
+        public static ushort ConvertScale(double scale)
+        {
+            return scale < 1 ? (ushort)(16 - GetShiftDistance((int)(1 / scale))) : (ushort)(16 + GetShiftDistance((int)scale));
+        }
+
+        private static int GetShiftDistance(int value)
+        {
+            if (value < 1 || value % 2 != 0)
+            {
+                throw new Exception("Invalid scale value - must be a power of 2, or 1 over a power of 2.");
+            }
+
+            int bits = 0;
+            while (value > 1)
+            {
+                value >>= 1;
+                bits++;
+            }
+            return bits;
         }
 
         public List<UVCoordinate> GetAllUVCoords() =>

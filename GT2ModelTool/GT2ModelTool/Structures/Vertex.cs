@@ -7,6 +7,8 @@ namespace GT2.ModelTool.Structures
 
     public class Vertex
     {
+        public static double UnitsToMetres => 1 / 4096D; // from commongear's research
+
         public short X { get; set; }
         public short Y { get; set; }
         public short Z { get; set; }
@@ -34,18 +36,19 @@ namespace GT2.ModelTool.Structures
             stream.WriteUShort(Padding);
         }
 
-        public void WriteToOBJ(TextWriter writer) => writer.WriteLine($"v {(double)X / 10000} {(double)Y / 10000} {(double)Z / 10000}");
+        public void WriteToOBJ(TextWriter writer, double scale) =>
+            writer.WriteLine($"v {X * scale * UnitsToMetres} {Y * scale * UnitsToMetres} {Z * scale * UnitsToMetres}");
 
-        public void ReadFromOBJ(string line)
+        public void ReadFromOBJ(string line, double scale)
         {
             string[] parts = line.Split(' ');
             if (parts.Length != 4)
             {
                 throw new Exception($"Line: {line}\r\nVertex does not contain exactly three coordinate values.");
             }
-            X = (short)Math.Round(double.Parse(parts[1]) * 10000);
-            Y = (short)Math.Round(double.Parse(parts[2]) * 10000);
-            Z = (short)Math.Round(double.Parse(parts[3]) * 10000);
+            X = (short)Math.Round(double.Parse(parts[1]) / scale / UnitsToMetres);
+            Y = (short)Math.Round(double.Parse(parts[2]) / scale / UnitsToMetres);
+            Z = (short)Math.Round(double.Parse(parts[3]) / scale / UnitsToMetres);
         }
     }
 }

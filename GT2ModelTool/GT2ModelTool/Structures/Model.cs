@@ -186,6 +186,7 @@ namespace GT2.ModelTool.Structures
             var usedVertexIDs = new List<int>();
             var usedNormalIDs = new List<int>();
             int shadowVertexStartID = 0;
+            double currentScale = 1;
             do
             {
                 line = reader.ReadLine();
@@ -218,6 +219,8 @@ namespace GT2.ModelTool.Structures
                         currentLOD = new LOD();
                         currentLOD.PrepareForOBJRead();
                         lods[currentLODNumber] = currentLOD;
+                        currentScale = GetScale(objectNameParts);
+                        currentLOD.Scale = LOD.ConvertScale(currentScale);
                     }
                     else if (objectNameParts[0].StartsWith("shadow"))
                     {
@@ -231,6 +234,8 @@ namespace GT2.ModelTool.Structures
                         Shadow = new Shadow();
                         Shadow.PrepareForOBJRead();
                         shadowVertexStartID = vertices.Count;
+                        currentScale = GetScale(objectNameParts);
+                        Shadow.Scale = LOD.ConvertScale(currentScale);
                     }
                 }
                 else if (line.StartsWith("v "))
@@ -238,13 +243,13 @@ namespace GT2.ModelTool.Structures
                     if (shadow)
                     {
                         var vertex = new ShadowVertex();
-                        vertex.ReadFromOBJ(line);
+                        vertex.ReadFromOBJ(line, currentScale);
                         Shadow.Vertices.Add(vertex);
                     }
                     else
                     {
                         var vertex = new Vertex();
-                        vertex.ReadFromOBJ(line);
+                        vertex.ReadFromOBJ(line, currentScale);
                         vertices.Add(vertex);
                         if (currentLODNumber == -1)
                         {
@@ -329,6 +334,19 @@ namespace GT2.ModelTool.Structures
 
             LODs = lods.ToList();
             WheelPositions = wheelPositions.ToList();
+        }
+
+        private double GetScale(string[] objectNameParts)
+        {
+            foreach (string part in objectNameParts)
+            {
+                string[] pair = part.Split('=');
+                if (pair.Length == 2 && pair[0] == "scale")
+                {
+                    return double.Parse(pair[1]);
+                }
+            }
+            return 1;
         }
     }
 }
