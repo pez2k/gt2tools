@@ -19,7 +19,7 @@ namespace GT2.ModelTool.Structures
         public virtual void ReadFromCDO(Stream stream, bool isQuad, List<ShadowVertex> vertices)
         {
             uint data = stream.ReadUInt();
-            IsGradientShaded = (data & 0x8000_0000) != 0;
+            IsGradientShaded = (data & 0x8000_0000) == 0;
 
             int vertex0Ref = (int)data & 0x3F;
             Vertex0 = vertices[vertex0Ref];
@@ -66,7 +66,7 @@ namespace GT2.ModelTool.Structures
             {
                 data += (uint)(vertices.IndexOf(Vertex3) << 18);
             }
-            if (IsGradientShaded)
+            if (!IsGradientShaded)
             {
                 data += 0x8000_0000;
             }
