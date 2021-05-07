@@ -288,6 +288,7 @@ namespace GT2.ModelTool.Structures
             {
                 (Vertex3, Vertex3Normal) = ParseVertex(parts[4], vertices, normals, usedVertexIDs, usedNormalIDs);
             }
+            FaceType = IsQuad ? 40 : 32;
         }
 
         protected virtual void ParseMaterial(string[] parts)
