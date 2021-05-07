@@ -235,7 +235,6 @@ namespace GT2.ModelTool.Structures
         public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber, Dictionary<string, int?> materialNames)
         {
             double scaleFactor = ConvertScale(Scale);
-            // bounding box?
             writer.WriteLine($"g lod{lodNumber}/scale={scaleFactor}");
 
             writer.WriteLine("# vertices");

@@ -12,14 +12,14 @@ namespace GT2.ModelTool.Structures
         public short X { get; set; }
         public short Y { get; set; }
         public short Z { get; set; }
-        public ushort Padding { get; set; } = 0;
+        public short Padding { get; set; } = 0;
 
         public void ReadFromCDO(Stream stream)
         {
             X = stream.ReadShort();
             Y = stream.ReadShort();
             Z = stream.ReadShort();
-            Padding = stream.ReadUShort();
+            Padding = stream.ReadShort();
         }
 
         public void ReadFromCAR(Stream stream)
@@ -33,7 +33,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(X);
             stream.WriteShort(Y);
             stream.WriteShort(Z);
-            stream.WriteUShort(Padding);
+            stream.WriteShort(Padding);
         }
 
         public void WriteToOBJ(TextWriter writer, double scale) =>
@@ -42,13 +42,17 @@ namespace GT2.ModelTool.Structures
         public void ReadFromOBJ(string line, double scale)
         {
             string[] parts = line.Split(' ');
-            if (parts.Length != 4)
+            if (parts.Length < 4 || parts.Length > 5)
             {
                 throw new Exception($"Line: {line}\r\nVertex does not contain exactly three coordinate values.");
             }
             X = (short)Math.Round(double.Parse(parts[1]) / scale / UnitsToMetres);
             Y = (short)Math.Round(double.Parse(parts[2]) / scale / UnitsToMetres);
             Z = (short)Math.Round(double.Parse(parts[3]) / scale / UnitsToMetres);
+            if (parts.Length == 5)
+            {
+                Padding = (short)Math.Round(double.Parse(parts[4]) / scale / UnitsToMetres);
+            }
         }
     }
 }

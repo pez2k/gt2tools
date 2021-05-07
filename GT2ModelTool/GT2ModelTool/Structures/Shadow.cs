@@ -148,8 +148,6 @@ namespace GT2.ModelTool.Structures
         public void WriteToOBJ(TextWriter writer, int firstVertexNumber)
         {
             double scaleFactor = LOD.ConvertScale(Scale);
-
-            // bounding box?
             writer.WriteLine($"g shadow/scale={scaleFactor}");
 
             writer.WriteLine("# vertices");
