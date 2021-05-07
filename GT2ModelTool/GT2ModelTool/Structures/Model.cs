@@ -154,6 +154,10 @@ namespace GT2.ModelTool.Structures
 
             materialWriter.WriteLine("newmtl untextured");
             materialWriter.WriteLine("Kd 0 0 0");
+            materialWriter.WriteLine("newmtl shadow");
+            materialWriter.WriteLine("Kd 0 0 0");
+            materialWriter.WriteLine("newmtl shadowgradient");
+            materialWriter.WriteLine("Kd 0.1 0.1 0.1");
 
             foreach (var materialName in materialNames)
             {
@@ -280,7 +284,7 @@ namespace GT2.ModelTool.Structures
                     if (shadow)
                     {
                         var polygon = new ShadowPolygon();
-                        polygon.ReadFromOBJ(line, Shadow.Vertices, shadowVertexStartID);
+                        polygon.ReadFromOBJ(line, Shadow.Vertices, shadowVertexStartID, currentMaterial);
                         if (polygon.IsQuad)
                         {
                             Shadow.Quads.Add(polygon);
