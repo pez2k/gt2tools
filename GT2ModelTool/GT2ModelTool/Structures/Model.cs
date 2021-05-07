@@ -214,6 +214,7 @@ namespace GT2.ModelTool.Structures
                             usedVertexIDs = new List<int>();
                             currentLOD.Normals = usedNormalIDs.OrderBy(id => id).Distinct().Select(id => normals[id]).ToList();
                             usedNormalIDs = new List<int>();
+                            currentLOD.GenerateBoundingBox();
                         }
                         currentLODNumber = int.Parse(objectNameParts[0].Replace("lod", ""));
                         currentLOD = new LOD();
@@ -230,6 +231,7 @@ namespace GT2.ModelTool.Structures
                         }
                         currentLOD.Vertices = usedVertexIDs.OrderBy(id => id).Distinct().Select(id => vertices[id]).ToList();
                         currentLOD.Normals = usedNormalIDs.OrderBy(id => id).Distinct().Select(id => normals[id]).ToList();
+                        currentLOD.GenerateBoundingBox();
                         shadow = true;
                         Shadow = new Shadow();
                         Shadow.PrepareForOBJRead();
@@ -332,6 +334,7 @@ namespace GT2.ModelTool.Structures
             }
             while (line != null);
 
+            Shadow.GenerateBoundingBox();
             LODs = lods.ToList();
             WheelPositions = wheelPositions.ToList();
         }

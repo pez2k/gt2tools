@@ -164,6 +164,11 @@ namespace GT2.ModelTool.Structures
             }
 
             // calculate model bounds - can't spot this sort of data in CAR
+            GenerateBoundingBox();
+        }
+
+        public void GenerateBoundingBox()
+        {
             lowBoundX = Vertices.Select(v => v.X).Min();
             lowBoundY = Vertices.Select(v => v.Y).Min();
             lowBoundZ = Vertices.Select(v => v.Z).Min();
@@ -269,9 +274,9 @@ namespace GT2.ModelTool.Structures
 
         private static int GetShiftDistance(int value)
         {
-            if (value < 1 || value % 2 != 0)
+            if (value < 1 || (value > 1 && value % 2 != 0))
             {
-                throw new Exception("Invalid scale value - must be a power of 2, or 1 over a power of 2.");
+                throw new Exception("Invalid scale value - must be 1, a power of 2, or 1 over a power of 2.");
             }
 
             int bits = 0;

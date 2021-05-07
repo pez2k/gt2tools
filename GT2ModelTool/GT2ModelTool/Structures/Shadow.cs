@@ -96,6 +96,11 @@ namespace GT2.ModelTool.Structures
             }
 
             // calculate model bounds - can't spot this sort of data in CAR
+            GenerateBoundingBox();
+        }
+
+        public void GenerateBoundingBox()
+        {
             lowBoundX = Vertices.Select(v => v.X).Min();
             lowBoundY = 0;
             lowBoundZ = Vertices.Select(v => v.Z).Min();
