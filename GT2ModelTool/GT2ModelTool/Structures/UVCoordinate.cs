@@ -40,8 +40,8 @@ namespace GT2.ModelTool.Structures
             {
                 throw new Exception($"Line: {line}\r\nUV coord does not contain exactly two coordinate values.");
             }
-            X = (byte)((decimal.Parse(parts[1]) * 256) + 0.5M);
-            Y = (byte)((decimal.Parse(parts[2]) * -224) + 0.5M);
+            X = (byte)Math.Round(decimal.Parse(parts[1]) * 256);
+            Y = (byte)Math.Round(decimal.Parse(parts[2]) * -224);
         }
     }
 }

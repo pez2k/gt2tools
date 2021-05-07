@@ -43,9 +43,9 @@ namespace GT2.ModelTool.Structures
             {
                 throw new Exception($"Line: {line}\r\nVertex does not contain exactly three coordinate values.");
             }
-            X = (short)(double.Parse(parts[1]) * 10000);
-            Y = (short)(double.Parse(parts[2]) * 10000);
-            Z = (short)(double.Parse(parts[3]) * 10000);
+            X = (short)Math.Round(double.Parse(parts[1]) * 10000);
+            Y = (short)Math.Round(double.Parse(parts[2]) * 10000);
+            Z = (short)Math.Round(double.Parse(parts[3]) * 10000);
         }
     }
 }
