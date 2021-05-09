@@ -53,7 +53,7 @@ namespace GT2.TextureEditor
             }
         }
 
-        public void WriteFirstPaletteToBitmapPalette(ColorPalette palette) => palettes[0].WriteToBitmapPalette(palette);
+        public Palette GetPalette(int number) => palettes[number];
 
         public void WriteToEditableFiles(string directory)
         {

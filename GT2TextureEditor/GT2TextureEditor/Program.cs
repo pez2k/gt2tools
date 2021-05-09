@@ -10,7 +10,8 @@ namespace GT2.TextureEditor
         {
             EditableFiles,
             GT1,
-            GT2
+            GT2,
+            DumpedFiles
         }
 
         static void Main(string[] args)
@@ -37,19 +38,26 @@ namespace GT2.TextureEditor
                     case "-oe":
                         outputType = OutputType.EditableFiles;
                         break;
+                    case "-od":
+                        outputType = OutputType.DumpedFiles;
+                        break;
                     default:
                         return;
                 }
             }
 
             CarTexture texture = isDirectory ? LoadFromEditableFiles(path) : LoadFromGameFile(path);
-            if (outputType == OutputType.EditableFiles)
+            switch (outputType)
             {
-                WriteToEditableFiles(path, texture);
-            }
-            else
-            {
-                WriteToGameFile(path, texture, outputType);
+                case OutputType.EditableFiles:
+                    WriteToEditableFiles(path, texture);
+                    break;
+                case OutputType.DumpedFiles:
+                    WriteToDumpedFiles(path, texture);
+                    break;
+                default:
+                    WriteToGameFile(path, texture, outputType);
+                    break;
             }
         }
 
@@ -106,6 +114,15 @@ namespace GT2.TextureEditor
             bool isNight = carName.EndsWith("_night");
             string carNameNoSuffix = carName.Replace("_night", "");
             return $"{carNameNoSuffix}.c{(isNight ? "n" : "d")}p";
+        }
+
+        static void WriteToDumpedFiles(string filename, CarTexture texture)
+        {
+            bool isNight = Path.GetExtension(filename) == ".cnp";
+            string outputName = Path.GetFileNameWithoutExtension(filename);
+            string outputPath = Path.Combine(Path.GetDirectoryName(filename), outputName + (isNight ? "_night" : "") + "_dumped");
+            Directory.CreateDirectory(outputPath);
+            texture.WriteToDumpedFiles(outputPath);
         }
     }
 }

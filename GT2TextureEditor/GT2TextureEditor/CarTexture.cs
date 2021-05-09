@@ -42,21 +42,32 @@ namespace GT2.TextureEditor
 
         public void WriteToEditableFiles(string directory, Stream bitmapFile)
         {
-            WriteToBitmapFile(bitmapFile);
+            WriteToBitmapFile(bitmapFile, colours[0].GetPalette(0));
             foreach (CarColour colour in colours)
             {
                 colour?.WriteToEditableFiles(directory);
             }
         }
 
-        private void WriteToBitmapFile(Stream file)
+        public void WriteToDumpedFiles(string directory)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                using (var bitmapFile = new FileStream(Path.Combine(directory, $"palette{i}.bmp"), FileMode.Create, FileAccess.Write))
+                {
+                    WriteToBitmapFile(bitmapFile, colours[0].GetPalette(i));
+                }
+            }
+        }
+
+        private void WriteToBitmapFile(Stream file, Palette gamePalette)
         {
             var texture = new byte[BitmapHeight, BitmapWidth];
             GCHandle memoryHandle = GCHandle.Alloc(texture, GCHandleType.Pinned);
             using (var bitmap = new Bitmap(BitmapWidth, BitmapHeight, BitmapWidth, PixelFormat.Format4bppIndexed, memoryHandle.AddrOfPinnedObject()))
             {
                 ColorPalette palette = bitmap.Palette;
-                colours[0].WriteFirstPaletteToBitmapPalette(palette);
+                gamePalette.WriteToBitmapPalette(palette);
                 bitmap.Palette = palette;
 
                 for (ushort x = 0; x < BitmapWidth; x += 2)
