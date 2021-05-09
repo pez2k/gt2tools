@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Threading;
 
 namespace GT2.ModelTool
 {
@@ -6,97 +9,100 @@ namespace GT2.ModelTool
 
     class Program
     {
-        private static int mode = 3;
-
         static void Main(string[] args)
         {
-            switch (mode)
+            if (args.Length != 2)
             {
-                case 0:
-                    ReadGT1WriteGT2(args);
+                Console.WriteLine("Incorrect usage.");
+                return;
+            }
+
+            // avoid issues with European languages using , for decimal point, as Max doesn't like it
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            string inputPath = args[1];
+            string fileExtension = Path.GetExtension(inputPath).ToLower();
+            Model model;
+            switch (fileExtension)
+            {
+                case ".car":
+                    model = ReadGT1(inputPath);
                     break;
-                case 1:
-                    ReadGT2WriteGT2(args);
+                case ".cdo":
+                case ".cno":
+                    model = ReadGT2(inputPath);
                     break;
-                case 2:
-                    ReadGT2WriteOBJ(args);
+                case ".obj":
+                    model = ReadOBJ(inputPath);
                     break;
-                case 3:
-                    ReadOBJWriteGT2(args);
+                default:
+                    Console.WriteLine("Unsupported input type.");
+                    return;
+            }
+
+            string directory = Path.GetDirectoryName(inputPath);
+            string filename = Path.GetFileNameWithoutExtension(inputPath);
+            bool isNight = fileExtension == ".cnp" || filename.EndsWith("_night");
+            switch (args[0])
+            {
+                case "-o2":
+                    WriteGT2(model, directory, filename, isNight);
                     break;
+                case "-oe":
+                    WriteOBJ(model, directory, filename, isNight);
+                    break;
+                default:
+                    Console.WriteLine("Unsupported output type.");
+                    return;
             }
         }
 
-        private static void ReadGT1WriteGT2(string[] args)
+        private static Model ReadGT1(string filename)
         {
-            //string gt1Model = "hn1lr";
-            string gt1Model = "n-15r";
-            //string gt1Model = "t-hvr";
-            //string gt1Model = "ttror"; // broken normals
-            //string gt1Model = "cc67n"; // incorrect verts or faces?
-
-            if (args.Length == 1 && args[0].EndsWith(".car"))
-            {
-                gt1Model = args[0].Replace(".car", "");
-            }
-
-            using (FileStream stream = new FileStream($"{gt1Model}.car", FileMode.Open, FileAccess.Read))
+            using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
                 var model = new Model();
                 model.ReadFromCAR(stream);
-                //Polygon.values.Sort();
-
-                using (FileStream outStream = new FileStream($"{gt1Model}.cdo", FileMode.Create, FileAccess.ReadWrite))
-                {
-                    model.WriteToCDO(outStream);
-                }
+                return model;
             }
         }
 
-        private static void ReadGT2WriteGT2(string[] args)
+        private static Model ReadGT2(string filename)
         {
-            //string gt2Model = "bistn.cdo";
-            //string gt2Model = "ga4tn.cdo";
-            string gt2Model = "n-15r.cno";
-            using (FileStream stream = new FileStream(gt2Model, FileMode.Open, FileAccess.Read))
+            using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
                 var model = new Model();
                 model.ReadFromCDO(stream);
-                //Polygon.values.Sort();
-
-                using (FileStream outStream = new FileStream("out.cdo", FileMode.Create, FileAccess.ReadWrite))
-                {
-                    model.WriteToCDO(outStream);
-                }
+                return model;
             }
         }
 
-        private static void ReadGT2WriteOBJ(string[] args)
+        private static Model ReadOBJ(string filename)
         {
-            string gt2Model = "bistn.cdo";
-            using (FileStream stream = new FileStream(gt2Model, FileMode.Open, FileAccess.Read))
-            {
-                var model = new Model();
-                model.ReadFromCDO(stream);
-                //Polygon.values.Sort();
-
-                using (TextWriter modelWriter = new StreamWriter("out.obj"))
-                {
-                    using (TextWriter materialWriter = new StreamWriter("out.mtl"))
-                    {
-                        model.WriteToOBJ(modelWriter, materialWriter);
-                    }
-                }
-            }
-        }
-
-        private static void ReadOBJWriteGT2(string[] args)
-        {
-            string objFile = "out.obj";
-            using (TextReader modelReader = new StreamReader(objFile))
+            using (TextReader modelReader = new StreamReader(filename))
             {
                 var model = new Model();
                 model.ReadFromOBJ(modelReader);
+                return model;
+            }
+        }
+
+        private static void WriteGT2(Model model, string path, string filename, bool isNight)
+        {
+            using (FileStream outStream = new FileStream(Path.Combine(path, $"{filename}.c{(isNight ? "n" : "d")}o"), FileMode.Create, FileAccess.ReadWrite))
+            {
+                model.WriteToCDO(outStream);
+            }
+        }
+
+        private static void WriteOBJ(Model model, string path, string filename, bool isNight)
+        {
+            filename += isNight ? "_night" : "";
+            using (TextWriter modelWriter = new StreamWriter(Path.Combine(path, $"{filename}.obj")))
+            {
+                using (TextWriter materialWriter = new StreamWriter(Path.Combine(path, $"{filename}.mtl")))
+                {
+                    model.WriteToOBJ(modelWriter, materialWriter, filename);
+                }
             }
         }
     }
