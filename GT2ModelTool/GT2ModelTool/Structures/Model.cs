@@ -125,9 +125,9 @@ namespace GT2.ModelTool.Structures
             Shadow.WriteToCDO(stream);
         }
 
-        public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter)
+        public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename)
         {
-            modelWriter.WriteLine("mtllib out.mtl");
+            modelWriter.WriteLine($"mtllib {filename}.mtl");
 
             // scale, unknowns, etc?
             modelWriter.WriteLine($"# scale: {Scale}");
