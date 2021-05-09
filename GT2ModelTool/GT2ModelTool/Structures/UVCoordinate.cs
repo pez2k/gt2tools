@@ -36,7 +36,7 @@ namespace GT2.ModelTool.Structures
         public void ReadFromOBJ(string line)
         {
             string[] parts = line.Split(' ');
-            if (parts.Length != 3)
+            if (parts.Length < 3 || parts.Length > 4)
             {
                 throw new Exception($"Line: {line}\r\nUV coord does not contain exactly two coordinate values.");
             }

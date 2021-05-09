@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace GT2.ModelTool.Structures
 {
@@ -41,7 +42,7 @@ namespace GT2.ModelTool.Structures
 
         public void ReadFromOBJ(string line, double scale)
         {
-            string[] parts = line.Split(' ');
+            string[] parts = line.Split(' ').Where(part => !string.IsNullOrWhiteSpace(part)).ToArray();
             if (parts.Length < 4 || parts.Length > 5)
             {
                 throw new Exception($"Line: {line}\r\nVertex does not contain exactly three coordinate values.");
