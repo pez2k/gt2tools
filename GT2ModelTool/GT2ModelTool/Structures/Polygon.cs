@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using StreamExtensions;
 
 namespace GT2.ModelTool.Structures
@@ -51,8 +52,12 @@ namespace GT2.ModelTool.Structures
             {
                 Debug.WriteLine($"Render order of 0b1000 found at {stream.Position}");
             }
-            int normal0Ref = (renderOrderAndFirstNormalData >> 5) & 0x1FF;
-            Vertex0Normal = normals[normal0Ref];
+
+            if (normals.Any())
+            {
+                int normal0Ref = (renderOrderAndFirstNormalData >> 5) & 0x1FF;
+                Vertex0Normal = normals[normal0Ref];
+            }
 
             RenderFlags = renderFlagsData >> 12;
             if (RenderFlags != 0b1100 && RenderFlags != 0b1000 && RenderFlags != 0)
@@ -60,12 +65,15 @@ namespace GT2.ModelTool.Structures
                 Debug.WriteLine($"Render flags of {RenderFlags} found at {stream.Position}");
             }
 
-            int normal1Ref = (normalsData >> 1) & 0x1FF;
-            Vertex1Normal = normals[normal1Ref];
-            int normal2Ref = (normalsData >> 10) & 0x1FF;
-            Vertex2Normal = normals[normal2Ref];
-            int normal3Ref = (normalsData >> 19) & 0x1FF;
-            Vertex3Normal = normals[normal3Ref];
+            if (normals.Any())
+            {
+                int normal1Ref = (normalsData >> 1) & 0x1FF;
+                Vertex1Normal = normals[normal1Ref];
+                int normal2Ref = (normalsData >> 10) & 0x1FF;
+                Vertex2Normal = normals[normal2Ref];
+                int normal3Ref = (normalsData >> 19) & 0x1FF;
+                Vertex3Normal = normals[normal3Ref];
+            }
 
             FaceType = faceTypeData >> 24;
             // 100000 (32) for untextured tri
