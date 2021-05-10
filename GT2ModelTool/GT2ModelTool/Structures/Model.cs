@@ -12,9 +12,9 @@ namespace GT2.ModelTool.Structures
         public ushort Unknown1 { get; set; }
         public ushort Unknown2 { get; set; }
         public ushort Unknown3 { get; set; }
-        public ushort Scale { get; set; }
+        public ushort Unknown4 { get; set; }
         public List<WheelPosition> WheelPositions { get; set; } = new List<WheelPosition>(4);
-        public byte[] Unknown4 { get; set; } = new byte[26];
+        public byte[] Unknown5 { get; set; } = new byte[26];
         public List<LOD> LODs { get; set; }
         public Shadow Shadow { get; set; }
 
@@ -28,7 +28,7 @@ namespace GT2.ModelTool.Structures
 
             Unknown2 = stream.ReadUShort();
             Unknown3 = stream.ReadUShort();
-            Scale = stream.ReadUShort();
+            Unknown4 = stream.ReadUShort();
 
             for (int i = 0; i < 4; i++) {
                 var wheelPosition = new WheelPosition();
@@ -40,7 +40,7 @@ namespace GT2.ModelTool.Structures
             ushort lodCount = stream.ReadUShort();
             LODs = new List<LOD>(lodCount);
 
-            stream.Read(Unknown4);
+            stream.Read(Unknown5);
 
             for (int i = 0; i < lodCount; i++)
             {
@@ -72,7 +72,7 @@ namespace GT2.ModelTool.Structures
             Unknown1 = stream.ReadUShort();
             Unknown2 = stream.ReadUShort();
             Unknown3 = stream.ReadUShort();
-            Scale = stream.ReadUShort();
+            Unknown4 = stream.ReadUShort();
 
             stream.Position += 0x04;
             ushort lodCount = stream.ReadUShort();
@@ -106,7 +106,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteUShort(Unknown1);
             stream.WriteUShort(Unknown2);
             stream.WriteUShort(Unknown3);
-            stream.WriteUShort(Scale);
+            stream.WriteUShort(Unknown4);
 
             foreach (WheelPosition wheelPosition in WheelPositions)
             {
@@ -115,7 +115,7 @@ namespace GT2.ModelTool.Structures
 
             stream.Position = 0x868;
             stream.WriteUShort((ushort)LODs.Count);
-            stream.Write(Unknown4);
+            stream.Write(Unknown5);
 
             foreach (LOD lod in LODs)
             {
@@ -125,12 +125,15 @@ namespace GT2.ModelTool.Structures
             Shadow.WriteToCDO(stream);
         }
 
-        public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename)
+        public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename, Stream unknownData)
         {
-            modelWriter.WriteLine($"mtllib {filename}.mtl");
+            unknownData.WriteUShort(Unknown1);
+            unknownData.WriteUShort(Unknown2);
+            unknownData.WriteUShort(Unknown3);
+            unknownData.WriteUShort(Unknown4);
+            unknownData.Write(Unknown5);
 
-            // scale, unknowns, etc?
-            modelWriter.WriteLine($"# scale: {Scale}");
+            modelWriter.WriteLine($"mtllib {filename}.mtl");
 
             for (int i = 0; i < WheelPositions.Count; i++)
             {
@@ -144,13 +147,13 @@ namespace GT2.ModelTool.Structures
 
             for (int i = 0; i < LODs.Count; i++)
             {
-                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber, materialNames);
+                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber, materialNames, unknownData);
                 vertexNumber += LODs[i].Vertices.Count;
                 normalNumber += LODs[i].Normals.Count;
                 coordNumber += LODs[i].GetAllUVCoords().Count;
             }
 
-            Shadow.WriteToOBJ(modelWriter, vertexNumber);
+            Shadow.WriteToOBJ(modelWriter, vertexNumber, unknownData);
 
             materialWriter.WriteLine("newmtl untextured");
             materialWriter.WriteLine("Kd 0 0 0");
@@ -173,8 +176,17 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        public void ReadFromOBJ(TextReader reader)
+        public void ReadFromOBJ(TextReader reader, Stream unknownData)
         {
+            if (unknownData != null)
+            {
+                Unknown1 = unknownData.ReadUShort();
+                Unknown2 = unknownData.ReadUShort();
+                Unknown3 = unknownData.ReadUShort();
+                Unknown4 = unknownData.ReadUShort();
+                unknownData.Read(Unknown5);
+            }
+
             var lods = new LOD[3];
             var wheelPositions = new WheelPosition[4];
             string line;
@@ -222,7 +234,7 @@ namespace GT2.ModelTool.Structures
                         }
                         currentLODNumber = int.Parse(objectNameParts[0].Replace("lod", ""));
                         currentLOD = new LOD();
-                        currentLOD.PrepareForOBJRead();
+                        currentLOD.PrepareForOBJRead(unknownData);
                         lods[currentLODNumber] = currentLOD;
                         currentScale = GetScale(objectNameParts);
                         currentLOD.Scale = LOD.ConvertScale(currentScale);
@@ -238,7 +250,7 @@ namespace GT2.ModelTool.Structures
                         currentLOD.GenerateBoundingBox();
                         shadow = true;
                         Shadow = new Shadow();
-                        Shadow.PrepareForOBJRead();
+                        Shadow.PrepareForOBJRead(unknownData);
                         shadowVertexStartID = vertices.Count;
                         currentScale = GetScale(objectNameParts);
                         Shadow.Scale = LOD.ConvertScale(currentScale);

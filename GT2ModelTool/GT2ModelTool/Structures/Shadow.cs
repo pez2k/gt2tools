@@ -145,8 +145,12 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        public void WriteToOBJ(TextWriter writer, int firstVertexNumber)
+        public void WriteToOBJ(TextWriter writer, int firstVertexNumber, Stream unknownData)
         {
+            unknownData.WriteUShort(unknown);
+            unknownData.WriteByte(unknown2);
+            unknownData.WriteByte(unknown3);
+
             double scaleFactor = LOD.ConvertScale(Scale);
             writer.WriteLine($"g shadow/scale={scaleFactor}");
 
@@ -160,11 +164,17 @@ namespace GT2.ModelTool.Structures
             Quads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, firstVertexNumber));
         }
 
-        public void PrepareForOBJRead()
+        public void PrepareForOBJRead(Stream unknownData)
         {
             Vertices = new List<ShadowVertex>();
             Triangles = new List<ShadowPolygon>();
             Quads = new List<ShadowPolygon>();
+            if (unknownData != null)
+            {
+                unknown = unknownData.ReadUShort();
+                unknown2 = unknownData.ReadSingleByte();
+                unknown3 = unknownData.ReadSingleByte();
+            }
         }
     }
 }

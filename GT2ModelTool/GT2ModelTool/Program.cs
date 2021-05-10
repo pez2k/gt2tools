@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Threading;
+using StreamExtensions;
 
 namespace GT2.ModelTool
 {
@@ -9,6 +10,8 @@ namespace GT2.ModelTool
 
     class Program
     {
+        private const ushort UnknownDataVersion = 1;
+
         static void Main(string[] args)
         {
             if (args.Length != 2)
@@ -80,10 +83,29 @@ namespace GT2.ModelTool
         {
             using (TextReader modelReader = new StreamReader(filename))
             {
-                var model = new Model();
-                model.ReadFromOBJ(modelReader);
-                return model;
+                using (Stream unknownData = TryOpenUnknownDataFile(filename))
+                {
+                    var model = new Model();
+                    model.ReadFromOBJ(modelReader, unknownData);
+                    return model;
+                }
             }
+        }
+
+        private static Stream TryOpenUnknownDataFile(string objFilename)
+        {
+            string binFilename = Path.GetFileNameWithoutExtension(objFilename) + ".bin";
+            if (File.Exists(binFilename))
+            {
+                var stream = new FileStream(binFilename, FileMode.Open, FileAccess.Read);
+                if (stream.ReadUShort() == UnknownDataVersion)
+                {
+                    return stream;
+                }
+                Console.WriteLine("Incorrect unknown data version, skipping...");
+                stream.Dispose();
+            }
+            return null;
         }
 
         private static void WriteGT2(Model model, string path, string filename, bool isNight)
@@ -101,7 +123,11 @@ namespace GT2.ModelTool
             {
                 using (TextWriter materialWriter = new StreamWriter(Path.Combine(path, $"{filename}.mtl")))
                 {
-                    model.WriteToOBJ(modelWriter, materialWriter, filename);
+                    using (FileStream unknownData = new FileStream(Path.Combine(path, $"{filename}.bin"), FileMode.Create, FileAccess.ReadWrite))
+                    {
+                        unknownData.WriteUShort(UnknownDataVersion);
+                        model.WriteToOBJ(modelWriter, materialWriter, filename, unknownData);
+                    }
                 }
             }
         }

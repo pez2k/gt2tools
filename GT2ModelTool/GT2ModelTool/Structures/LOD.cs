@@ -232,8 +232,13 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber, Dictionary<string, int?> materialNames)
+        public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber,
+                               Dictionary<string, int?> materialNames, Stream unknownData)
         {
+            unknownData.Write(unknown);
+            unknownData.WriteByte(unknown2);
+            unknownData.WriteByte(unknown3);
+
             double scaleFactor = ConvertScale(Scale);
             writer.WriteLine($"g lod{lodNumber}/scale={scaleFactor}");
 
@@ -291,7 +296,7 @@ namespace GT2.ModelTool.Structures
             UVTriangles.SelectMany(polygon => new UVCoordinate[] { polygon.Vertex0UV, polygon.Vertex1UV, polygon.Vertex2UV })
                        .Concat(UVQuads.SelectMany(polygon => new UVCoordinate[] { polygon.Vertex0UV, polygon.Vertex1UV, polygon.Vertex2UV, polygon.Vertex3UV })).ToList();
 
-        public void PrepareForOBJRead()
+        public void PrepareForOBJRead(Stream unknownData)
         {
             Vertices = new List<Vertex>();
             Normals = new List<Normal>();
@@ -299,6 +304,12 @@ namespace GT2.ModelTool.Structures
             Quads = new List<Polygon>();
             UVTriangles = new List<UVPolygon>();
             UVQuads = new List<UVPolygon>();
+            if (unknownData != null)
+            {
+                unknownData.Read(unknown);
+                unknown2 = unknownData.ReadSingleByte();
+                unknown3 = unknownData.ReadSingleByte();
+            }
         }
     }
 }
