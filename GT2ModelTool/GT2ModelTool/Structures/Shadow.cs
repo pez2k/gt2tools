@@ -71,12 +71,23 @@ namespace GT2.ModelTool.Structures
 
         public void ReadFromCAR(Stream stream)
         {
-            ushort unknown = stream.ReadUShort(); ; // always 0?
+            ushort unknown = stream.ReadUShort(); // always 0?
             ushort quadCount = stream.ReadUShort();
             Scale = stream.ReadUShort();
-            ushort unknown2 = stream.ReadUShort(); ; // always 0?
+            ushort unknown2 = stream.ReadUShort(); // always 0?
 
-            int vertexCount = 19; // always? //quadCount * 4;
+            lowBoundX = stream.ReadShort();
+            lowBoundY = stream.ReadShort();
+            lowBoundZ = stream.ReadShort();
+            lowBoundW = stream.ReadShort();
+            highBoundX = stream.ReadShort();
+            highBoundY = stream.ReadShort();
+            highBoundZ = stream.ReadShort();
+            highBoundW = stream.ReadShort();
+
+            stream.Position += 8;
+
+            int vertexCount = quadCount * 4;
             Vertices = new List<ShadowVertex>(vertexCount);
             Triangles = new List<ShadowPolygon>();
             Quads = new List<ShadowPolygon>(quadCount);
@@ -94,9 +105,6 @@ namespace GT2.ModelTool.Structures
                 quad.ReadFromCAR(stream, Vertices, i);
                 Quads.Add(quad);
             }
-
-            // calculate model bounds - can't spot this sort of data in CAR
-            GenerateBoundingBox();
         }
 
         public void GenerateBoundingBox()

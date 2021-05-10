@@ -40,21 +40,13 @@ namespace GT2.ModelTool.Structures
 
         public virtual void ReadFromCAR(Stream stream, List<ShadowVertex> vertices, int polygonNumber)
         {
-            // build shadow quads - doesn't work
-            int vertexNumber = polygonNumber * 4;
-            Vertex0 = vertices[vertexNumber++];
-            Vertex1 = vertices[vertexNumber++];
-            Vertex2 = vertices[vertexNumber++];
-            Vertex3 = vertices[vertexNumber++];
-
-            // Leo's GTCarViewer shadow mockups
-            /*var mockups = new int[4, 4] { { 0, 1, 2, 3 }, { 3, 2, 7, 6 }, { 6, 7, 4, 5 }, { 5, 4, 8, 9 } };
-            //var mockups = new int[4, 4] { { 3, 2, 1, 0 }, { 6, 7, 2, 3 }, { 5, 4, 7, 6 }, { 9, 8, 4, 5 } };
+            // Leo's GTCarViewer shadow faces
+            var mockups = new int[4, 4] { { 0, 1, 2, 3 }, { 3, 2, 7, 6 }, { 6, 7, 4, 5 }, { 5, 4, 8, 9 } };
             int vertexNumber = 0;
             Vertex0 = vertices[mockups[polygonNumber, vertexNumber++]];
             Vertex1 = vertices[mockups[polygonNumber, vertexNumber++]];
             Vertex2 = vertices[mockups[polygonNumber, vertexNumber++]];
-            Vertex3 = vertices[mockups[polygonNumber, vertexNumber++]];*/
+            Vertex3 = vertices[mockups[polygonNumber, vertexNumber++]];
         }
 
         public virtual void WriteToCDO(Stream stream, bool isQuad, List<ShadowVertex> vertices)
