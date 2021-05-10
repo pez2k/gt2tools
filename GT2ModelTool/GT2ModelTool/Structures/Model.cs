@@ -353,6 +353,24 @@ namespace GT2.ModelTool.Structures
             Shadow.GenerateBoundingBox();
             LODs = lods.ToList();
             WheelPositions = wheelPositions.ToList();
+
+            foreach (LOD lod in LODs)
+            {
+                AssertCountLessThan256(lod.Vertices, "vertices");
+                AssertCountLessThan256(lod.Normals, "normals");
+                AssertCountLessThan256(lod.Triangles, "untextured triangles");
+                AssertCountLessThan256(lod.Quads, "untextured quads");
+                AssertCountLessThan256(lod.UVTriangles, "textured triangles");
+                AssertCountLessThan256(lod.UVQuads, "textured quads");
+            }
+        }
+
+        private void AssertCountLessThan256(System.Collections.ICollection collection, string pluralName)
+        {
+            if (collection.Count > 256)
+            {
+                throw new Exception($"LOD contains more than 256 {pluralName}.");
+            }
         }
 
         private double GetScale(string[] objectNameParts)
