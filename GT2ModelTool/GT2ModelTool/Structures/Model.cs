@@ -191,6 +191,7 @@ namespace GT2.ModelTool.Structures
             var wheelPositions = new WheelPosition[4];
             string line;
             int currentWheelPosition = -1;
+            short currentWheelPositionWValue = 0;
             int currentLODNumber = -1;
             bool shadow = false;
             string currentMaterial = "untextured";
@@ -217,6 +218,14 @@ namespace GT2.ModelTool.Structures
                     if (objectNameParts[0].StartsWith("wheelpos"))
                     {
                         currentWheelPosition = int.Parse(objectNameParts[0].Replace("wheelpos", ""));
+                        foreach (string namePart in objectNameParts)
+                        {
+                            string[] keyAndValue = namePart.Split('=');
+                            if (keyAndValue.Length == 2 && keyAndValue[0] == "w")
+                            {
+                                currentWheelPositionWValue = short.Parse(keyAndValue[1]);
+                            }
+                        }
                     }
                     else if (objectNameParts[0].StartsWith("lod"))
                     {
@@ -342,7 +351,7 @@ namespace GT2.ModelTool.Structures
                 if (currentWheelPosition != -1 && wheelPositionCandidate != null)
                 {
                     var position = new WheelPosition();
-                    position.ReadFromOBJ(wheelPositionCandidate);
+                    position.ReadFromOBJ(wheelPositionCandidate, currentWheelPositionWValue);
                     wheelPositions[currentWheelPosition] = position;
                     wheelPositionCandidate = null;
                     currentWheelPosition = -1;

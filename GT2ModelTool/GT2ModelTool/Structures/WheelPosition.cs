@@ -35,18 +35,18 @@ namespace GT2.ModelTool.Structures
 
         public void WriteToOBJ(TextWriter writer, int wheelNumber)
         {
-            writer.WriteLine($"g wheelpos{wheelNumber}");
+            writer.WriteLine($"g wheelpos{wheelNumber}/w={W}");
             writer.WriteLine($"v {X * Vertex.UnitsToMetres} {Y * Vertex.UnitsToMetres} {Z * Vertex.UnitsToMetres} {W * Vertex.UnitsToMetres}");
             wheelNumber++;
             writer.WriteLine($"f {wheelNumber} {wheelNumber} {wheelNumber}");
         }
 
-        public void ReadFromOBJ(Vertex vertex)
+        public void ReadFromOBJ(Vertex vertex, short wValue)
         {
             X = vertex.X;
             Y = vertex.Y;
             Z = vertex.Z;
-            W = vertex.Padding;
+            W = vertex.Padding == 0 ? wValue : vertex.Padding;
         }
     }
 }
