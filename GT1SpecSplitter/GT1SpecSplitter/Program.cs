@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -216,9 +217,7 @@ namespace GT1.SpecSplitter
                 file.WriteCharacters(fileType);
                 file.Position = 0x0C;
                 file.WriteUShort(0x10); // always 0x10?
-                List<byte[]> structs = ImportStructs(path);
-                List<List<string>> stringTables = ImportStringTables(path);
-                WriteData(structs, stringTables, fileType, file);
+                WriteData(fileType, file, path);
             }
         }
 
@@ -257,15 +256,30 @@ namespace GT1.SpecSplitter
             return stringTables;
         }
 
-        private static void WriteData(List<byte[]> structs, List<List<string>> stringTables, string fileType, Stream file)
+        private static void WriteData(string fileType, Stream file, string path)
         {
+            List<byte[]> structs;
+            List<List<string>> stringTables;
+
             if (fileType == "COLOR")
             {
-                throw new NotImplementedException();
+                structs = new List<byte[]>();
+                stringTables = new List<List<string>>();
+                ReadColourData(structs, stringTables, path);
+            }
+            else
+            {
+                structs = ImportStructs(path);
+                stringTables = ImportStringTables(path);
             }
 
             WriteMainStructs(structs, file);
             WriteStringTables(stringTables, file);
+
+            while (file.Position % 4 > 0)
+            {
+                file.WriteByte(0);
+            }
         }
 
         private static void WriteMainStructs(List<byte[]> structs, Stream file)
@@ -309,6 +323,85 @@ namespace GT1.SpecSplitter
             if (file.Position % 2 > 0)
             {
                 file.WriteByte(0);
+            }
+        }
+
+        private static void ReadColourData(List<byte[]> structs, List<List<string>> stringTables, string directory)
+        {
+            var colours = new Dictionary<ushort, List<(byte, string)>>();
+            using (var input = new StreamReader($"{directory}\\Colours.csv"))
+            {
+                input.ReadLine(); // skip header
+                while (!input.EndOfStream)
+                {
+                    string line = input.ReadLine();
+                    string[] parts = line.Trim('"').Split(new[] { "\",\"" }, StringSplitOptions.None);
+                    if (parts.Length != 3)
+                    {
+                        throw new Exception($"Invalid CSV: {line}");
+                    }
+                    ushort carID = ushort.Parse(parts[0]);
+                    byte colourID = byte.Parse(parts[1], NumberStyles.HexNumber);
+                    string colourName = parts[2];
+
+                    if (!colours.TryGetValue(carID, out List<(byte, string)> colourList))
+                    {
+                        colourList = new List<(byte, string)>();
+                        colours.Add(carID, colourList);
+                    }
+                    colourList.Add((colourID, colourName));
+                }
+            }
+
+            for (int i = 0; i < 16; i++)
+            {
+                stringTables.Add(new List<string>());
+            }
+
+            foreach (KeyValuePair<ushort, List<(byte, string)>> car in colours)
+            {
+                ushort carID = car.Key;
+                List<(byte, string)> carColours = car.Value;
+
+                using (var file = new MemoryStream(54))
+                {
+                    file.WriteUShort(carID);
+                    for (int i = 0; i < 16; i++)
+                    {
+                        if (i < carColours.Count)
+                        {
+                            file.WriteByte(carColours[i].Item1);
+                        }
+                        else
+                        {
+                            file.WriteByte(0);
+                        }
+                    }
+                    file.WriteUShort(0);
+
+                    for (ushort i = 0; i < 16; i++)
+                    {
+                        ushort stringID = 0;
+                        string name = "";
+                        if (i < carColours.Count)
+                        {
+                            name = carColours[i].Item2;
+                        }
+                        int index = stringTables[i].IndexOf(name);
+                        if (index == -1)
+                        {
+                            stringID = (ushort)stringTables[i].Count;
+                            stringTables[i].Add(name);
+                        }
+                        else
+                        {
+                            stringID = (ushort)index;
+                        }
+                        file.WriteUShort(stringID);
+                        file.WriteUShort(i);
+                    }
+                    structs.Add(file.ToArray());
+                }
             }
         }
     }
