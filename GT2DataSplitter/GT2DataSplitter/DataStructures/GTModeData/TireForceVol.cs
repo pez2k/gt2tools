@@ -11,12 +11,12 @@ namespace GT2.DataSplitter
     public struct TireForceVolData
     {
         public byte TarmacGrip;
-        public byte GutterGrip;
-        public byte GrassGrip;
+        public byte GuideGrip; // kerbs
+        public byte GreenGrip; // grass
         public byte SandGrip;
         public byte GravelGrip;
         public byte DirtGrip;
-        public byte WetGripMaybe;
+        public byte WaterGripMaybe; // wet, unused?
         public byte Padding;
     }
 
@@ -25,12 +25,12 @@ namespace GT2.DataSplitter
         public TireForceVolCSVMap()
         {
             Map(m => m.TarmacGrip);
-            Map(m => m.GutterGrip);
-            Map(m => m.GrassGrip);
+            Map(m => m.GuideGrip);
+            Map(m => m.GreenGrip);
             Map(m => m.SandGrip);
             Map(m => m.GravelGrip);
             Map(m => m.DirtGrip);
-            Map(m => m.WetGripMaybe);
+            Map(m => m.WaterGripMaybe);
         }
     }
 }
