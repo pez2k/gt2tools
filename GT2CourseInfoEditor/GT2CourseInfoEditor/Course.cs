@@ -9,9 +9,7 @@ namespace GT2.CourseInfoEditor
 
     public struct Course
     {
-        public ushort DisplayName;
-        public byte Unknown1;
-        public byte Unknown2;
+        public uint DisplayName;
         public uint Filename;
         public bool IsNight;
         public bool IsEvening;
@@ -20,20 +18,14 @@ namespace GT2.CourseInfoEditor
         public bool IsReverse;
         public bool IsPointToPoint;
         public bool Flag7;
-        public byte Unknown4;
+        public byte Padding;
         public ushort Skybox;
-        public byte Unknown5;
-        public byte Unknown6;
-        public byte Unknown7;
-        public byte Unknown8;
-        public byte Unknown9;
-        public byte Unknown10;
-        public byte Unknown11;
-        public byte Unknown12;
-        public byte Unknown13;
-        public byte Unknown14;
-        public byte Unknown15;
-        public byte Unknown16;
+        public string LightingArea1Colour;
+        public ushort LightingArea1ColourMultiplier;
+        public string LightingArea2Colour;
+        public ushort LightingArea2ColourMultiplier;
+        public string LightingArea3Colour;
+        public ushort LightingArea3ColourMultiplier;
     }
 
     public sealed class CourseCSVMap : ClassMap<Course>
@@ -41,8 +33,6 @@ namespace GT2.CourseInfoEditor
         public CourseCSVMap()
         {
             Map(m => m.DisplayName).TypeConverter<TrackDisplayNameConverter>();
-            Map(m => m.Unknown1);
-            Map(m => m.Unknown2);
             Map(m => m.Filename).TypeConverter<TrackIdConverter>();
             Map(m => m.IsNight);
             Map(m => m.IsEvening);
@@ -51,20 +41,13 @@ namespace GT2.CourseInfoEditor
             Map(m => m.IsReverse);
             Map(m => m.IsPointToPoint);
             Map(m => m.Flag7);
-            Map(m => m.Unknown4); // ^
             Map(m => m.Skybox).TypeConverter<SkyboxNameConverter>();
-            Map(m => m.Unknown5); // Car brightness ushort?
-            Map(m => m.Unknown6); // ^
-            Map(m => m.Unknown7); // ushort?
-            Map(m => m.Unknown8); // ^
-            Map(m => m.Unknown9); // ushort?
-            Map(m => m.Unknown10); // ^
-            Map(m => m.Unknown11); // uint pointer?
-            Map(m => m.Unknown12);
-            Map(m => m.Unknown13);
-            Map(m => m.Unknown14);
-            Map(m => m.Unknown15);
-            Map(m => m.Unknown16);
+            Map(m => m.LightingArea1Colour);
+            Map(m => m.LightingArea1ColourMultiplier);
+            Map(m => m.LightingArea2Colour);
+            Map(m => m.LightingArea2ColourMultiplier);
+            Map(m => m.LightingArea3Colour);
+            Map(m => m.LightingArea3ColourMultiplier);
         }
     }
 
@@ -91,7 +74,7 @@ namespace GT2.CourseInfoEditor
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
-            ushort textAddress = (ushort)value;
+            uint textAddress = (uint)value;
             Program.DisplayNames.TryGetValue(textAddress, out string name);
             return name;
         }

@@ -9,7 +9,7 @@ namespace GT2.CourseInfoEditor
 
     class Program
     {
-        public static Dictionary<ushort, string> DisplayNames = new Dictionary<ushort, string>();
+        public static Dictionary<uint, string> DisplayNames = new Dictionary<uint, string>();
 
         static void Main(string[] args)
         {
@@ -23,7 +23,7 @@ namespace GT2.CourseInfoEditor
 
                 while (file.Position < file.Length)
                 {
-                    ushort start = (ushort)file.Position;
+                    uint start = (uint)file.Position;
                     var bytes = new List<byte>();
                     byte newByte;
                     do
@@ -58,9 +58,7 @@ namespace GT2.CourseInfoEditor
                                 long blockStart = file.Position;
 
                                 Course course = new Course();
-                                course.DisplayName = file.ReadUShort();
-                                course.Unknown1 = (byte)file.ReadByte();
-                                course.Unknown2 = (byte)file.ReadByte();
+                                course.DisplayName = file.ReadUInt();
                                 course.Filename = file.ReadUInt();
 
                                 byte flags = (byte)file.ReadByte();
@@ -72,20 +70,14 @@ namespace GT2.CourseInfoEditor
                                 course.IsPointToPoint = IsBitSet(flags, 5);
                                 course.Flag7 = IsBitSet(flags, 6);
 
-                                course.Unknown4 = (byte)file.ReadByte();
+                                course.Padding = (byte)file.ReadByte();
                                 course.Skybox = file.ReadUShort();
-                                course.Unknown5 = (byte)file.ReadByte();
-                                course.Unknown6 = (byte)file.ReadByte();
-                                course.Unknown7 = (byte)file.ReadByte();
-                                course.Unknown8 = (byte)file.ReadByte();
-                                course.Unknown9 = (byte)file.ReadByte();
-                                course.Unknown10 = (byte)file.ReadByte();
-                                course.Unknown11 = (byte)file.ReadByte();
-                                course.Unknown12 = (byte)file.ReadByte();
-                                course.Unknown13 = (byte)file.ReadByte();
-                                course.Unknown14 = (byte)file.ReadByte();
-                                course.Unknown15 = (byte)file.ReadByte();
-                                course.Unknown16 = (byte)file.ReadByte();
+                                course.LightingArea1Colour = ToRGBHex(file.ReadUShort());
+                                course.LightingArea1ColourMultiplier = file.ReadUShort();
+                                course.LightingArea2Colour = ToRGBHex(file.ReadUShort());
+                                course.LightingArea2ColourMultiplier = file.ReadUShort();
+                                course.LightingArea3Colour = ToRGBHex(file.ReadUShort());
+                                course.LightingArea3ColourMultiplier = file.ReadUShort();
 
                                 if (file.Position != blockStart + (8 * 3))
                                 {
@@ -107,6 +99,14 @@ namespace GT2.CourseInfoEditor
             flag = flag >> position;
             flag = flag & 0x1;
             return flag == 1;
+        }
+
+        static string ToRGBHex(ushort colour)
+        {
+            int R = colour & 0x1F;
+            int G = (colour >> 5) & 0x1F;
+            int B = (colour >> 10) & 0x1F;
+            return $"#{R * 8:X2}{G * 8:X2}{B * 8:X2}";
         }
     }
 }
