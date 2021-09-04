@@ -82,7 +82,7 @@ namespace GT2.ModelTool.Structures
             string[] parts = line.Split(' ');
             if (parts.Length < 4 || parts.Length > 5)
             {
-                throw new Exception($"Line: {line}\r\nShadow face does not contain exactly three or four vertices.");
+                throw new Exception("Shadow face does not contain exactly three or four vertices.");
             }
             Vertex0 = ParseVertex(parts[1], vertices, startID);
             Vertex1 = ParseVertex(parts[2], vertices, startID);

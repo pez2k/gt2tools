@@ -212,149 +212,156 @@ namespace GT2.ModelTool.Structures
                     continue;
                 }
 
-                if (line.StartsWith("o ") || line.StartsWith("g "))
+                try
                 {
-                    string[] objectNameParts = line.Split(' ')[1].Split('/');
-                    if (objectNameParts[0].StartsWith("wheelpos"))
+                    if (line.StartsWith("o ") || line.StartsWith("g "))
                     {
-                        currentWheelPosition = int.Parse(objectNameParts[0].Replace("wheelpos", ""));
-                        foreach (string namePart in objectNameParts)
+                        string[] objectNameParts = line.Split(' ')[1].Split('/');
+                        if (objectNameParts[0].StartsWith("wheelpos"))
                         {
-                            string[] keyAndValue = namePart.Split('=');
-                            if (keyAndValue.Length == 2 && keyAndValue[0] == "w")
+                            currentWheelPosition = int.Parse(objectNameParts[0].Replace("wheelpos", ""));
+                            foreach (string namePart in objectNameParts)
                             {
-                                currentWheelPositionWValue = short.Parse(keyAndValue[1]);
+                                string[] keyAndValue = namePart.Split('=');
+                                if (keyAndValue.Length == 2 && keyAndValue[0] == "w")
+                                {
+                                    currentWheelPositionWValue = short.Parse(keyAndValue[1]);
+                                }
+                            }
+                        }
+                        else if (objectNameParts[0].StartsWith("lod"))
+                        {
+                            if (wheelPositions.Any(position => position == null))
+                            {
+                                //throw new Exception("Expected four wheel position objects before any LOD objects."); // TODO: is this safe to remove?
+                            }
+                            if (currentLOD != null)
+                            {
+                                currentLOD.Vertices = usedVertexIDs.OrderBy(id => id).Distinct().Select(id => vertices[id]).ToList();
+                                usedVertexIDs = new List<int>();
+                                currentLOD.Normals = usedNormalIDs.OrderBy(id => id).Distinct().Select(id => normals[id]).ToList();
+                                usedNormalIDs = new List<int>();
+                                currentLOD.GenerateBoundingBox();
+                            }
+                            currentLODNumber = int.Parse(objectNameParts[0].Replace("lod", ""));
+                            currentLOD = new LOD();
+                            currentLOD.PrepareForOBJRead(unknownData);
+                            lods[currentLODNumber] = currentLOD;
+                            currentScale = GetScale(objectNameParts);
+                            currentLOD.Scale = LOD.ConvertScale(currentScale);
+                        }
+                        else if (objectNameParts[0].StartsWith("shadow"))
+                        {
+                            if (lods.Any(lod => lod == null))
+                            {
+                                throw new Exception("Expected three LOD objects before shadow object.");
+                            }
+                            currentLOD.Vertices = usedVertexIDs.OrderBy(id => id).Distinct().Select(id => vertices[id]).ToList();
+                            currentLOD.Normals = usedNormalIDs.OrderBy(id => id).Distinct().Select(id => normals[id]).ToList();
+                            currentLOD.GenerateBoundingBox();
+                            shadow = true;
+                            Shadow = new Shadow();
+                            Shadow.PrepareForOBJRead(unknownData);
+                            shadowVertexStartID = vertices.Count;
+                            currentScale = GetScale(objectNameParts);
+                            Shadow.Scale = LOD.ConvertScale(currentScale);
+                        }
+                    }
+                    else if (line.StartsWith("v "))
+                    {
+                        if (shadow)
+                        {
+                            var vertex = new ShadowVertex();
+                            vertex.ReadFromOBJ(line, currentScale);
+                            Shadow.Vertices.Add(vertex);
+                        }
+                        else
+                        {
+                            var vertex = new Vertex();
+                            vertex.ReadFromOBJ(line, currentScale);
+                            vertices.Add(vertex);
+                            if (currentLODNumber == -1)
+                            {
+                                wheelPositionCandidate = vertex;
                             }
                         }
                     }
-                    else if (objectNameParts[0].StartsWith("lod"))
+                    else if (line.StartsWith("vt "))
                     {
-                        if (wheelPositions.Any(position => position == null))
-                        {
-                            throw new Exception("Expected four wheel position objects before any LOD objects.");
-                        }
-                        if (currentLOD != null)
-                        {
-                            currentLOD.Vertices = usedVertexIDs.OrderBy(id => id).Distinct().Select(id => vertices[id]).ToList();
-                            usedVertexIDs = new List<int>();
-                            currentLOD.Normals = usedNormalIDs.OrderBy(id => id).Distinct().Select(id => normals[id]).ToList();
-                            usedNormalIDs = new List<int>();
-                            currentLOD.GenerateBoundingBox();
-                        }
-                        currentLODNumber = int.Parse(objectNameParts[0].Replace("lod", ""));
-                        currentLOD = new LOD();
-                        currentLOD.PrepareForOBJRead(unknownData);
-                        lods[currentLODNumber] = currentLOD;
-                        currentScale = GetScale(objectNameParts);
-                        currentLOD.Scale = LOD.ConvertScale(currentScale);
+                        var uvCoord = new UVCoordinate();
+                        uvCoord.ReadFromOBJ(line);
+                        uvCoords.Add(uvCoord);
                     }
-                    else if (objectNameParts[0].StartsWith("shadow"))
+                    else if (line.StartsWith("vn "))
                     {
-                        if (lods.Any(lod => lod == null))
+                        var normal = new Normal();
+                        normal.ReadFromOBJ(line);
+                        normals.Add(normal);
+                    }
+                    else if (line.StartsWith("usemtl "))
+                    {
+                        currentMaterial = line.Split(' ')[1];
+                    }
+                    else if (line.StartsWith("f "))
+                    {
+                        if (shadow)
                         {
-                            throw new Exception("Expected three LOD objects before shadow object.");
+                            var polygon = new ShadowPolygon();
+                            polygon.ReadFromOBJ(line, Shadow.Vertices, shadowVertexStartID, currentMaterial);
+                            if (polygon.IsQuad)
+                            {
+                                Shadow.Quads.Add(polygon);
+                            }
+                            else
+                            {
+                                Shadow.Triangles.Add(polygon);
+                            }
                         }
-                        currentLOD.Vertices = usedVertexIDs.OrderBy(id => id).Distinct().Select(id => vertices[id]).ToList();
-                        currentLOD.Normals = usedNormalIDs.OrderBy(id => id).Distinct().Select(id => normals[id]).ToList();
-                        currentLOD.GenerateBoundingBox();
-                        shadow = true;
-                        Shadow = new Shadow();
-                        Shadow.PrepareForOBJRead(unknownData);
-                        shadowVertexStartID = vertices.Count;
-                        currentScale = GetScale(objectNameParts);
-                        Shadow.Scale = LOD.ConvertScale(currentScale);
-                    }
-                }
-                else if (line.StartsWith("v "))
-                {
-                    if (shadow)
-                    {
-                        var vertex = new ShadowVertex();
-                        vertex.ReadFromOBJ(line, currentScale);
-                        Shadow.Vertices.Add(vertex);
-                    }
-                    else
-                    {
-                        var vertex = new Vertex();
-                        vertex.ReadFromOBJ(line, currentScale);
-                        vertices.Add(vertex);
-                        if (currentLODNumber == -1)
+                        else if (currentLODNumber == -1)
                         {
-                            wheelPositionCandidate = vertex;
+                            continue;
+                            //throw new Exception("Face found outside of a LOD or shadow.");
                         }
-                    }
-                }
-                else if (line.StartsWith("vt "))
-                {
-                    var uvCoord = new UVCoordinate();
-                    uvCoord.ReadFromOBJ(line);
-                    uvCoords.Add(uvCoord);
-                }
-                else if (line.StartsWith("vn "))
-                {
-                    var normal = new Normal();
-                    normal.ReadFromOBJ(line);
-                    normals.Add(normal);
-                }
-                else if (line.StartsWith("usemtl "))
-                {
-                    currentMaterial = line.Split(' ')[1];
-                }
-                else if (line.StartsWith("f "))
-                {
-                    if (shadow)
-                    {
-                        var polygon = new ShadowPolygon();
-                        polygon.ReadFromOBJ(line, Shadow.Vertices, shadowVertexStartID, currentMaterial);
-                        if (polygon.IsQuad)
+                        else if (currentMaterial.StartsWith("untextured"))
                         {
-                            Shadow.Quads.Add(polygon);
+                            var polygon = new Polygon();
+                            polygon.ReadFromOBJ(line, vertices, normals, currentMaterial, usedVertexIDs, usedNormalIDs);
+                            if (polygon.IsQuad)
+                            {
+                                currentLOD.Quads.Add(polygon);
+                            }
+                            else
+                            {
+                                currentLOD.Triangles.Add(polygon);
+                            }
                         }
                         else
                         {
-                            Shadow.Triangles.Add(polygon);
+                            var polygon = new UVPolygon();
+                            polygon.ReadFromOBJ(line, vertices, normals, uvCoords, currentMaterial, usedVertexIDs, usedNormalIDs);
+                            if (polygon.IsQuad)
+                            {
+                                currentLOD.UVQuads.Add(polygon);
+                            }
+                            else
+                            {
+                                currentLOD.UVTriangles.Add(polygon);
+                            }
                         }
                     }
-                    else if (currentLODNumber == -1)
-                    {
-                        continue;
-                        //throw new Exception("Face found outside of a LOD or shadow.");
-                    }
-                    else if (currentMaterial.StartsWith("untextured"))
-                    {
-                        var polygon = new Polygon();
-                        polygon.ReadFromOBJ(line, vertices, normals, currentMaterial, usedVertexIDs, usedNormalIDs);
-                        if (polygon.IsQuad)
-                        {
-                            currentLOD.Quads.Add(polygon);
-                        }
-                        else
-                        {
-                            currentLOD.Triangles.Add(polygon);
-                        }
-                    }
-                    else
-                    {
-                        var polygon = new UVPolygon();
-                        polygon.ReadFromOBJ(line, vertices, normals, uvCoords, currentMaterial, usedVertexIDs, usedNormalIDs);
-                        if (polygon.IsQuad)
-                        {
-                            currentLOD.UVQuads.Add(polygon);
-                        }
-                        else
-                        {
-                            currentLOD.UVTriangles.Add(polygon);
-                        }
-                    }
-                }
 
-                if (currentWheelPosition != -1 && wheelPositionCandidate != null)
+                    if (currentWheelPosition != -1 && wheelPositionCandidate != null)
+                    {
+                        var position = new WheelPosition();
+                        position.ReadFromOBJ(wheelPositionCandidate, currentWheelPositionWValue);
+                        wheelPositions[currentWheelPosition] = position;
+                        wheelPositionCandidate = null;
+                        currentWheelPosition = -1;
+                    }
+                }
+                catch (Exception exception)
                 {
-                    var position = new WheelPosition();
-                    position.ReadFromOBJ(wheelPositionCandidate, currentWheelPositionWValue);
-                    wheelPositions[currentWheelPosition] = position;
-                    wheelPositionCandidate = null;
-                    currentWheelPosition = -1;
+                    throw new Exception($"Line:{line}\r\n{exception.Message}", exception);
                 }
             }
             while (line != null);

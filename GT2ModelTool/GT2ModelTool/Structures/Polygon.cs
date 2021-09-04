@@ -286,7 +286,7 @@ namespace GT2.ModelTool.Structures
             string[] parts = line.Split(' ');
             if (parts.Length < 4 || parts.Length > 5)
             {
-                throw new Exception($"Line: {line}\r\nFace does not contain exactly three or four vertices.");
+                throw new Exception("Face does not contain exactly three or four vertices.");
             }
             ParseMaterial(currentMaterial.Split('/'));
             (Vertex0, Vertex0Normal) = ParseVertex(parts[1], vertices, normals, usedVertexIDs, usedNormalIDs);

@@ -39,7 +39,7 @@ namespace GT2.ModelTool.Structures
             string[] parts = line.Split(' ');
             if (parts.Length != 4)
             {
-                throw new Exception($"Line: {line}\r\nShadow vertex does not contain exactly three coordinate values.");
+                throw new Exception("Shadow vertex does not contain exactly three coordinate values.");
             }
             X = (short)Math.Round(double.Parse(parts[1]) / scale / Vertex.UnitsToMetres);
             Z = (short)Math.Round(double.Parse(parts[3]) / scale / Vertex.UnitsToMetres);
