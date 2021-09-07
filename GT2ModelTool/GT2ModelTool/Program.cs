@@ -44,7 +44,7 @@ namespace GT2.ModelTool
 
             string directory = Path.GetDirectoryName(inputPath);
             string filename = Path.GetFileNameWithoutExtension(inputPath);
-            bool isNight = fileExtension == ".cnp" || filename.EndsWith("_night");
+            bool isNight = fileExtension == ".cno" || filename.EndsWith("_night");
             switch (args[0])
             {
                 case "-o2":
