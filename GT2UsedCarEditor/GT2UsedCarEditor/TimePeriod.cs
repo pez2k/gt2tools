@@ -36,11 +36,15 @@ namespace GT2.UsedCarEditor
             foreach (string name in ManufacturerNames)
             {
                 var manufacturer = new Manufacturer() { Name = name };
-                string filename = directory + "\\" + manufacturer.Name + ".csv";
-                if (!string.IsNullOrWhiteSpace(name) && File.Exists(filename))
+
+                foreach (string filename in Directory.EnumerateFiles(directory, $"{manufacturer.Name}*.csv"))
                 {
-                    manufacturer.ReadCSV(filename);
+                    if (!string.IsNullOrWhiteSpace(name) && File.Exists(filename))
+                    {
+                        manufacturer.ReadCSV(filename);
+                    }
                 }
+                manufacturer.Sort();
                 Manufacturers.Add(manufacturer);
             }
         }

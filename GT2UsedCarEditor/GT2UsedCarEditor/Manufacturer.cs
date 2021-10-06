@@ -2,6 +2,7 @@
 using CsvHelper.Configuration;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace GT2.UsedCarEditor
@@ -60,11 +61,26 @@ namespace GT2.UsedCarEditor
                     {
                         var car = new Car();
                         car.ReadCSV(csv);
-                        Cars.Add(car);
+
+                        if (car.Name.StartsWith("_"))
+                        {
+                            Car carToRemove = Cars.Where(existingCar => existingCar.Name == car.Name.Substring(1) && existingCar.Price == car.Price
+                                                                            && existingCar.PaletteID == car.PaletteID).FirstOrDefault();
+                            if (carToRemove != null)
+                            {
+                                Cars.Remove(carToRemove);
+                            }
+                        }
+                        else
+                        {
+                            Cars.Add(car);
+                        }
                     }
                 }
             }
         }
+
+        public void Sort() => Cars = Cars.OrderBy(car => car.Price).ToList();
 
         public uint Write(Stream stream, uint indexPosition, uint blockStart, uint dataPosition)
         {
