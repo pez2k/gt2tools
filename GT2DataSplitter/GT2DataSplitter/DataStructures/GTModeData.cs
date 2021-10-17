@@ -201,7 +201,7 @@ namespace GT2.DataSplitter
                 Unknown.Write(file, 8 * i++);
                 Cars.Write(file, 8 * i++);
 
-                if (file.Length > 800 * 1024)
+                if (file.Length > 0xC8000)
                 {
                     throw new Exception("gtmode_data.dat exceeds 800kb size limit.");
                 }

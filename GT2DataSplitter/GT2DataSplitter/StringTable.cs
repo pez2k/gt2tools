@@ -99,6 +99,11 @@ namespace GT2.DataSplitter
                 file.Position = 0;
                 file.WriteUShort((ushort)file.Length);
 
+                if (file.Length > 0x6000)
+                {
+                    throw new Exception("unistrdb.dat exceeds 24kb size limit.");
+                }
+
                 file.Position = 0;
                 using (FileStream zipFile = new FileStream(filename + ".gz", FileMode.Create, FileAccess.Write))
                 {
