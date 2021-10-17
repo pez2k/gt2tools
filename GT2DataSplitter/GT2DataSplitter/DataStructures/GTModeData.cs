@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 
@@ -199,6 +200,11 @@ namespace GT2.DataSplitter
                 TractionControlSystemParts.Write(file, 8 * i++);
                 Unknown.Write(file, 8 * i++);
                 Cars.Write(file, 8 * i++);
+
+                if (file.Length > 800 * 1024)
+                {
+                    throw new Exception("gtmode_data.dat exceeds 800kb size limit.");
+                }
 
                 file.Position = 0;
                 using (FileStream zipFile = new FileStream(filename + ".gz", FileMode.Create, FileAccess.Write))
