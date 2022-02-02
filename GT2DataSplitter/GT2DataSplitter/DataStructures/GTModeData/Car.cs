@@ -13,7 +13,7 @@ namespace GT2.DataSplitter
             return Name + "\\" + Data.CarId.ToCarName() + ".csv";
         }
 
-        public override void Read(FileStream infile)
+        public override void Read(Stream infile)
         {
             base.Read(infile);
             CarNameStringTable.Add(Data.CarId, StringTable.Get(Data.NameFirstPart), StringTable.Get(Data.NameSecondPart), Data.Year);

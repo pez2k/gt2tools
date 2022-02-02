@@ -21,7 +21,7 @@ namespace GT2.DataSplitter
 
         public byte[] RawData { get; set; }
 
-        public virtual void Read(FileStream infile)
+        public virtual void Read(Stream infile)
         {
             RawData = new byte[Size];
             infile.Read(RawData, 0, Size);
@@ -77,7 +77,7 @@ namespace GT2.DataSplitter
             file.Read(RawData, 0, (int)file.Length);
         }
 
-        public virtual void Write(FileStream outfile)
+        public virtual void Write(Stream outfile)
         {
             outfile.Write(RawData, 0, Size);
         }

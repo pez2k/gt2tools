@@ -54,17 +54,22 @@ namespace GT2.DataSplitter
         {
             using (FileStream file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
-                for (int i = 0; i < data.Length; i++)
-                {
-                    file.Position = 8 * (i + 1);
-                    uint blockStart = file.ReadUInt();
-                    uint blockSize = file.ReadUInt();
-                    Read(file, blockStart, blockSize, data[i]);
-                }
+                ReadDataFromFile(file);
             }
         }
 
-        private void Read(FileStream file, uint blockStart, uint blockSize, TypedData data)
+        protected virtual void ReadDataFromFile(Stream file)
+        {
+            for (int i = 0; i < data.Length; i++)
+            {
+                file.Position = 8 * (i + 1);
+                uint blockStart = file.ReadUInt();
+                uint blockSize = file.ReadUInt();
+                Read(file, blockStart, blockSize, data[i]);
+            }
+        }
+
+        private void Read(Stream file, uint blockStart, uint blockSize, TypedData data)
         {
             var template = (DataStructure)Activator.CreateInstance(data.Type);
             Console.WriteLine($"Reading {template.Name} structures from file...");
@@ -161,16 +166,7 @@ namespace GT2.DataSplitter
         {
             using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
             {
-                file.WriteCharacters("GTDTl\0");
-                ushort indexCount = (ushort)(data.Length * 2);
-                file.WriteUShort(indexCount);
-                file.Position = (indexCount * 8) + 7;
-                file.WriteByte(0x00); // Data starts at end of indices, so position EOF
-
-                for (uint i = 0; i < data.Length; i++)
-                {
-                    Write(data[i], file, (i + 1) * 8);
-                }
+                WriteDataToFile(file);
 
                 if (file.Length > 0xC8000)
                 {
@@ -188,7 +184,21 @@ namespace GT2.DataSplitter
             }
         }
 
-        private void Write(TypedData data, FileStream file, uint indexPosition)
+        protected virtual void WriteDataToFile(Stream file)
+        {
+            file.WriteCharacters("GTDTl\0");
+            ushort indexCount = (ushort)(data.Length * 2);
+            file.WriteUShort(indexCount);
+            file.Position = (indexCount * 8) + 7;
+            file.WriteByte(0x00); // Data starts at end of indices, so position EOF
+
+            for (int i = 0; i < data.Length; i++)
+            {
+                Write(data[i], file, (i + 1) * 8);
+            }
+        }
+
+        private void Write(TypedData data, Stream file, int indexPosition)
         {
             file.Position = file.Length;
             uint startingPosition = (uint)file.Position;

@@ -1,9 +1,9 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using CsvHelper;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
@@ -22,7 +22,7 @@ namespace GT2.DataSplitter
             return base.CreateOutputFilename(data).Replace(".dat", ".csv");
         }
 
-        public override void Read(FileStream infile)
+        public override void Read(Stream infile)
         {
             base.Read(infile);
 
@@ -75,7 +75,7 @@ namespace GT2.DataSplitter
             }
         }
 
-        public override void Write(FileStream outfile)
+        public override void Write(Stream outfile)
         {
             int size = Marshal.SizeOf(Data);
             RawData = new byte[size];

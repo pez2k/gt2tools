@@ -75,7 +75,7 @@ namespace GT2.DataSplitter
             carData.ReadData($"{GetDataFilePrefix()}gtmode_data.dat");
             carData.DumpData();
 
-            GTModeRace raceData = new GTModeRace();
+            var raceData = new GTModeRace();
             raceData.ReadData($"{GetDataFilePrefix()}gtmode_race.dat");
             raceData.DumpData();
 

@@ -1,10 +1,10 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using CsvHelper;
+using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 
 namespace GT2.DataSplitter
 {
@@ -33,7 +33,7 @@ namespace GT2.DataSplitter
             return Encoding.Default.GetString(stringBytes).TrimEnd('\0');
         }
 
-        public static void Write(Stream file, uint indexPosition)
+        public static void Write(Stream file, long indexPosition)
         {
             file.Position = file.Length;
             uint startingPosition = (uint)file.Position;
