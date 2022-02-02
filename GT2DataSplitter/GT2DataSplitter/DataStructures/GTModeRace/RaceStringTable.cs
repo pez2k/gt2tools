@@ -15,9 +15,9 @@ namespace GT2.DataSplitter
         public static List<string> Strings = new List<string>();
         public static StringTableLookup Lookup { get; set; } = new StringTableLookup();
 
-        public static void Read(Stream file, uint blockStart, uint blockSize)
+        public static void Read(Stream file, long startPosition)
         {
-            file.Position = blockStart;
+            file.Position = startPosition;
             ushort stringCount = file.ReadUShort();
             for (ushort i = 0; i < stringCount; i++)
             {

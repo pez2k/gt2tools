@@ -23,11 +23,13 @@ namespace GT2.DataSplitter
             //hack
             if (filename.Contains("license_data"))
             {
+                SetLanguagePrefix(filename);
                 SplitLicenseFile(filename);
                 return;
             }
             else if (filename.Contains("arcade_data"))
             {
+                SetLanguagePrefix(filename);
                 SplitArcadeFile(filename);
                 return;
             }
@@ -58,11 +60,7 @@ namespace GT2.DataSplitter
 
             if (extension == ".dat")
             {
-                LanguagePrefix = filename.Split('_')[0];
-                if (LanguagePrefix.Length != 3)
-                {
-                    LanguagePrefix = "jpn";
-                }
+                SetLanguagePrefix(filename);
                 SplitFile();
             }
         }
@@ -113,6 +111,15 @@ namespace GT2.DataSplitter
             }
         }
 
+        private static void SetLanguagePrefix(string filename)
+        {
+            LanguagePrefix = filename.Split('_')[0];
+            if (LanguagePrefix.Length != 3)
+            {
+                LanguagePrefix = "jpn";
+            }
+        }
+
         static string GetDataFilePrefix() => LanguagePrefix == "jpn" ? "" : $"{LanguagePrefix}_";
 
         static void SplitLicenseFile(string filename)
@@ -127,8 +134,8 @@ namespace GT2.DataSplitter
 
         static void SplitArcadeFile(string filename)
         {
-            StringTable.Read("eng_unistrdb.dat");
-            ArcadeData arcadeData = new ArcadeData();
+            StringTable.Read($"{LanguagePrefix}_unistrdb.dat");
+            var arcadeData = new ArcadeData();
             arcadeData.ReadData(filename);
             arcadeData.DumpData();
             StringTable.Export();

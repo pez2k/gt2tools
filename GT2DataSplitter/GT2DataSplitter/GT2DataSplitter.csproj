@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataStructures\ArcadeData.cs" />
     <Compile Include="DataStructures\ArcadeData\CarArcadeSports.cs" />
     <Compile Include="DataStructures\ArcadeData\CarArcade.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeUnknown6.cs" />
@@ -61,7 +62,6 @@
     <Compile Include="DataStructures\CarCsvDataStructure.cs" />
     <Compile Include="DataStructures\CsvDataStructure.cs" />
     <Compile Include="DataStructures\CarDataStructure.cs" />
-    <Compile Include="DataStructures\ArcadeData.cs" />
     <Compile Include="DataStructures\GTModeRace.cs" />
     <Compile Include="DataStructures\TypedData.cs" />
     <Compile Include="DataStructures\DataFile.cs" />
