@@ -63,12 +63,12 @@
     <Compile Include="DataStructures\CsvDataStructure.cs" />
     <Compile Include="DataStructures\CarDataStructure.cs" />
     <Compile Include="DataStructures\GTModeRace.cs" />
+    <Compile Include="DataStructures\LicenseData.cs" />
     <Compile Include="DataStructures\TypedData.cs" />
     <Compile Include="DataStructures\DataFile.cs" />
     <Compile Include="DataStructures\GTModeData.cs" />
     <Compile Include="DataStructures\GTModeData\CarName.cs" />
     <Compile Include="DataStructures\GTModeData\CarNameStringTable.cs" />
-    <Compile Include="DataStructures\LicenseData.cs" />
     <Compile Include="DataStructures\GTModeData\GenericEngineUpgrade.cs" />
     <Compile Include="DataStructures\GTModeData\Car.cs" />
     <Compile Include="DataStructures\GTModeData\CarUnknown.cs" />

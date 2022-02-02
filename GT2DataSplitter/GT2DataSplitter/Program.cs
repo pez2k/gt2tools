@@ -124,7 +124,7 @@ namespace GT2.DataSplitter
 
         static void SplitLicenseFile(string filename)
         {
-            StringTable.Read("eng_unistrdb.dat");
+            StringTable.Read($"{LanguagePrefix}_unistrdb.dat");
             LicenseData licenseData = new LicenseData();
             licenseData.ReadData(filename);
             licenseData.DumpData();
