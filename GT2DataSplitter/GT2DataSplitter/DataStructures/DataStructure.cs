@@ -9,7 +9,8 @@ namespace GT2.DataSplitter
 
     public class DataStructure
     {
-        public string Name {
+        public string Name
+        {
             get
             {
                 return GetType().Name;

@@ -71,13 +71,13 @@ namespace GT2.DataSplitter
         {
             StringTable.Read($"{LanguagePrefix}_unistrdb.dat");
 
-            GTModeData CarData = new GTModeData();
-            CarData.ReadData($"{GetDataFilePrefix()}gtmode_data.dat");
-            CarData.DumpData();
+            var carData = new GTModeData();
+            carData.ReadData($"{GetDataFilePrefix()}gtmode_data.dat");
+            carData.DumpData();
 
-            GTModeRace RaceData = new GTModeRace();
-            RaceData.ReadData($"{GetDataFilePrefix()}gtmode_race.dat");
-            RaceData.DumpData();
+            GTModeRace raceData = new GTModeRace();
+            raceData.ReadData($"{GetDataFilePrefix()}gtmode_race.dat");
+            raceData.DumpData();
 
             StringTable.Export();
             CarNameStringTable.Export();
@@ -97,14 +97,14 @@ namespace GT2.DataSplitter
                 string overridePath = Path.Combine("_Overrides", LanguagePrefix);
                 OverridePath = Directory.Exists(overridePath) ? overridePath : null;
 
-                GTModeData CarData = new GTModeData();
-                CarData.ImportData();
+                var carData = new GTModeData();
+                carData.ImportData();
                 Directory.CreateDirectory("Output");
-                CarData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}gtmode_data.dat"));
+                carData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}gtmode_data.dat"));
 
-                GTModeRace RaceData = new GTModeRace();
-                RaceData.ImportData();
-                RaceData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}gtmode_race.dat"));
+                GTModeRace raceData = new GTModeRace();
+                raceData.ImportData();
+                raceData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}gtmode_race.dat"));
 
                 StringTable.Write(Path.Combine("Output", $"{LanguagePrefix}_unistrdb.dat"));
 
@@ -118,9 +118,9 @@ namespace GT2.DataSplitter
         static void SplitLicenseFile(string filename)
         {
             StringTable.Read("eng_unistrdb.dat");
-            LicenseData LicenseData = new LicenseData();
-            LicenseData.ReadData(filename);
-            LicenseData.DumpData();
+            LicenseData licenseData = new LicenseData();
+            licenseData.ReadData(filename);
+            licenseData.DumpData();
             StringTable.Export();
             CarNameStringTable.Export();
         }
@@ -128,9 +128,9 @@ namespace GT2.DataSplitter
         static void SplitArcadeFile(string filename)
         {
             StringTable.Read("eng_unistrdb.dat");
-            ArcadeData ArcadeData = new ArcadeData();
-            ArcadeData.ReadData(filename);
-            ArcadeData.DumpData();
+            ArcadeData arcadeData = new ArcadeData();
+            arcadeData.ReadData(filename);
+            arcadeData.DumpData();
             StringTable.Export();
             CarNameStringTable.Export();
         }
