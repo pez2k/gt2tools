@@ -1,18 +1,12 @@
-﻿using GT2.CarNameConversion;
-using StreamExtensions;
-
-namespace GT2.DataSplitter
+﻿namespace GT2.DataSplitter
 {
+    using CarNameConversion;
+    using StreamExtensions;
+
     public class ArcadeUnknown4 : DataStructure
     {
-        public ArcadeUnknown4()
-        {
-            Size = 0x10;
-        }
+        public ArcadeUnknown4() => Size = 0x10;
 
-        public override string CreateOutputFilename(byte[] data)
-        {
-            return Name + "\\" + data.ReadUInt().ToCarName() + ".dat";
-        }
+        protected override string CreateOutputFilename() => Name + "\\" + rawData.ReadUInt().ToCarName() + ".dat";
     }
 }

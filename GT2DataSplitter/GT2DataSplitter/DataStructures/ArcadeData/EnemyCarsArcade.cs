@@ -1,5 +1,5 @@
-﻿using CsvHelper.Configuration;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
@@ -7,10 +7,7 @@ namespace GT2.DataSplitter
 
     public class EnemyCarsArcade : CsvDataStructure<EnemyCarsArcadeData, EnemyCarsArcadeCSVMap>
     {
-        public override string CreateOutputFilename(byte[] data)
-        {
-            return base.CreateOutputFilename(data).Replace(".csv", "_" + Data.CarId.ToCarName() + ".csv");
-        }
+        protected override string CreateOutputFilename() => base.CreateOutputFilename().Replace(".csv", "_" + data.CarId.ToCarName() + ".csv");
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x60

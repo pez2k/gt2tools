@@ -1,22 +1,20 @@
-﻿using CsvHelper.Configuration;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
     public class Event : CsvDataStructure<EventData, EventCSVMap>
     {
-        public override string CreateOutputFilename(byte[] data)
+        protected override string CreateOutputFilename()
         {
             string directory = Name;
-            
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
-
-            return directory + "\\" + RaceStringTable.Lookup.ConvertToString(Data.EventName, null, null) +
-                   "_" + RaceStringTable.Lookup.ConvertToString(Data.TrackName, null, null) + ".csv";
+            return directory + "\\" + RaceStringTable.Lookup.ConvertToString(data.EventName, null, null) +
+                   "_" + RaceStringTable.Lookup.ConvertToString(data.TrackName, null, null) + ".csv";
         }
     }
     

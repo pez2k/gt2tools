@@ -1,6 +1,6 @@
-﻿using CsvHelper.Configuration;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
@@ -8,17 +8,15 @@ namespace GT2.DataSplitter
 
     public class TiresFront : CarCsvDataStructure<TiresFrontData, TiresFrontCSVMap>
     {
-        public override string CreateOutputFilename(byte[] data)
+        protected override string CreateOutputFilename()
         {
-            string filename = Name + "\\" + Data.CarId.ToCarName();
-
+            string filename = Name + "\\" + data.CarId.ToCarName();
             if (!Directory.Exists(filename))
             {
                 Directory.CreateDirectory(filename);
             }
-
             string number = Directory.GetFiles(filename).Length.ToString();
-            return filename + "\\" + number + "_" + Utils.TireStageConverter.ConvertToString(Data.Stage, null, null) + ".csv";
+            return filename + "\\" + number + "_" + Utils.TireStageConverter.ConvertToString(data.Stage, null, null) + ".csv";
         }
     }
 

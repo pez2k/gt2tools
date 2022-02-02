@@ -1,14 +1,11 @@
-﻿using CsvHelper.Configuration;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
     public class LSD : CarCsvDataStructure<LSDData, LSDCSVMap>
     {
-        public override string CreateOutputFilename(byte[] data)
-        {
-            return CreateOutputFilename(Data.CarId, Data.Stage);
-        }
+        protected override string CreateOutputFilename() => CreateOutputFilename(data.CarId, data.Stage);
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x20

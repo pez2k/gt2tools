@@ -1,6 +1,6 @@
-﻿using CsvHelper.Configuration;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
@@ -8,20 +8,15 @@ namespace GT2.DataSplitter
 
     public class RacingModify : CarCsvDataStructure<RacingModifyData, RacingModifyCSVMap>
     {
-        public override string CreateOutputFilename(byte[] data)
+        protected override string CreateOutputFilename()
         {
-            string filename = Name;
-            
-            filename += "\\" + Data.CarId.ToCarName();
-
+            string filename = Name + "\\" + data.CarId.ToCarName();
             if (!Directory.Exists(filename))
             {
                 Directory.CreateDirectory(filename);
             }
-
             string number = Directory.GetFiles(filename).Length.ToString();
-
-            return filename + "\\" + number + "_stage" + Data.Stage.ToString() + "_" + Data.BodyId.ToCarName() + ".csv";
+            return filename + "\\" + number + "_stage" + data.Stage.ToString() + "_" + data.BodyId.ToCarName() + ".csv";
         }
     }
 
@@ -30,7 +25,7 @@ namespace GT2.DataSplitter
     {
         public uint CarId;
         public uint Price; // if 0 or low byte = 0, not possible
-        public uint BodyId; // e.g. if car id ends with 0x8, rmCarId will end with 0xc, d, e etc
+        public uint BodyId;
         public byte Weight; // weight is a multiple of some car-indepenent value
         public byte BodyRollAmount;
         public byte Stage;

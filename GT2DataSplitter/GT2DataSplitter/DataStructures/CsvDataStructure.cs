@@ -7,33 +7,27 @@ using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
-    public class CsvDataStructure<TStructure, TMap> : DataStructure where TMap : ClassMap
+    public abstract class CsvDataStructure<TStructure, TMap> : DataStructure where TMap : ClassMap
     {
-        public bool CacheFilename { get; set; } = false;
-        public TStructure Data { get; set; }
+        protected bool cacheFilename;
+        protected TStructure data;
 
-        public CsvDataStructure()
-        {
-            Size = Marshal.SizeOf<TStructure>();
-        }
+        protected CsvDataStructure() => Size = Marshal.SizeOf<TStructure>();
 
-        public override string CreateOutputFilename(byte[] data)
-        {
-            return base.CreateOutputFilename(data).Replace(".dat", ".csv");
-        }
+        protected override string CreateOutputFilename() => base.CreateOutputFilename().Replace(".dat", ".csv");
 
         public override void Read(Stream infile)
         {
             base.Read(infile);
 
-            GCHandle handle = GCHandle.Alloc(RawData, GCHandleType.Pinned);
-            Data = (TStructure)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(TStructure));
+            GCHandle handle = GCHandle.Alloc(rawData, GCHandleType.Pinned);
+            data = (TStructure)Marshal.PtrToStructure(handle.AddrOfPinnedObject(), typeof(TStructure));
             handle.Free();
         }
 
         public override void Dump()
         {
-            string filename = CreateOutputFilename(RawData);
+            string filename = CreateOutputFilename();
             using (TextWriter output = new StreamWriter(File.Create(filename), Encoding.UTF8))
             {
                 using (CsvWriter csv = new CsvWriter(output))
@@ -42,8 +36,8 @@ namespace GT2.DataSplitter
                     csv.Configuration.QuoteAllFields = true;
                     csv.WriteHeader<TStructure>();
                     csv.NextRecord();
-                    csv.WriteRecord(Data);
-                    if (CacheFilename)
+                    csv.WriteRecord(data);
+                    if (cacheFilename)
                     {
                         FileNameCache.Add(Name, filename);
                     }
@@ -61,8 +55,8 @@ namespace GT2.DataSplitter
                     {
                         csv.Configuration.RegisterClassMap<TMap>();
                         csv.Read();
-                        Data = csv.GetRecord<TStructure>();
-                        if (CacheFilename)
+                        data = csv.GetRecord<TStructure>();
+                        if (cacheFilename)
                         {
                             FileNameCache.Add(Name, filename);
                         }
@@ -77,12 +71,12 @@ namespace GT2.DataSplitter
 
         public override void Write(Stream outfile)
         {
-            int size = Marshal.SizeOf(Data);
-            RawData = new byte[size];
+            int size = Marshal.SizeOf(data);
+            rawData = new byte[size];
 
             IntPtr objectPointer = Marshal.AllocHGlobal(size);
-            Marshal.StructureToPtr(Data, objectPointer, true);
-            Marshal.Copy(objectPointer, RawData, 0, size);
+            Marshal.StructureToPtr(data, objectPointer, true);
+            Marshal.Copy(objectPointer, rawData, 0, size);
             Marshal.FreeHGlobal(objectPointer);
 
             base.Write(outfile);

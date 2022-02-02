@@ -5,14 +5,8 @@
 
     public class LicenseCar : DataStructure
     {
-        public LicenseCar()
-        {
-            Size = 0x60;
-        }
+        public LicenseCar() => Size = 0x60;
 
-        public override string CreateOutputFilename(byte[] data)
-        {
-            return Name + "\\" + data.ReadUInt().ToCarName() + ".dat";
-        }
+        protected override string CreateOutputFilename() => Name + "\\" + rawData.ReadUInt().ToCarName() + ".dat";
     }
 }

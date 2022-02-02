@@ -1,6 +1,6 @@
-﻿using CsvHelper.Configuration;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
@@ -8,26 +8,23 @@ namespace GT2.DataSplitter
 
     public class Car : CsvDataStructure<CarData, CarCSVMap>
     {
-        public override string CreateOutputFilename(byte[] data)
-        {
-            return Name + "\\" + Data.CarId.ToCarName() + ".csv";
-        }
+        protected override string CreateOutputFilename() => Name + "\\" + data.CarId.ToCarName() + ".csv";
 
         public override void Read(Stream infile)
         {
             base.Read(infile);
-            CarNameStringTable.Add(Data.CarId, StringTable.Get(Data.NameFirstPart), StringTable.Get(Data.NameSecondPart), Data.Year);
+            CarNameStringTable.Add(data.CarId, StringTable.Get(data.NameFirstPart), StringTable.Get(data.NameSecondPart), data.Year);
         }
 
         public override void Import(string filename)
         {
             base.Import(filename);
-            CarName carName = CarNameStringTable.Get(Data.CarId);
-            CarData carData = Data;
+            CarName carName = CarNameStringTable.Get(data.CarId);
+            CarData carData = data;
             carData.NameFirstPart = StringTable.Add(carName.NameFirstPart);
             carData.NameSecondPart = StringTable.Add(carName.NameSecondPart);
             carData.Year = carName.Year;
-            Data = carData;
+            data = carData;
         }
     }
 

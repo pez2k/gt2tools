@@ -1,5 +1,5 @@
-﻿using CsvHelper.Configuration;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
@@ -7,23 +7,20 @@ namespace GT2.DataSplitter
 
     public class Chassis : CarCsvDataStructure<ChassisData, ChassisCSVMap>
     {
-        public override string CreateOutputFilename(byte[] data)
-        {
-            return Name + "\\" + Data.CarId.ToCarName() + ".csv";
-        }
+        protected override string CreateOutputFilename() => Name + "\\" + data.CarId.ToCarName() + ".csv";
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x14
     public struct ChassisData
     {
         public uint CarId;
-        public byte CentreOfMassLongitudinal;
+        public byte CentreOfMassLongitudinal; // weight distribution %
         public byte Unknown2;
         public byte FrontGrip;
         public byte RearGrip;
         public ushort Length;
         public ushort Height;
-        public ushort CentreOfMassHeight;
+        public ushort CentreOfMassHeight; // wheelbase mm
         public ushort Weight;
         public byte TurningResistance;
         public byte PitchResistance;

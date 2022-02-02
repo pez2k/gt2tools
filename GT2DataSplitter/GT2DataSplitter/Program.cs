@@ -7,7 +7,6 @@ namespace GT2.DataSplitter
     class Program
     {
         public static string LanguagePrefix { get; private set; }
-        public static string OverridePath { get; private set; }
 
         static void Main(string[] args)
         {
@@ -93,7 +92,7 @@ namespace GT2.DataSplitter
                 CarNameStringTable.Import();
 
                 string overridePath = Path.Combine("_Overrides", LanguagePrefix);
-                OverridePath = Directory.Exists(overridePath) ? overridePath : null;
+                DataFile.OverridePath = Directory.Exists(overridePath) ? overridePath : null;
 
                 var carData = new GTModeData();
                 carData.ImportData();

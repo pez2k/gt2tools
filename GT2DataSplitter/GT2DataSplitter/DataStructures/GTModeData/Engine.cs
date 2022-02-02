@@ -1,5 +1,5 @@
-﻿using CsvHelper.Configuration;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
@@ -7,10 +7,7 @@ namespace GT2.DataSplitter
 
     public class Engine : CarCsvDataStructure<EngineData, EngineCSVMap>
     {
-        public override string CreateOutputFilename(byte[] data)
-        {
-            return Name + "\\" + Data.CarId.ToCarName() + ".csv";
-        }
+        protected override string CreateOutputFilename() => Name + "\\" + data.CarId.ToCarName() + ".csv";
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x4C
@@ -37,7 +34,7 @@ namespace GT2.DataSplitter
         public ushort TorqueCurve14;
         public ushort TorqueCurve15;
         public ushort TorqueCurve16;
-        public ushort Displacement; // 0x2c - not quite for those that have numberx2 displacements
+        public ushort Displacement; // 0x2c - not quite for those that have numberx2 displacements - TODO: handle multiplier bits
         public ushort DisplayedPower; // 0x2e - base ps. F. Ex. is 295hp for most of the rally cars, not 400+
         public ushort MaxPowerRPM; // 0x30 - multipled by 10 by the game. E.g. a value of 850 is displayed as 8500
         public ushort DisplayedTorque; // 0x32 - divided by 10 by the game. e.g. a value of 950 is displayed as 95.0

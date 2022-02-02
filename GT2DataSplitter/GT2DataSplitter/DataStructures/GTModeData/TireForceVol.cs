@@ -1,5 +1,5 @@
-﻿using CsvHelper.Configuration;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {

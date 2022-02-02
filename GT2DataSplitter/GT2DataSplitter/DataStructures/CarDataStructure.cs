@@ -7,15 +7,15 @@ namespace GT2.DataSplitter
 
     public class CarDataStructure : DataStructure
     {
-        public bool HasCarId { get; set; } = true;
+        protected bool hasCarId = true;
 
-        public override string CreateOutputFilename(byte[] data)
+        protected override string CreateOutputFilename()
         {
             string filename = Name;
 
-            if (HasCarId)
+            if (hasCarId)
             {
-                uint carID = data.ReadUInt();
+                uint carID = rawData.ReadUInt();
                 filename += "\\" + carID.ToCarName();
 
                 if (!Directory.Exists(filename))

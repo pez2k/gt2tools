@@ -1,29 +1,25 @@
-﻿using CsvHelper.Configuration;
-using System.IO;
+﻿using System.IO;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
     using CarNameConversion;
     using StreamExtensions;
 
-    public class CarCsvDataStructure<TStructure, TMap> : CsvDataStructure<TStructure, TMap> where TMap : ClassMap
+    public abstract class CarCsvDataStructure<TStructure, TMap> : CsvDataStructure<TStructure, TMap> where TMap : ClassMap
     {
-        public bool HasCarId { get; set; } = true;
+        protected bool hasCarId = true;
 
-        public CarCsvDataStructure()
-        {
-            CacheFilename = true;
-        }
+        protected CarCsvDataStructure() => cacheFilename = true;
 
-        public override string CreateOutputFilename(byte[] data)
+        protected override string CreateOutputFilename()
         {
             string filename = Name;
 
-            if (HasCarId)
+            if (hasCarId)
             {
-                uint carID = data.ReadUInt();
+                uint carID = rawData.ReadUInt();
                 filename += "\\" + carID.ToCarName();
-
                 if (!Directory.Exists(filename))
                 {
                     Directory.CreateDirectory(filename);
@@ -31,28 +27,21 @@ namespace GT2.DataSplitter
             }
 
             string number = Directory.GetFiles(filename).Length.ToString();
-
             for (int i = number.Length; i < 4; i++)
             {
                 number = "0" + number;
             }
-
             return filename + "\\" + number + "0.csv";
         }
 
         public string CreateOutputFilename(uint carId, byte stage)
         {
-            string filename = Name;
-
-            filename += "\\" + carId.ToCarName();
-
+            string filename = Name + "\\" + carId.ToCarName();
             if (!Directory.Exists(filename))
             {
                 Directory.CreateDirectory(filename);
             }
-
             string number = Directory.GetFiles(filename).Length.ToString();
-
             return filename + "\\" + number + "_stage" + stage.ToString() + ".csv";
         }
     }

@@ -5,7 +5,7 @@
         public TractionControlSystem()
         {
             Size = 0x10;
-            HasCarId = true;
+            hasCarId = true;
         }
     }
 }

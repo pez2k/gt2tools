@@ -1,14 +1,11 @@
-﻿using CsvHelper.Configuration;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
     public class Steer : CarCsvDataStructure<SteerData, SteerCSVMap>
     {
-        public Steer()
-        {
-            HasCarId = false;
-        }
+        public Steer() => hasCarId = false;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x18

@@ -11,12 +11,12 @@ namespace GT2.DataSplitter
 
     public class DataFile
     {
+        public static string OverridePath { get; set; }
+
         private readonly TypedData[] data;
 
-        public DataFile(params (Type type, int orderOnDisk)[] dataDefinitions)
-        {
+        public DataFile(params (Type type, int orderOnDisk)[] dataDefinitions) =>
             data = dataDefinitions.Select(definition => new TypedData(definition.type, definition.orderOnDisk)).ToArray();
-        }
 
         public void ReadData(string filename)
         {
@@ -109,12 +109,12 @@ namespace GT2.DataSplitter
                 cars.Add(0, template.Name);
             }
 
-            bool hasOverrides = Program.OverridePath != null && Directory.Exists(Path.Combine(Program.OverridePath, template.Name));
+            bool hasOverrides = OverridePath != null && Directory.Exists(Path.Combine(OverridePath, template.Name));
             foreach (string carName in cars.Values)
             {
                 foreach (string baseFilename in Directory.EnumerateFiles(carName))
                 {
-                    string filename = hasOverrides ? Path.Combine(Program.OverridePath, baseFilename) : baseFilename;
+                    string filename = hasOverrides ? Path.Combine(OverridePath, baseFilename) : baseFilename;
                     if (!File.Exists(filename))
                     {
                         filename = baseFilename;

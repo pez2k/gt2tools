@@ -2,9 +2,6 @@
 {
     public class ArcadeUnknown2 : DataStructure
     {
-        public ArcadeUnknown2()
-        {
-            Size = 0x280;
-        }
+        public ArcadeUnknown2() => Size = 0x280;
     }
 }

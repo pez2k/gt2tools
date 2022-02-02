@@ -2,9 +2,6 @@
 {
     public class LicenseUnknown3 : DataStructure
     {
-        public LicenseUnknown3()
-        {
-            Size = 0x8;
-        }
+        public LicenseUnknown3() => Size = 0x8;
     }
 }

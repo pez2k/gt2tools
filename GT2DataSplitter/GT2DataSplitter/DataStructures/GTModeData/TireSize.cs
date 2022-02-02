@@ -1,22 +1,19 @@
-﻿using CsvHelper.Configuration;
-using System.IO;
+﻿using System.IO;
 using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
     public class TireSize : CsvDataStructure<TireSizeData, TireSizeCSVMap>
     {
-        public TireSize()
-        {
-            CacheFilename = true;
-        }
+        public TireSize() => cacheFilename = true;
 
-        public override string CreateOutputFilename(byte[] data)
+        protected override string CreateOutputFilename()
         {
-            string filename = base.CreateOutputFilename(data);
+            string filename = base.CreateOutputFilename();
             return Path.Combine(Path.GetDirectoryName(filename),
-                                $"{Path.GetFileNameWithoutExtension(filename).Substring(1)}_{Utils.TireWidthConverter.ConvertToString(Data.WidthMM, null, null)}" +
-                                $"-{Utils.TireProfileConverter.ConvertToString(Data.Profile, null, null)}R{Data.DiameterInches}{Path.GetExtension(filename)}");
+                                $"{Path.GetFileNameWithoutExtension(filename).Substring(1)}_{Utils.TireWidthConverter.ConvertToString(data.WidthMM, null, null)}" +
+                                $"-{Utils.TireProfileConverter.ConvertToString(data.Profile, null, null)}R{data.DiameterInches}{Path.GetExtension(filename)}");
         }
     }
 
