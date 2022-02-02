@@ -1,11 +1,11 @@
-﻿using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using CsvHelper;
+using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 
 namespace GT2.DataSplitter
 {
@@ -19,7 +19,7 @@ namespace GT2.DataSplitter
 
         public static void Read(string filename)
         {
-            using (FileStream file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            using (Stream file = DecompressFile(filename))
             {
                 file.Position = 8;
                 ushort stringCount = file.ReadUShort();
@@ -35,6 +35,26 @@ namespace GT2.DataSplitter
             }
 
             UnusedStrings = new List<string>(Strings);
+        }
+
+        public static Stream DecompressFile(string filename)
+        {
+            var stream = new MemoryStream();
+            using (FileStream file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                if (filename.EndsWith(".gz"))
+                {
+                    using (GZipStream unzip = new GZipStream(file, CompressionMode.Decompress))
+                    {
+                        unzip.CopyTo(stream);
+                    }
+                }
+                else
+                {
+                    file.CopyTo(stream);
+                }
+            }
+            return stream;
         }
 
         public static void Export()

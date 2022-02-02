@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.IO.Compression;
 
 namespace GT2.DataSplitter
 {
@@ -8,79 +7,62 @@ namespace GT2.DataSplitter
     {
         public static string LanguagePrefix { get; private set; }
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             if (args.Length != 1)
             {
-                BuildFile();
+                BuildGTModeFile();
                 return;
             }
 
             string filename = Path.GetFileName(args[0]);
             string extension = Path.GetExtension(filename);
-
-            //hack
-            if (filename.Contains("license_data"))
-            {
-                SetLanguagePrefix(filename);
-                SplitLicenseFile(filename);
-                return;
-            }
-            else if (filename.Contains("arcade_data"))
-            {
-                SetLanguagePrefix(filename);
-                SplitArcadeFile(filename);
-                return;
-            }
+            bool favourCompressed = false;
 
             if (extension == ".gz")
             {
                 string innerFilename = Path.GetFileNameWithoutExtension(filename);
                 extension = Path.GetExtension(innerFilename);
-
-                if (extension != ".dat")
-                {
-                    return;
-                }
-
-                using (FileStream infile = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                {
-                    // Un-gzip
-                    using (GZipStream unzip = new GZipStream(infile, CompressionMode.Decompress))
-                    {
-                        filename = innerFilename;
-                        using (FileStream outfile = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
-                        {
-                            unzip.CopyTo(outfile);
-                        }
-                    }
-                }
+                favourCompressed = true;
             }
-
-            if (extension == ".dat")
+            if (extension != ".dat")
             {
-                SetLanguagePrefix(filename);
-                SplitFile();
+                return;
             }
-        }
+            SetLanguagePrefix(filename);
+            StringTable.Read(GetCorrectFilename($"{LanguagePrefix}_unistrdb.dat", favourCompressed));
 
-        static void SplitFile()
-        {
-            StringTable.Read($"{LanguagePrefix}_unistrdb.dat");
-
-            var carData = new GTModeData();
-            carData.ReadData($"{GetDataFilePrefix()}gtmode_data.dat");
-            carData.DumpData();
-
-            var raceData = new GTModeRace();
-            raceData.ReadData($"{GetDataFilePrefix()}gtmode_race.dat");
-            raceData.DumpData();
-
+            if (filename.Contains("license_data"))
+            {
+                DumpDataFile<LicenseData>("license_data.dat", favourCompressed);
+            }
+            else if (filename.Contains("arcade_data"))
+            {
+                DumpDataFile<ArcadeData>("arcade_data.dat", favourCompressed);
+            }
+            else
+            {
+                DumpDataFile<GTModeData>("gtmode_data.dat", favourCompressed);
+                DumpDataFile<GTModeRace>("gtmode_race.dat", favourCompressed);
+            }
             StringTable.Export();
             CarNameStringTable.Export();
         }
 
-        static void BuildFile()
+        private static void DumpDataFile<TData>(string filename, bool favourCompressed) where TData : DataFile, new()
+        {
+            var data = new TData();
+            data.ReadData(GetCorrectFilename($"{GetDataFilePrefix()}{filename}", favourCompressed));
+            data.DumpData();
+        }
+
+        private static string GetCorrectFilename(string filename, bool favourCompressed)
+        {
+            string compressedFilename = $"{filename}.gz";
+            return File.Exists(compressedFilename) && (favourCompressed || !File.Exists(filename)) ? compressedFilename : filename;
+        }
+
+        private static void BuildGTModeFile()
         {
             var languageDirectories = Directory.GetDirectories("Strings");
             foreach (string languageDirectory in languageDirectories)
@@ -119,26 +101,6 @@ namespace GT2.DataSplitter
             }
         }
 
-        static string GetDataFilePrefix() => LanguagePrefix == "jpn" ? "" : $"{LanguagePrefix}_";
-
-        static void SplitLicenseFile(string filename)
-        {
-            StringTable.Read($"{LanguagePrefix}_unistrdb.dat");
-            LicenseData licenseData = new LicenseData();
-            licenseData.ReadData(filename);
-            licenseData.DumpData();
-            StringTable.Export();
-            CarNameStringTable.Export();
-        }
-
-        static void SplitArcadeFile(string filename)
-        {
-            StringTable.Read($"{LanguagePrefix}_unistrdb.dat");
-            var arcadeData = new ArcadeData();
-            arcadeData.ReadData(filename);
-            arcadeData.DumpData();
-            StringTable.Export();
-            CarNameStringTable.Export();
-        }
+        private static string GetDataFilePrefix() => LanguagePrefix == "jpn" ? "" : $"{LanguagePrefix}_";
     }
 }
