@@ -111,6 +111,8 @@
     <Compile Include="StringTable.cs" />
     <Compile Include="TypeConverters\CachedFileNameConverter.cs" />
     <Compile Include="TypeConverters\DrivetrainTypeConverter.cs" />
+    <Compile Include="TypeConverters\RaceStringTableLookup.cs" />
+    <Compile Include="TypeConverters\StringTableLookup.cs" />
     <Compile Include="TypeConverters\TireWidthConverter.cs" />
     <Compile Include="TypeConverters\TireProfileConverter.cs" />
     <Compile Include="TypeConverters\TireStageConverter.cs" />

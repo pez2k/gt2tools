@@ -4,8 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
 
 namespace GT2.DataSplitter
 {
@@ -13,9 +11,8 @@ namespace GT2.DataSplitter
 
     public static class StringTable
     {
-        public static List<string> Strings = new List<string>();
-        public static List<string> UnusedStrings;
-        public static StringTableLookup Lookup { get; set; } = new StringTableLookup();
+        private readonly static List<string> strings = new List<string>();
+        private static List<string> unusedStrings;
 
         public static void Read(string filename)
         {
@@ -30,11 +27,11 @@ namespace GT2.DataSplitter
                     byte[] characterData = new byte[length];
                     file.Read(characterData, 0, length);
 
-                    Strings.Add(Encoding.Unicode.GetString(characterData).TrimEnd('\0'));
+                    strings.Add(Encoding.Unicode.GetString(characterData).TrimEnd('\0'));
                 }
             }
 
-            UnusedStrings = new List<string>(Strings);
+            unusedStrings = new List<string>(strings);
         }
 
         public static Stream DecompressFile(string filename)
@@ -69,15 +66,15 @@ namespace GT2.DataSplitter
             {
                 using (CsvWriter csv = new CsvWriter(output))
                 {
-                    for (int i = 0; i < UnusedStrings.Count; i++)
+                    for (int i = 0; i < unusedStrings.Count; i++)
                     {
-                        if (UnusedStrings[i] == null)
+                        if (unusedStrings[i] == null)
                         {
                             continue;
                         }
                         csv.Configuration.QuoteAllFields = true;
                         csv.WriteField(i.ToString());
-                        csv.WriteField(UnusedStrings[i]);
+                        csv.WriteField(unusedStrings[i]);
                         csv.NextRecord();
                     }
                 }
@@ -94,7 +91,7 @@ namespace GT2.DataSplitter
                 {
                     while (csv.Read())
                     {
-                        Strings.Add(csv.GetField(1));
+                        strings.Add(csv.GetField(1));
                     }
                 }
             }
@@ -106,9 +103,9 @@ namespace GT2.DataSplitter
             {
                 byte[] header = { 0x00, 0x00, 0x00, 0x00, 0x57, 0x53, 0x44, 0x42 };
                 file.Write(header, 0, header.Length);
-                file.WriteUShort((ushort)Strings.Count);
+                file.WriteUShort((ushort)strings.Count);
 
-                foreach (string newString in Strings)
+                foreach (string newString in strings)
                 {
                     byte[] characters = Encoding.Unicode.GetBytes((newString + "\0").ToCharArray());
                     ushort length = (ushort)((characters.Length - 1) / 2);
@@ -137,41 +134,28 @@ namespace GT2.DataSplitter
 
         public static ushort Add(string text)
         {
-            if (Strings.Contains(text))
+            if (strings.Contains(text))
             {
-                return (ushort)Strings.IndexOf(text);
+                return (ushort)strings.IndexOf(text);
             }
 
-            Strings.Add(text);
-            return (ushort)(Strings.Count - 1);
+            strings.Add(text);
+            return (ushort)(strings.Count - 1);
         }
 
         public static string Get(ushort index)
         {
-            if (UnusedStrings[index] != "-")
+            if (unusedStrings[index] != "-")
             {
-                UnusedStrings[index] = null;
+                unusedStrings[index] = null;
             }
-            return Strings[index];
+            return strings[index];
         }
 
         public static void Reset()
         {
-            Strings.Clear();
-            UnusedStrings?.Clear();
-        }
-
-        public class StringTableLookup : ITypeConverter
-        {
-            public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
-            {
-                return Add(text);
-            }
-
-            public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
-            {
-                return Get(Convert.ToUInt16(value));
-            }
+            strings.Clear();
+            unusedStrings?.Clear();
         }
     }
 }

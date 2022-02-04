@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
 
 namespace GT2.DataSplitter
 {
@@ -12,8 +8,7 @@ namespace GT2.DataSplitter
 
     public static class RaceStringTable
     {
-        public static List<string> Strings = new List<string>();
-        public static StringTableLookup Lookup { get; set; } = new StringTableLookup();
+        private static List<string> strings = new List<string>();
 
         public static void Read(Stream file, long startPosition)
         {
@@ -21,7 +16,7 @@ namespace GT2.DataSplitter
             ushort stringCount = file.ReadUShort();
             for (ushort i = 0; i < stringCount; i++)
             {
-                Strings.Add(ReadString(file));
+                strings.Add(ReadString(file));
             }
         }
 
@@ -38,9 +33,9 @@ namespace GT2.DataSplitter
             file.Position = file.Length;
             uint startingPosition = (uint)file.Position;
 
-            file.WriteUShort((ushort)Strings.Count);
+            file.WriteUShort((ushort)strings.Count);
 
-            foreach (string newString in Strings)
+            foreach (string newString in strings)
             {
                 byte[] characters = Encoding.Default.GetBytes((newString + "\0").ToCharArray());
                 byte length = (byte)(characters.Length - 1);
@@ -54,24 +49,17 @@ namespace GT2.DataSplitter
             file.WriteUInt(blockSize);
         }
 
-        public class StringTableLookup : ITypeConverter
+        public static ushort Add(string text)
         {
-            public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+            if (strings.Contains(text))
             {
-                if (Strings.Contains(text))
-                {
-                    return (ushort)Strings.IndexOf(text);
-                }
+                return (ushort)strings.IndexOf(text);
+            }
                 
-                Strings.Add(text);
-                return (ushort)(Strings.Count - 1);
-            }
-
-            public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
-            {
-                ushort i = Convert.ToUInt16(value);
-                return Strings[i];
-            }
+            strings.Add(text);
+            return (ushort)(strings.Count - 1);
         }
+
+        public static string Get(ushort index) => strings[index];
     }
 }
