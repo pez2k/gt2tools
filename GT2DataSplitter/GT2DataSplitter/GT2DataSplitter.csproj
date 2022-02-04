@@ -109,6 +109,15 @@
     <Compile Include="FileNameCache.cs" />
     <Compile Include="DataStructures\GTModeRace\RaceStringTable.cs" />
     <Compile Include="StringTable.cs" />
+    <Compile Include="TypeConverters\CachedFileNameConverter.cs" />
+    <Compile Include="TypeConverters\DrivetrainTypeConverter.cs" />
+    <Compile Include="TypeConverters\TireWidthConverter.cs" />
+    <Compile Include="TypeConverters\TireProfileConverter.cs" />
+    <Compile Include="TypeConverters\TireStageConverter.cs" />
+    <Compile Include="TypeConverters\DrivetrainRestrictionConverter.cs" />
+    <Compile Include="TypeConverters\LicenseConverter.cs" />
+    <Compile Include="TypeConverters\CarIdArrayConverter.cs" />
+    <Compile Include="TypeConverters\CarIdConverter.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="MemberMapExtensions.cs" />
     <Compile Include="DataStructures\DataStructure.cs" />
