@@ -8,15 +8,8 @@ namespace GT2.DataSplitter.TypeConverters
 
     public class CarIdConverter : ITypeConverter
     {
-        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
-        {
-            return text.ToCarID();
-        }
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData) => text.ToCarID();
 
-        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
-        {
-            uint carId = (uint)value;
-            return carId.ToCarName();
-        }
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData) => ((uint)value).ToCarName();
     }
 }

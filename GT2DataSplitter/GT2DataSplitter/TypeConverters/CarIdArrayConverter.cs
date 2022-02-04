@@ -10,28 +10,10 @@ namespace GT2.DataSplitter.TypeConverters
 
     public class CarIdArrayConverter : ITypeConverter
     {
-        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
-        {
-            string[] inputs = text.Split(',');
-            uint[] carIds = new uint[inputs.Length];
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData) =>
+            text.Split(',').Select(carName => carName.ToCarID()).ToArray();
 
-            for (int i = 0; i < inputs.Length; i++)
-            {
-                carIds[i] = inputs[i].ToCarID();
-            }
-
-            return carIds;
-        }
-
-        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
-        {
-            uint[] carIds = ((Array)value).Cast<uint>().ToArray();
-            string output = "";
-            foreach (uint carId in carIds)
-            {
-                output += carId.ToCarName() + ",";
-            }
-            return output.TrimEnd(',');
-        }
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData) =>
+            string.Join(",", ((Array)value).Cast<uint>().Select(carID => carID.ToCarName()));
     }
 }

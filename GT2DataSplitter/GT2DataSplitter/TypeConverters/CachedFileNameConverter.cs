@@ -6,21 +6,18 @@ namespace GT2.DataSplitter.TypeConverters
 {
     public class CachedFileNameConverter : ITypeConverter
     {
-        public virtual string Name { get; set; }
+        private readonly string name;
 
-        public CachedFileNameConverter(string name = "")
-        {
-            Name = name;
-        }
+        public CachedFileNameConverter(string name) => this.name = name;
 
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
-            int stringNumber = FileNameCache.Get(Name, text);
-            if (Name == nameof(Regulations) || Name == nameof(TireSize) || Name == nameof(TireCompound))
+            int stringNumber = FileNameCache.Get(name, text);
+            if (name == nameof(Regulations) || name == nameof(TireSize) || name == nameof(TireCompound))
             {
                 return (byte)stringNumber;
             }
-            else if (Name == nameof(EnemyCars) || Name == nameof(EnemyCarsArcade))
+            else if (name == nameof(EnemyCars) || name == nameof(EnemyCarsArcade))
             {
                 return (uint)stringNumber;
             }
@@ -30,10 +27,7 @@ namespace GT2.DataSplitter.TypeConverters
             }
         }
 
-        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
-        {
-            int cacheIndex = int.Parse(value.ToString());
-            return FileNameCache.Get(Name, cacheIndex);
-        }
+        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData) =>
+            FileNameCache.Get(name, int.Parse(value.ToString()));
     }
 }

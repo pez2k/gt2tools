@@ -13,9 +13,6 @@
         public static LicenseConverter LicenseConverter { get; set; } = new LicenseConverter();
         public static DrivetrainRestrictionConverter DrivetrainRestrictionConverter { get; set; } = new DrivetrainRestrictionConverter();
 
-        public static CachedFileNameConverter GetFileNameConverter(string name)
-        {
-            return new CachedFileNameConverter(name);
-        }
+        public static CachedFileNameConverter GetFileNameConverter(string name) => new CachedFileNameConverter(name);
     }
 }
