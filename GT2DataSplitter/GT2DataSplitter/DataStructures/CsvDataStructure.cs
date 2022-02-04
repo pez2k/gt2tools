@@ -11,7 +11,6 @@ namespace GT2.DataSplitter
     {
         protected bool cacheFilename;
         protected TStructure data;
-        protected string filenameCacheNameOverride;
 
         protected CsvDataStructure() => Size = Marshal.SizeOf<TStructure>();
 

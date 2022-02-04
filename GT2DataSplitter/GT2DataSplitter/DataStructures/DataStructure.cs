@@ -7,6 +7,7 @@ namespace GT2.DataSplitter
         public string Name => GetType().Name;
         public int Size { get; protected set; }
 
+        protected string filenameCacheNameOverride;
         protected byte[] rawData;
 
         public virtual void Read(Stream infile)
@@ -21,7 +22,7 @@ namespace GT2.DataSplitter
             using (FileStream outfile = new FileStream(filename, FileMode.Create, FileAccess.Write))
             {
                 ExportStructure(rawData, outfile);
-                FileNameCache.Add(Name, filename);
+                FileNameCache.Add(filenameCacheNameOverride ?? Name, filename);
             }
         }
 
@@ -45,7 +46,7 @@ namespace GT2.DataSplitter
             using (FileStream infile = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
                 ImportStructure(infile);
-                FileNameCache.Add(Name, filename);
+                FileNameCache.Add(filenameCacheNameOverride ?? Name, filename);
             }
         }
 

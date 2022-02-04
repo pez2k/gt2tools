@@ -5,7 +5,7 @@ namespace GT2.DataSplitter
 {
     public class TireCompound : DataStructure
     {
-        private readonly List<string> tireCompoundNames =
+        protected List<string> tireCompoundNames =
             new List<string> { "RoadFront", "RoadRear", "SportsFront", "SportsRear", "HardFront", "HardRear", "MediumFront", "MediumRear",
                                "SoftFront", "SoftRear", "SuperSoftFront", "SuperSoftRear", "DirtFront", "DirtRear", "RWDDirtFront", "RWDDirtRear",
                                "SimulationFront", "SimulationRear", "PikesPeakFront", "PikesPeakRear" };

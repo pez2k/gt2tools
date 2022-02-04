@@ -33,7 +33,7 @@ namespace GT2.DataSplitter
                                    (typeof(TiresFront), 24),
                                    (typeof(TiresRear), 25),
                                    (typeof(TireSize), 21),
-                                   (typeof(TireCompound), 22),
+                                   (typeof(TireCompoundArcade), 22),
                                    (typeof(TireForceVol), 23),
                                    (typeof(ActiveStabilityControl), 26),
                                    (typeof(TractionControlSystem), 27),

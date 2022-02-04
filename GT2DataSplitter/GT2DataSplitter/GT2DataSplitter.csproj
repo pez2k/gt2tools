@@ -54,6 +54,7 @@
     <Compile Include="DataStructures\ArcadeData\CarArcade.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeCarUnknown.cs" />
     <Compile Include="DataStructures\ArcadeData\EnemyCarsArcade.cs" />
+    <Compile Include="DataStructures\ArcadeData\TireCompoundArcade.cs" />
     <Compile Include="DataStructures\CarCsvDataStructure.cs" />
     <Compile Include="DataStructures\CsvDataStructure.cs" />
     <Compile Include="DataStructures\CarDataStructure.cs" />
