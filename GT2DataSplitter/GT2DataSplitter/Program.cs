@@ -11,7 +11,14 @@ namespace GT2.DataSplitter
         {
             if (args.Length != 1)
             {
-                BuildGTModeFile();
+                if (Directory.Exists(nameof(CarArcade)))
+                {
+                    BuildArcadeFile();
+                }
+                else
+                {
+                    BuildGTModeFile();
+                }
                 return;
             }
 
@@ -30,18 +37,20 @@ namespace GT2.DataSplitter
                 return;
             }
             SetLanguagePrefix(filename);
-            StringTable.Read(GetCorrectFilename($"{LanguagePrefix}_unistrdb.dat", favourCompressed));
 
             if (filename.Contains("license_data"))
             {
+                StringTable.Read(GetCorrectFilename($"{LanguagePrefix}_unistrdb.dat", favourCompressed));
                 DumpDataFile<LicenseData>("license_data.dat", favourCompressed);
             }
             else if (filename.Contains("arcade_data"))
             {
+                StringTable.LoadFromArray(ArcadeStrings.Strings);
                 DumpDataFile<ArcadeData>("arcade_data.dat", favourCompressed);
             }
             else
             {
+                StringTable.Read(GetCorrectFilename($"{LanguagePrefix}_unistrdb.dat", favourCompressed));
                 DumpDataFile<GTModeData>("gtmode_data.dat", favourCompressed);
                 DumpDataFile<GTModeRace>("gtmode_race.dat", favourCompressed);
             }
@@ -89,6 +98,24 @@ namespace GT2.DataSplitter
 
                 StringTable.Reset();
                 CarNameStringTable.Reset();
+            }
+        }
+
+        private static void BuildArcadeFile()
+        {
+            var languageDirectories = Directory.GetDirectories("Strings");
+            foreach (string languageDirectory in languageDirectories)
+            {
+                LanguagePrefix = languageDirectory.Split('\\')[1];
+                Console.WriteLine($"Building language '{LanguagePrefix}'...");
+
+                string overridePath = Path.Combine("_Overrides", LanguagePrefix);
+                DataFile.OverridePath = Directory.Exists(overridePath) ? overridePath : null;
+
+                var carData = new ArcadeData();
+                carData.ImportData();
+                Directory.CreateDirectory("Output");
+                carData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}arcade_data.dat"));
             }
         }
 

@@ -109,6 +109,7 @@
     <Compile Include="DataStructures\LicenseData\LicenseUnknown1.cs" />
     <Compile Include="FileNameCache.cs" />
     <Compile Include="DataStructures\GTModeRace\RaceStringTable.cs" />
+    <Compile Include="ArcadeStrings.cs" />
     <Compile Include="StringTable.cs" />
     <Compile Include="TypeConverters\CachedFileNameConverter.cs" />
     <Compile Include="TypeConverters\DrivetrainTypeConverter.cs" />

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using CsvHelper;
 
@@ -11,7 +12,7 @@ namespace GT2.DataSplitter
 
     public static class StringTable
     {
-        private readonly static List<string> strings = new List<string>();
+        private static List<string> strings = new List<string>();
         private static List<string> unusedStrings;
 
         public static void Read(string filename)
@@ -156,6 +157,12 @@ namespace GT2.DataSplitter
         {
             strings.Clear();
             unusedStrings?.Clear();
+        }
+
+        public static void LoadFromArray(string[] stringArray)
+        {
+            strings = stringArray.ToList();
+            unusedStrings = stringArray.ToList();
         }
     }
 }
