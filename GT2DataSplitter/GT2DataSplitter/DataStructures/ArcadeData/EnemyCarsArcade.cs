@@ -7,7 +7,31 @@ namespace GT2.DataSplitter
 
     public class EnemyCarsArcade : CsvDataStructure<EnemyCarsArcadeData, EnemyCarsArcadeCSVMap>
     {
-        protected override string CreateOutputFilename() => base.CreateOutputFilename().Replace(".csv", "_" + data.CarId.ToCarName() + ".csv");
+        public EnemyCarsArcade()
+        {
+            cacheFilename = true;
+            filenameCacheNameOverride = nameof(EnemyCars);
+        }
+
+        public override void Dump()
+        {
+            if (!FileNameCache.Cache.ContainsKey(filenameCacheNameOverride))
+            {
+                FileNameCache.Add(filenameCacheNameOverride, "None");
+            }
+            base.Dump();
+        }
+
+        public override void Import(string filename)
+        {
+            if (!FileNameCache.Cache.ContainsKey(filenameCacheNameOverride))
+            {
+                FileNameCache.Add(filenameCacheNameOverride, "None");
+            }
+            base.Import(filename);
+        }
+
+        protected override string CreateOutputFilename() => Name + "\\" + data.OpponentId.ToString("D4") + "_" + data.CarId.ToCarName() + ".csv";
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x60

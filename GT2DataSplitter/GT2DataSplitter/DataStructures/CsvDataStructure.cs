@@ -11,6 +11,7 @@ namespace GT2.DataSplitter
     {
         protected bool cacheFilename;
         protected TStructure data;
+        protected string filenameCacheNameOverride;
 
         protected CsvDataStructure() => Size = Marshal.SizeOf<TStructure>();
 
@@ -39,7 +40,7 @@ namespace GT2.DataSplitter
                     csv.WriteRecord(data);
                     if (cacheFilename)
                     {
-                        FileNameCache.Add(Name, filename);
+                        FileNameCache.Add(filenameCacheNameOverride ?? Name, filename);
                     }
                 }
             }
@@ -58,7 +59,7 @@ namespace GT2.DataSplitter
                         data = csv.GetRecord<TStructure>();
                         if (cacheFilename)
                         {
-                            FileNameCache.Add(Name, filename);
+                            FileNameCache.Add(filenameCacheNameOverride ?? Name, filename);
                         }
                     }
                 }

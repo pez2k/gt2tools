@@ -52,12 +52,7 @@
     <Compile Include="DataStructures\ArcadeData.cs" />
     <Compile Include="DataStructures\ArcadeData\CarArcadeSports.cs" />
     <Compile Include="DataStructures\ArcadeData\CarArcade.cs" />
-    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown6.cs" />
-    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown5.cs" />
-    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown4.cs" />
-    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown3.cs" />
-    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown2.cs" />
-    <Compile Include="DataStructures\ArcadeData\ArcadeUnknown1.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeCarUnknown.cs" />
     <Compile Include="DataStructures\ArcadeData\EnemyCarsArcade.cs" />
     <Compile Include="DataStructures\CarCsvDataStructure.cs" />
     <Compile Include="DataStructures\CsvDataStructure.cs" />
