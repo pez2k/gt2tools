@@ -32,7 +32,7 @@ namespace GT2.DataSplitter
     {
         public ChassisCSVMap()
         {
-            Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
+            Map(m => m.CarId).CarId();
             Map(m => m.CentreOfMassLongitudinal);
             Map(m => m.Unknown2);
             Map(m => m.FrontGrip);

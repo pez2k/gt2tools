@@ -3,6 +3,8 @@ using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
+    using TypeConverters;
+
     public class Regulations : CsvDataStructure<RegulationsData, RegulationsCSVMap>
     {
         public Regulations() => cacheFilename = true;
@@ -35,9 +37,6 @@ namespace GT2.DataSplitter
 
     public sealed class RegulationsCSVMap : ClassMap<RegulationsData>
     {
-        public RegulationsCSVMap()
-        {
-            Map(m => m.EligibleCarIds).TypeConverter(Utils.CarIdArrayConverter);
-        }
+        public RegulationsCSVMap() => Map(m => m.EligibleCarIds).TypeConverter(new CarIdArrayConverter());
     }
 }

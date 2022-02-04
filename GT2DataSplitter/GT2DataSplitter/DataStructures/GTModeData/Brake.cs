@@ -23,7 +23,7 @@ namespace GT2.DataSplitter
     {
         public BrakeCSVMap()
         {
-            Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
+            Map(m => m.CarId).CarId();
             Map(m => m.Price);
             Map(m => m.Stage);
             Map(m => m.BrakingPower);

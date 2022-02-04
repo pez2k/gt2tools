@@ -4,6 +4,8 @@ using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
+    using TypeConverters;
+
     public class TireSize : CsvDataStructure<TireSizeData, TireSizeCSVMap>
     {
         public TireSize() => cacheFilename = true;
@@ -12,8 +14,8 @@ namespace GT2.DataSplitter
         {
             string filename = base.CreateOutputFilename();
             return Path.Combine(Path.GetDirectoryName(filename),
-                                $"{Path.GetFileNameWithoutExtension(filename).Substring(1)}_{Utils.TireWidthConverter.ConvertToString(data.WidthMM, null, null)}" +
-                                $"-{Utils.TireProfileConverter.ConvertToString(data.Profile, null, null)}R{data.DiameterInches}{Path.GetExtension(filename)}");
+                                $"{Path.GetFileNameWithoutExtension(filename).Substring(1)}_{new TireWidthConverter().ConvertToString(data.WidthMM, null, null)}" +
+                                $"-{new TireProfileConverter().ConvertToString(data.Profile, null, null)}R{data.DiameterInches}{Path.GetExtension(filename)}");
         }
     }
 
@@ -31,8 +33,8 @@ namespace GT2.DataSplitter
         public TireSizeCSVMap()
         {
             Map(m => m.DiameterInches);
-            Map(m => m.WidthMM).TypeConverter(Utils.TireWidthConverter);
-            Map(m => m.Profile).TypeConverter(Utils.TireProfileConverter);
+            Map(m => m.WidthMM).TypeConverter(new TireWidthConverter());
+            Map(m => m.Profile).TypeConverter(new TireProfileConverter());
         }
     }
 }

@@ -47,9 +47,9 @@ namespace GT2.DataSplitter
     {
         public RacingModifyCSVMap()
         {
-            Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
+            Map(m => m.CarId).CarId();
             Map(m => m.Price);
-            Map(m => m.BodyId).TypeConverter(Utils.CarIdConverter);
+            Map(m => m.BodyId).CarId();
             Map(m => m.Weight);
             Map(m => m.BodyRollAmount);
             Map(m => m.Stage);

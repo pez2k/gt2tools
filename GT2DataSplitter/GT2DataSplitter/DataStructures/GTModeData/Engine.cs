@@ -67,7 +67,7 @@ namespace GT2.DataSplitter
     {
         public EngineCSVMap()
         {
-            Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
+            Map(m => m.CarId).CarId();
             Map(m => m.LayoutName).TypeConverter(StringTable.Lookup);
             Map(m => m.ValvetrainName).TypeConverter(StringTable.Lookup);
             Map(m => m.Aspiration).TypeConverter(StringTable.Lookup);

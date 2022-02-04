@@ -4,6 +4,8 @@ using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
+    using TypeConverters;
+
     public class Event : CsvDataStructure<EventData, EventCSVMap>
     {
         protected override string CreateOutputFilename()
@@ -100,26 +102,26 @@ namespace GT2.DataSplitter
         {
             Map(m => m.EventName).TypeConverter(RaceStringTable.Lookup);
             Map(m => m.TrackName).TypeConverter(RaceStringTable.Lookup);
-            Map(m => m.Opponent1).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent2).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent3).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent4).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent5).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent6).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent7).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent8).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent9).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent10).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent11).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent12).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent13).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent14).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent15).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
-            Map(m => m.Opponent16).TypeConverter(Utils.GetFileNameConverter(nameof(EnemyCars)));
+            Map(m => m.Opponent1).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent2).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent3).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent4).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent5).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent6).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent7).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent8).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent9).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent10).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent11).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent12).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent13).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent14).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent15).PartFilename(nameof(EnemyCars));
+            Map(m => m.Opponent16).PartFilename(nameof(EnemyCars));
             Map(m => m.RollingStartSpeed);
             Map(m => m.Laps);
             Map(m => m.AutoDrive);
-            Map(m => m.Licence).TypeConverter(Utils.LicenseConverter);
+            Map(m => m.Licence).TypeConverter(new LicenseConverter());
             Map(m => m.AIFrontGripRWD);
             Map(m => m.AIFrontGripFWD);
             Map(m => m.AIFrontGrip4WD);
@@ -155,15 +157,15 @@ namespace GT2.DataSplitter
             Map(m => m.Unknown3);
             Map(m => m.Unknown4);
             Map(m => m.IsRally);
-            Map(m => m.EligibleCarsRestriction).TypeConverter(Utils.GetFileNameConverter(nameof(Regulations)));
-            Map(m => m.DrivetrainRestriction).TypeConverter(Utils.DrivetrainRestrictionConverter);
+            Map(m => m.EligibleCarsRestriction).PartFilename(nameof(Regulations));
+            Map(m => m.DrivetrainRestriction).TypeConverter(new DrivetrainRestrictionConverter());
             Map(m => m.PrizeMoney1st);
             Map(m => m.PrizeMoney2nd);
             Map(m => m.PrizeMoney3rd);
             Map(m => m.PrizeMoney4th);
             Map(m => m.PrizeMoney5th);
             Map(m => m.PrizeMoney6th);
-            Map(m => m.PrizeCars).TypeConverter(Utils.CarIdArrayConverter);
+            Map(m => m.PrizeCars).TypeConverter(new CarIdArrayConverter());
             Map(m => m.TrackBannerPool).TypeConverter(RaceStringTable.Lookup); // references TIM list in .crstims.tsd, or "0" for static unrandomised banners
             Map(m => m.PSRestriction);
             Map(m => m.SeriesChampBonus);

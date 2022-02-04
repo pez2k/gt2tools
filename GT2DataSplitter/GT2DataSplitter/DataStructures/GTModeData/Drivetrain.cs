@@ -4,6 +4,7 @@ using CsvHelper.Configuration;
 namespace GT2.DataSplitter
 {
     using CarNameConversion;
+    using TypeConverters;
 
     public class Drivetrain : CarCsvDataStructure<DrivetrainData, DrivetrainCSVMap>
     {
@@ -32,12 +33,12 @@ namespace GT2.DataSplitter
     {
         public DrivetrainCSVMap()
         {
-            Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
+            Map(m => m.CarId).CarId();
             Map(m => m.Unknown);
             Map(m => m.Unknown2);
             Map(m => m.Unknown3);
             Map(m => m.Unknown4);
-            Map(m => m.DrivetrainType).TypeConverter(Utils.DrivetrainTypeConverter);
+            Map(m => m.DrivetrainType).TypeConverter(new DrivetrainTypeConverter());
             Map(m => m.AWDBehaviour);
             Map(m => m.DefaultClutchRPMDropRate);
             Map(m => m.DefaultClutchInertiaEngaged);

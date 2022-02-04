@@ -107,7 +107,7 @@ namespace GT2.DataSplitter
     {
         public EnemyCarsArcadeCSVMap()
         {
-            Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
+            Map(m => m.CarId).CarId();
             Map(m => m.Brake).PartFilename(nameof(Brake));
             Map(m => m.BrakeController).PartFilename(nameof(BrakeController));
             Map(m => m.Steer).PartFilename(nameof(Steer));

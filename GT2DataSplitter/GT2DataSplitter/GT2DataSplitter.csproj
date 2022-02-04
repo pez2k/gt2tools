@@ -118,7 +118,6 @@
     <Compile Include="TypeConverters\LicenseConverter.cs" />
     <Compile Include="TypeConverters\CarIdArrayConverter.cs" />
     <Compile Include="TypeConverters\CarIdConverter.cs" />
-    <Compile Include="Utils.cs" />
     <Compile Include="MemberMapExtensions.cs" />
     <Compile Include="DataStructures\DataStructure.cs" />
     <Compile Include="DataStructures\GTModeData\Brake.cs" />

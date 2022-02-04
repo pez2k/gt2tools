@@ -5,6 +5,7 @@ using CsvHelper.Configuration;
 namespace GT2.DataSplitter
 {
     using CarNameConversion;
+    using TypeConverters;
 
     public class TiresRear : CarCsvDataStructure<TiresRearData, TiresRearCSVMap>
     {
@@ -16,7 +17,7 @@ namespace GT2.DataSplitter
                 Directory.CreateDirectory(filename);
             }
             string number = Directory.GetFiles(filename).Length.ToString();
-            return filename + "\\" + number + "_" + Utils.TireStageConverter.ConvertToString(data.Stage, null, null) + ".csv";
+            return filename + "\\" + number + "_" + new TireStageConverter().ConvertToString(data.Stage, null, null) + ".csv";
         }
     }
 
@@ -38,12 +39,12 @@ namespace GT2.DataSplitter
     {
         public TiresRearCSVMap()
         {
-            Map(m => m.CarId).TypeConverter(Utils.CarIdConverter);
-            Map(m => m.Stage).TypeConverter(Utils.TireStageConverter);
+            Map(m => m.CarId).CarId();
+            Map(m => m.Stage).TypeConverter(new TireStageConverter());
             Map(m => m.SteeringReaction1);
-            Map(m => m.WheelSize).TypeConverter(Utils.GetFileNameConverter(nameof(TireSize)));
+            Map(m => m.WheelSize).PartFilename(nameof(TireSize));
             Map(m => m.SteeringReaction2);
-            Map(m => m.TireCompound).TypeConverter(Utils.GetFileNameConverter(nameof(TireCompound)));
+            Map(m => m.TireCompound).PartFilename(nameof(TireCompound));
             Map(m => m.TireForceVolMaybe);
             Map(m => m.SlipMultiplier);
             Map(m => m.GripMultiplier);

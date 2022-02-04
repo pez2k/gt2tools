@@ -14,7 +14,7 @@ namespace GT2.DataSplitter
     {
         public CarNameCSVMap()
         {
-            Map(m => m.CarID).TypeConverter(Utils.CarIdConverter);
+            Map(m => m.CarID).CarId();
             Map(m => m.NameFirstPart);
             Map(m => m.NameSecondPart);
             Map(m => m.Year);
