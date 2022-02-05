@@ -37,11 +37,11 @@ namespace GT2.DataSplitter
                                    (typeof(TireForceVol), 23),
                                    (typeof(ActiveStabilityControl), 26),
                                    (typeof(TractionControlSystem), 27),
-                                   (typeof(ArcadeCarUnknown), 28),
+                                   (typeof(CarUnknownArcade), 28),
                                    (typeof(Event), 30),
                                    (typeof(EnemyCarsArcade), 29),
                                    (typeof(CarArcade), 31),
-                                   (typeof(CarArcadeSports), 32))
+                                   (typeof(CarHighGripArcade), 32))
         {
         }
 

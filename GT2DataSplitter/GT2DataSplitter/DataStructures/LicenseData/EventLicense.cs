@@ -5,7 +5,7 @@ namespace GT2.DataSplitter
 {
     using TypeConverters;
 
-    public class LicenseEvent : CsvDataStructure<EventData, LicenseEventCSVMap>
+    public class EventLicense : CsvDataStructure<EventData, EventLicenseCSVMap>
     {
         protected override string CreateOutputFilename()
         {
@@ -19,9 +19,9 @@ namespace GT2.DataSplitter
         }
     }
 
-    public sealed class LicenseEventCSVMap : ClassMap<EventData>
+    public sealed class EventLicenseCSVMap : ClassMap<EventData>
     {
-        public LicenseEventCSVMap()
+        public EventLicenseCSVMap()
         {
             Map(m => m.EventName).TypeConverter(new RaceStringTableLookup());
             Map(m => m.TrackName).TypeConverter(new RaceStringTableLookup());

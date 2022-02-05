@@ -50,9 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataStructures\ArcadeData.cs" />
-    <Compile Include="DataStructures\ArcadeData\CarArcadeSports.cs" />
+    <Compile Include="DataStructures\ArcadeData\CarHighGripArcade.cs" />
     <Compile Include="DataStructures\ArcadeData\CarArcade.cs" />
-    <Compile Include="DataStructures\ArcadeData\ArcadeCarUnknown.cs" />
+    <Compile Include="DataStructures\ArcadeData\CarUnknownArcade.cs" />
     <Compile Include="DataStructures\ArcadeData\EnemyCarsArcade.cs" />
     <Compile Include="DataStructures\ArcadeData\TireCompoundArcade.cs" />
     <Compile Include="DataStructures\CarCsvDataStructure.cs" />
@@ -60,7 +60,7 @@
     <Compile Include="DataStructures\CarDataStructure.cs" />
     <Compile Include="DataStructures\GTModeRace.cs" />
     <Compile Include="DataStructures\LicenseData.cs" />
-    <Compile Include="DataStructures\LicenseData\LicenseEvent.cs" />
+    <Compile Include="DataStructures\LicenseData\EventLicense.cs" />
     <Compile Include="DataStructures\LicenseData\TireCompoundLicense.cs" />
     <Compile Include="DataStructures\TypedData.cs" />
     <Compile Include="DataStructures\DataFile.cs" />
@@ -101,8 +101,8 @@
     <Compile Include="DataStructures\GTModeRace\Regulations.cs" />
     <Compile Include="DataStructures\GTModeRace\EnemyCars.cs" />
     <Compile Include="DataStructures\GTModeRace\Event.cs" />
-    <Compile Include="DataStructures\LicenseData\LicenseCar.cs" />
-    <Compile Include="DataStructures\LicenseData\LicenseUnknown.cs" />
+    <Compile Include="DataStructures\LicenseData\CarLicense.cs" />
+    <Compile Include="DataStructures\LicenseData\CarUnknownLicense.cs" />
     <Compile Include="FileNameCache.cs" />
     <Compile Include="DataStructures\GTModeRace\RaceStringTable.cs" />
     <Compile Include="ArcadeStrings.cs" />
