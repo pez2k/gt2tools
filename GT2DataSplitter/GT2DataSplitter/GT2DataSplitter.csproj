@@ -105,6 +105,7 @@
     <Compile Include="FileNameCache.cs" />
     <Compile Include="DataStructures\ASCIIStringTable.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeStrings.cs" />
+    <Compile Include="TypeConverters\WheelIdConverter.cs" />
     <Compile Include="UnicodeStringTable.cs" />
     <Compile Include="TypeConverters\CachedFileNameConverter.cs" />
     <Compile Include="TypeConverters\DrivetrainTypeConverter.cs" />

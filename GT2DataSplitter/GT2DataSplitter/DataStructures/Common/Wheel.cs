@@ -1,32 +1,42 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.IO;
+using System.Runtime.InteropServices;
 using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
+    using StreamExtensions;
+    using TypeConverters;
+
     public class Wheel : CarCsvDataStructure<WheelData, WheelCSVMap>
     {
         public Wheel() => hasCarId = false;
+
+        protected override string CreateOutputFilename()
+        {
+            string wheelID = new WheelIdConverter().ConvertToString(rawData.ReadUInt(), null, null);
+            return $"{Name}\\{Directory.GetFiles(Name).Length:D3}_{(string.IsNullOrEmpty(wheelID) ? "None" : wheelID)}.csv";
+        }
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x08, maybe
     public struct WheelData
     {
-        public uint WheelId; // manufacturer ID byte, wheel number byte, lug count enum byte, colour ASCII char - eg 70 07 40 73 for Speedline 07 5-lug silver / sp007-5s - 00 / 20 / 40 / 60 for - / 4 / 5 / 6 lugs
-        public byte Unknown2;
-        public byte Unknown3;
-        public byte Unknown4;
-        public byte Unknown5;
+        public uint WheelId;
+        public byte StageMaybe; // always 0 for unnamed, 1 for named
+        public byte Unknown; // always 0
+        public byte Unknown2; // always 1 for named, 0-3 for unnamed
+        public byte Unknown3; // always 2 for named, 0-3 for unnamed
     }
 
     public sealed class WheelCSVMap : ClassMap<WheelData>
     {
         public WheelCSVMap()
         {
-            Map(m => m.WheelId);
+            Map(m => m.WheelId).TypeConverter(new WheelIdConverter());
+            Map(m => m.StageMaybe);
+            Map(m => m.Unknown);
             Map(m => m.Unknown2);
             Map(m => m.Unknown3);
-            Map(m => m.Unknown4);
-            Map(m => m.Unknown5);
         }
     }
 }
