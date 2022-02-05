@@ -32,13 +32,13 @@ namespace GT2.DataSplitter
                                     (typeof(LSD), 20),
                                     (typeof(TiresFront), 24),
                                     (typeof(TiresRear), 25),
-                                    (typeof(LicenseUnknown1), 21),
-                                    (typeof(LicenseUnknown2), 22),
-                                    (typeof(LicenseUnknown3), 23),
-                                    (typeof(LicenseUnknown4), 26),
-                                    (typeof(LicenseUnknown5), 27),
-                                    (typeof(LicenseUnknown6), 28),
-                                    (typeof(LicenseUnknown7), 29),
+                                    (typeof(TireSize), 21),
+                                    (typeof(TireCompoundLicense), 22),
+                                    (typeof(TireForceVol), 23),
+                                    (typeof(ActiveStabilityControl), 26),
+                                    (typeof(TractionControlSystem), 27),
+                                    (typeof(LicenseUnknown), 28),
+                                    (typeof(LicenseEvent), 29),
                                     (typeof(LicenseCar), 30))
         {
         }

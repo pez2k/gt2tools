@@ -7,6 +7,6 @@
     {
         public LicenseCar() => Size = 0x60;
 
-        protected override string CreateOutputFilename() => Name + "\\" + rawData.ReadUInt().ToCarName() + ".dat";
+        protected override string CreateOutputFilename() => $"{Name}\\{rawData[0x5E]:D2}_{rawData.ReadUInt().ToCarName()}.dat";
     }
 }

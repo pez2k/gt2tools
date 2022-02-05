@@ -60,6 +60,8 @@
     <Compile Include="DataStructures\CarDataStructure.cs" />
     <Compile Include="DataStructures\GTModeRace.cs" />
     <Compile Include="DataStructures\LicenseData.cs" />
+    <Compile Include="DataStructures\LicenseData\LicenseEvent.cs" />
+    <Compile Include="DataStructures\LicenseData\TireCompoundLicense.cs" />
     <Compile Include="DataStructures\TypedData.cs" />
     <Compile Include="DataStructures\DataFile.cs" />
     <Compile Include="DataStructures\GTModeData.cs" />
@@ -100,13 +102,7 @@
     <Compile Include="DataStructures\GTModeRace\EnemyCars.cs" />
     <Compile Include="DataStructures\GTModeRace\Event.cs" />
     <Compile Include="DataStructures\LicenseData\LicenseCar.cs" />
-    <Compile Include="DataStructures\LicenseData\LicenseUnknown7.cs" />
-    <Compile Include="DataStructures\LicenseData\LicenseUnknown6.cs" />
-    <Compile Include="DataStructures\LicenseData\LicenseUnknown5.cs" />
-    <Compile Include="DataStructures\LicenseData\LicenseUnknown4.cs" />
-    <Compile Include="DataStructures\LicenseData\LicenseUnknown3.cs" />
-    <Compile Include="DataStructures\LicenseData\LicenseUnknown2.cs" />
-    <Compile Include="DataStructures\LicenseData\LicenseUnknown1.cs" />
+    <Compile Include="DataStructures\LicenseData\LicenseUnknown.cs" />
     <Compile Include="FileNameCache.cs" />
     <Compile Include="DataStructures\GTModeRace\RaceStringTable.cs" />
     <Compile Include="ArcadeStrings.cs" />
