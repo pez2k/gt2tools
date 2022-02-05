@@ -43,6 +43,11 @@ namespace GT2.DataSplitter
                 file.Write(characters, 0, characters.Length);
             }
 
+            while (file.Length % 2 != 0)
+            {
+                file.WriteByte(0);
+            }
+
             uint blockSize = (uint)file.Position - startingPosition;
             file.Position = indexPosition;
             file.WriteUInt(startingPosition);

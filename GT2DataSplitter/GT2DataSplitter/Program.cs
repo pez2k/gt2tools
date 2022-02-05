@@ -15,6 +15,10 @@ namespace GT2.DataSplitter
                 {
                     BuildArcadeFile();
                 }
+                else if (Directory.Exists(nameof(CarLicense)))
+                {
+                    BuildLicenseFile();
+                }
                 else
                 {
                     BuildGTModeFile();
@@ -71,6 +75,42 @@ namespace GT2.DataSplitter
             return File.Exists(compressedFilename) && (favourCompressed || !File.Exists(filename)) ? compressedFilename : filename;
         }
 
+        private static void BuildArcadeFile()
+        {
+            var languageDirectories = Directory.GetDirectories("Strings");
+            foreach (string languageDirectory in languageDirectories)
+            {
+                LanguagePrefix = languageDirectory.Split('\\')[1];
+                Console.WriteLine($"Building language '{LanguagePrefix}'...");
+
+                string overridePath = Path.Combine("_Overrides", LanguagePrefix);
+                DataFile.OverridePath = Directory.Exists(overridePath) ? overridePath : null;
+
+                var arcadeData = new ArcadeData();
+                arcadeData.ImportData();
+                Directory.CreateDirectory("Output");
+                arcadeData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}arcade_data.dat"));
+            }
+        }
+
+        private static void BuildLicenseFile()
+        {
+            var languageDirectories = Directory.GetDirectories("Strings");
+            foreach (string languageDirectory in languageDirectories)
+            {
+                LanguagePrefix = languageDirectory.Split('\\')[1];
+                Console.WriteLine($"Building language '{LanguagePrefix}'...");
+
+                string overridePath = Path.Combine("_Overrides", LanguagePrefix);
+                DataFile.OverridePath = Directory.Exists(overridePath) ? overridePath : null;
+
+                var licenseData = new LicenseData();
+                licenseData.ImportData();
+                Directory.CreateDirectory("Output");
+                licenseData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}license_data.dat"));
+            }
+        }
+
         private static void BuildGTModeFile()
         {
             var languageDirectories = Directory.GetDirectories("Strings");
@@ -98,24 +138,6 @@ namespace GT2.DataSplitter
 
                 StringTable.Reset();
                 CarNameStringTable.Reset();
-            }
-        }
-
-        private static void BuildArcadeFile()
-        {
-            var languageDirectories = Directory.GetDirectories("Strings");
-            foreach (string languageDirectory in languageDirectories)
-            {
-                LanguagePrefix = languageDirectory.Split('\\')[1];
-                Console.WriteLine($"Building language '{LanguagePrefix}'...");
-
-                string overridePath = Path.Combine("_Overrides", LanguagePrefix);
-                DataFile.OverridePath = Directory.Exists(overridePath) ? overridePath : null;
-
-                var carData = new ArcadeData();
-                carData.ImportData();
-                Directory.CreateDirectory("Output");
-                carData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}arcade_data.dat"));
             }
         }
 
