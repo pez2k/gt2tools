@@ -59,6 +59,7 @@
     <Compile Include="DataStructures\CarDataStructure.cs" />
     <Compile Include="DataStructures\GTModeRace.cs" />
     <Compile Include="DataStructures\LicenseData.cs" />
+    <Compile Include="DataStructures\LicenseData\LicenseStrings.cs" />
     <Compile Include="DataStructures\LicenseData\EventLicense.cs" />
     <Compile Include="DataStructures\LicenseData\TireCompoundLicense.cs" />
     <Compile Include="DataStructures\TypedData.cs" />
@@ -103,7 +104,7 @@
     <Compile Include="DataStructures\LicenseData\CarLicense.cs" />
     <Compile Include="FileNameCache.cs" />
     <Compile Include="DataStructures\ASCIIStringTable.cs" />
-    <Compile Include="ArcadeStrings.cs" />
+    <Compile Include="DataStructures\ArcadeData\ArcadeStrings.cs" />
     <Compile Include="UnicodeStringTable.cs" />
     <Compile Include="TypeConverters\CachedFileNameConverter.cs" />
     <Compile Include="TypeConverters\DrivetrainTypeConverter.cs" />

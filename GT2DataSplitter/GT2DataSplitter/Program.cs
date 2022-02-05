@@ -44,22 +44,24 @@ namespace GT2.DataSplitter
 
             if (filename.Contains("license_data"))
             {
-                UnicodeStringTable.Read(GetCorrectFilename($"{LanguagePrefix}_unistrdb.dat", favourCompressed));
+                UnicodeStringTable.LoadFromArray(LicenseStrings.Strings);
                 DumpDataFile<LicenseData>("license_data.dat", favourCompressed);
+                UnicodeStringTable.CreateLanguageDirectory(); // hack to be able to detect the language prefix when rebuilding
             }
             else if (filename.Contains("arcade_data"))
             {
                 UnicodeStringTable.LoadFromArray(ArcadeStrings.Strings);
                 DumpDataFile<ArcadeData>("arcade_data.dat", favourCompressed);
+                UnicodeStringTable.CreateLanguageDirectory();
             }
             else
             {
                 UnicodeStringTable.Read(GetCorrectFilename($"{LanguagePrefix}_unistrdb.dat", favourCompressed));
                 DumpDataFile<GTModeData>("gtmode_data.dat", favourCompressed);
                 DumpDataFile<GTModeRace>("gtmode_race.dat", favourCompressed);
+                UnicodeStringTable.Export();
+                CarNameStringTable.Export();
             }
-            UnicodeStringTable.Export();
-            CarNameStringTable.Export();
         }
 
         private static void DumpDataFile<TData>(string filename, bool favourCompressed) where TData : DataFile, new()

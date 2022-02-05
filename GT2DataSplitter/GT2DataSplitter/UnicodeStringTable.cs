@@ -59,11 +59,7 @@ namespace GT2.DataSplitter
 
         public static void Export()
         {
-            string directory = $"Strings\\{Program.LanguagePrefix}";
-            if (!Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
+            string directory = CreateLanguageDirectory();
 
             using (TextWriter output = new StreamWriter(File.Create($"{directory}\\PartStrings.csv"), textEncoding))
             {
@@ -82,6 +78,16 @@ namespace GT2.DataSplitter
                     }
                 }
             }
+        }
+
+        public static string CreateLanguageDirectory()
+        {
+            string directory = $"Strings\\{Program.LanguagePrefix}";
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+            return directory;
         }
 
         public static void Import()
