@@ -17,13 +17,13 @@ namespace GT2.DataSplitter
             base.ReadDataFromFile(file);
             uint blockStart = file.ReadUInt();
             uint blockSize = file.ReadUInt(); // unused
-            RaceStringTable.Read(file, blockStart);
+            ASCIIStringTable.Read(file, blockStart);
         }
 
         protected override void WriteDataToFile(Stream file)
         {
             base.WriteDataToFile(file);
-            RaceStringTable.Write(file, file.Position);
+            ASCIIStringTable.Write(file, file.Position);
         }
     }
 }

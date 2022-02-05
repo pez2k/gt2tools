@@ -20,7 +20,7 @@ namespace GT2.DataSplitter
 
         public void ReadData(string filename)
         {
-            using (Stream file = StringTable.DecompressFile(filename))
+            using (Stream file = UnicodeStringTable.DecompressFile(filename))
             {
                 ReadDataFromFile(file);
             }

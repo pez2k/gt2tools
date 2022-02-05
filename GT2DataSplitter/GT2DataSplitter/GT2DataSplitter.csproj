@@ -102,13 +102,13 @@
     <Compile Include="DataStructures\GTModeRace\Event.cs" />
     <Compile Include="DataStructures\LicenseData\CarLicense.cs" />
     <Compile Include="FileNameCache.cs" />
-    <Compile Include="DataStructures\GTModeRace\RaceStringTable.cs" />
+    <Compile Include="DataStructures\GTModeRace\ASCIIStringTable.cs" />
     <Compile Include="ArcadeStrings.cs" />
-    <Compile Include="StringTable.cs" />
+    <Compile Include="UnicodeStringTable.cs" />
     <Compile Include="TypeConverters\CachedFileNameConverter.cs" />
     <Compile Include="TypeConverters\DrivetrainTypeConverter.cs" />
-    <Compile Include="TypeConverters\RaceStringTableLookup.cs" />
-    <Compile Include="TypeConverters\StringTableLookup.cs" />
+    <Compile Include="TypeConverters\ASCIIStringTableLookup.cs" />
+    <Compile Include="TypeConverters\UnicodeStringTableLookup.cs" />
     <Compile Include="TypeConverters\TireWidthConverter.cs" />
     <Compile Include="TypeConverters\TireProfileConverter.cs" />
     <Compile Include="TypeConverters\TireStageConverter.cs" />

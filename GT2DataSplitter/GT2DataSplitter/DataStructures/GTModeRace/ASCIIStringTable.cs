@@ -6,9 +6,10 @@ namespace GT2.DataSplitter
 {
     using StreamExtensions;
 
-    public static class RaceStringTable
+    public static class ASCIIStringTable
     {
-        private static List<string> strings = new List<string>();
+        private static readonly List<string> strings = new List<string>();
+        private static readonly Encoding encoding = Encoding.ASCII;
 
         public static void Read(Stream file, long startPosition)
         {
@@ -25,7 +26,7 @@ namespace GT2.DataSplitter
             byte stringLength = (byte)stream.ReadByte();
             byte[] stringBytes = new byte[stringLength + 1];
             stream.Read(stringBytes);
-            return Encoding.Default.GetString(stringBytes).TrimEnd('\0');
+            return encoding.GetString(stringBytes).TrimEnd('\0');
         }
 
         public static void Write(Stream file, long indexPosition)
@@ -37,7 +38,7 @@ namespace GT2.DataSplitter
 
             foreach (string newString in strings)
             {
-                byte[] characters = Encoding.Default.GetBytes((newString + "\0").ToCharArray());
+                byte[] characters = encoding.GetBytes((newString + "\0").ToCharArray());
                 byte length = (byte)(characters.Length - 1);
                 file.WriteByte(length);
                 file.Write(characters, 0, characters.Length);

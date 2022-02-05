@@ -14,8 +14,8 @@ namespace GT2.DataSplitter
             {
                 Directory.CreateDirectory(directory);
             }
-            return directory + "\\" + new RaceStringTableLookup().ConvertToString(data.EventName, null, null) +
-                   "_" + new RaceStringTableLookup().ConvertToString(data.TrackName, null, null) + ".csv";
+            return directory + "\\" + new ASCIIStringTableLookup().ConvertToString(data.EventName, null, null) +
+                   "_" + new ASCIIStringTableLookup().ConvertToString(data.TrackName, null, null) + ".csv";
         }
     }
 
@@ -23,8 +23,8 @@ namespace GT2.DataSplitter
     {
         public EventLicenseCSVMap()
         {
-            Map(m => m.EventName).TypeConverter(new RaceStringTableLookup());
-            Map(m => m.TrackName).TypeConverter(new RaceStringTableLookup());
+            Map(m => m.EventName).TypeConverter(new ASCIIStringTableLookup());
+            Map(m => m.TrackName).TypeConverter(new ASCIIStringTableLookup());
             Map(m => m.Opponent1); // TODO: clearly not opponent IDs as there are no opponents - fix this
             Map(m => m.Opponent2);
             Map(m => m.Opponent3);
@@ -89,7 +89,7 @@ namespace GT2.DataSplitter
             Map(m => m.PrizeMoney5th);
             Map(m => m.PrizeMoney6th);
             Map(m => m.PrizeCars).TypeConverter(new CarIdArrayConverter());
-            Map(m => m.TrackBannerPool).TypeConverter(new RaceStringTableLookup()); // references TIM list in .crstims.tsd, or "0" for static unrandomised banners
+            Map(m => m.TrackBannerPool).TypeConverter(new ASCIIStringTableLookup()); // references TIM list in .crstims.tsd, or "0" for static unrandomised banners
             Map(m => m.PSRestriction);
             Map(m => m.SeriesChampBonus);
             Map(m => m.CarRestrictionFlags); // 1 for NA, 2 for Turbo, 256 for Normal, 512 for Race

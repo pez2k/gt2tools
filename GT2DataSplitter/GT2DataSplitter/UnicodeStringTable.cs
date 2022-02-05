@@ -10,10 +10,12 @@ namespace GT2.DataSplitter
 {
     using StreamExtensions;
 
-    public static class StringTable
+    public static class UnicodeStringTable
     {
         private static List<string> strings = new List<string>();
         private static List<string> unusedStrings;
+        private static readonly Encoding binaryEncoding = Encoding.Unicode;
+        private static readonly Encoding textEncoding = Encoding.UTF8;
 
         public static void Read(string filename)
         {
@@ -28,7 +30,7 @@ namespace GT2.DataSplitter
                     byte[] characterData = new byte[length];
                     file.Read(characterData, 0, length);
 
-                    strings.Add(Encoding.Unicode.GetString(characterData).TrimEnd('\0'));
+                    strings.Add(binaryEncoding.GetString(characterData).TrimEnd('\0'));
                 }
             }
 
@@ -63,7 +65,7 @@ namespace GT2.DataSplitter
                 Directory.CreateDirectory(directory);
             }
 
-            using (TextWriter output = new StreamWriter(File.Create($"{directory}\\PartStrings.csv"), Encoding.UTF8))
+            using (TextWriter output = new StreamWriter(File.Create($"{directory}\\PartStrings.csv"), textEncoding))
             {
                 using (CsvWriter csv = new CsvWriter(output))
                 {
@@ -86,7 +88,7 @@ namespace GT2.DataSplitter
         {
             string filename = $"Strings\\{Program.LanguagePrefix}\\PartStrings.csv";
 
-            using (TextReader input = new StreamReader(filename, Encoding.UTF8))
+            using (TextReader input = new StreamReader(filename, textEncoding))
             {
                 using (CsvReader csv = new CsvReader(input))
                 {
@@ -102,20 +104,20 @@ namespace GT2.DataSplitter
         {
             using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
             {
-                byte[] header = { 0x00, 0x00, 0x00, 0x00, 0x57, 0x53, 0x44, 0x42 };
-                file.Write(header, 0, header.Length);
+                file.WriteUInt(0);
+                file.WriteCharacters("WSDB");
                 file.WriteUShort((ushort)strings.Count);
 
                 foreach (string newString in strings)
                 {
-                    byte[] characters = Encoding.Unicode.GetBytes((newString + "\0").ToCharArray());
+                    byte[] characters = binaryEncoding.GetBytes((newString + "\0").ToCharArray());
                     ushort length = (ushort)((characters.Length - 1) / 2);
                     file.WriteUShort(length);
                     file.Write(characters, 0, characters.Length);
                 }
 
                 file.Position = 0;
-                file.WriteUShort((ushort)file.Length);
+                file.WriteUInt((uint)file.Length);
 
                 if (file.Length > 0x6000)
                 {

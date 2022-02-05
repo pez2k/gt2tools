@@ -13,7 +13,7 @@ namespace GT2.DataSplitter
         public override void Read(Stream infile)
         {
             base.Read(infile);
-            CarNameStringTable.Add(data.CarId, StringTable.Get(data.NameFirstPart), StringTable.Get(data.NameSecondPart), data.Year);
+            CarNameStringTable.Add(data.CarId, UnicodeStringTable.Get(data.NameFirstPart), UnicodeStringTable.Get(data.NameSecondPart), data.Year);
         }
 
         public override void Import(string filename)
@@ -21,8 +21,8 @@ namespace GT2.DataSplitter
             base.Import(filename);
             CarName carName = CarNameStringTable.Get(data.CarId);
             CarData carData = data;
-            carData.NameFirstPart = StringTable.Add(carName.NameFirstPart);
-            carData.NameSecondPart = StringTable.Add(carName.NameSecondPart);
+            carData.NameFirstPart = UnicodeStringTable.Add(carName.NameFirstPart);
+            carData.NameSecondPart = UnicodeStringTable.Add(carName.NameSecondPart);
             carData.Year = carName.Year;
             data = carData;
         }

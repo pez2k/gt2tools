@@ -44,21 +44,21 @@ namespace GT2.DataSplitter
 
             if (filename.Contains("license_data"))
             {
-                StringTable.Read(GetCorrectFilename($"{LanguagePrefix}_unistrdb.dat", favourCompressed));
+                UnicodeStringTable.Read(GetCorrectFilename($"{LanguagePrefix}_unistrdb.dat", favourCompressed));
                 DumpDataFile<LicenseData>("license_data.dat", favourCompressed);
             }
             else if (filename.Contains("arcade_data"))
             {
-                StringTable.LoadFromArray(ArcadeStrings.Strings);
+                UnicodeStringTable.LoadFromArray(ArcadeStrings.Strings);
                 DumpDataFile<ArcadeData>("arcade_data.dat", favourCompressed);
             }
             else
             {
-                StringTable.Read(GetCorrectFilename($"{LanguagePrefix}_unistrdb.dat", favourCompressed));
+                UnicodeStringTable.Read(GetCorrectFilename($"{LanguagePrefix}_unistrdb.dat", favourCompressed));
                 DumpDataFile<GTModeData>("gtmode_data.dat", favourCompressed);
                 DumpDataFile<GTModeRace>("gtmode_race.dat", favourCompressed);
             }
-            StringTable.Export();
+            UnicodeStringTable.Export();
             CarNameStringTable.Export();
         }
 
@@ -119,7 +119,7 @@ namespace GT2.DataSplitter
                 LanguagePrefix = languageDirectory.Split('\\')[1];
                 Console.WriteLine($"Building language '{LanguagePrefix}'...");
 
-                StringTable.Import();
+                UnicodeStringTable.Import();
                 CarNameStringTable.Import();
 
                 string overridePath = Path.Combine("_Overrides", LanguagePrefix);
@@ -134,9 +134,9 @@ namespace GT2.DataSplitter
                 raceData.ImportData();
                 raceData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}gtmode_race.dat"));
 
-                StringTable.Write(Path.Combine("Output", $"{LanguagePrefix}_unistrdb.dat"));
+                UnicodeStringTable.Write(Path.Combine("Output", $"{LanguagePrefix}_unistrdb.dat"));
 
-                StringTable.Reset();
+                UnicodeStringTable.Reset();
                 CarNameStringTable.Reset();
             }
         }
