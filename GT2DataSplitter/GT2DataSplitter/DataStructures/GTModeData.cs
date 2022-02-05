@@ -31,7 +31,7 @@
                                    (typeof(TireForceVol), 23),
                                    (typeof(ActiveStabilityControl), 26),
                                    (typeof(TractionControlSystem), 27),
-                                   (typeof(CarUnknown), 28),
+                                   (typeof(Wheel), 28),
                                    (typeof(Car), 29))
         {
         }
