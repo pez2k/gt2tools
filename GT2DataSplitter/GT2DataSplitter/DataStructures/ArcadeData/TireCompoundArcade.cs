@@ -8,7 +8,7 @@ namespace GT2.DataSplitter
         {
             filenameCacheNameOverride = nameof(TireCompound);
             tireCompoundNames = new List<string> { "SportsFront", "SportsRear", "LowGripFront", "LowGripRear", "DirtFront", "DirtRear",
-                                                   "HighGripFront", "HighGripRear", "RWDDirtFront", "RWDDirtRear" };
+                                                   "DriftFront", "DriftRear", "RWDDirtFront", "RWDDirtRear" };
         }
     }
 }

@@ -40,8 +40,8 @@ namespace GT2.DataSplitter
                                    (typeof(Wheel), 28),
                                    (typeof(Event), 30),
                                    (typeof(EnemyCarsArcade), 29),
-                                   (typeof(CarArcade), 31),
-                                   (typeof(CarHighGripArcade), 32))
+                                   (typeof(CarArcadeRacing), 31),
+                                   (typeof(CarArcadeDrift), 32))
         {
         }
 

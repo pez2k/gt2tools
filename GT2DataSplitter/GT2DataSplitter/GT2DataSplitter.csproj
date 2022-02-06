@@ -50,8 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataStructures\ArcadeData.cs" />
-    <Compile Include="DataStructures\ArcadeData\CarHighGripArcade.cs" />
-    <Compile Include="DataStructures\ArcadeData\CarArcade.cs" />
+    <Compile Include="DataStructures\ArcadeData\CarArcadeDrift.cs" />
+    <Compile Include="DataStructures\ArcadeData\CarArcadeRacing.cs" />
     <Compile Include="DataStructures\ArcadeData\EnemyCarsArcade.cs" />
     <Compile Include="DataStructures\ArcadeData\TireCompoundArcade.cs" />
     <Compile Include="DataStructures\CarCsvDataStructure.cs" />

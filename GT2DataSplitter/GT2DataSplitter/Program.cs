@@ -11,7 +11,7 @@ namespace GT2.DataSplitter
         {
             if (args.Length != 1)
             {
-                if (Directory.Exists(nameof(CarArcade)))
+                if (Directory.Exists(nameof(CarArcadeRacing)))
                 {
                     BuildArcadeFile();
                 }

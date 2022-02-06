@@ -5,7 +5,7 @@ namespace GT2.DataSplitter
 {
     using CarNameConversion;
 
-    public class CarArcade : CsvDataStructure<CarArcadeData, CarArcadeCSVMap>
+    public class CarArcadeRacing : CsvDataStructure<CarArcadeData, CarArcadeCSVMap>
     {
         protected override string CreateOutputFilename() => Name + "\\" + data.CarId.ToCarName() + ".csv";
     }
