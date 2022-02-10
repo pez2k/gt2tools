@@ -118,5 +118,13 @@ namespace StreamExtensions
         }
 
         public static byte[] ToByteArray(this ulong value) => BitConverter.GetBytes(value);
+
+        public static void MoveToNextMultipleOf(this Stream stream, int value)
+        {
+            while (stream.Position % value != 0)
+            {
+                stream.Position++;
+            }
+        }
     }
 }
