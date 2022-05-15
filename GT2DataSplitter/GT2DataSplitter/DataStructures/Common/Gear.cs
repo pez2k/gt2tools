@@ -1,5 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Globalization;
+using System.Runtime.InteropServices;
+using CsvHelper;
 using CsvHelper.Configuration;
+using CsvHelper.TypeConversion;
 
 namespace GT2.DataSplitter
 {
@@ -15,17 +18,17 @@ namespace GT2.DataSplitter
         public uint Price;
         public byte Stage;
         public byte NumberOfGears;
-        public ushort ReverseGearRatio;
-        public ushort FirstGearRatio;
-        public ushort SecondGearRatio;
-        public ushort ThirdGearRatio;
-        public ushort FourthGearRatio;
-        public ushort FifthGearRatio;
-        public ushort SixthGearRatio;
-        public ushort SeventhGearRatio;
-        public ushort DefaultFinalDriveRatio;
-        public ushort MaxFinalDriveRatio;
-        public ushort MinFinalDriveRatio;
+        public short ReverseGearRatio;
+        public short FirstGearRatio;
+        public short SecondGearRatio;
+        public short ThirdGearRatio;
+        public short FourthGearRatio;
+        public short FifthGearRatio;
+        public short SixthGearRatio;
+        public short SeventhGearRatio;
+        public short DefaultFinalDriveRatio;
+        public short MaxFinalDriveRatio;
+        public short MinFinalDriveRatio;
         public byte AllowIndividualRatioAdjustments;
         public byte DefaultAutoSetting;
         public byte MinAutoSetting;
@@ -40,21 +43,34 @@ namespace GT2.DataSplitter
             Map(m => m.Price);
             Map(m => m.Stage);
             Map(m => m.NumberOfGears);
-            Map(m => m.ReverseGearRatio);
-            Map(m => m.FirstGearRatio);
-            Map(m => m.SecondGearRatio);
-            Map(m => m.ThirdGearRatio);
-            Map(m => m.FourthGearRatio);
-            Map(m => m.FifthGearRatio);
-            Map(m => m.SixthGearRatio);
-            Map(m => m.SeventhGearRatio);
-            Map(m => m.DefaultFinalDriveRatio);
-            Map(m => m.MaxFinalDriveRatio);
-            Map(m => m.MinFinalDriveRatio);
+            Map(m => m.ReverseGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
+            Map(m => m.FirstGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
+            Map(m => m.SecondGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
+            Map(m => m.ThirdGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
+            Map(m => m.FourthGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
+            Map(m => m.FifthGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
+            Map(m => m.SixthGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
+            Map(m => m.SeventhGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
+            Map(m => m.DefaultFinalDriveRatio).TypeConverter<BackwardCompatibleRatioConverter>();
+            Map(m => m.MaxFinalDriveRatio).TypeConverter<BackwardCompatibleRatioConverter>();
+            Map(m => m.MinFinalDriveRatio).TypeConverter<BackwardCompatibleRatioConverter>();
             Map(m => m.AllowIndividualRatioAdjustments);
             Map(m => m.DefaultAutoSetting);
             Map(m => m.MinAutoSetting);
             Map(m => m.MaxAutoSetting);
+        }
+
+        private class BackwardCompatibleRatioConverter : Int16Converter
+        {
+            public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+            {
+                NumberStyles numberStyle = memberMapData.TypeConverterOptions.NumberStyle ?? NumberStyles.Integer;
+                return short.TryParse(text, numberStyle, memberMapData.TypeConverterOptions.CultureInfo, out short signedValue)
+                    ? signedValue
+                    : ushort.TryParse(text, numberStyle, memberMapData.TypeConverterOptions.CultureInfo, out ushort legacyUnsignedValue)
+                        ? (short)(legacyUnsignedValue - ushort.MaxValue - 1)
+                        : base.ConvertFromString(text, row, memberMapData);
+            }
         }
     }
 }
