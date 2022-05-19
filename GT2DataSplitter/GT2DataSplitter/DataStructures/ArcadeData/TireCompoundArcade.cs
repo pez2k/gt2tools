@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace GT2.DataSplitter
+﻿namespace GT2.DataSplitter
 {
     public class TireCompoundArcade : TireCompound
     {
         public TireCompoundArcade() : base()
         {
             filenameCacheNameOverride = nameof(TireCompound);
-            tireCompoundNames = new List<string> { "SportsFront", "SportsRear", "LowGripFront", "LowGripRear", "DirtFront", "DirtRear",
-                                                   "DriftFront", "DriftRear", "RWDDirtFront", "RWDDirtRear" };
+            tireCompoundNames = new string[] { "SportsFront", "SportsRear", "LowGripFront", "LowGripRear", "DirtFront", "DirtRear",
+                                               "DriftFront", "DriftRear", "RWDDirtFront", "RWDDirtRear" };
         }
     }
 }

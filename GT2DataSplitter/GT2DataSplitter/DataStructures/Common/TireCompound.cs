@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 
 namespace GT2.DataSplitter
 {
     public class TireCompound : DataStructure
     {
-        protected List<string> tireCompoundNames =
-            new List<string> { "RoadFront", "RoadRear", "SportsFront", "SportsRear", "HardFront", "HardRear", "MediumFront", "MediumRear",
-                               "SoftFront", "SoftRear", "SuperSoftFront", "SuperSoftRear", "DirtFront", "DirtRear", "RWDDirtFront", "RWDDirtRear",
-                               "SimulationFront", "SimulationRear", "PikesPeakFront", "PikesPeakRear" };
+        protected string[] tireCompoundNames =
+            new string[] { "RoadFront", "RoadRear", "SportsFront", "SportsRear", "HardFront", "HardRear", "MediumFront", "MediumRear",
+                           "SoftFront", "SoftRear", "SuperSoftFront", "SuperSoftRear", "DirtFront", "DirtRear", "RWDDirtFront", "RWDDirtRear",
+                           "SimulationFront", "SimulationRear", "PikesPeakFront", "PikesPeakRear" };
 
         public TireCompound() => Size = 0x40;
 
@@ -16,7 +15,8 @@ namespace GT2.DataSplitter
         {
             byte number = (byte)Directory.GetFiles(Name).Length;
             string filename = base.CreateOutputFilename();
-            return Path.Combine(Path.GetDirectoryName(filename), $"{number:D2}_{tireCompoundNames[number]}{Path.GetExtension(filename)}");
+            string compoundName = number >= tireCompoundNames.Length ? "Unknown" : tireCompoundNames[number];
+            return Path.Combine(Path.GetDirectoryName(filename), $"{number:D2}_{compoundName}{Path.GetExtension(filename)}");
         }
     }
 }
