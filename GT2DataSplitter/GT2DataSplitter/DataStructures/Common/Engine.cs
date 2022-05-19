@@ -35,7 +35,7 @@ namespace GT2.DataSplitter
         public short TorqueCurve14;
         public short TorqueCurve15;
         public short TorqueCurve16;
-        public ushort Displacement; // 0x2c - not quite for those that have numberx2 displacements - TODO: handle multiplier bits
+        public ushort Displacement; // 0x2c
         public ushort DisplayedPower; // 0x2e - base ps. F. Ex. is 295hp for most of the rally cars, not 400+
         public ushort MaxPowerRPM; // 0x30 - multipled by 10 by the game. E.g. a value of 850 is displayed as 8500
         public ushort DisplayedTorque; // 0x32 - divided by 10 by the game. e.g. a value of 950 is displayed as 95.0
@@ -89,7 +89,7 @@ namespace GT2.DataSplitter
             Map(m => m.TorqueCurve14).TypeConverter<BackwardCompatibleShortConverter>();
             Map(m => m.TorqueCurve15).TypeConverter<BackwardCompatibleShortConverter>();
             Map(m => m.TorqueCurve16).TypeConverter<BackwardCompatibleShortConverter>();
-            Map(m => m.Displacement);
+            Map(m => m.Displacement).TypeConverter<DisplacementStringConverter>();
             Map(m => m.DisplayedPower);
             Map(m => m.MaxPowerRPM);
             Map(m => m.DisplayedTorque);

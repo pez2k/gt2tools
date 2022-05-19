@@ -106,6 +106,7 @@
     <Compile Include="DataStructures\ASCIIStringTable.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeStrings.cs" />
     <Compile Include="TypeConverters\BackwardCompatibleShortConverter.cs" />
+    <Compile Include="TypeConverters\DisplacementStringConverter.cs" />
     <Compile Include="TypeConverters\WheelIdConverter.cs" />
     <Compile Include="UnicodeStringTable.cs" />
     <Compile Include="TypeConverters\CachedFileNameConverter.cs" />
