@@ -19,22 +19,22 @@ namespace GT2.DataSplitter
         public ushort ValvetrainName; // DOHC etc, index into unistringdb, 0x6
         public ushort Aspiration; // 
         public ushort SoundFile; // 
-        public ushort TorqueCurve1; // 0xc - all these take part in garage HP calculation
-        public ushort TorqueCurve2;
-        public ushort TorqueCurve3;
-        public ushort TorqueCurve4;
-        public ushort TorqueCurve5;
-        public ushort TorqueCurve6;
-        public ushort TorqueCurve7;
-        public ushort TorqueCurve8;
-        public ushort TorqueCurve9;
-        public ushort TorqueCurve10;
-        public ushort TorqueCurve11;
-        public ushort TorqueCurve12;
-        public ushort TorqueCurve13;
-        public ushort TorqueCurve14;
-        public ushort TorqueCurve15;
-        public ushort TorqueCurve16;
+        public short TorqueCurve1; // 0xc - all these take part in garage HP calculation
+        public short TorqueCurve2;
+        public short TorqueCurve3;
+        public short TorqueCurve4;
+        public short TorqueCurve5;
+        public short TorqueCurve6;
+        public short TorqueCurve7;
+        public short TorqueCurve8;
+        public short TorqueCurve9;
+        public short TorqueCurve10;
+        public short TorqueCurve11;
+        public short TorqueCurve12;
+        public short TorqueCurve13;
+        public short TorqueCurve14;
+        public short TorqueCurve15;
+        public short TorqueCurve16;
         public ushort Displacement; // 0x2c - not quite for those that have numberx2 displacements - TODO: handle multiplier bits
         public ushort DisplayedPower; // 0x2e - base ps. F. Ex. is 295hp for most of the rally cars, not 400+
         public ushort MaxPowerRPM; // 0x30 - multipled by 10 by the game. E.g. a value of 850 is displayed as 8500
@@ -73,22 +73,22 @@ namespace GT2.DataSplitter
             Map(m => m.ValvetrainName).TypeConverter(new UnicodeStringTableLookup());
             Map(m => m.Aspiration).TypeConverter(new UnicodeStringTableLookup());
             Map(m => m.SoundFile);
-            Map(m => m.TorqueCurve1);
-            Map(m => m.TorqueCurve2);
-            Map(m => m.TorqueCurve3);
-            Map(m => m.TorqueCurve4);
-            Map(m => m.TorqueCurve5);
-            Map(m => m.TorqueCurve6);
-            Map(m => m.TorqueCurve7);
-            Map(m => m.TorqueCurve8);
-            Map(m => m.TorqueCurve9);
-            Map(m => m.TorqueCurve10);
-            Map(m => m.TorqueCurve11);
-            Map(m => m.TorqueCurve12);
-            Map(m => m.TorqueCurve13);
-            Map(m => m.TorqueCurve14);
-            Map(m => m.TorqueCurve15);
-            Map(m => m.TorqueCurve16);
+            Map(m => m.TorqueCurve1).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve2).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve3).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve4).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve5).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve6).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve7).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve8).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve9).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve10).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve11).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve12).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve13).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve14).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve15).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.TorqueCurve16).TypeConverter<BackwardCompatibleShortConverter>();
             Map(m => m.Displacement);
             Map(m => m.DisplayedPower);
             Map(m => m.MaxPowerRPM);

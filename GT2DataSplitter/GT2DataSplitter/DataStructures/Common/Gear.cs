@@ -1,11 +1,10 @@
-﻿using System.Globalization;
-using System.Runtime.InteropServices;
-using CsvHelper;
+﻿using System.Runtime.InteropServices;
 using CsvHelper.Configuration;
-using CsvHelper.TypeConversion;
 
 namespace GT2.DataSplitter
 {
+    using TypeConverters;
+
     public class Gear : CarCsvDataStructure<GearData, GearCSVMap>
     {
         protected override string CreateOutputFilename() => CreateOutputFilename(data.CarId, data.Stage);
@@ -43,34 +42,21 @@ namespace GT2.DataSplitter
             Map(m => m.Price);
             Map(m => m.Stage);
             Map(m => m.NumberOfGears);
-            Map(m => m.ReverseGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
-            Map(m => m.FirstGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
-            Map(m => m.SecondGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
-            Map(m => m.ThirdGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
-            Map(m => m.FourthGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
-            Map(m => m.FifthGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
-            Map(m => m.SixthGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
-            Map(m => m.SeventhGearRatio).TypeConverter<BackwardCompatibleRatioConverter>();
-            Map(m => m.DefaultFinalDriveRatio).TypeConverter<BackwardCompatibleRatioConverter>();
-            Map(m => m.MaxFinalDriveRatio).TypeConverter<BackwardCompatibleRatioConverter>();
-            Map(m => m.MinFinalDriveRatio).TypeConverter<BackwardCompatibleRatioConverter>();
+            Map(m => m.ReverseGearRatio).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.FirstGearRatio).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.SecondGearRatio).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.ThirdGearRatio).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.FourthGearRatio).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.FifthGearRatio).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.SixthGearRatio).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.SeventhGearRatio).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.DefaultFinalDriveRatio).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.MaxFinalDriveRatio).TypeConverter<BackwardCompatibleShortConverter>();
+            Map(m => m.MinFinalDriveRatio).TypeConverter<BackwardCompatibleShortConverter>();
             Map(m => m.AllowIndividualRatioAdjustments);
             Map(m => m.DefaultAutoSetting);
             Map(m => m.MinAutoSetting);
             Map(m => m.MaxAutoSetting);
-        }
-
-        private class BackwardCompatibleRatioConverter : Int16Converter
-        {
-            public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
-            {
-                NumberStyles numberStyle = memberMapData.TypeConverterOptions.NumberStyle ?? NumberStyles.Integer;
-                return short.TryParse(text, numberStyle, memberMapData.TypeConverterOptions.CultureInfo, out short signedValue)
-                    ? signedValue
-                    : ushort.TryParse(text, numberStyle, memberMapData.TypeConverterOptions.CultureInfo, out ushort legacyUnsignedValue)
-                        ? (short)(legacyUnsignedValue - ushort.MaxValue - 1)
-                        : base.ConvertFromString(text, row, memberMapData);
-            }
         }
     }
 }

@@ -14,13 +14,13 @@ namespace GT2.DataSplitter
     public struct ChassisData
     {
         public uint CarId;
-        public byte CentreOfMassLongitudinal; // weight distribution %
+        public byte FrontWeightDistribution;
         public byte Unknown2;
         public byte FrontGrip;
         public byte RearGrip;
         public ushort Length;
         public ushort Height;
-        public ushort CentreOfMassHeight; // wheelbase mm
+        public ushort Wheelbase;
         public ushort Weight;
         public byte TurningResistance;
         public byte PitchResistance;
@@ -33,13 +33,13 @@ namespace GT2.DataSplitter
         public ChassisCSVMap()
         {
             Map(m => m.CarId).CarId();
-            Map(m => m.CentreOfMassLongitudinal);
+            Map(m => m.FrontWeightDistribution);
             Map(m => m.Unknown2);
             Map(m => m.FrontGrip);
             Map(m => m.RearGrip);
             Map(m => m.Length);
             Map(m => m.Height);
-            Map(m => m.CentreOfMassHeight);
+            Map(m => m.Wheelbase);
             Map(m => m.Weight);
             Map(m => m.TurningResistance);
             Map(m => m.PitchResistance);
