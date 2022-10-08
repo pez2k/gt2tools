@@ -94,6 +94,28 @@ namespace GT3.DataSplitter
             stringTable.Write(".id_db_str_eu.db", false);
         }
 
+        public void Write_jp()
+        {
+            using (FileStream file = new FileStream(".id_db_idx.db", FileMode.Create, FileAccess.Write))
+            {
+                file.WriteCharacters("IDDB");
+                file.WriteUInt((uint)ids.Count);
+                ulong i = 0;
+                foreach (ulong hash in ids.Keys)
+                {
+                    file.WriteULong(hash);
+                    file.WriteULong(i++);
+                }
+            }
+
+            stringTable.Strings.Clear();
+            foreach (string name in ids.Values)
+            {
+                stringTable.Add(name);
+            }
+            stringTable.Write(".id_db_str.db", false);
+        }
+
         public class IDStringTableLookup : ITypeConverter
         {
             private readonly IDStringTable table;
