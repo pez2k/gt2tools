@@ -253,5 +253,59 @@ namespace GT3.DataSplitter
                 file.WriteUInt((uint)file.Length - dataStart);
             }
         }
+
+        public void WriteData_jp()
+        {
+            using (FileStream file = new FileStream("paramdb.db", FileMode.Create, FileAccess.ReadWrite))
+            {
+                const uint DataTableCount = 0x24;
+                file.WriteCharacters("GTAR");
+                file.WriteUInt(DataTableCount);
+                uint dataStart = ((DataTableCount + 2) * 4) + 16;
+                file.WriteUInt(dataStart);
+                file.WriteUInt(0x07);
+                file.Position = dataStart;
+                ushort tableNumber = 0;
+                BrakeParts.Write(file, dataStart, tableNumber++);
+                BrakeBalanceControllerParts.Write(file, dataStart, tableNumber++);
+                SteeringParts.Write(file, dataStart, tableNumber++);
+                ChassisParts.Write(file, dataStart, tableNumber++);
+                WeightReductionParts.Write(file, dataStart, tableNumber++);
+                BodyParts.Write(file, dataStart, tableNumber++);
+                EngineParts.Write(file, dataStart, tableNumber++);
+                PortPolishingParts.Write(file, dataStart, tableNumber++);
+                EngineBalancingParts.Write(file, dataStart, tableNumber++);
+                DisplacementIncreaseParts.Write(file, dataStart, tableNumber++);
+                ComputerParts.Write(file, dataStart, tableNumber++);
+                NATuneParts.Write(file, dataStart, tableNumber++);
+                TurboKitParts.Write(file, dataStart, tableNumber++);
+                DrivetrainParts.Write(file, dataStart, tableNumber++);
+                FlywheelParts.Write(file, dataStart, tableNumber++);
+                ClutchParts.Write(file, dataStart, tableNumber++);
+                PropellerShaftParts.Write(file, dataStart, tableNumber++);
+                GearboxParts.Write(file, dataStart, tableNumber++);
+                SuspensionParts.Write(file, dataStart, tableNumber++);
+                IntercoolerParts.Write(file, dataStart, tableNumber++);
+                MufflerParts.Write(file, dataStart, tableNumber++);
+                LSDParts.Write(file, dataStart, tableNumber++);
+                TCSCParts.Write(file, dataStart, tableNumber++);
+                ASCCParts.Write(file, dataStart, tableNumber++);
+                WheelsParts.Write(file, dataStart, tableNumber++);
+                TyreSizeParts.Write(file, dataStart, tableNumber++);
+                TyreForceVolParts.Write(file, dataStart, tableNumber++);
+                TyreCompounds.Write(file, dataStart, tableNumber++);
+                TyresFrontParts.Write(file, dataStart, tableNumber++);
+                TyresRearParts.Write(file, dataStart, tableNumber++);
+                Cars.Write(file, dataStart, tableNumber++);
+                Opponents.Write(file, dataStart, tableNumber++);
+                Events.Write(file, dataStart, tableNumber++);
+                Regulations.Write(file, dataStart, tableNumber++);
+                Courses.Write(file, dataStart, tableNumber++);
+                ArcadeCars.Write(file, dataStart, tableNumber++);
+
+                file.Position = dataStart - 8;
+                file.WriteUInt((uint)file.Length - dataStart);
+            }
+        }
     }
 }
