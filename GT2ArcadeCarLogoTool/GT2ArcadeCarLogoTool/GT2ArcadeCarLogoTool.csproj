@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <Copyright>pez2k</Copyright>
+  </PropertyGroup>
+
+  <Import Project="..\..\Common\Common.projitems" Label="Shared" />
+
+</Project>
