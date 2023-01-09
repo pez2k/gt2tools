@@ -150,7 +150,7 @@ namespace GT2.MenuSplitter
                         }
 
                         fileCount++;
-                        index.WriteUInt((uint)output.Position);
+                        long startPosition = output.Position;
 
                         Console.WriteLine($"Adding {filename}");
                         using (var input = new FileStream(filename, FileMode.Open, FileAccess.Read))
@@ -176,6 +176,7 @@ namespace GT2.MenuSplitter
                         }
 
                         long misalignedBytes = output.Length % 4;
+                        index.WriteUInt((uint)(startPosition + (misalignedBytes  == 0 ? 0 : (4 - misalignedBytes))));
 
                         if (misalignedBytes != 0)
                         {
