@@ -3,6 +3,7 @@ using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
+    using Caches;
     using CarNameConversion;
 
     public class EnemyCarsArcade : CsvDataStructure<EnemyCarsArcadeData, EnemyCarsArcadeCSVMap>

@@ -7,6 +7,8 @@ using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
+    using Caches;
+
     public abstract class CsvDataStructure<TStructure, TMap> : DataStructure where TMap : ClassMap
     {
         protected bool cacheFilename;
@@ -49,16 +51,19 @@ namespace GT2.DataSplitter
         {
             try
             {
-                using (TextReader input = new StreamReader(filename, Encoding.UTF8))
+                using (var stream = new MemoryStream(FileContentsCache.GetFile(filename)))
                 {
-                    using (CsvReader csv = new CsvReader(input))
+                    using (TextReader input = new StreamReader(stream, Encoding.UTF8))
                     {
-                        csv.Configuration.RegisterClassMap<TMap>();
-                        csv.Read();
-                        data = csv.GetRecord<TStructure>();
-                        if (cacheFilename)
+                        using (CsvReader csv = new CsvReader(input))
                         {
-                            FileNameCache.Add(filenameCacheNameOverride ?? Name, filename);
+                            csv.Configuration.RegisterClassMap<TMap>();
+                            csv.Read();
+                            data = csv.GetRecord<TStructure>();
+                            if (cacheFilename)
+                            {
+                                FileNameCache.Add(filenameCacheNameOverride ?? Name, filename);
+                            }
                         }
                     }
                 }

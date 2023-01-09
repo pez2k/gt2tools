@@ -2,6 +2,8 @@
 
 namespace GT2.DataSplitter
 {
+    using Caches;
+
     public abstract class DataStructure
     {
         public string Name => GetType().Name;
@@ -36,29 +38,16 @@ namespace GT2.DataSplitter
             return Name + "\\" + number + "0.dat";
         }
 
-        private void ExportStructure(byte[] structure, FileStream output)
-        {
-            output.Write(structure, 0, structure.Length);
-        }
+        private void ExportStructure(byte[] structure, FileStream output) => output.Write(structure, 0, structure.Length);
 
         public virtual void Import(string filename)
         {
-            using (FileStream infile = new FileStream(filename, FileMode.Open, FileAccess.Read))
-            {
-                ImportStructure(infile);
-                FileNameCache.Add(filenameCacheNameOverride ?? Name, filename);
-            }
+            ImportStructure(FileContentsCache.GetFile(filename));
+            FileNameCache.Add(filenameCacheNameOverride ?? Name, filename);
         }
 
-        private void ImportStructure(FileStream file)
-        {
-            rawData = new byte[file.Length];
-            file.Read(rawData, 0, (int)file.Length);
-        }
+        private void ImportStructure(byte[] file) => rawData = file;
 
-        public virtual void Write(Stream outfile)
-        {
-            outfile.Write(rawData, 0, Size);
-        }
+        public virtual void Write(Stream outfile) => outfile.Write(rawData, 0, Size);
     }
 }

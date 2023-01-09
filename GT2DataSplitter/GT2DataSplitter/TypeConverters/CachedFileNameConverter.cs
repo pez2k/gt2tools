@@ -4,6 +4,8 @@ using CsvHelper.TypeConversion;
 
 namespace GT2.DataSplitter.TypeConverters
 {
+    using Caches;
+
     public class CachedFileNameConverter : ITypeConverter
     {
         private readonly string name;

@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace GT2.DataSplitter
 {
+    using Caches;
     using CarNameConversion;
     using StreamExtensions;
 
@@ -15,8 +16,8 @@ namespace GT2.DataSplitter
 
         private readonly TypedData[] data;
 
-        public DataFile(params (Type type, int orderOnDisk)[] dataDefinitions) =>
-            data = dataDefinitions.Select(definition => new TypedData(definition.type, definition.orderOnDisk)).ToArray();
+        public DataFile(params (Type type, int orderOnDisk, bool isLocalised)[] dataDefinitions) =>
+            data = dataDefinitions.Select(definition => new TypedData(definition.type, definition.orderOnDisk, definition.isLocalised)).ToArray();
 
         public void ReadData(string filename)
         {
@@ -115,15 +116,23 @@ namespace GT2.DataSplitter
                 foreach (string baseFilename in Directory.EnumerateFiles(carName))
                 {
                     string filename = hasOverrides ? Path.Combine(OverridePath, baseFilename) : baseFilename;
-                    if (!File.Exists(filename))
+                    if (!FileExistsCache.FileExists(filename))
                     {
                         filename = baseFilename;
                     }
 
-                    if (new FileInfo(filename).Length > 0)
+                    if (!FileIsEmptyCache.FileIsEmpty(filename))
                     {
-                        var structure = (DataStructure)Activator.CreateInstance(data.Type);
-                        structure.Import(filename);
+                        DataStructure structure = DataStructureCache.GetStructure(filename);
+                        if (structure == null)
+                        {
+                            structure = (DataStructure)Activator.CreateInstance(data.Type);
+                            structure.Import(filename);
+                            if (!data.IsLocalised)
+                            {
+                                DataStructureCache.Add(filename, structure);
+                            }
+                        }
                         data.Structures.Add(structure);
                     }
                 }

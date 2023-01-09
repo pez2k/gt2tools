@@ -102,7 +102,11 @@
     <Compile Include="DataStructures\GTModeRace\EnemyCars.cs" />
     <Compile Include="DataStructures\Common\Event.cs" />
     <Compile Include="DataStructures\LicenseData\CarLicense.cs" />
-    <Compile Include="FileNameCache.cs" />
+    <Compile Include="Caches\DataStructureCache.cs" />
+    <Compile Include="Caches\FileIsEmptyCache.cs" />
+    <Compile Include="Caches\FileExistsCache.cs" />
+    <Compile Include="Caches\FileContentsCache.cs" />
+    <Compile Include="Caches\FileNameCache.cs" />
     <Compile Include="DataStructures\ASCIIStringTable.cs" />
     <Compile Include="DataStructures\ArcadeData\ArcadeStrings.cs" />
     <Compile Include="TypeConverters\BackwardCompatibleShortConverter.cs" />

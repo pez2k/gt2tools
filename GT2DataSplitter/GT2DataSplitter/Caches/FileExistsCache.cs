@@ -1,0 +1,22 @@
+﻿using System.IO;
+using System.Collections.Generic;
+
+namespace GT2.DataSplitter.Caches
+{
+    public static class FileExistsCache
+    {
+        private static readonly Dictionary<string, bool> cache = new Dictionary<string, bool>();
+
+        public static bool FileExists(string filename)
+        {
+            if (!cache.ContainsKey(filename))
+            {
+                bool exists = File.Exists(filename);
+                cache.Add(filename, exists);
+                return exists;
+            }
+
+            return cache[filename];
+        }
+    }
+}

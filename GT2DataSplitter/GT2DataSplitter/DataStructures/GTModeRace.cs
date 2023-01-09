@@ -6,9 +6,9 @@ namespace GT2.DataSplitter
 
     public class GTModeRace : DataFile
     {
-        public GTModeRace() : base((typeof(Event), 2),
-                                   (typeof(EnemyCars), 1),
-                                   (typeof(Regulations), 0))
+        public GTModeRace() : base((typeof(Event), 2, false),
+                                   (typeof(EnemyCars), 1, false),
+                                   (typeof(Regulations), 0, false))
         {
         }
 
