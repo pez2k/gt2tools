@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using ICSharpCode.SharpZipLib.GZip;
 
 namespace GT2.MenuSplitter
@@ -10,6 +11,7 @@ namespace GT2.MenuSplitter
     class Program
     {
         static bool decompress = true;
+        static bool bruteforce = false;
 
         static void Main(string[] args)
         {
@@ -26,16 +28,27 @@ namespace GT2.MenuSplitter
             }
             else
             {
-                filename = args[1];
-                if (args[0] == "-c")
+                if (args[0] == "-c" || args[1] == "-c")
                 {
                     decompress = false;
                 }
+                if (args[0] == "-b" || args[1] == "-b")
+                {
+                    bruteforce = true;
+                }
+                filename = args.Last();
             }
 
             if (filename.Contains("gtmenudat."))
             {
-                Extract();
+                if (bruteforce)
+                {
+                    BruteForceExtract();
+                }
+                else
+                {
+                    Extract();
+                }
             }
             else if (filename.Contains("commonpic."))
             {
@@ -43,7 +56,7 @@ namespace GT2.MenuSplitter
             }
         }
 
-        static void Extract()
+        static void BruteForceExtract()
         {
             using (FileStream file = new FileStream("gtmenudat.dat", FileMode.Open, FileAccess.Read))
             {
@@ -121,6 +134,62 @@ namespace GT2.MenuSplitter
             return file.Length;
         }
 
+        static void Extract()
+        {
+            using (FileStream file = new FileStream("gtmenudat.dat", FileMode.Open, FileAccess.Read))
+            {
+                using (FileStream index = new FileStream("gtmenudat.idx", FileMode.Open, FileAccess.Read))
+                {
+                    if (!Directory.Exists("gtmenudat"))
+                    {
+                        Directory.CreateDirectory("gtmenudat");
+                    }
+
+                    uint fileCount = index.ReadUInt();
+
+                    for (int i = 0; i < fileCount; i++)
+                    {
+                        uint startPosition = index.ReadUInt();
+                        uint padding = startPosition & 3;
+                        startPosition -= padding;
+
+                        uint endPosition;
+                        endPosition = index.ReadUInt();
+                        endPosition -= endPosition % 4;
+                        index.Position -= 4;
+                        endPosition -= padding;
+
+                        file.Position = startPosition;
+                        int length = (int)(endPosition - startPosition);
+                        byte[] data = new byte[length];
+                        file.Read(data, 0, length);
+
+                        using (MemoryStream stream = new MemoryStream())
+                        {
+                            stream.Write(data, 0, length);
+                            stream.Position = 0;
+
+                            string filename = $"gt00{i:D4}.mdt{(decompress ? "" : ".gz")}";
+                            using (FileStream output = new FileStream($"gtmenudat\\{filename}", FileMode.Create, FileAccess.Write))
+                            {
+                                if (decompress)
+                                {
+                                    using (GZipStream unzip = new GZipStream(stream, CompressionMode.Decompress))
+                                    {
+                                        unzip.CopyTo(output);
+                                    }
+                                }
+                                else
+                                {
+                                    stream.CopyTo(output);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         static void Pack()
         {
             if (Directory.Exists("gtmenudat"))
@@ -141,6 +210,7 @@ namespace GT2.MenuSplitter
                 {
                     index.WriteUInt(0);
                     uint fileCount = 0;
+                    long misalignedBytes = 0;
 
                     foreach (string filename in Directory.EnumerateFiles("gtmenudat\\"))
                     {
@@ -175,7 +245,7 @@ namespace GT2.MenuSplitter
                             }
                         }
 
-                        long misalignedBytes = output.Length % 4;
+                        misalignedBytes = output.Length % 4;
                         index.WriteUInt((uint)(startPosition + (misalignedBytes  == 0 ? 0 : (4 - misalignedBytes))));
 
                         if (misalignedBytes != 0)
@@ -184,6 +254,8 @@ namespace GT2.MenuSplitter
                         }
                     }
 
+                    output.SetLength(output.Position);
+                    index.WriteUInt((uint)output.Length);
                     index.Position = 0;
                     index.WriteUInt(fileCount);
                 }
