@@ -111,7 +111,10 @@ namespace GT2.CarInfoEditorCSV
                         Car newCar = csv.GetRecord<Car>();
                         newCar.Colours = new List<CarColour>();
                         list.Cars.Remove(list.Cars.Where(car => car.CarName == newCar.CarName).SingleOrDefault());
-                        list.Cars.Add(newCar);
+                        if (newCar.JPName != "")
+                        {
+                            list.Cars.Add(newCar);
+                        }
                     }
                     list.Cars = list.Cars.OrderBy(car => car.CarName.ToCarID()).ToList();
                 }
@@ -137,10 +140,13 @@ namespace GT2.CarInfoEditorCSV
                             LatinName = newColourWithName.LatinName
                         };
                         Car existingCar = list.Cars.Find(car => car.CarName == newColourWithName.CarName);
-                        existingCar.Colours.Remove(existingCar.Colours.Where(colour => colour.PaletteID == newColour.PaletteID).SingleOrDefault());
-                        if (newColour.JapaneseName != "Delete")
+                        if (existingCar != null)
                         {
-                            existingCar.Colours.Add(newColour);
+                            existingCar.Colours.Remove(existingCar.Colours.Where(colour => colour.PaletteID == newColour.PaletteID).SingleOrDefault());
+                            if (newColour.JapaneseName != "Delete")
+                            {
+                                existingCar.Colours.Add(newColour);
+                            }
                         }
                     }
 
@@ -148,6 +154,8 @@ namespace GT2.CarInfoEditorCSV
                     {
                         car.Colours = car.Colours.OrderBy(colour => colour.PaletteID).ToList();
                     }
+
+                    list.Cars = list.Cars.Where(car => car.Colours.Any()).ToList();
                 }
             }
         }
