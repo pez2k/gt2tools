@@ -94,6 +94,7 @@ namespace GT2.CarInfoEditorCSV
             {
                 ReadColours(list, csvPath);
             }
+            list.Cars = list.Cars.Where(car => car.Colours.Any()).ToList();
 
             list.SaveToFiles();
         }
@@ -154,8 +155,6 @@ namespace GT2.CarInfoEditorCSV
                     {
                         car.Colours = car.Colours.OrderBy(colour => colour.PaletteID).ToList();
                     }
-
-                    list.Cars = list.Cars.Where(car => car.Colours.Any()).ToList();
                 }
             }
         }
