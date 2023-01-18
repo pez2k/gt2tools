@@ -67,6 +67,11 @@ namespace GT2.ModelTool.Structures
 
             // GT1 temp hack
             RenderFlags = 0b1000;
+
+            if (PaletteIndex == 14)
+            {
+                RenderFlags |= 0b0100; // set brake light flag
+            }
         }
 
         public override void WriteToCDO(Stream stream, bool isQuad, List<Vertex> vertices, List<Normal> normals)
