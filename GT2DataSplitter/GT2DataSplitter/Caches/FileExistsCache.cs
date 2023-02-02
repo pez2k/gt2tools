@@ -5,7 +5,7 @@ namespace GT2.DataSplitter.Caches
 {
     public static class FileExistsCache
     {
-        private static readonly Dictionary<string, bool> cache = new Dictionary<string, bool>();
+        private static readonly Dictionary<string, bool> cache = new();
 
         public static bool FileExists(string filename)
         {

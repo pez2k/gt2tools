@@ -7,7 +7,7 @@ namespace GT2.DataSplitter
 {
     class Program
     {
-        public static CsvConfiguration CSVConfig => new CsvConfiguration(CultureInfo.CurrentUICulture) { ShouldQuote = (args) => true };
+        public static CsvConfiguration CSVConfig => new(CultureInfo.CurrentUICulture) { ShouldQuote = (args) => true };
 
         public static string LanguagePrefix { get; private set; }
 
@@ -70,7 +70,7 @@ namespace GT2.DataSplitter
 
         private static void DumpDataFile<TData>(string filename, bool favourCompressed) where TData : DataFile, new()
         {
-            var data = new TData();
+            TData data = new();
             data.ReadData(GetCorrectFilename($"{GetDataFilePrefix()}{filename}", favourCompressed));
             data.DumpData();
         }
@@ -83,7 +83,7 @@ namespace GT2.DataSplitter
 
         private static void BuildArcadeFile()
         {
-            var languageDirectories = Directory.GetDirectories("Strings");
+            string[] languageDirectories = Directory.GetDirectories("Strings");
             foreach (string languageDirectory in languageDirectories)
             {
                 LanguagePrefix = languageDirectory.Split('\\')[1];
@@ -92,7 +92,7 @@ namespace GT2.DataSplitter
                 string overridePath = Path.Combine("_Overrides", LanguagePrefix);
                 DataFile.OverridePath = Directory.Exists(overridePath) ? overridePath : null;
 
-                var arcadeData = new ArcadeData();
+                ArcadeData arcadeData = new();
                 arcadeData.ImportData();
                 Directory.CreateDirectory("Output");
                 arcadeData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}arcade_data.dat"));
@@ -101,7 +101,7 @@ namespace GT2.DataSplitter
 
         private static void BuildLicenseFile()
         {
-            var languageDirectories = Directory.GetDirectories("Strings");
+            string[] languageDirectories = Directory.GetDirectories("Strings");
             foreach (string languageDirectory in languageDirectories)
             {
                 LanguagePrefix = languageDirectory.Split('\\')[1];
@@ -110,7 +110,7 @@ namespace GT2.DataSplitter
                 string overridePath = Path.Combine("_Overrides", LanguagePrefix);
                 DataFile.OverridePath = Directory.Exists(overridePath) ? overridePath : null;
 
-                var licenseData = new LicenseData();
+                LicenseData licenseData = new();
                 licenseData.ImportData();
                 Directory.CreateDirectory("Output");
                 licenseData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}license_data.dat"));
@@ -119,7 +119,7 @@ namespace GT2.DataSplitter
 
         private static void BuildGTModeFile()
         {
-            var languageDirectories = Directory.GetDirectories("Strings");
+            string[] languageDirectories = Directory.GetDirectories("Strings");
             foreach (string languageDirectory in languageDirectories)
             {
                 LanguagePrefix = languageDirectory.Split('\\')[1];
@@ -131,12 +131,12 @@ namespace GT2.DataSplitter
                 string overridePath = Path.Combine("_Overrides", LanguagePrefix);
                 DataFile.OverridePath = Directory.Exists(overridePath) ? overridePath : null;
 
-                var carData = new GTModeData();
+                GTModeData carData = new();
                 carData.ImportData();
                 Directory.CreateDirectory("Output");
                 carData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}gtmode_data.dat"));
 
-                GTModeRace raceData = new GTModeRace();
+                GTModeRace raceData = new();
                 raceData.ImportData();
                 raceData.WriteData(Path.Combine("Output", $"{GetDataFilePrefix()}gtmode_race.dat"));
 

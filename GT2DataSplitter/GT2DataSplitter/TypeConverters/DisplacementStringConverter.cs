@@ -16,7 +16,7 @@ namespace GT2.DataSplitter.TypeConverters
                                     : ushort.Parse(text);
         }
 
-        private ushort ParseSuffix(string text) =>
+        private static ushort ParseSuffix(string text) =>
             text == "3" ? TimesThree : text == "2" ? TimesTwo : (ushort)0;
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)

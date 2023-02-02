@@ -12,7 +12,7 @@ namespace GT2.DataSplitter
 
     public static class UnicodeStringTable
     {
-        private static List<string> strings = new List<string>();
+        private static List<string> strings = new();
         private static List<string> unusedStrings;
         private static readonly Encoding binaryEncoding = Encoding.Unicode;
         private static readonly Encoding textEncoding = Encoding.UTF8;
@@ -39,12 +39,12 @@ namespace GT2.DataSplitter
 
         public static Stream DecompressFile(string filename)
         {
-            var stream = new MemoryStream();
-            using (FileStream file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            MemoryStream stream = new();
+            using (FileStream file = new(filename, FileMode.Open, FileAccess.Read))
             {
                 if (filename.EndsWith(".gz"))
                 {
-                    using (GZipStream unzip = new GZipStream(file, CompressionMode.Decompress))
+                    using (GZipStream unzip = new(file, CompressionMode.Decompress))
                     {
                         unzip.CopyTo(stream);
                     }
@@ -63,7 +63,7 @@ namespace GT2.DataSplitter
 
             using (TextWriter output = new StreamWriter(File.Create($"{directory}\\PartStrings.csv"), textEncoding))
             {
-                using (CsvWriter csv = new CsvWriter(output, Program.CSVConfig))
+                using (CsvWriter csv = new(output, Program.CSVConfig))
                 {
                     for (int i = 0; i < unusedStrings.Count; i++)
                     {
@@ -95,7 +95,7 @@ namespace GT2.DataSplitter
 
             using (TextReader input = new StreamReader(filename, textEncoding))
             {
-                using (CsvReader csv = new CsvReader(input, Program.CSVConfig))
+                using (CsvReader csv = new(input, Program.CSVConfig))
                 {
                     while (csv.Read())
                     {
@@ -107,7 +107,7 @@ namespace GT2.DataSplitter
 
         public static void Write(string filename)
         {
-            using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
+            using (FileStream file = new(filename, FileMode.Create, FileAccess.ReadWrite))
             {
                 file.WriteUInt(0);
                 file.WriteCharacters("WSDB");
@@ -130,9 +130,9 @@ namespace GT2.DataSplitter
                 }
 
                 file.Position = 0;
-                using (FileStream zipFile = new FileStream(filename + ".gz", FileMode.Create, FileAccess.Write))
+                using (FileStream zipFile = new(filename + ".gz", FileMode.Create, FileAccess.Write))
                 {
-                    using (GZipStream zip = new GZipStream(zipFile, CompressionMode.Compress))
+                    using (GZipStream zip = new(zipFile, CompressionMode.Compress))
                     {
                         file.CopyTo(zip);
                     }

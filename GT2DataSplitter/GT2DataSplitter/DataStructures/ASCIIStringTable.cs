@@ -8,7 +8,7 @@ namespace GT2.DataSplitter
 
     public static class ASCIIStringTable
     {
-        private static readonly List<string> strings = new List<string>();
+        private static readonly List<string> strings = new();
         private static readonly Encoding encoding = Encoding.ASCII;
 
         public static void Read(Stream file, long startPosition)

@@ -9,8 +9,8 @@ namespace GT2.DataSplitter
 {
     public static class CarNameStringTable
     {
-        private static readonly List<CarName> strings = new List<CarName>();
-        private static readonly List<CarName> defaultStrings = new List<CarName>();
+        private static readonly List<CarName> strings = new();
+        private static readonly List<CarName> defaultStrings = new();
 
         public static void Add(uint carID, string nameFirstPart, string nameSecondPart, byte year) =>
             strings.Add(new CarName { CarID = carID, NameFirstPart = nameFirstPart, NameSecondPart = nameSecondPart, Year = year });
@@ -25,7 +25,7 @@ namespace GT2.DataSplitter
 
             using (TextWriter output = new StreamWriter(File.Create($"{directory}\\CarNames.csv"), Encoding.UTF8))
             {
-                using (CsvWriter csv = new CsvWriter(output, Program.CSVConfig))
+                using (CsvWriter csv = new(output, Program.CSVConfig))
                 {
                     csv.Context.RegisterClassMap<CarNameCSVMap>();
                     csv.WriteHeader<CarName>();
@@ -60,7 +60,7 @@ namespace GT2.DataSplitter
                 ImportCSV(carNamesPath, strings);
             }
 
-            var filenames = Directory.EnumerateFiles(directory, "*.csv").Where(file => Path.GetFileName(file) != "CarNames.csv" && Path.GetFileName(file) != "PartStrings.csv");
+            IEnumerable<string> filenames = Directory.EnumerateFiles(directory, "*.csv").Where(file => Path.GetFileName(file) != "CarNames.csv" && Path.GetFileName(file) != "PartStrings.csv");
 
             foreach (string filename in filenames)
             {
@@ -72,7 +72,7 @@ namespace GT2.DataSplitter
         {
             using (TextReader input = new StreamReader(filename, Encoding.UTF8))
             {
-                using (CsvReader csv = new CsvReader(input, Program.CSVConfig))
+                using (CsvReader csv = new(input, Program.CSVConfig))
                 {
                     csv.Context.RegisterClassMap<CarNameCSVMap>();
                     csv.Read();

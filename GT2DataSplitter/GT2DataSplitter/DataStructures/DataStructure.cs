@@ -21,7 +21,7 @@ namespace GT2.DataSplitter
         public virtual void Dump()
         {
             string filename = CreateOutputFilename();
-            using (FileStream outfile = new FileStream(filename, FileMode.Create, FileAccess.Write))
+            using (FileStream outfile = new(filename, FileMode.Create, FileAccess.Write))
             {
                 ExportStructure(rawData, outfile);
                 FileNameCache.Add(filenameCacheNameOverride ?? Name, filename);
@@ -38,7 +38,7 @@ namespace GT2.DataSplitter
             return Name + "\\" + number + "0.dat";
         }
 
-        private void ExportStructure(byte[] structure, FileStream output) => output.Write(structure, 0, structure.Length);
+        private static void ExportStructure(byte[] structure, FileStream output) => output.Write(structure, 0, structure.Length);
 
         public virtual void Import(string filename)
         {

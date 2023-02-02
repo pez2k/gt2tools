@@ -7,7 +7,7 @@ namespace GT2.DataSplitter.TypeConverters
 {
     public class TireStageConverter : ITypeConverter
     {
-        private readonly List<string> tireTypes = new List<string> { "Stock", "Sports", "Hard", "Medium", "Soft", "SuperSoft", "Simulation", "Dirt" };
+        private readonly List<string> tireTypes = new() { "Stock", "Sports", "Hard", "Medium", "Soft", "SuperSoft", "Simulation", "Dirt" };
 
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData) => (byte)tireTypes.IndexOf(text);
 

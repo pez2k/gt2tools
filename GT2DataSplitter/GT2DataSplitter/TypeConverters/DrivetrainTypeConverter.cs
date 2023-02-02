@@ -7,7 +7,7 @@ namespace GT2.DataSplitter.TypeConverters
 {
     public class DrivetrainTypeConverter : ITypeConverter
     {
-        private readonly List<string> drivetrainTypes = new List<string> { "FR", "FF", "4WD", "MR", "RR" };
+        private readonly List<string> drivetrainTypes = new() { "FR", "FF", "4WD", "MR", "RR" };
 
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData) => (byte)drivetrainTypes.IndexOf(text);
 

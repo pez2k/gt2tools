@@ -32,7 +32,7 @@ namespace GT2.DataSplitter
             string filename = CreateOutputFilename();
             using (TextWriter output = new StreamWriter(File.Create(filename), Encoding.UTF8))
             {
-                using (CsvWriter csv = new CsvWriter(output, Program.CSVConfig))
+                using (CsvWriter csv = new(output, Program.CSVConfig))
                 {
                     csv.Context.RegisterClassMap<TMap>();
                     csv.WriteHeader<TStructure>();
@@ -50,11 +50,11 @@ namespace GT2.DataSplitter
         {
             try
             {
-                using (var stream = new MemoryStream(FileContentsCache.GetFile(filename)))
+                using (MemoryStream stream = new(FileContentsCache.GetFile(filename)))
                 {
                     using (TextReader input = new StreamReader(stream, Encoding.UTF8))
                     {
-                        using (CsvReader csv = new CsvReader(input, Program.CSVConfig))
+                        using (CsvReader csv = new(input, Program.CSVConfig))
                         {
                             csv.Context.RegisterClassMap<TMap>();
                             csv.Read();

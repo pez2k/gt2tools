@@ -38,7 +38,7 @@ namespace GT2.DataSplitter
             }
         }
 
-        private void Read(Stream file, uint blockStart, uint blockSize, TypedData data)
+        private static void Read(Stream file, uint blockStart, uint blockSize, TypedData data)
         {
             var template = (DataStructure)Activator.CreateInstance(data.Type);
             Console.WriteLine($"Reading {template.Name} structures from file...");
@@ -70,7 +70,7 @@ namespace GT2.DataSplitter
             }
         }
 
-        private void Dump(TypedData data)
+        private static void Dump(TypedData data)
         {
             var template = (DataStructure)Activator.CreateInstance(data.Type);
             Console.WriteLine($"Dumping {template.Name} structures to disk...");
@@ -94,12 +94,12 @@ namespace GT2.DataSplitter
             }
         }
 
-        private void Import(TypedData data)
+        private static void Import(TypedData data)
         {
             var template = (DataStructure)Activator.CreateInstance(data.Type);
             Console.WriteLine($"Importing {template.Name} structures from disk...");
 
-            var cars = new Dictionary<uint, string>();
+            Dictionary<uint, string> cars = new();
             foreach (string carName in Directory.EnumerateDirectories(template.Name))
             {
                 cars.Add(carName.ToCarID(), carName);
@@ -141,7 +141,7 @@ namespace GT2.DataSplitter
 
         public void WriteData(string filename)
         {
-            using (FileStream file = new FileStream(filename, FileMode.Create, FileAccess.ReadWrite))
+            using (FileStream file = new(filename, FileMode.Create, FileAccess.ReadWrite))
             {
                 WriteDataToFile(file);
 
@@ -151,9 +151,9 @@ namespace GT2.DataSplitter
                 }
 
                 file.Position = 0;
-                using (FileStream zipFile = new FileStream(filename + ".gz", FileMode.Create, FileAccess.Write))
+                using (FileStream zipFile = new(filename + ".gz", FileMode.Create, FileAccess.Write))
                 {
-                    using (GZipStream zip = new GZipStream(zipFile, CompressionMode.Compress))
+                    using (GZipStream zip = new(zipFile, CompressionMode.Compress))
                     {
                         file.CopyTo(zip);
                     }
@@ -175,7 +175,7 @@ namespace GT2.DataSplitter
             }
         }
 
-        private void Write(TypedData data, Stream file, int indexPosition)
+        private static void Write(TypedData data, Stream file, int indexPosition)
         {
             file.Position = file.Length;
             uint startingPosition = (uint)file.Position;

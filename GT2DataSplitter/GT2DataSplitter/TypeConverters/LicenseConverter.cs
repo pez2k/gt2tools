@@ -7,7 +7,7 @@ namespace GT2.DataSplitter.TypeConverters
 {
     public class LicenseConverter : ITypeConverter
     {
-        private readonly List<string> licenseTypes = new List<string> { "None", "B", "A", "IC", "IB", "IA", "S" };
+        private readonly List<string> licenseTypes = new() { "None", "B", "A", "IC", "IB", "IA", "S" };
 
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData) => (byte)licenseTypes.IndexOf(text);
 

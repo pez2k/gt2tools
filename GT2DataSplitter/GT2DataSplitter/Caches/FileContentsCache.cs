@@ -5,13 +5,13 @@ namespace GT2.DataSplitter.Caches
 {
     public static class FileContentsCache
     {
-        private static readonly Dictionary<string, byte[]> cache = new Dictionary<string, byte[]>();
+        private static readonly Dictionary<string, byte[]> cache = new();
 
         public static byte[] GetFile(string filename)
         {
             if (!cache.ContainsKey(filename))
             {
-                using (FileStream file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+                using (FileStream file = new(filename, FileMode.Open, FileAccess.Read))
                 {
                     var data = new byte[file.Length];
                     file.Read(data, 0, (int)file.Length);
