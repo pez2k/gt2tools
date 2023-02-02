@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
+using CsvHelper.Configuration;
 
 namespace GT2.DataSplitter
 {
     class Program
     {
+        public static CsvConfiguration CSVConfig => new CsvConfiguration(CultureInfo.CurrentUICulture) { ShouldQuote = (args) => true };
+
         public static string LanguagePrefix { get; private set; }
 
         public static void Main(string[] args)

@@ -63,7 +63,7 @@ namespace GT2.DataSplitter
 
             using (TextWriter output = new StreamWriter(File.Create($"{directory}\\PartStrings.csv"), textEncoding))
             {
-                using (CsvWriter csv = new CsvWriter(output))
+                using (CsvWriter csv = new CsvWriter(output, Program.CSVConfig))
                 {
                     for (int i = 0; i < unusedStrings.Count; i++)
                     {
@@ -71,7 +71,6 @@ namespace GT2.DataSplitter
                         {
                             continue;
                         }
-                        csv.Configuration.QuoteAllFields = true;
                         csv.WriteField(i.ToString());
                         csv.WriteField(unusedStrings[i]);
                         csv.NextRecord();
@@ -96,7 +95,7 @@ namespace GT2.DataSplitter
 
             using (TextReader input = new StreamReader(filename, textEncoding))
             {
-                using (CsvReader csv = new CsvReader(input))
+                using (CsvReader csv = new CsvReader(input, Program.CSVConfig))
                 {
                     while (csv.Read())
                     {

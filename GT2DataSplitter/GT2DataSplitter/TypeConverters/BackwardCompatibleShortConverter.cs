@@ -9,7 +9,7 @@ namespace GT2.DataSplitter.TypeConverters
     {
         public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
-            NumberStyles numberStyle = memberMapData.TypeConverterOptions.NumberStyle ?? NumberStyles.Integer;
+            NumberStyles numberStyle = memberMapData.TypeConverterOptions.NumberStyles ?? NumberStyles.Integer;
             return short.TryParse(text, numberStyle, memberMapData.TypeConverterOptions.CultureInfo, out short signedValue)
                 ? signedValue
                 : ushort.TryParse(text, numberStyle, memberMapData.TypeConverterOptions.CultureInfo, out ushort legacyUnsignedValue)

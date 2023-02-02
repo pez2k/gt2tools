@@ -25,10 +25,9 @@ namespace GT2.DataSplitter
 
             using (TextWriter output = new StreamWriter(File.Create($"{directory}\\CarNames.csv"), Encoding.UTF8))
             {
-                using (CsvWriter csv = new CsvWriter(output))
+                using (CsvWriter csv = new CsvWriter(output, Program.CSVConfig))
                 {
-                    csv.Configuration.RegisterClassMap<CarNameCSVMap>();
-                    csv.Configuration.QuoteAllFields = true;
+                    csv.Context.RegisterClassMap<CarNameCSVMap>();
                     csv.WriteHeader<CarName>();
                     csv.NextRecord();
 
@@ -73,9 +72,9 @@ namespace GT2.DataSplitter
         {
             using (TextReader input = new StreamReader(filename, Encoding.UTF8))
             {
-                using (CsvReader csv = new CsvReader(input))
+                using (CsvReader csv = new CsvReader(input, Program.CSVConfig))
                 {
-                    csv.Configuration.RegisterClassMap<CarNameCSVMap>();
+                    csv.Context.RegisterClassMap<CarNameCSVMap>();
                     csv.Read();
                     csv.ReadHeader();
                     
