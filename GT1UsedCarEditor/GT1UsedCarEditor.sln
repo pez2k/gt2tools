@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GT1UsedCarEditor", "GT1UsedCarEditor\GT1UsedCarEditor.csproj", "{F9787D8A-7860-4C57-83FC-D0906BAB60DC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "..\Common\Common.csproj", "{B4EB0271-334F-4F1F-AD36-AB17F80BECD3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9787D8A-7860-4C57-83FC-D0906BAB60DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9787D8A-7860-4C57-83FC-D0906BAB60DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9787D8A-7860-4C57-83FC-D0906BAB60DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9787D8A-7860-4C57-83FC-D0906BAB60DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4EB0271-334F-4F1F-AD36-AB17F80BECD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4EB0271-334F-4F1F-AD36-AB17F80BECD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4EB0271-334F-4F1F-AD36-AB17F80BECD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4EB0271-334F-4F1F-AD36-AB17F80BECD3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BE406EA8-E222-49C4-890E-FC3790705B39}
+	EndGlobalSection
+EndGlobal
