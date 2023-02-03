@@ -9,5 +9,8 @@
       <Version>30.0.1</Version>
     </PackageReference>
   </ItemGroup>
-  <Import Project="..\..\Common\Common.projitems" Label="Shared" />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.csproj" />
+    <ProjectReference Include="..\..\Common\GT2\Common.GT2.csproj" />
+  </ItemGroup>
 </Project>
