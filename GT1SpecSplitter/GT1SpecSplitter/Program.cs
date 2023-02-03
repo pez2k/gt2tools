@@ -108,14 +108,14 @@ namespace GT1.SpecSplitter
                 return;
             }
 
-            DumpStructs(structs, directory, fileType);
+            DumpStructs(structs, directory, fileType, stringTables);
             DumpStringTables(stringTables, directory);
         }
 
-        private static void DumpStructs(List<byte[]> structs, string directory, string fileType)
+        private static void DumpStructs(List<byte[]> structs, string directory, string fileType, List<List<string>> stringTables)
         {
             int i = 0;
-            foreach (var buffer in structs)
+            foreach (byte[] buffer in structs)
             {
                 string outputName = $"{i:D4}";
                 switch (fileType)
@@ -125,6 +125,15 @@ namespace GT1.SpecSplitter
                         break;
                     case "EQUIP":
                         outputName = $"{i + 1:D3}_{Encoding.ASCII.GetString(buffer, 0x60, 7)}";
+                        break;
+                    case "RACING":
+                        outputName += $"_{stringTables[0][buffer[0x14]]}_{stringTables[1][buffer[0x18]].Replace('/', '-')}"; // hack
+                        break;
+                    case "TIRE":
+                        outputName += $"_{stringTables[0][buffer[0xC]]}_{stringTables[1][buffer[0x10]].Replace('/', '-')}"; // hack
+                        break;
+                    case "DISPLAC":
+                        outputName += $"_{stringTables[0][buffer[0x18]]}_{stringTables[1][buffer[0x1C]].Replace('/', '-')}"; // hack
                         break;
                 }
                 using (var output = new FileStream($"{directory}\\{outputName}.dat", FileMode.Create, FileAccess.Write))
@@ -137,8 +146,9 @@ namespace GT1.SpecSplitter
                 // LWEIGHT - 0x03 - car ID
                 // EQUIP - 0x00 - car ID - 0x08 - RM ID? - 0x2A - tyre ID
                 // FLYWHEL - 0x04 - car ID - 0x06 - stage - 0x07 - stage = 0x08 - price
-                // RACING - 0x0E - part ID? - 0x10 - price - 0x14 - string ID 1 - 0x18 - string ID 2
+                // RACING - 0x0E - part ID? - 0x10 - price - 0x14 - string ID 1 - 0x18 - string ID 2 - RM part
                 // SPEC - 0x184 - car price
+                // TIRE - 0x00 - compound? - 0x06 - different per type - 0x07 same as 06 except last two sets when FF - 0x08 - price - 0x0C - string ID 1 - 0x10 - string ID 2
 
                 // 0000.equip - All cars, minus C2 and NB
                 // 0001.equip - All cars - tyres equipped
