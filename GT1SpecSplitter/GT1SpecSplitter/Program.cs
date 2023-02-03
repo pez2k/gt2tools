@@ -30,7 +30,7 @@ namespace GT1.SpecSplitter
 
         private static void Dump(string filename)
         {
-            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            using (FileStream file = new(filename, FileMode.Open, FileAccess.Read))
             {
                 file.Position = 4; // skip header
                 string fileType = file.ReadCharacters();
@@ -57,7 +57,7 @@ namespace GT1.SpecSplitter
             file.ReadUInt(); // always zero?
             uint structSize = file.ReadUInt();
 
-            var structs = new List<byte[]>(structCount);
+            List<byte[]> structs = new(structCount);
             for (ushort i = 0; i < structCount; i++)
             {
                 var buffer = new byte[structSize];
@@ -71,7 +71,7 @@ namespace GT1.SpecSplitter
         {
             uint tableCount = file.ReadUInt();
             file.Position += tableCount * 4;
-            var strings = new List<List<string>>((int)tableCount);
+            List<List<string>> strings = new((int)tableCount);
 
             for (uint i = 0; i < tableCount; i++)
             {
@@ -83,7 +83,7 @@ namespace GT1.SpecSplitter
         private static List<string> ReadStrings(Stream file)
         {
             ushort stringCount = file.ReadUShort();
-            var strings = new List<string>(stringCount);
+            List<string> strings = new(stringCount);
             for (ushort i = 0; i < stringCount; i++)
             {
                 byte stringLength = file.ReadSingleByte();
@@ -136,7 +136,7 @@ namespace GT1.SpecSplitter
                         outputName += $"_{stringTables[0][buffer[0x18]]}_{stringTables[1][buffer[0x1C]].Replace('/', '-')}"; // hack
                         break;
                 }
-                using (var output = new FileStream($"{directory}\\{outputName}.dat", FileMode.Create, FileAccess.Write))
+                using (FileStream output = new($"{directory}\\{outputName}.dat", FileMode.Create, FileAccess.Write))
                 {
                     output.Write(buffer);
                 }
@@ -170,7 +170,7 @@ namespace GT1.SpecSplitter
         {
             for (int i = 0; i < stringTables.Count; i++)
             {
-                using (var output = new StreamWriter($"{directory}\\strings{i}.txt", false, Encoding.UTF8))
+                using (StreamWriter output = new($"{directory}\\strings{i}.txt", false, Encoding.UTF8))
                 {
                     foreach (string textString in stringTables[i])
                     {
@@ -183,13 +183,13 @@ namespace GT1.SpecSplitter
 
         private static void DumpColourData(List<byte[]> structs, List<List<string>> stringTables, string directory)
         {
-            using (var output = File.CreateText($"{directory}\\Colours.csv"))
+            using (StreamWriter output = File.CreateText($"{directory}\\Colours.csv"))
             {
                 output.WriteLine($"\"CarID\",\"ColourID\",\"ColourName\"");
 
                 foreach (byte[] structure in structs)
                 {
-                    using (var stream = new MemoryStream(structure))
+                    using (MemoryStream stream = new(structure))
                     {
                         ushort carID = stream.ReadUShort();
                         for (int i = 0; i < 16; i++)
@@ -221,7 +221,7 @@ namespace GT1.SpecSplitter
             }
             string filename = "new_" + Path.GetFileName(path).Replace($"_{fileType}", $".{fileType.ToLower()}");
 
-            using (var file = new FileStream(filename, FileMode.Create, FileAccess.Write))
+            using (FileStream file = new(filename, FileMode.Create, FileAccess.Write))
             {
                 file.WriteCharacters("@(#)");
                 file.WriteCharacters(fileType);
@@ -234,10 +234,10 @@ namespace GT1.SpecSplitter
         private static List<byte[]> ImportStructs(string directory)
         {
             string[] files = Directory.EnumerateFiles(directory, "*.dat").ToArray();
-            var structs = new List<byte[]>(files.Length);
+            List<byte[]> structs = new(files.Length);
             foreach (string file in files)
             {
-                using (var input = new FileStream(file, FileMode.Open, FileAccess.Read))
+                using (FileStream input = new(file, FileMode.Open, FileAccess.Read))
                 {
                     byte[] buffer = new byte[input.Length];
                     input.Read(buffer);
@@ -250,12 +250,12 @@ namespace GT1.SpecSplitter
         private static List<List<string>> ImportStringTables(string directory)
         {
             string[] files = Directory.EnumerateFiles(directory, "strings*.txt").ToArray();
-            var stringTables = new List<List<string>>(files.Length);
+            List<List<string>> stringTables = new(files.Length);
             foreach (string file in files)
             {
-                using (var input = new StreamReader(file, Encoding.UTF8))
+                using (StreamReader input = new(file, Encoding.UTF8))
                 {
-                    var strings = new List<string>();
+                    List<string> strings = new();
                     while (!input.EndOfStream)
                     {
                         strings.Add(input.ReadLine());
@@ -338,8 +338,8 @@ namespace GT1.SpecSplitter
 
         private static void ReadColourData(List<byte[]> structs, List<List<string>> stringTables, string directory)
         {
-            var colours = new Dictionary<ushort, List<(byte, string)>>();
-            using (var input = new StreamReader($"{directory}\\Colours.csv"))
+            Dictionary<ushort, List<(byte, string)>> colours = new();
+            using (StreamReader input = new($"{directory}\\Colours.csv"))
             {
                 input.ReadLine(); // skip header
                 while (!input.EndOfStream)
@@ -373,7 +373,7 @@ namespace GT1.SpecSplitter
                 ushort carID = car.Key;
                 List<(byte, string)> carColours = car.Value;
 
-                using (var file = new MemoryStream(54))
+                using (MemoryStream file = new(54))
                 {
                     file.WriteUShort(carID);
                     for (int i = 0; i < 16; i++)
