@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="GT1\**" />
+    <Compile Remove="GT2\**" />
+    <Compile Remove="GT3\**" />
+    <EmbeddedResource Remove="GT1\**" />
+    <EmbeddedResource Remove="GT2\**" />
+    <EmbeddedResource Remove="GT3\**" />
+    <None Remove="GT1\**" />
+    <None Remove="GT2\**" />
+    <None Remove="GT3\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Common.projitems" />
+  </ItemGroup>
+</Project>
