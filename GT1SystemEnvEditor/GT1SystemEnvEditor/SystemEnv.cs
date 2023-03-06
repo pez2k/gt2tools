@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
+using CsvHelper;
+using CsvHelper.Configuration;
 using StreamExtensions;
 
 namespace GT1.SystemEnvEditor
@@ -17,7 +20,7 @@ namespace GT1.SystemEnvEditor
         private List<byte[]> courseModes = new();
         private byte[] courseBGs = Array.Empty<byte>();
         private string[] courseNames = Array.Empty<string>();
-        private byte[] unknownData1 = Array.Empty<byte>();
+        private ushort[] unknownData1 = Array.Empty<ushort>();
         private string[] carList = Array.Empty<string>();
         private List<byte>[] carColours = Array.Empty<List<byte>>();
         private string[] carNames = Array.Empty<string>();
@@ -61,8 +64,11 @@ namespace GT1.SystemEnvEditor
 
                 courseNames = ReadStrings(file, courseCount);
 
-                unknownData1 = new byte[32];
-                file.Read(unknownData1);
+                unknownData1 = new ushort[16];
+                for (int i = 0; i < 16; i++)
+                {
+                    unknownData1[i] = file.ReadUShort();
+                }
 
                 carList = new string[carCount];
                 for (int i = 0; i < carCount; i++)
@@ -172,7 +178,7 @@ namespace GT1.SystemEnvEditor
                     }
                     writer.WriteLine($"unknown.count.1={unknownCount1}");
                     writer.WriteLine($"unknown.count.2={unknownCount2}");
-                    writer.WriteLine($"unknown.1={string.Join(',', unknownData1.Select(value => $"{value:X2}"))}");
+                    writer.WriteLine($"unknown.1={string.Join(',', unknownData1.Select(value => $"{value:X4}"))}");
                     writer.WriteLine($"unknown.2={string.Join(',', unknownData2.Select(value => $"{value:X8}"))}");
                 }
             }
@@ -204,7 +210,10 @@ namespace GT1.SystemEnvEditor
 
                 WriteStrings(file, courseNames);
 
-                file.Write(unknownData1);
+                foreach (ushort unknown in unknownData1)
+                {
+                    file.WriteUShort(unknown);
+                }
 
                 foreach (string car in carList)
                 {
@@ -277,6 +286,8 @@ namespace GT1.SystemEnvEditor
                 Directory.CreateDirectory(directory);
             }
 
+            CsvConfiguration csvConfig = new(CultureInfo.CurrentCulture) { ShouldQuote = (args) => true };
+
             using (FileStream file = new(Path.Combine(directory, "Courses.csv"), FileMode.Create, FileAccess.Write))
             {
                 using (StreamWriter writer = new(file))
@@ -293,10 +304,18 @@ namespace GT1.SystemEnvEditor
             {
                 using (StreamWriter writer = new(file))
                 {
-                    writer.WriteLine("\"Code\",\"Name\"");
-                    for (int i = 0; i < carCount; i++)
+                    using (CsvWriter csv = new(writer, csvConfig))
                     {
-                        writer.WriteLine($"\"{carList[i]}\",\"{carNames[i]}\"");
+                        csv.WriteField("Code");
+                        csv.WriteField("Name");
+                        csv.NextRecord();
+
+                        for (int i = 0; i < carCount; i++)
+                        {
+                            csv.WriteField(carList[i]);
+                            csv.WriteField(carNames[i]);
+                            csv.NextRecord();
+                        }
                     }
                 }
             }
@@ -305,12 +324,20 @@ namespace GT1.SystemEnvEditor
             {
                 using (StreamWriter writer = new(file))
                 {
-                    writer.WriteLine("\"Code\",\"ColourID\"");
-                    for (int i = 0; i < carCount; i++)
+                    using (CsvWriter csv = new(writer, csvConfig))
                     {
-                        foreach (byte colourID in carColours[i])
+                        csv.WriteField("Code");
+                        csv.WriteField("ColourID");
+                        csv.NextRecord();
+
+                        for (int i = 0; i < carCount; i++)
                         {
-                            writer.WriteLine($"\"{carList[i]}\",\"{colourID:X2}\"");
+                            foreach (byte colourID in carColours[i])
+                            {
+                                csv.WriteField(carList[i]);
+                                csv.WriteField($"{colourID:X2}");
+                                csv.NextRecord();
+                            }
                         }
                     }
                 }
@@ -320,10 +347,17 @@ namespace GT1.SystemEnvEditor
             {
                 using (StreamWriter writer = new(file))
                 {
-                    writer.WriteLine("\"ID\"");
-                    foreach (ushort carID in arcadeCarIDs)
+                    using (CsvWriter csv = new(writer, csvConfig))
                     {
-                        writer.WriteLine($"\"{carID:X4}\"");
+                        csv.WriteField("ID");
+                        csv.NextRecord();
+
+                        foreach (ushort carID in arcadeCarIDs)
+                        {
+                            csv.WriteField($"{carID:X4}");
+                            csv.NextRecord();
+                            writer.WriteLine();
+                        }
                     }
                 }
             }
@@ -332,10 +366,22 @@ namespace GT1.SystemEnvEditor
             {
                 using (StreamWriter writer = new(file))
                 {
-                    writer.WriteLine("\"Code\",\"Name\",\"Unknown1\",\"LengthMaybe\"");
-                    for (int i = 0; i < musicCount; i++)
+                    using (CsvWriter csv = new(writer, csvConfig))
                     {
-                        writer.WriteLine($"\"{musicCodes[i]}\",\"{musicNames[i]}\",\"{musicData[i * 2]:X4}\",\"{musicData[(i * 2) + 1]:X4}\"");
+                        csv.WriteField("Code");
+                        csv.WriteField("Name");
+                        csv.WriteField("Unknown1");
+                        csv.WriteField("LengthMaybe");
+                        csv.NextRecord();
+
+                        for (int i = 0; i < musicCount; i++)
+                        {
+                            csv.WriteField(musicCodes[i]);
+                            csv.WriteField(musicNames[i]);
+                            csv.WriteField($"{musicData[i * 2]:X4}");
+                            csv.WriteField($"{musicData[(i * 2) + 1]:X4}");
+                            csv.NextRecord();
+                        }
                     }
                 }
             }
@@ -344,10 +390,16 @@ namespace GT1.SystemEnvEditor
             {
                 using (StreamWriter writer = new(file))
                 {
-                    writer.WriteLine("\"Unknown1\"");
-                    foreach (byte unknown in unknownData1)
+                    using (CsvWriter csv = new(writer, csvConfig))
                     {
-                        writer.WriteLine($"\"{unknown:X2}\"");
+                        csv.WriteField("Unknown1");
+                        csv.NextRecord();
+
+                        foreach (ushort unknown in unknownData1)
+                        {
+                            csv.WriteField($"{unknown:X4}");
+                            csv.NextRecord();
+                        }
                     }
                 }
             }
@@ -356,10 +408,16 @@ namespace GT1.SystemEnvEditor
             {
                 using (StreamWriter writer = new(file))
                 {
-                    writer.WriteLine("\"Unknown1\"");
-                    foreach (uint unknown in unknownData2)
+                    using (CsvWriter csv = new(writer, csvConfig))
                     {
-                        writer.WriteLine($"\"{unknown:X8}\"");
+                        csv.WriteField("Unknown1");
+                        csv.NextRecord();
+
+                        foreach (uint unknown in unknownData2)
+                        {
+                            csv.WriteField($"{unknown:X8}");
+                            csv.NextRecord();
+                        }
                     }
                 }
             }
@@ -368,8 +426,16 @@ namespace GT1.SystemEnvEditor
             {
                 using (StreamWriter writer = new(file))
                 {
-                    writer.WriteLine("\"UnknownCount1\",\"UnknownCount2\"");
-                    writer.WriteLine($"\"{unknownCount1:X4}\",\"{unknownCount2:X4}\"");
+                    using (CsvWriter csv = new(writer, csvConfig))
+                    {
+                        csv.WriteField("UnknownCount1");
+                        csv.WriteField("UnknownCount2");
+                        csv.NextRecord();
+
+                        csv.WriteField($"{unknownCount1:X4}");
+                        csv.WriteField($"{unknownCount2:X4}");
+                        csv.NextRecord();
+                    }
                 }
             }
 
