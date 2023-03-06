@@ -10,22 +10,33 @@
             }
 
             string filename = args[0];
-            string outputType = args.Length > 1 ? args[1] : "-e";
+            string defaultOutputType = "-e";
 
             SystemEnv data = new();
-            data.ReadFromBinary(filename);
-
-            if (outputType == "-t")
+            if (File.GetAttributes(filename).HasFlag(FileAttributes.Directory))
             {
-                data.WriteToPlaintext(Path.ChangeExtension(filename, ".ENV"));
-            }
-            else if (outputType == "-e")
-            {
-                data.WriteToEditable(Path.GetFileNameWithoutExtension(filename));
+                data.ReadFromEditable(filename);
+                filename = Path.GetFileName(filename) ?? throw new Exception();
+                defaultOutputType = "-b";
             }
             else
             {
-                data.WriteToBinary("new_SYSTEM.DAT");
+                data.ReadFromBinary(filename);
+                filename = Path.GetFileNameWithoutExtension(filename);
+            }
+
+            string outputType = args.Length > 1 ? args[1] : defaultOutputType;
+            if (outputType == "-t")
+            {
+                data.WriteToPlaintext($"{filename}.ENV");
+            }
+            else if (outputType == "-e")
+            {
+                data.WriteToEditable(filename);
+            }
+            else
+            {
+                data.WriteToBinary($"{filename}.DAT");
             }
         }
     }

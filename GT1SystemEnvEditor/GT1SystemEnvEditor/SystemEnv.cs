@@ -138,6 +138,208 @@ namespace GT1.SystemEnvEditor
             return strings;
         }
 
+        public void ReadFromEditable(string directory)
+        {
+            if (!Directory.Exists(directory))
+            {
+                throw new Exception("Directory does not exist.");
+            }
+
+            CsvConfiguration csvConfig = new(CultureInfo.CurrentCulture) { ShouldQuote = (args) => true };
+
+            using (FileStream file = new(Path.Combine(directory, "Courses.csv"), FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader writer = new(file))
+                {
+                    using (CsvReader csv = new(writer, csvConfig))
+                    {
+                        List<string> readCourseCodes = new();
+                        List<string> readCourseNames = new();
+                        List<byte> readCourseBGs = new();
+                        courseModes = new();
+                        csv.Read();
+                        while (csv.Read())
+                        {
+                            readCourseCodes.Add(csv.GetField(0) ?? "");
+                            readCourseNames.Add(csv.GetField(1) ?? "");
+                            readCourseBGs.Add(byte.Parse(csv.GetField(2) ?? ""));
+
+                            var readCourseMode = new byte[16];
+                            for (int i = 0; i < 16; i++)
+                            {
+                                readCourseMode[i] = byte.Parse(csv.GetField(i + 3) ?? "");
+                            }
+                            courseModes.Add(readCourseMode);
+                        }
+                        courseCodes = readCourseCodes.ToArray();
+                        courseNames = readCourseNames.ToArray();
+                        courseBGs = readCourseBGs.ToArray();
+                        courseCount = (ushort)courseCodes.Length;
+                    }
+                }
+            }
+
+            using (FileStream file = new(Path.Combine(directory, "Cars.csv"), FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new(file))
+                {
+                    using (CsvReader csv = new(reader, csvConfig))
+                    {
+                        List<string> readCarList = new();
+                        List<string> readCarNames = new();
+                        csv.Read();
+                        while (csv.Read())
+                        {
+                            readCarList.Add(csv.GetField(0) ?? "");
+                            readCarNames.Add(csv.GetField(1) ?? "");
+                        }
+                        carList = readCarList.ToArray();
+                        carNames = readCarNames.ToArray();
+                        carCount = (ushort)carList.Length;
+                    }
+                }
+            }
+
+            using (FileStream file = new(Path.Combine(directory, "CarColours.csv"), FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new(file))
+                {
+                    using (CsvReader csv = new(reader, csvConfig))
+                    {
+                        List<string> readCarList = new();
+                        List<string> readColourIDs = new();
+                        csv.Read();
+                        while (csv.Read())
+                        {
+                            readCarList.Add(csv.GetField(0) ?? "");
+                            readColourIDs.Add(csv.GetField(1) ?? "");
+                        }
+                        
+                        if (readCarList.Count != carCount || !readCarList.SequenceEqual(carList))
+                        {
+                            throw new Exception("Car IDs in CarColours don't match car IDs in Cars.");
+                        }
+
+                        List<List<byte>> readCarColours = new(readColourIDs.Count);
+                        foreach (string readIDs in readColourIDs)
+                        {
+                            List<byte> parsedIDs = readIDs.Split(',').Select(colourID => byte.Parse(colourID, NumberStyles.HexNumber)).ToList();
+                            if (parsedIDs.Count > 16)
+                            {
+                                throw new Exception("Max of 16 colours per car.");
+                            }
+                            readCarColours.Add(parsedIDs);
+                        }
+                        carColours = readCarColours.ToArray();
+                    }
+                }
+            }
+
+            using (FileStream file = new(Path.Combine(directory, "ArcadeCars.csv"), FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new(file))
+                {
+                    using (CsvReader csv = new(reader, csvConfig))
+                    {
+                        List<ushort> readIDs = new();
+                        csv.Read();
+                        while (csv.Read())
+                        {
+                            readIDs.Add(ushort.Parse(csv.GetField(0) ?? "", NumberStyles.HexNumber));
+                        }
+                        arcadeCarIDs = readIDs.ToArray();
+                        carcadeCount = (ushort)arcadeCarIDs.Length;
+                    }
+                }
+            }
+
+            using (FileStream file = new(Path.Combine(directory, "Music.csv"), FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new(file))
+                {
+                    using (CsvReader csv = new(reader, csvConfig))
+                    {
+                        List<string> readMusicCodes = new();
+                        List<string> readMusicNames = new();
+                        List<uint> readMusicData = new();
+                        csv.Read();
+                        while (csv.Read())
+                        {
+                            readMusicCodes.Add(csv.GetField(0) ?? "");
+                            readMusicNames.Add(csv.GetField(1) ?? "");
+                            readMusicData.Add(uint.Parse(csv.GetField(2) ?? "", NumberStyles.HexNumber));
+                            readMusicData.Add(uint.Parse(csv.GetField(3) ?? "", NumberStyles.HexNumber));
+                        }
+                        musicCodes = readMusicCodes.ToArray();
+                        musicNames = readMusicNames.ToArray();
+                        musicData = readMusicData.ToArray();
+                        musicCount = (ushort)musicCodes.Length;
+                    }
+                }
+            }
+
+            using (FileStream file = new(Path.Combine(directory, "UnknownData1.csv"), FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new(file))
+                {
+                    using (CsvReader csv = new(reader, csvConfig))
+                    {
+                        List<ushort> readValues = new();
+                        csv.Read();
+                        while (csv.Read())
+                        {
+                            readValues.Add(ushort.Parse(csv.GetField(0) ?? "", NumberStyles.HexNumber));
+                        }
+                        unknownData1 = readValues.ToArray();
+                    }
+                }
+            }
+
+            using (FileStream file = new(Path.Combine(directory, "UnknownData2.csv"), FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new(file))
+                {
+                    using (CsvReader csv = new(reader, csvConfig))
+                    {
+                        List<uint> readValues = new();
+                        csv.Read();
+                        while (csv.Read())
+                        {
+                            readValues.Add(uint.Parse(csv.GetField(0) ?? "", NumberStyles.HexNumber));
+                        }
+                        unknownData2 = readValues.ToArray();
+                    }
+                }
+            }
+
+            using (FileStream file = new(Path.Combine(directory, "UnknownValues.csv"), FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new(file))
+                {
+                    using (CsvReader csv = new(reader, csvConfig))
+                    {
+                        csv.Read();
+                        csv.Read();
+                        unknownCount1 = ushort.Parse(csv.GetField(0) ?? "", NumberStyles.HexNumber);
+                        unknownCount2 = ushort.Parse(csv.GetField(1) ?? "", NumberStyles.HexNumber);
+                    }
+                }
+            }
+
+            using (FileStream file = new(Path.Combine(directory, "Settings.txt"), FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new(file))
+                {
+                    otherSettings = new List<string>();
+                    while (!reader.EndOfStream)
+                    {
+                        otherSettings.Add(reader.ReadLine() ?? "");
+                    }
+                    otherSettings = otherSettings.Where(setting => !string.IsNullOrWhiteSpace(setting)).ToList();
+                }
+            }
+        }
+
         public void WriteToPlaintext(string filename)
         {
             using (FileStream output = new(filename, FileMode.Create, FileAccess.Write))
@@ -292,10 +494,41 @@ namespace GT1.SystemEnvEditor
             {
                 using (StreamWriter writer = new(file))
                 {
-                    writer.WriteLine("\"Code\",\"Name\",\"Background\",\"IsNight\",\"Unknown1\",\"Unknown2\",\"Unknown3\",\"Unknown4\",\"Unknown5\",\"Unknown6\",\"Unknown7\",\"Unknown8\",\"Unknown9\",\"Unknown10\",\"Unknown11\",\"Unknown12\",\"Unknown13\",\"Unknown14\",\"Unknown15\"");
-                    for (int i = 0; i < courseCount; i++)
+                    using (CsvWriter csv = new(writer, csvConfig))
                     {
-                        writer.WriteLine($"\"{courseCodes[i]}\",\"{courseNames[i]}\",\"{courseBGs[i]}\",\"{string.Join("\",\"", courseModes[i].Select(value => $"{value}"))}\"");
+                        csv.WriteField("Code");
+                        csv.WriteField("Name");
+                        csv.WriteField("Background");
+                        csv.WriteField("IsNight");
+                        csv.WriteField("Unknown1");
+                        csv.WriteField("Unknown2");
+                        csv.WriteField("Unknown3");
+                        csv.WriteField("Unknown4");
+                        csv.WriteField("Unknown5");
+                        csv.WriteField("Unknown6");
+                        csv.WriteField("Unknown7");
+                        csv.WriteField("Unknown8");
+                        csv.WriteField("Unknown9");
+                        csv.WriteField("Unknown10");
+                        csv.WriteField("Unknown11");
+                        csv.WriteField("Unknown12");
+                        csv.WriteField("Unknown13");
+                        csv.WriteField("Unknown14");
+                        csv.WriteField("Unknown15");
+                        csv.NextRecord();
+
+                        for (int i = 0; i < courseCount; i++)
+                        {
+                            csv.WriteField(courseCodes[i]);
+                            csv.WriteField(courseNames[i]);
+                            csv.WriteField(courseBGs[i]);
+
+                            foreach (byte value in courseModes[i])
+                            {
+                                csv.WriteField(value);
+                            }
+                            csv.NextRecord();
+                        }
                     }
                 }
             }
@@ -327,17 +560,14 @@ namespace GT1.SystemEnvEditor
                     using (CsvWriter csv = new(writer, csvConfig))
                     {
                         csv.WriteField("Code");
-                        csv.WriteField("ColourID");
+                        csv.WriteField("ColourIDs");
                         csv.NextRecord();
 
                         for (int i = 0; i < carCount; i++)
                         {
-                            foreach (byte colourID in carColours[i])
-                            {
-                                csv.WriteField(carList[i]);
-                                csv.WriteField($"{colourID:X2}");
-                                csv.NextRecord();
-                            }
+                            csv.WriteField(carList[i]);
+                            csv.WriteField(string.Join(',', carColours[i].Select(colourID => $"{colourID:X2}")));
+                            csv.NextRecord();
                         }
                     }
                 }
