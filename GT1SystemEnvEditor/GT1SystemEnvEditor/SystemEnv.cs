@@ -1,0 +1,175 @@
+﻿using System.Text;
+using StreamExtensions;
+
+namespace GT1.SystemEnvEditor
+{
+    internal class SystemEnv
+    {
+        private readonly static string[] bgNames = new string[] { "Test", "tl_sky2", "tl_sky2g", "dawn", "dawn2", "dawn3", "c1_bg", "noon", "au", "m_sky_X" };
+
+        private ushort unknownCount1;
+        private ushort courseCount;
+        private ushort carCount;
+        private ushort carcadeCount;
+        private ushort musicCount;
+        private ushort unknownCount2;
+        private string[] courseCodes = Array.Empty<string>();
+        private List<byte[]> courseModes = new();
+        private byte[] courseBGs = Array.Empty<byte>();
+        private string[] courseNames = Array.Empty<string>();
+        private byte[] unknownData1 = Array.Empty<byte>();
+        private string[] carList = Array.Empty<string>();
+        private List<byte>[] carColours = Array.Empty<List<byte>>();
+        private string[] carNames = Array.Empty<string>();
+        private ushort[] arcadeCarIDs = Array.Empty<ushort>();
+        private string[] musicCodes = Array.Empty<string>();
+        private uint[] musicData = Array.Empty<uint>();
+        private string[] musicNames = Array.Empty<string>();
+        private uint[] unknownData2 = Array.Empty<uint>();
+        private List<string> otherSettings = new();
+
+        public void ReadFromBinary(Stream file)
+        {
+            if (file.ReadCharacters() != "@(#)GTENV")
+            {
+                throw new Exception("Not a GTENV file.");
+            }
+
+            unknownCount1 = file.ReadUShort();
+            courseCount = file.ReadUShort();
+            carCount = file.ReadUShort();
+            carcadeCount = file.ReadUShort();
+            musicCount = file.ReadUShort();
+            unknownCount2 = file.ReadUShort();
+            file.Position = 0x48;
+
+            courseCodes = ReadStrings(file, courseCount);
+
+            courseModes = new(courseCount);
+            courseBGs = new byte[courseCount];
+            for (int i = 0; i < courseCount; i++)
+            {
+                var courseMode = new byte[16];
+                file.Read(courseMode);
+                byte firstByte = courseMode[0];
+                courseBGs[i] = (byte)(firstByte & 0x7F);
+                courseMode[0] = (byte)(firstByte >> 7);
+                courseModes.Add(courseMode);
+            }
+
+            courseNames = ReadStrings(file, courseCount);
+
+            unknownData1 = new byte[32];
+            file.Read(unknownData1);
+
+            carList = new string[carCount];
+            for (int i = 0; i < carCount; i++)
+            {
+                carList[i] = file.ReadCharacters();
+            }
+
+            carColours = new List<byte>[carCount];
+            for (int i = 0; i < carCount; i++)
+            {
+                byte colourCount = file.ReadSingleByte();
+                carColours[i] = new List<byte>(colourCount);
+                for (int j = 0; j < colourCount; j++)
+                {
+                    file.ReadSingleByte(); // colour number, sequential, ignorable?
+                    carColours[i].Add(file.ReadSingleByte());
+                }
+            }
+
+            carNames = ReadStrings(file, carCount);
+            for (int i = 0; i < carCount; i++)
+            {
+                carNames[i] = carNames[i].Replace($"{(char)0x7F}", "[R]");
+            }
+
+            arcadeCarIDs = new ushort[carcadeCount];
+            for (int i = 0; i < carcadeCount; i++)
+            {
+                arcadeCarIDs[i] = file.ReadUShort();
+            }
+
+            musicCodes = ReadStrings(file, musicCount);
+            musicData = new uint[musicCount * 2];
+            for (int i = 0; i < musicCount * 2; i++)
+            {
+                musicData[i] = file.ReadUInt();
+            }
+            musicNames = ReadStrings(file, musicCount);
+
+            unknownData2 = new uint[22];
+            for (int i = 0; i < 22; i++)
+            {
+                unknownData2[i] = file.ReadUInt();
+            }
+
+            while (file.Position != file.Length)
+            {
+                otherSettings.Add(file.ReadCharacters());
+            }
+            otherSettings = otherSettings.Where(setting => !string.IsNullOrWhiteSpace(setting)).ToList();
+        }
+
+        private static string[] ReadStrings(Stream file, ushort count)
+        {
+            file.MoveToNextMultipleOf(4);
+            var strings = new string[count];
+            for (int i = 0; i < count; i++)
+            {
+                byte stringLength = file.ReadSingleByte();
+                var characters = new byte[stringLength - 1];
+                file.Read(characters);
+                strings[i] = Encoding.ASCII.GetString(characters);
+                file.Position++;
+            }
+            file.MoveToNextMultipleOf(4);
+            return strings;
+        }
+
+        public void WriteToPlaintext(Stream output)
+        {
+            using (TextWriter writer = new StreamWriter(output))
+            {
+                writer.WriteLine($"car={carCount}");
+                for (int i = 0; i < carCount; i++)
+                {
+                    writer.WriteLine($"car.name.{i}={carNames[i]}");
+                }
+                writer.WriteLine($"car.list={string.Join(',', carList)}");
+                writer.WriteLine($"car.color={string.Join(',', carColours.Select(colourIDs => $"{colourIDs.Count},{string.Join("", Enumerable.Range(0, colourIDs.Count).Select(i => $"{(char)colourIDs[i]}{i}"))}"))}");
+                writer.WriteLine($"arcade.car={carcadeCount}");
+                writer.WriteLine($"arcade.car.ids={string.Join(',', arcadeCarIDs.Select(id => $"{id}"))}");
+                writer.WriteLine($"course={courseCount}");
+                for (int i = 0; i < courseCount; i++)
+                {
+                    writer.WriteLine($"course.mode.{i}={string.Join(',', courseModes[i].Select(mode => $"{mode}"))}");
+                }
+                for (int i = 0; i < courseCount; i++)
+                {
+                    writer.WriteLine($"course.name.{i}={courseNames[i]}");
+                }
+                for (int i = 0; i < courseCount; i++)
+                {
+                    writer.WriteLine($"course.bg.{i}=BG {SystemEnv.bgNames[courseBGs[i]]}");
+                }
+                writer.WriteLine($"course.code={string.Join(',', courseCodes)}");
+                writer.WriteLine($"music.code={musicCount},{string.Join(',', Enumerable.Range(0, musicCount).Select(i => $"{musicCodes[i]},{musicData[i * 2]:X},{musicData[(i * 2) + 1]:X}"))}");
+                for (int i = 0; i < musicCount; i++)
+                {
+                    writer.WriteLine($"music.name.{i}={musicNames[i]}");
+                }
+                foreach (string setting in otherSettings)
+                {
+                    writer.WriteLine(setting);
+                }
+                writer.WriteLine($"unknown.count.1={unknownCount1}");
+                writer.WriteLine($"unknown.count.2={unknownCount2}");
+                writer.WriteLine($"unknown.1={string.Join(',', unknownData1.Select(value => $"{value:X2}"))}");
+                writer.WriteLine($"unknown.2={string.Join(',', unknownData2.Select(value => $"{value:X8}"))}");
+            }
+        }
+    }
+}
