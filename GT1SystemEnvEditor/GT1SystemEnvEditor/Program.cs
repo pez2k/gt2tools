@@ -13,25 +13,19 @@
             string outputType = args.Length > 1 ? args[1] : "-e";
 
             SystemEnv data = new();
-
-            using (FileStream file = new(filename, FileMode.Open, FileAccess.Read))
-            {
-                data.ReadFromBinary(file);
-            }
+            data.ReadFromBinary(filename);
 
             if (outputType == "-t")
             {
-                using (FileStream output = new(Path.ChangeExtension(filename, ".ENV"), FileMode.Create, FileAccess.Write))
-                {
-                    data.WriteToPlaintext(output);
-                }
+                data.WriteToPlaintext(Path.ChangeExtension(filename, ".ENV"));
+            }
+            else if (outputType == "-e")
+            {
+                data.WriteToEditable(Path.GetFileNameWithoutExtension(filename));
             }
             else
             {
-                using (FileStream output = new("new_SYSTEM.DAT", FileMode.Create, FileAccess.Write))
-                {
-                    data.WriteToBinary(output);
-                }
+                data.WriteToBinary("new_SYSTEM.DAT");
             }
         }
     }
