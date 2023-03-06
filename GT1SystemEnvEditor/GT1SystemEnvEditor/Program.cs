@@ -10,7 +10,7 @@
             }
 
             string filename = args[0];
-            string outputType = args.Length > 1 ? args[1] : "-t";
+            string outputType = args.Length > 1 ? args[1] : "-e";
 
             SystemEnv data = new();
 
@@ -24,6 +24,13 @@
                 using (FileStream output = new(Path.ChangeExtension(filename, ".ENV"), FileMode.Create, FileAccess.Write))
                 {
                     data.WriteToPlaintext(output);
+                }
+            }
+            else
+            {
+                using (FileStream output = new("new_SYSTEM.DAT", FileMode.Create, FileAccess.Write))
+                {
+                    data.WriteToBinary(output);
                 }
             }
         }

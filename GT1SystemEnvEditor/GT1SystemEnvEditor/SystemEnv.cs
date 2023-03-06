@@ -171,5 +171,94 @@ namespace GT1.SystemEnvEditor
                 writer.WriteLine($"unknown.2={string.Join(',', unknownData2.Select(value => $"{value:X8}"))}");
             }
         }
+
+        public void WriteToBinary(Stream file)
+        {
+            file.WriteCharacters("@(#)GTENV");
+            file.WriteByte(0);
+
+            file.WriteUShort(unknownCount1);
+            file.WriteUShort(courseCount);
+            file.WriteUShort(carCount);
+            file.WriteUShort(carcadeCount);
+            file.WriteUShort(musicCount);
+            file.WriteUShort(unknownCount2);
+            file.Position = 0x48;
+
+            WriteStrings(file, courseCodes);
+
+            for (int i = 0; i < courseCount; i++)
+            {
+                byte[] courseMode = courseModes[i];
+                courseMode[0] = (byte)(courseBGs[i] | (courseMode[0] << 7));
+                file.Write(courseMode);
+            }
+
+            WriteStrings(file, courseNames);
+
+            file.Write(unknownData1);
+
+            foreach (string car in carList)
+            {
+                file.WriteCharacters(car);
+                file.WriteByte(0);
+            }
+
+            foreach (List<byte> carColourSet in carColours)
+            {
+                byte colourCount = (byte)carColourSet.Count;
+                file.WriteByte(colourCount);
+                for (int i = 0; i < colourCount; i++)
+                {
+                    file.WriteByte((byte)i);
+                    file.WriteByte(carColourSet[i]);
+                }
+            }
+
+            for (int i = 0; i < carCount; i++)
+            {
+                carNames[i] = carNames[i].Replace("[R]", $"{(char)0x7F}");
+            }
+            WriteStrings(file, carNames);
+
+            foreach (ushort arcadeCarID in arcadeCarIDs)
+            {
+                file.WriteUShort(arcadeCarID);
+            }
+
+            WriteStrings(file, musicCodes);
+            foreach (uint musicDataItem in musicData)
+            {
+                file.WriteUInt(musicDataItem);
+            }
+            WriteStrings(file, musicNames);
+
+            foreach (uint unknown in unknownData2)
+            {
+                file.WriteUInt(unknown);
+            }
+
+            foreach (string setting in otherSettings)
+            {
+                file.WriteCharacters(setting);
+                file.WriteByte(0);
+            }
+
+            file.MoveToNextMultipleOf(4);
+            file.SetLength(file.Position);
+        }
+
+        private static void WriteStrings(Stream file, string[] strings)
+        {
+            file.MoveToNextMultipleOf(4);
+            foreach (string s in strings)
+            {
+                byte stringLength = (byte)(s.Length + 1);
+                file.WriteByte(stringLength);
+                file.Write(Encoding.ASCII.GetBytes(s));
+                file.WriteByte(0);
+            }
+            file.MoveToNextMultipleOf(4);
+        }
     }
 }
