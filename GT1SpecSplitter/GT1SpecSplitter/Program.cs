@@ -17,8 +17,12 @@ namespace GT1.SpecSplitter
             if (args.Length != 1)
             {
                 Console.WriteLine("No filename provided.");
+                return;
             }
-            else if (File.GetAttributes(args[0]).HasFlag(FileAttributes.Directory))
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); // Required to support code pages, including 932
+
+            if (File.GetAttributes(args[0]).HasFlag(FileAttributes.Directory))
             {
                 Rebuild(args[0]);
             }
