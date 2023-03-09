@@ -32,7 +32,7 @@ namespace GT1.DataSplitter
         protected virtual string CreateOutputFilename()
         {
             string number = Directory.GetFiles(Name).Length.ToString();
-            for (int i = number.Length; i < 3; i++)
+            for (int i = number.Length; i < 4; i++)
             {
                 number = "0" + number;
             }

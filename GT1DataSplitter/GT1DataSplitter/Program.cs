@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.IO;
+using System.Text;
 using CsvHelper.Configuration;
 
 namespace GT1.DataSplitter
@@ -12,6 +13,8 @@ namespace GT1.DataSplitter
 
         public static void Main(string[] args)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); // Required to support code pages, including 932
+
             if (args.Length != 1)
             {
                 BuildDataFile<CarInfData>();

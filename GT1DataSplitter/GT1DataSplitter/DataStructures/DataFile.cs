@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using StreamExtensions;
 
 namespace GT1.DataSplitter
@@ -11,6 +13,8 @@ namespace GT1.DataSplitter
     public class DataFile
     {
         public static string OverridePath { get; set; }
+
+        private const int Windows31J = 932; // Windows-31J, code page 932
 
         private readonly TypedData[] data;
 
@@ -64,6 +68,10 @@ namespace GT1.DataSplitter
 
             file.Position = blockStart + 4; // skip @(#) header start
             string fileType = file.ReadCharacters();
+            if (fileType != template.Header)
+            {
+                throw new Exception($"Mismatched header for {template.Name}!");
+            }
 
             file.Position = blockStart + 0x0C;
 
@@ -75,8 +83,7 @@ namespace GT1.DataSplitter
 
             if (structSize != template.Size)
             {
-                Console.WriteLine($"Invalid block size for {template.Name}!");
-                return;
+                throw new Exception($"Invalid block size for {template.Name}!");
             }
 
             for (ushort i = 0; i < structCount; i++)
@@ -86,11 +93,40 @@ namespace GT1.DataSplitter
                 data.Structures.Add(structure);
             }
 
-            /*List<List<string>> stringTables = null;
-            if (file.Position < file.Length)
+            if (file.Position < (blockStart + blockSize))
             {
-                stringTables = ReadStringTables(file);
-            }*/
+                data.StringTables = ReadStringTables(file);
+            }
+        }
+
+        private static List<List<string>> ReadStringTables(Stream file)
+        {
+            uint tableCount = file.ReadUInt();
+            file.Position += tableCount * 4;
+            List<List<string>> strings = new((int)tableCount);
+
+            for (uint i = 0; i < tableCount; i++)
+            {
+                strings.Add(ReadStrings(file));
+            }
+            return strings;
+        }
+
+        private static List<string> ReadStrings(Stream file)
+        {
+            ushort stringCount = file.ReadUShort();
+            List<string> strings = new(stringCount);
+            for (ushort i = 0; i < stringCount; i++)
+            {
+                byte stringLength = file.ReadSingleByte();
+                var buffer = new byte[stringLength];
+                file.Read(buffer);
+                string textString = Encoding.GetEncoding(Windows31J).GetString(buffer);
+                strings.Add(textString);
+                file.Position++;
+            }
+            file.MoveToNextMultipleOf(2);
+            return strings;
         }
 
         public void DumpData()
@@ -115,6 +151,23 @@ namespace GT1.DataSplitter
             {
                 structure.Dump();
             }
+
+            DumpStringTables(data.StringTables, template.Name);
+        }
+
+        private static void DumpStringTables(List<List<string>> stringTables, string directory)
+        {
+            for (int i = 0; i < stringTables.Count; i++)
+            {
+                using (StreamWriter output = new(Path.Combine(directory, $"strings{i:D2}.txt"), false, Encoding.UTF8))
+                {
+                    foreach (string textString in stringTables[i])
+                    {
+                        output.WriteLine(textString);
+                    }
+                    output.Flush();
+                }
+            }
         }
 
         public void ImportData()
@@ -131,7 +184,7 @@ namespace GT1.DataSplitter
             Console.WriteLine($"Importing {template.Name} structures from disk...");
 
             bool hasOverrides = OverridePath != null && Directory.Exists(Path.Combine(OverridePath, template.Name));
-            foreach (string baseFilename in Directory.EnumerateFiles(template.Name))
+            foreach (string baseFilename in Directory.EnumerateFiles(template.Name, "*.dat"))
             {
                 string filename = hasOverrides ? Path.Combine(OverridePath, baseFilename) : baseFilename;
                 if (!FileExistsCache.FileExists(filename))
@@ -153,7 +206,28 @@ namespace GT1.DataSplitter
                     }
                     data.Structures.Add(structure);
                 }
+
+                data.StringTables = ImportStringTables(template.Name);
             }
+        }
+
+        private static List<List<string>> ImportStringTables(string directory)
+        {
+            string[] files = Directory.EnumerateFiles(directory, "strings*.txt").ToArray();
+            List<List<string>> stringTables = new(files.Length);
+            foreach (string file in files)
+            {
+                using (StreamReader input = new(file, Encoding.UTF8))
+                {
+                    List<string> strings = new();
+                    while (!input.EndOfStream)
+                    {
+                        strings.Add(input.ReadLine());
+                    }
+                    stringTables.Add(strings);
+                }
+            }
+            return stringTables;
         }
 
         public void WriteData(string filename)
@@ -206,6 +280,7 @@ namespace GT1.DataSplitter
                 {
                     structure.Write(innerFile);
                 }
+                WriteStringTables(data.StringTables, innerFile);
                 innerFile.MoveToNextMultipleOf(4);
                 innerFile.SetLength(innerFile.Position);
 
@@ -218,6 +293,33 @@ namespace GT1.DataSplitter
             file.WriteUInt((uint)offset);
             file.WriteUInt(size); // not compressed, so compressed size = size
             file.WriteUInt(size);
+        }
+
+        private static void WriteStringTables(List<List<string>> stringTables, Stream file)
+        {
+            int tableCount = stringTables.Count;
+            file.WriteUInt((uint)tableCount);
+            file.Position += tableCount * 4;
+
+            foreach (List<string> strings in stringTables)
+            {
+                WriteStrings(strings, file);
+            }
+        }
+
+        private static void WriteStrings(List<string> strings, Stream file)
+        {
+            int stringCount = strings.Count;
+            file.WriteUShort((ushort)stringCount);
+            foreach (string textString in strings)
+            {
+                byte[] textData = Encoding.GetEncoding(Windows31J).GetBytes(textString);
+                int stringLength = textData.Length;
+                file.WriteByte((byte)stringLength);
+                file.Write(textData);
+                file.WriteByte(0);
+            }
+            file.MoveToNextMultipleOf(2);
         }
     }
 }

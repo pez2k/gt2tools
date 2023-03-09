@@ -5,7 +5,7 @@
         public TurbineKit()
         {
             Header = "TURBINE";
-            Size = 0x28;
+            Size = 0x38;
         }
     }
 }
