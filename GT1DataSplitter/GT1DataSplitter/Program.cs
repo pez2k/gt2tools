@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.IO;
 using CsvHelper.Configuration;
 
 namespace GT1.DataSplitter
@@ -11,20 +12,27 @@ namespace GT1.DataSplitter
 
         public static void Main(string[] args)
         {
-            DumpDataFile<CarInfData>("CARINF.DAT", false);
             if (args.Length != 1)
             {
-                //BuildDataFile();
+                BuildDataFile<CarInfData>();
                 return;
             }
-            DumpDataFile<CarInfData>("CARINF.DAT", false);
+            DumpDataFile<CarInfData>("CARINF.DAT");
         }
 
-        private static void DumpDataFile<TData>(string filename, bool favourCompressed) where TData : DataFile, new()
+        private static void DumpDataFile<TData>(string filename) where TData : DataFile, new()
         {
             TData data = new();
             data.ReadData(filename);
             data.DumpData();
+        }
+
+        private static void BuildDataFile<TData>() where TData : DataFile, new()
+        {
+            TData data = new();
+            data.ImportData();
+            Directory.CreateDirectory("Output");
+            data.WriteData(Path.Combine("Output", "CARINF.DAT"));
         }
     }
 }
