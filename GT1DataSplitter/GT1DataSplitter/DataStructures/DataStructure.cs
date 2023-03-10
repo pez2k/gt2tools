@@ -29,15 +29,7 @@ namespace GT1.DataSplitter
             }
         }
 
-        protected virtual string CreateOutputFilename()
-        {
-            string number = Directory.GetFiles(Name).Length.ToString();
-            for (int i = number.Length; i < 4; i++)
-            {
-                number = "0" + number;
-            }
-            return Name + "\\" + number + ".dat";
-        }
+        protected virtual string CreateOutputFilename() => Path.Combine(Name, $"{Directory.GetFiles(Name).Length + 1:D4}.dat");
 
         private static void ExportStructure(byte[] structure, FileStream output) => output.Write(structure, 0, structure.Length);
 

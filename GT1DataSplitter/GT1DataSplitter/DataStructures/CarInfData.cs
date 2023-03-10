@@ -17,7 +17,7 @@
                                    (typeof(EnemyCarsWorldCup), 12, false),
                                    (typeof(Spec), 13, false),
                                    (typeof(Adjust), 14, false),
-                                   (typeof(Balance), 15, false),
+                                   (typeof(EngineBalancing), 15, false),
                                    (typeof(Brake), 16, false),
                                    (typeof(BrakeController), 17, false),
                                    (typeof(Clutch), 18, false),

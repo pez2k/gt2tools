@@ -1,8 +1,8 @@
 ﻿namespace GT1.DataSplitter
 {
-    public class Balance : DataStructure
+    public class EngineBalancing : DataStructure
     {
-        public Balance()
+        public EngineBalancing()
         {
             Header = "BALANCE";
             Size = 0x20;
