@@ -89,6 +89,7 @@ namespace GT1.DataSplitter
             for (ushort i = 0; i < structCount; i++)
             {
                 var structure = (DataStructure)Activator.CreateInstance(data.Type);
+                structure.Parent = data;
                 structure.Read(file);
                 data.Structures.Add(structure);
             }

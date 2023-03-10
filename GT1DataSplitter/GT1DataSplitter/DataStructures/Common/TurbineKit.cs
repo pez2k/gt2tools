@@ -18,7 +18,7 @@ namespace GT1.DataSplitter
         protected override string CreateOutputFilename()
         {
             string filename = base.CreateOutputFilename();
-            return filename.Replace(Path.GetExtension(filename), $"_{Encoding.ASCII.GetString(rawData[0x23..0x28])}_stage{rawData[0x1E] + 1}{Path.GetExtension(filename)}");
+            return filename.Replace(Path.GetExtension(filename), $"_{Encoding.ASCII.GetString(rawData[0x23..0x28])}_stage{rawData[0x1E] + 1:X2}_{Parent.StringTables[0][rawData[0x30]]} {Parent.StringTables[1][rawData[0x34]]}{Path.GetExtension(filename)}");
         }
     }
 }
