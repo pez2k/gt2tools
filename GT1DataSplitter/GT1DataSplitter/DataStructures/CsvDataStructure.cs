@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using CsvHelper;
@@ -34,7 +35,14 @@ namespace GT1.DataSplitter
             {
                 using (CsvWriter csv = new(output, Program.CSVConfig))
                 {
-                    csv.Context.RegisterClassMap<TMap>();
+                    if (typeof(TMap).GetConstructors().Where(constructor => constructor.GetParameters().Any()).Any())
+                    {
+                        csv.Context.RegisterClassMap((TMap)Activator.CreateInstance(typeof(TMap), Parent.StringTables));
+                    }
+                    else
+                    {
+                        csv.Context.RegisterClassMap<TMap>();
+                    }
                     csv.WriteHeader<TStructure>();
                     csv.NextRecord();
                     csv.WriteRecord(data);
