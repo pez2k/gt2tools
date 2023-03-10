@@ -9,6 +9,16 @@ namespace GT1.DataSplitter
         {
             Header = "EQUIP";
             Size = 0x6C;
+            // 0x02: 00 for GT mode, 01 for Arcade?
+            // 0x2A: tires
+            // 0x2E: gear ratios, 1-7
+            // 0x3C: final drive ratio
+            // 0x43: camber F
+            // 0x44: ride height F
+            // 0x45: spring F
+            // 0x50: camber R
+            // 0x51: ride height R
+            // 0x52: spring R
         }
 
         protected override string CreateOutputFilename()

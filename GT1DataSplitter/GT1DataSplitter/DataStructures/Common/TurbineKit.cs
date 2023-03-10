@@ -9,6 +9,7 @@ namespace GT1.DataSplitter
         {
             Header = "TURBINE";
             Size = 0x38;
+            // 0x1A: car ID
             // 0x1E: stage - 1
             // 0x20-2A: name, bs for stg1, bp stg2, ps stg3, pp stg4
             // 0x2C: price
