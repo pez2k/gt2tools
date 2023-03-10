@@ -153,7 +153,10 @@ namespace GT1.DataSplitter
                 structure.Dump();
             }
 
-            DumpStringTables(data.StringTables, template.Name);
+            if (template.StringTableCount == 0)
+            {
+                DumpStringTables(data.StringTables, template.Name);
+            }
         }
 
         private static void DumpStringTables(List<List<string>> stringTables, string directory)
