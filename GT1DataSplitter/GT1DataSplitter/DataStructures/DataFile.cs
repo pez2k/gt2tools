@@ -183,9 +183,10 @@ namespace GT1.DataSplitter
         {
             var template = (DataStructure)Activator.CreateInstance(data.Type);
             Console.WriteLine($"Importing {template.Name} structures from disk...");
+            data.StringTables = template.StringTableCount > 0 ? Enumerable.Range(0, template.StringTableCount).Select(i => new List<string>()).ToList() : ImportStringTables(template.Name);
 
             bool hasOverrides = OverridePath != null && Directory.Exists(Path.Combine(OverridePath, template.Name));
-            foreach (string baseFilename in Directory.EnumerateFiles(template.Name, "*.dat"))
+            foreach (string baseFilename in Directory.EnumerateFiles(template.Name, "*.dat").Concat(Directory.EnumerateFiles(template.Name, "*.csv")))
             {
                 string filename = hasOverrides ? Path.Combine(OverridePath, baseFilename) : baseFilename;
                 if (!FileExistsCache.FileExists(filename))
@@ -199,6 +200,7 @@ namespace GT1.DataSplitter
                     if (structure == null)
                     {
                         structure = (DataStructure)Activator.CreateInstance(data.Type);
+                        structure.Parent = data;
                         structure.Import(filename);
                         if (!data.IsLocalised)
                         {
@@ -208,7 +210,6 @@ namespace GT1.DataSplitter
                     data.Structures.Add(structure);
                 }
 
-                data.StringTables = ImportStringTables(template.Name);
             }
         }
 

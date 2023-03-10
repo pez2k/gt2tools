@@ -9,7 +9,11 @@ namespace GT1.DataSplitter
 
     public class Lightweight : CsvDataStructure<LightweightData, LightweightCSVMap>
     {
-        public Lightweight() => Header = "LWEIGHT";
+        public Lightweight()
+        {
+            Header = "LWEIGHT";
+            StringTableCount = 2;
+        }
 
         protected override string CreateOutputFilename()
         {

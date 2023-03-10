@@ -35,7 +35,7 @@ namespace GT1.DataSplitter
             {
                 using (CsvWriter csv = new(output, Program.CSVConfig))
                 {
-                    if (typeof(TMap).GetConstructors().Where(constructor => constructor.GetParameters().Any()).Any())
+                    if (StringTableCount > 0)
                     {
                         csv.Context.RegisterClassMap((TMap)Activator.CreateInstance(typeof(TMap), Parent.StringTables));
                     }
@@ -64,7 +64,14 @@ namespace GT1.DataSplitter
                     {
                         using (CsvReader csv = new(input, Program.CSVConfig))
                         {
-                            csv.Context.RegisterClassMap<TMap>();
+                            if (StringTableCount > 0)
+                            {
+                                csv.Context.RegisterClassMap((TMap)Activator.CreateInstance(typeof(TMap), Parent.StringTables));
+                            }
+                            else
+                            {
+                                csv.Context.RegisterClassMap<TMap>();
+                            }
                             csv.Read();
                             data = csv.GetRecord<TStructure>();
                             if (cacheFilename)

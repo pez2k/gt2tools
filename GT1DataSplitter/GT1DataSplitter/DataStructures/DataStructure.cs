@@ -10,6 +10,7 @@ namespace GT1.DataSplitter
         public string Header { get; protected set; }
         public int Size { get; protected set; }
         public TypedData Parent { get; set; }
+        public int StringTableCount { get; set; }
 
         protected string filenameCacheNameOverride;
         protected byte[] rawData;
