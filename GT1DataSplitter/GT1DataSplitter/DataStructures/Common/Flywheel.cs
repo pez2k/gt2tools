@@ -1,14 +1,55 @@
-﻿namespace GT1.DataSplitter
+﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using CsvHelper.Configuration;
+
+namespace GT1.DataSplitter
 {
-    public class Flywheel : DataStructure
+    using TypeConverters;
+
+    public class Flywheel : CsvDataStructure<FlywheelData, FlywheelCSVMap>
     {
         public Flywheel()
         {
             Header = "FLYWHEL";
-            Size = 0x14;
-            // 0x4: car ID
+            StringTableCount = 2;
         }
 
         protected override string CreateOutputFilename() => CreateDetailedOutputFilename(0x4);
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x14
+    public struct FlywheelData
+    {
+        public byte Unknown;
+        public byte Unknown2;
+        public byte Unknown3;
+        public byte Unknown4;
+        public ushort CarID;
+        public byte Stage;
+        public byte StageDuplicate;
+        public uint Price;
+        public ushort NamePart1;
+        public ushort StringTablePart1;
+        public ushort NamePart2;
+        public ushort StringTablePart2;
+    }
+
+    public sealed class FlywheelCSVMap : ClassMap<FlywheelData>
+    {
+        public FlywheelCSVMap(List<List<string>> tables)
+        {
+            Map(m => m.Unknown);
+            Map(m => m.Unknown2);
+            Map(m => m.Unknown3);
+            Map(m => m.Unknown4);
+            Map(m => m.CarID);
+            Map(m => m.Stage);
+            Map(m => m.StageDuplicate);
+            Map(m => m.Price);
+            Map(m => m.NamePart1).TypeConverter(new StringTableLookup(tables[0]));
+            Map(m => m.StringTablePart1).Convert(args => 0).Ignore();
+            Map(m => m.NamePart2).TypeConverter(new StringTableLookup(tables[1]));
+            Map(m => m.StringTablePart2).Convert(args => 1).Ignore();
+        }
     }
 }
