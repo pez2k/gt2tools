@@ -36,9 +36,9 @@ namespace GT1.DataSplitter
         public byte Padding;
         public uint Price;
         public ushort NamePart1;
-        public ushort Padding2;
+        public ushort StringTablePart1;
         public ushort NamePart2;
-        public ushort UnknownAlways1;
+        public ushort StringTablePart2;
         public uint StageDuplicate;
     }
 
@@ -51,8 +51,9 @@ namespace GT1.DataSplitter
             Map(m => m.CarID);
             Map(m => m.Price);
             Map(m => m.NamePart1).TypeConverter(new StringTableLookup(tables[0]));
+            Map(m => m.StringTablePart1).Convert(args => 0).Ignore();
             Map(m => m.NamePart2).TypeConverter(new StringTableLookup(tables[1]));
-            Map(m => m.UnknownAlways1);
+            Map(m => m.StringTablePart2).Convert(args => 1).Ignore();
             Map(m => m.StageDuplicate);
         }
     }
