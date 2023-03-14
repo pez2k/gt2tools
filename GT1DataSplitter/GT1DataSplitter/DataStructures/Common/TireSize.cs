@@ -8,7 +8,11 @@ namespace GT1.DataSplitter
 
     public class TireSize : CsvDataStructure<TireSizeData, TireSizeCSVMap>
     {
-        public TireSize() => Header = "TIRESIZ";
+        public TireSize()
+        {
+            Header = "TIRESIZ";
+            cacheFilename = true;
+        }
 
         protected override string CreateOutputFilename()
         {

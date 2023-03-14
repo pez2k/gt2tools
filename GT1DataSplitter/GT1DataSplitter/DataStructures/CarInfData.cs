@@ -36,10 +36,10 @@
                                    (typeof(StabilizerFront), 31, false),
                                    (typeof(StabilizerRear), 32, false),
                                    (typeof(Suspension), 33, false),
-                                   (typeof(Tire), 34, false),
-                                   (typeof(TurbineKit), 35, false),
-                                   (typeof(TireCompound), 36, false),
-                                   (typeof(TireSize), 37, false),
+                                   (typeof(Tire), 37, false),
+                                   (typeof(TurbineKit), 34, false),
+                                   (typeof(TireCompound), 35, false),
+                                   (typeof(TireSize), 36, false),
                                    (typeof(CarColors), 38, false))
         {
         }

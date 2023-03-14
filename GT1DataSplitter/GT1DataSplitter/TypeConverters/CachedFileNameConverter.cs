@@ -15,21 +15,10 @@ namespace GT1.DataSplitter.TypeConverters
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
             int stringNumber = FileNameCache.Get(name, text);
-            /*if (name == nameof(Regulations) || name == nameof(TireSize) || name == nameof(TireCompound))
-            {
-                return (byte)stringNumber;
-            }
-            else if (name == nameof(EnemyCars) || name == nameof(EnemyCarsArcade))
-            {
-                return (uint)stringNumber;
-            }
-            else*/
-            {
-                return (ushort)stringNumber;
-            }
+            return (ushort)(stringNumber + 1);
         }
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData) =>
-            FileNameCache.Get(name, int.Parse(value.ToString()));
+            FileNameCache.Get(name, int.Parse(value.ToString()) - 1);
     }
 }
