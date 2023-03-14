@@ -39,7 +39,7 @@ namespace GT1.DataSplitter
         {
             Map(m => m.Compound).PartFilename(nameof(TireCompound));
             Map(m => m.Size).PartFilename(nameof(TireSize));
-            Map(m => m.CarID);
+            Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
             Map(m => m.Stage);
             Map(m => m.IsBuyableMaybe);
             Map(m => m.Price);

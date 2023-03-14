@@ -43,7 +43,7 @@ namespace GT1.DataSplitter
             Map(m => m.Unknown2);
             Map(m => m.Unknown3);
             Map(m => m.Unknown4);
-            Map(m => m.CarID);
+            Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
             Map(m => m.Stage);
             Map(m => m.StageDuplicate);
             Map(m => m.Price);

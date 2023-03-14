@@ -81,7 +81,7 @@ namespace GT1.DataSplitter
     {
         public CarColorsCSVMap(List<List<string>> tables)
         {
-            Map(m => m.CarID);
+            Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
             Map(m => m.ColorID1).TypeConverter(new HexByteConverter());
             Map(m => m.ColorName1).TypeConverter(new StringTableLookup(tables[0]));
             Map(m => m.ColorStringTable1).Convert(args => 0).Ignore();

@@ -41,8 +41,7 @@ namespace GT1.DataSplitter
         public byte FrontDownforceMax;
         public byte RearDownforceMin;
         public byte RearDownforceMax;
-        public byte CarID;
-        public byte Padding;
+        public ushort CarID;
         public uint Price;
         public ushort NamePart1;
         public ushort StringTablePart1;
@@ -66,7 +65,7 @@ namespace GT1.DataSplitter
             Map(m => m.FrontDownforceMax);
             Map(m => m.RearDownforceMin);
             Map(m => m.RearDownforceMax);
-            Map(m => m.CarID);
+            Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
             Map(m => m.Price);
             Map(m => m.NamePart1).TypeConverter(new StringTableLookup(tables[0]));
             Map(m => m.StringTablePart1).Convert(args => 0).Ignore();

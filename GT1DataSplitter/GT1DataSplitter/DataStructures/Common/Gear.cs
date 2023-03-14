@@ -87,7 +87,7 @@ namespace GT1.DataSplitter
             Map(m => m.SeventhGearRatioMax);
             Map(m => m.FinalDriveRatioMin);
             Map(m => m.FinalDriveRatioMax);
-            Map(m => m.CarID);
+            Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
             Map(m => m.Stage);
             Map(m => m.Price);
             Map(m => m.NamePart1).TypeConverter(new StringTableLookup(tables[0]));

@@ -3,6 +3,8 @@ using System.Text;
 
 namespace GT1.DataSplitter
 {
+    using Caches;
+
     public class Spec : DataStructure
     {
         public Spec()
@@ -24,12 +26,15 @@ namespace GT1.DataSplitter
             // 0x1A: 1st through
             // 0x26: 7th
             // 0x28: fdr
-            // 0x2A-2C: ???
+            // 0x2A: gear count
+            // 0x2B-2C: ???
             // 0x2D: turbo level?
             // 0x2E: f brake level?
             // 0x2F: r brake level?
             // 0x30: power multiplier?
-            // 0x31-0x50: ???
+            // 0x31-0x33: ??? idle / redline / max RPM?
+            // 0x34-43: torque curve RPM?
+            // 0x44-0x50: ???
             // 0x51: AWD mode
             // 0x52-59: ???
             // 0x5A: weight
@@ -45,18 +50,24 @@ namespace GT1.DataSplitter
             // 0x6D: r camber
             // 0x6E: f spring
             // 0x6F: f stab
-            // 0x70-79: ???
+            // 0x70-79: ??? dampers?
             // 0x7A: r spring
             // 0x7B: r stab
-            // 0x7C-87: ???
+            // 0x7C-85: ??? dampers?
+            // 0x86-87: f/r grip?
             // 0x88: f df
             // 0x89: r df
-            // 0x8A-13D: ???
+            // 0x8A-115: ???
+            // 0x116-117: f/r ride height?
+            // 0x118-13D: ???
             // 0x13E: torque curve 1 through
             // 0x15C: torque curve 16
-            // 0x15E-177: ???
+            // 0x15E-175: ???
+            // 0x176: engine sound num?
             // 0x178: turbo related 6b?
-            // 0x17E-183: ???
+            // 0x17E-17F: ???
+            // 0x180: exhaust sound num?
+            // 0x182: ???
             // 0x184: price
             // 0x188-190: ???
             // 0x190: car number plus 478??
@@ -77,10 +88,19 @@ namespace GT1.DataSplitter
             // 0x1A7: r susp
         }
 
+        public override void Import(string filename)
+        {
+            base.Import(filename);
+            string carID = Encoding.ASCII.GetString(rawData[..5]);
+            CarIDCache.Add(carID);
+        }
+
         protected override string CreateOutputFilename()
         {
             string filename = base.CreateOutputFilename();
-            return filename.Replace(Path.GetExtension(filename), $"_{Encoding.ASCII.GetString(rawData[..5])}{Path.GetExtension(filename)}");
+            string carID = Encoding.ASCII.GetString(rawData[..5]);
+            CarIDCache.Add(carID);
+            return filename.Replace(Path.GetExtension(filename), $"_{carID}{Path.GetExtension(filename)}");
         }
     }
 }

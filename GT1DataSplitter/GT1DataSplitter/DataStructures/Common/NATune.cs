@@ -68,7 +68,7 @@ namespace GT1.DataSplitter
             Map(m => m.TorqueMultiplier14);
             Map(m => m.TorqueMultiplier15);
             Map(m => m.TorqueMultiplier16);
-            Map(m => m.CarID);
+            Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
             Map(m => m.Unknown);
             Map(m => m.Stage);
             Map(m => m.Price);

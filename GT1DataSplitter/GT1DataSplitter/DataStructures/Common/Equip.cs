@@ -91,7 +91,7 @@ namespace GT1.DataSplitter
     {
         public EquipCSVMap()
         {
-            Map(m => m.CarID);
+            Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
             Map(m => m.AdjustMaybe).PartFilename(nameof(Adjust));
             Map(m => m.EngineBalancing).PartFilename(nameof(EngineBalancing));
             Map(m => m.Brake).PartFilename(nameof(Brake));
