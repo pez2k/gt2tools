@@ -36,17 +36,7 @@ namespace GT1.DataSplitter
         protected virtual string CreateDetailedOutputFilename(int carIDOffset)
         {
             string filename = CreateOutputFilenameBase();
-            int priceOffset = carIDOffset + 3;
-            while (priceOffset % 4 != 0)
-            {
-                priceOffset++;
-            }
-            return filename.Replace(Path.GetExtension(filename),
-                $"_car{rawData[carIDOffset]:X2}" +
-                $"_stage{(sbyte)rawData[carIDOffset + 2] + 1:X2}" +
-                $"_{Parent.StringTables[0][rawData[priceOffset + 4]]}" +
-                $" {Parent.StringTables[1][rawData[priceOffset + 8]].Replace('/', '-')}" +
-                Path.GetExtension(filename));
+            return filename.Replace(Path.GetExtension(filename), $"_{CarIDCache.Get(rawData[carIDOffset])}_stage{(sbyte)rawData[carIDOffset + 2] + 1:X2}{Path.GetExtension(filename)}");
         }
 
         private string CreateOutputFilenameBase() => Path.Combine(Name, $"{Directory.GetFiles(Name).Length + 1:D4}.dat");

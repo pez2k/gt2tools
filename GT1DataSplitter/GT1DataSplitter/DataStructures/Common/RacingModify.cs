@@ -5,6 +5,7 @@ using CsvHelper.Configuration;
 
 namespace GT1.DataSplitter
 {
+    using Caches;
     using TypeConverters;
 
     public class RacingModify : CsvDataStructure<RacingModifyData, RacingModifyCSVMap>
@@ -19,11 +20,7 @@ namespace GT1.DataSplitter
         protected override string CreateOutputFilename()
         {
             string filename = base.CreateOutputFilename();
-            return filename.Replace(Path.GetExtension(filename),
-                $"_car{rawData[0xE]:X2}" +
-                $"_{Parent.StringTables[0][rawData[0x14]]}" +
-                $" {Parent.StringTables[1][rawData[0x18]].Replace('/', '-')}" +
-                Path.GetExtension(filename));
+            return filename.Replace(Path.GetExtension(filename), $"_{CarIDCache.Get(data.CarID)}{Path.GetExtension(filename)}");
         }
     }
 

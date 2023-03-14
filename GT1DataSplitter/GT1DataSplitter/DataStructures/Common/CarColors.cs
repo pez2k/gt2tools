@@ -5,6 +5,7 @@ using CsvHelper.Configuration;
 
 namespace GT1.DataSplitter
 {
+    using Caches;
     using TypeConverters;
 
     public class CarColors : CsvDataStructure<CarColorsData, CarColorsCSVMap>
@@ -18,7 +19,7 @@ namespace GT1.DataSplitter
         protected override string CreateOutputFilename()
         {
             string filename = base.CreateOutputFilename();
-            return filename.Replace(Path.GetExtension(filename), $"_car{rawData[0]:X2}{Path.GetExtension(filename)}");
+            return filename.Replace(Path.GetExtension(filename), $"_{CarIDCache.Get(data.CarID)}{Path.GetExtension(filename)}");
         }
     }
 
