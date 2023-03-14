@@ -14,7 +14,7 @@ namespace GT1.DataSplitter
             StringTableCount = 2;
         }
 
-        protected override string CreateOutputFilename() => CreateDetailedOutputFilename(0x4).Replace(".dat", ".csv");
+        protected override string CreateOutputFilename() => CreateDetailedOutputFilename(0x4);
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x18

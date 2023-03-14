@@ -33,7 +33,7 @@ namespace GT1.DataSplitter
 
         protected virtual string CreateOutputFilename() => CreateOutputFilenameBase();
 
-        protected string CreateDetailedOutputFilename(int carIDOffset)
+        protected virtual string CreateDetailedOutputFilename(int carIDOffset)
         {
             string filename = CreateOutputFilenameBase();
             int priceOffset = carIDOffset + 3;

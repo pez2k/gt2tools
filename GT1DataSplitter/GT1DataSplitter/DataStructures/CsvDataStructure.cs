@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using CsvHelper;
@@ -18,6 +17,8 @@ namespace GT1.DataSplitter
         protected CsvDataStructure() => Size = Marshal.SizeOf<TStructure>();
 
         protected override string CreateOutputFilename() => base.CreateOutputFilename().Replace(".dat", ".csv");
+
+        protected override string CreateDetailedOutputFilename(int carIDOffset) => base.CreateDetailedOutputFilename(carIDOffset).Replace(".dat", ".csv");
 
         public override void Read(Stream infile)
         {
