@@ -16,28 +16,14 @@ namespace GT1.DataSplitter.Caches
             Cache[type].Add(filename);
         }
 
-        public static string Get(string type, int index)
-        {
-            if (!Cache.ContainsKey(type) || Cache[type].Count < index)
-            {
-                return $"{index}";
-            }
-
-            return Cache[type][index];
-        }
+        public static string Get(string type, int index) =>
+            index == -1 ? "None" : Cache[type][index];
 
         public static int Get(string type, string filename)
         {
-            if (!Cache.ContainsKey(type) || !Cache[type].Contains(filename))
-            {
-                if (int.TryParse(filename, out int rawData))
-                {
-                    return rawData;
-                }
-                throw new Exception($"Filename {filename} of type {type} not found.");
-            }
-
-            return Cache[type].IndexOf(filename);
+            return !Cache.ContainsKey(type) || !Cache[type].Contains(filename)
+                ? filename == "None" ? -1 : throw new Exception($"Filename {filename} of type {type} not found.")
+                : Cache[type].IndexOf(filename);
         }
     }
 }

@@ -8,7 +8,11 @@ namespace GT1.DataSplitter
 
     public class GenericEngineUpgrade : CsvDataStructure<GenericEngineUpgradeData, GenericEngineUpgradeCSVMap>
     {
-        public GenericEngineUpgrade() => StringTableCount = 2;
+        public GenericEngineUpgrade()
+        {
+            StringTableCount = 2;
+            cacheFilename = true;
+        }
 
         protected override string CreateOutputFilename() => CreateDetailedOutputFilename(0x10);
     }

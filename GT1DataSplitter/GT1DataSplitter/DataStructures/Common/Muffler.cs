@@ -13,6 +13,7 @@ namespace GT1.DataSplitter
         {
             Header = "MUFFLER";
             StringTableCount = 2;
+            cacheFilename = true;
         }
 
         protected override string CreateOutputFilename()
@@ -48,7 +49,7 @@ namespace GT1.DataSplitter
         public byte TorqueMultiplier16;
         public ushort CarID;
         public ushort Stage;
-        public ushort SoundIDMaybe;
+        public ushort SoundID;
         public ushort StageDuplicate;
         public uint Price;
         public ushort NamePart1;
@@ -79,7 +80,7 @@ namespace GT1.DataSplitter
             Map(m => m.TorqueMultiplier16);
             Map(m => m.CarID);
             Map(m => m.Stage);
-            Map(m => m.SoundIDMaybe);
+            Map(m => m.SoundID);
             Map(m => m.StageDuplicate);
             Map(m => m.Price);
             Map(m => m.NamePart1).TypeConverter(new StringTableLookup(tables[0]));

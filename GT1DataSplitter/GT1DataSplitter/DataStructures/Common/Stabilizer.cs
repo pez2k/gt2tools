@@ -12,6 +12,7 @@ namespace GT1.DataSplitter
         {
             Header = "STABILZ";
             StringTableCount = 2;
+            cacheFilename = true;
         }
 
         protected override string CreateOutputFilename() => CreateDetailedOutputFilename(0x4);

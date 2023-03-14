@@ -13,6 +13,7 @@ namespace GT1.DataSplitter
         {
             Header = "RACING";
             StringTableCount = 2;
+            cacheFilename = true;
         }
 
         protected override string CreateOutputFilename()
