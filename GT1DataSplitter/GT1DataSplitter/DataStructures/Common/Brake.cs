@@ -21,9 +21,9 @@ namespace GT1.DataSplitter
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x18
     public struct BrakeData
     {
+        public byte FrontBrakeTorqueKGFM;
+        public byte RearBrakeTorqueKGFM;
         public byte Unknown;
-        public byte Unknown2;
-        public byte Unknown3;
         public byte Padding;
         public ushort CarID;
         public ushort Padding2;
@@ -39,9 +39,9 @@ namespace GT1.DataSplitter
     {
         public BrakeCSVMap(List<List<string>> tables)
         {
+            Map(m => m.FrontBrakeTorqueKGFM);
+            Map(m => m.RearBrakeTorqueKGFM);
             Map(m => m.Unknown);
-            Map(m => m.Unknown2);
-            Map(m => m.Unknown3);
             Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
             Map(m => m.Price);
             Map(m => m.NamePart1).TypeConverter(new StringTableLookup(tables[0]));

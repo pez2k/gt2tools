@@ -21,12 +21,12 @@ namespace GT1.DataSplitter
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x18
     public struct ClutchData
     {
+        public byte EngineBrakingMultiplier;
+        public byte FlywheelInertiaMultiplier;
+        public byte FrontWheelInertiaMultiplier;
+        public byte RearWheelInertiaMultiplier;
         public byte Unknown;
-        public byte Unknown2;
-        public byte Unknown3;
-        public byte Unknown4;
-        public byte Unknown5;
-        public byte Unknown6;
+        public byte ClutchTorqueKGFM;
         public ushort CarID;
         public byte Stage;
         public byte StageDuplicate;
@@ -42,12 +42,12 @@ namespace GT1.DataSplitter
     {
         public ClutchCSVMap(List<List<string>> tables)
         {
+            Map(m => m.EngineBrakingMultiplier);
+            Map(m => m.FlywheelInertiaMultiplier);
+            Map(m => m.FrontWheelInertiaMultiplier);
+            Map(m => m.RearWheelInertiaMultiplier);
             Map(m => m.Unknown);
-            Map(m => m.Unknown2);
-            Map(m => m.Unknown3);
-            Map(m => m.Unknown4);
-            Map(m => m.Unknown5);
-            Map(m => m.Unknown6);
+            Map(m => m.ClutchTorqueKGFM);
             Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
             Map(m => m.Stage);
             Map(m => m.StageDuplicate);

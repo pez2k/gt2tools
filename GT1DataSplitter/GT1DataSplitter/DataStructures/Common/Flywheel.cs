@@ -21,10 +21,10 @@ namespace GT1.DataSplitter
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x14
     public struct FlywheelData
     {
-        public byte Unknown;
-        public byte Unknown2;
-        public byte Unknown3;
-        public byte Unknown4;
+        public byte FlywheelInertiaMultiplier;
+        public byte EngineBrakingMultiplier;
+        public byte FrontWheelInertiaMultiplier;
+        public byte RearWheelInertiaMultiplier;
         public ushort CarID;
         public byte Stage;
         public byte StageDuplicate;
@@ -39,10 +39,10 @@ namespace GT1.DataSplitter
     {
         public FlywheelCSVMap(List<List<string>> tables)
         {
-            Map(m => m.Unknown);
-            Map(m => m.Unknown2);
-            Map(m => m.Unknown3);
-            Map(m => m.Unknown4);
+            Map(m => m.FlywheelInertiaMultiplier);
+            Map(m => m.EngineBrakingMultiplier);
+            Map(m => m.FrontWheelInertiaMultiplier);
+            Map(m => m.RearWheelInertiaMultiplier);
             Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
             Map(m => m.Stage);
             Map(m => m.StageDuplicate);

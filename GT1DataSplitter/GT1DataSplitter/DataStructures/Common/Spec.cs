@@ -27,8 +27,8 @@ namespace GT1.DataSplitter
             // 0x26: 7th
             // 0x28: fdr
             // 0x2A: gear count
-            // 0x2B: flywheel inertia - cannot be zero
-            // 0x2C: ??? - rpm related in some way??
+            // 0x2B: flywheel inertia kg.m^2 - cannot be zero
+            // 0x2C: engine braking kgfm
             // 0x2D: turbo level?
             // 0x2E: f brake level?
             // 0x2F: r brake level?
@@ -77,7 +77,7 @@ namespace GT1.DataSplitter
             // 0x88: f df
             // 0x89: r df
             // 0x8A: drivetrain - 00 FR / 01 FF / 02 4WD / 03 MR
-            // 0x8B: something drivetrain or RPM related?
+            // 0x8B: clutch torque kgfm
             // 0x8C-115: ??? - 8F-97, 9D-A8, AE-EB, ED-F0, F2-F3, FA-110 the same for most cars?
             // 0x116-117: f/r ride height?
             // 0x118: ???
@@ -97,8 +97,8 @@ namespace GT1.DataSplitter
             // 0x188: name part 1
             // 0x18A: name part 1 table (always 0)
             // 0x18C: name part 2
-            // 0x18E: name part 2 table (always 1)
-            // 0x190: suspension part ID
+            // 0x18E: name part 2 table (always 1) ---------- followed by parts 3 through 8 for JP
+            // 0x190: suspension part ID -------------------- resumes at 0x1AC in JP
             // 0x192: tire part ID
             // 0x194: length
             // 0x196: cc
@@ -110,7 +110,7 @@ namespace GT1.DataSplitter
             // 0x1A1: 01 racing / 00 normal - also checked by used car code maybe?
             // 0x1A2: unknown flag
             // 0x1A3: 00 normal / 01 turbo / 02 mechanical
-            // 0x1A4: 00 SOHC / 01 DOHC / 02 OHV / 03 Rotary
+            // 0x1A4: 00 SOHC / 01 DOHC / 02 OHV / 03 Rotary --------------- last 4b not in JP
             // 0x1A5: 00 L4 / 01 L6 / 02 V6 / 03 V8 / 04 V10 / 05 RE / 06 Boxer4 / 07 Boxer6
             // 0x1A6: f susp - 00 strut / 01 trailing torsion beam / 02 double wishbone / 03 multilink / 04 parallel-link strut? / 05 multilink beam? / 06 macpherson strut? / 07 semi-trailing arm? / 08 torque arm
             // 0x1A7: r susp

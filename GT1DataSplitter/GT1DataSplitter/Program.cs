@@ -20,7 +20,7 @@ namespace GT1.DataSplitter
                 BuildDataFile<CarInfData>();
                 return;
             }
-            DumpDataFile<CarInfData>("CARINF.DAT");
+            DumpDataFile<CarInfData>(args[0]);
         }
 
         private static void DumpDataFile<TData>(string filename) where TData : DataFile, new()
