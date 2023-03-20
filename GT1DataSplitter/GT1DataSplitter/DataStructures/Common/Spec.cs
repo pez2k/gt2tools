@@ -27,43 +27,48 @@ namespace GT1.DataSplitter
             // 0x26: 7th
             // 0x28: fdr
             // 0x2A: gear count
-            // 0x2B: ??? - cannot be zero?
+            // 0x2B: flywheel inertia - cannot be zero
             // 0x2C: ??? - rpm related in some way??
             // 0x2D: turbo level?
             // 0x2E: f brake level?
             // 0x2F: r brake level?
             // 0x30: power multiplier?
-            // 0x31-0x33: ??? idle / redline / max RPM? - if redline at 0x32 is zero, look up last tq curve point RPM using num of points at 0x56
+            // 0x31: shift limit
+            // 0x32: rev limit - if zero, look up last tq curve point RPM using num of points at 0x56
+            // 0x33: idle? usually 120?
             // 0x34-43: torque curve RPM?
-            // 0x44-0x50: ??? - identical for most cars?
+            // 0x44-0x50: ??? - identical for most cars? 6 0 32 80 140 202 -1 -1 98 50 30 22
             // 0x51: AWD mode
-            // 0x52-55: ??? - identical for most cars?
+            // 0x52-55: ??? - identical for most cars? 10 10 100 100
             // 0x56: num torque curve points
-            // 0x57-59: ??? - identical for most cars?
+            // 0x57-59: ??? - identical for most cars? 48 90 30
             // 0x5A: weight
-            // 0x5C: ??? - identical for most cars?
+            // 0x5C: ??? - identical for most cars? 60
             // 0x5D: ??? - identical for most cars? multiplied by 10 in code, RPM related - ClutchReleaseRPM in GT2 (always 250 / 2500rpm?)
-            // 0x5E: ??? - identical for most cars?
-            // 0x5F: ??? - identical for most cars?
-            // 0x60: brake power?
-            // 0x61: ABS?
+            // 0x5E: ??? - identical for most cars? 45
+            // 0x5F: ??? - identical for most cars? 45
+            // 0x60: f brake power
+            // 0x61: r brake power
             // 0x62: ???
             // 0x63: brake ???
-            // 0x64-65: ??? - related to wheel size or gearing in some way??
+            // 0x64: f wheel inertia
+            // 0x65: r wheel inertia
             // 0x66: f tyre size 3b?
             // 0x69: r tyre size 3b?
             // 0x6C: f camber
             // 0x6D: r camber
-            // 0x6E: f spring
+            // 0x6E: f spring rate
             // 0x6F: f stab
-            // 0x70-72: ???
+            // 0x70: f bumprubber
+            // 0x71-72: ???
             // 0x73: f damper 1 ???
             // 0x75: f damper 3 ???
             // 0x77: f damper 2 ???
             // 0x79: f damper 4 ???
-            // 0x7A: r spring
+            // 0x7A: r spring rate
             // 0x7B: r stab
-            // 0x7C-7E: ???
+            // 0x7C: r bumprubber
+            // 0x7D-7E: ???
             // 0x7F: r damper 1 ???
             // 0x81: r damper 3 ???
             // 0x83: r damper 2 ???
@@ -73,14 +78,16 @@ namespace GT1.DataSplitter
             // 0x89: r df
             // 0x8A: drivetrain - 00 FR / 01 FF / 02 4WD / 03 MR
             // 0x8B: something drivetrain or RPM related?
-            // 0x8C-115: ??? - 8F onwards the same for most cars?
+            // 0x8C-115: ??? - 8F-97, 9D-A8, AE-EB, ED-F0, F2-F3, FA-110 the same for most cars?
             // 0x116-117: f/r ride height?
             // 0x118: ???
             // 0x119: something drivetrain related?
             // 0x11A-13D: ??? - 11A onwards identical for most cars?
             // 0x13E: torque curve 1 through
             // 0x15C: torque curve 16 - if last value is 0, is set to second-last value
-            // 0x15E-175: ??? - identical for most cars?
+            // 0x15E-16D: ??? 16 1b values, most 200, descending at the end
+            // 0x16E: ??? 2b?
+            // 0x170-175: ??? - all 200s again, identical for most cars?
             // 0x176: engine sound num?
             // 0x178: turbo related 6b? - 6 individual values
             // 0x17E: ??? - identical 0 for most cars?
