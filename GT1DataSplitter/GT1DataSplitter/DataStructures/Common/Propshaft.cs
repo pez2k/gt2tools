@@ -21,9 +21,9 @@ namespace GT1.DataSplitter
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x14
     public struct PropshaftData
     {
-        public byte Unknown;
-        public byte Unknown2;
-        public byte Unknown3;
+        public byte EngineBrakingMultiplier;
+        public byte FrontWheelInertiaMultiplier;
+        public byte RearWheelInertiaMultiplier;
         public byte Padding;
         public ushort CarID;
         public ushort Padding2;
@@ -38,9 +38,9 @@ namespace GT1.DataSplitter
     {
         public PropshaftCSVMap(List<List<string>> tables)
         {
-            Map(m => m.Unknown);
-            Map(m => m.Unknown2);
-            Map(m => m.Unknown3);
+            Map(m => m.EngineBrakingMultiplier);
+            Map(m => m.FrontWheelInertiaMultiplier);
+            Map(m => m.RearWheelInertiaMultiplier);
             Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
             Map(m => m.Price);
             Map(m => m.NamePart1).TypeConverter(new StringTableLookup(tables[0]));

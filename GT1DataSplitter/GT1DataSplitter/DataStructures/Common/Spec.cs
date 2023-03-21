@@ -60,7 +60,8 @@ namespace GT1.DataSplitter
             // 0x6E: f spring rate
             // 0x6F: f stab
             // 0x70: f bumprubber
-            // 0x71-72: ???
+            // 0x71: ???
+            // 0x72: ???
             // 0x73: f damper 1 ???
             // 0x75: f damper 3 ???
             // 0x77: f damper 2 ???
@@ -68,12 +69,14 @@ namespace GT1.DataSplitter
             // 0x7A: r spring rate
             // 0x7B: r stab
             // 0x7C: r bumprubber
-            // 0x7D-7E: ???
+            // 0x7D: ???
+            // 0x7E: ???
             // 0x7F: r damper 1 ???
             // 0x81: r damper 3 ???
             // 0x83: r damper 2 ???
             // 0x85: r damper 4 ???
-            // 0x86-87: f/r grip?
+            // 0x86: f grip?
+            // 0x87: r grip?
             // 0x88: f df
             // 0x89: r df
             // 0x8A: drivetrain - 00 FR / 01 FF / 02 4WD / 03 MR

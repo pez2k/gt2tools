@@ -21,7 +21,7 @@ namespace GT1.DataSplitter
     [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x14
     public struct StabilizerData
     {
-        public byte Default;
+        public byte Default; // kgf/m^2 / 10
         public byte Steps;
         public byte Min;
         public byte Max;
