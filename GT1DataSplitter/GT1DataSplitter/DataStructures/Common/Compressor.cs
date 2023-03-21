@@ -1,8 +1,8 @@
 ﻿namespace GT1.DataSplitter
 {
-    public class Compression : DataStructure
+    public class Compressor : DataStructure
     {
-        public Compression()
+        public Compressor()
         {
             Header = "COMPRES";
             Size = 0x18;

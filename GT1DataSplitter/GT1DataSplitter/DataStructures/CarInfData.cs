@@ -21,7 +21,7 @@
                                    (typeof(Brake), 3, false),
                                    (typeof(BrakeController), 4, false),
                                    (typeof(Clutch), 5, false),
-                                   (typeof(Compression), 6, false),
+                                   (typeof(Compressor), 6, false),
                                    (typeof(Computer), 7, false),
                                    (typeof(Displacement), 8, false),
                                    (typeof(Flywheel), 9, false),

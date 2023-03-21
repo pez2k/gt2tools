@@ -97,7 +97,7 @@ namespace GT1.DataSplitter
             Map(m => m.Brake).PartFilename(nameof(Brake));
             Map(m => m.BrakeController).PartFilename(nameof(BrakeController));
             Map(m => m.Clutch).PartFilename(nameof(Clutch));
-            Map(m => m.Compressor).PartFilename(nameof(Compression));
+            Map(m => m.Compressor).PartFilename(nameof(Compressor));
             Map(m => m.Computer).PartFilename(nameof(Computer));
             Map(m => m.Displacement).PartFilename(nameof(Displacement));
             Map(m => m.Flywheel).PartFilename(nameof(Flywheel));
