@@ -19,17 +19,17 @@
             // 0x0A: f camber
             // 0x0B: f ride height
             // 0x0C: f spring rate
-            // 0x0D: f damper bound - kgf * 5
-            // 0x0E: f damper rebound - kgf * 5
-            // 0x0F: f ??? x  55 s0 42 s1  72 s3
-            // 0x10: f ??? y 100 s0 72 s1 112 s3
+            // 0x0D: f damper bound 1 - kgf * 5
+            // 0x0E: f damper rebound 1 - kgf * 5
+            // 0x0F: f damper bound 2?
+            // 0x10: f damper rebound 2?
             // 0x11: r camber
             // 0x12: r ride height
             // 0x13: r spring rate
             // 0x14: r damper bound - kgf * 5
             // 0x15: r damper rebound - kgf * 5
-            // 0x16: r ??? x  55 s0 42 s1  72 s3
-            // 0x17: r ??? y 100 s0 72 s1 112 s3
+            // 0x16: r damper bound 2?
+            // 0x17: r damper rebound 2?
             // 0x18: f camber min
             // 0x19: f camber max
             // 0x1A: f ride height min
@@ -40,11 +40,11 @@
             // 0x1F: f damper bound max
             // 0x20: f damper rebound min
             // 0x21: f damper rebound max
-            // 0x22: f ??? x min  55 s0  18 s3
-            // 0x23: f ??? x max  55 s0 180 s3
-            // 0x24: f ??? y min 100 s0  24 s3
-            // 0x25: f ??? y max 100 s0 222 s3
-            // 0x26: f ???         1 s0   3 s1   5 s2  10 s3
+            // 0x22: f damper bound 2? min
+            // 0x23: f damper bound 2? max
+            // 0x24: f damper rebound 2? min
+            // 0x25: f damper rebound 2? max
+            // 0x26: f damper steps
             // 0x27: r camber min
             // 0x28: r camber max
             // 0x29: r ride height min
@@ -55,14 +55,14 @@
             // 0x2E: r damper bound max
             // 0x2F: r damper rebound min
             // 0x30: r damper rebound max
-            // 0x31: r ??? x min  55 s0  18 s3
-            // 0x32: r ??? x max  55 s0 180 s3
-            // 0x33: r ??? y min 100 s0  24 s3
-            // 0x34: r ??? y max 100 s0 222 s3
-            // 0x35: r ???         1 s0   3 s1   5 s2  10 s3
+            // 0x31: r damper bound 2? min
+            // 0x32: r damper bound 2? max
+            // 0x33: r damper rebound 2? min
+            // 0x34: r damper rebound 2? max
+            // 0x35: r damper steps
             // 0x36: car ID 2b
             // 0x37: stage
-            // 0x38: isbuyabelmaybe
+            // 0x38: stage duplicate
             // 0x39: padding 2b
             // 0x3C: price 4b
             // 0x40: name 1

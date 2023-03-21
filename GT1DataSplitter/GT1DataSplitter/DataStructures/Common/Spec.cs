@@ -60,21 +60,27 @@ namespace GT1.DataSplitter
             // 0x6E: f spring rate
             // 0x6F: f stab
             // 0x70: f bumprubber
-            // 0x71: ???
-            // 0x72: ???
-            // 0x73: f damper 1 ???
-            // 0x75: f damper 3 ???
-            // 0x77: f damper 2 ???
-            // 0x79: f damper 4 ???
+            // 0x71: f ???
+            // 0x72: f ??? - 0x00 in Suspension
+            // 0x73: f damper bound 1
+            // 0x74: f ??? - 0x02 in Suspension
+            // 0x75: f damper bound 2?
+            // 0x76: f ??? - 0x01 in Suspension
+            // 0x77: f damper rebound 1
+            // 0x78: f ??? - 0x03 in Suspension
+            // 0x79: f damper rebound 2?
             // 0x7A: r spring rate
             // 0x7B: r stab
             // 0x7C: r bumprubber
-            // 0x7D: ???
-            // 0x7E: ???
-            // 0x7F: r damper 1 ???
-            // 0x81: r damper 3 ???
-            // 0x83: r damper 2 ???
-            // 0x85: r damper 4 ???
+            // 0x7D: r ???
+            // 0x7E: r ??? - 0x05 in Suspension
+            // 0x7F: r damper bound 1
+            // 0x80: r ??? - 0x07 in Suspension
+            // 0x81: r damper bound 2?
+            // 0x82: r ??? - 0x06 in Suspension
+            // 0x83: r damper rebound 1
+            // 0x84: r ??? - 0x08 in Suspension
+            // 0x85: r damper rebound 2?
             // 0x86: f grip?
             // 0x87: r grip?
             // 0x88: f df
