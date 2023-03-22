@@ -54,7 +54,7 @@ namespace GT1.DataSplitter
         public byte LevelMax;
         public byte Padding;
         public ushort CarID;
-        public ushort Unknown6; // possibly only set for racecars and some NA to turbo conversions? sound related maybe?
+        public ushort MufflerSoundUnusedMaybe; // possibly only set for racecars and some NA to turbo conversions?
         public ushort Stage;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 11)]
         public byte[] Name; // or are the last two chars actually bytes and no null terminator?
@@ -96,7 +96,7 @@ namespace GT1.DataSplitter
             Map(m => m.LevelMin);
             Map(m => m.LevelMax);
             Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
-            Map(m => m.Unknown6);
+            Map(m => m.MufflerSoundUnusedMaybe);
             Map(m => m.Stage);
             Map(m => m.Name).TypeConverter(new HexStringConverter(11));
             Map(m => m.StageDuplicate);

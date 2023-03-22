@@ -38,7 +38,7 @@ namespace GT1.DataSplitter
         public byte TorqueMultiplier15;
         public byte TorqueMultiplier16;
         public ushort CarID;
-        public byte Unknown;
+        public sbyte PowerbandRPMIncrease;
         public byte Stage;
         public uint Price;
         public ushort NamePart1;
@@ -69,7 +69,7 @@ namespace GT1.DataSplitter
             Map(m => m.TorqueMultiplier15);
             Map(m => m.TorqueMultiplier16);
             Map(m => m.CarID).TypeConverter(new CachedCarIDConverter());
-            Map(m => m.Unknown);
+            Map(m => m.PowerbandRPMIncrease);
             Map(m => m.Stage);
             Map(m => m.Price);
             Map(m => m.NamePart1).TypeConverter(new StringTableLookup(tables[0]));
