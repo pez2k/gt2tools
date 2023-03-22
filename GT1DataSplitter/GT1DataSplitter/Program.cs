@@ -1,10 +1,13 @@
 ﻿using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using CsvHelper.Configuration;
 
 namespace GT1.DataSplitter
 {
+    using Caches;
+
     class Program
     {
         public static CsvConfiguration CSVConfig => new(CultureInfo.CurrentUICulture) { ShouldQuote = (args) => true };
@@ -28,10 +31,25 @@ namespace GT1.DataSplitter
             TData data = new();
             data.ReadData(filename);
             data.DumpData();
+
+            using (StreamWriter ids = File.CreateText("_ids.txt"))
+            {
+                foreach (string id in CarIDCache.Cache.Skip(1))
+                {
+                    ids.WriteLine(id);
+                }
+            }
         }
 
         private static void BuildDataFile<TData>() where TData : DataFile, new()
         {
+            using (StreamReader ids = File.OpenText("_ids.txt"))
+            {
+                while (!ids.EndOfStream)
+                {
+                    CarIDCache.Add(ids.ReadLine());
+                }
+            }
             TData data = new();
             data.ImportData();
             Directory.CreateDirectory("Output");

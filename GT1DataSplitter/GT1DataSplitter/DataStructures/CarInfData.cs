@@ -15,7 +15,7 @@
                                    (typeof(EnemyCarsClubman), 35, false),
                                    (typeof(EnemyCarsGTCup), 36, false),
                                    (typeof(EnemyCarsWorldCup), 37, false),
-                                   (typeof(Spec), 0, false),
+                                   (typeof(Spec), 38, false),
                                    (typeof(Adjust), 1, false),
                                    (typeof(EngineBalancing), 2, false),
                                    (typeof(Brake), 3, false),

@@ -1,143 +1,775 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
+using CsvHelper.Configuration;
 
 namespace GT1.DataSplitter
 {
     using Caches;
+    using TypeConverters;
 
-    public class Spec : DataStructure
+    public class Spec : CsvDataStructure<SpecData, SpecCSVMap>
     {
         public Spec()
         {
             Header = "SPEC";
-            Size = 0x1A8;
-            // 0x00: car ID string
-            // 0x07: always 1?
-            // 0x08: always 0x08D4?
-            // 0x0A: always 0x08D4?
-            // 0x0C: width
-            // 0x0E: height
-            // 0x10: wheelbase
-            // 0x12: ???
-            // 0x13: ???
-            // 0x14: f track
-            // 0x16: r track
-            // 0x18: reverse
-            // 0x1A: 1st through
-            // 0x26: 7th
-            // 0x28: fdr
-            // 0x2A: gear count
-            // 0x2B: flywheel inertia kg.m^2 - cannot be zero
-            // 0x2C: engine braking kgfm
-            // 0x2D: turbo level?
-            // 0x2E: f brake level?
-            // 0x2F: r brake level?
-            // 0x30: power multiplier?
-            // 0x31: shift limit
-            // 0x32: rev limit - if zero, look up last tq curve point RPM using num of points at 0x56
-            // 0x33: idle? usually 120?
-            // 0x34-43: torque curve RPM?
-            // 0x44-0x50: ??? - identical for most cars? 6 0 32 80 140 202 -1 -1 98 50 30 22
-            // 0x51: AWD mode
-            // 0x52-55: ??? - identical for most cars? 10 10 100 100
-            // 0x56: num torque curve points
-            // 0x57-59: ??? - identical for most cars? 48 90 30
-            // 0x5A: weight
-            // 0x5C: ??? - identical for most cars? 60
-            // 0x5D: ??? - identical for most cars? multiplied by 10 in code, RPM related - ClutchReleaseRPM in GT2 (always 250 / 2500rpm?)
-            // 0x5E: ??? - identical for most cars? 45
-            // 0x5F: ??? - identical for most cars? 45
-            // 0x60: f brake power
-            // 0x61: r brake power
-            // 0x62: ???
-            // 0x63: brake ???
-            // 0x64: f wheel inertia
-            // 0x65: r wheel inertia
-            // 0x66: f tyre size 3b?
-            // 0x69: r tyre size 3b?
-            // 0x6C: f camber
-            // 0x6D: r camber
-            // 0x6E: f spring rate
-            // 0x6F: f stab
-            // 0x70: f bumprubber
-            // 0x71: f ???
-            // 0x72: f ??? - 0x00 in Suspension
-            // 0x73: f damper bound 1
-            // 0x74: f ??? - 0x02 in Suspension
-            // 0x75: f damper bound 2?
-            // 0x76: f ??? - 0x01 in Suspension
-            // 0x77: f damper rebound 1
-            // 0x78: f ??? - 0x03 in Suspension
-            // 0x79: f damper rebound 2?
-            // 0x7A: r spring rate
-            // 0x7B: r stab
-            // 0x7C: r bumprubber
-            // 0x7D: r ???
-            // 0x7E: r ??? - 0x05 in Suspension
-            // 0x7F: r damper bound 1
-            // 0x80: r ??? - 0x07 in Suspension
-            // 0x81: r damper bound 2?
-            // 0x82: r ??? - 0x06 in Suspension
-            // 0x83: r damper rebound 1
-            // 0x84: r ??? - 0x08 in Suspension
-            // 0x85: r damper rebound 2?
-            // 0x86: f grip?
-            // 0x87: r grip?
-            // 0x88: f df
-            // 0x89: r df
-            // 0x8A: drivetrain - 00 FR / 01 FF / 02 4WD / 03 MR
-            // 0x8B: clutch torque kgfm
-            // 0x8C-115: ??? - 8F-97, 9D-A8, AE-EB, ED-F0, F2-F3, FA-110 the same for most cars?
-            // 0x116-117: f/r ride height?
-            // 0x118: ???
-            // 0x119: something drivetrain related?
-            // 0x11A-13D: ??? - 11A onwards identical for most cars?
-            // 0x13E: torque curve 1 through
-            // 0x15C: torque curve 16 - if last value is 0, is set to second-last value
-            // 0x15E-16D: ??? 16 1b values, most 200, descending at the end
-            // 0x16E: ??? 2b?
-            // 0x170-175: ??? - all 200s again, identical for most cars?
-            // 0x176: engine sound num?
-            // 0x178: turbo related 6b? - 6 individual values
-            // 0x17E: ??? - identical 0 for most cars?
-            // 0x180: exhaust sound num?
-            // 0x182: ??? - identical 0 for most cars?
-            // 0x184: price
-            // 0x188: name part 1
-            // 0x18A: name part 1 table (always 0)
-            // 0x18C: name part 2
-            // 0x18E: name part 2 table (always 1) ---------- followed by parts 3 through 8 for JP
-            // 0x190: suspension part ID -------------------- resumes at 0x1AC in JP
-            // 0x192: tire part ID
-            // 0x194: length
-            // 0x196: cc
-            // 0x198: ps
-            // 0x19A: power RPM
-            // 0x19C: kgm
-            // 0x19E: torque RPM
-            // 0x1A0: 30 new / 31 used
-            // 0x1A1: 01 racing / 00 normal - also checked by used car code maybe?
-            // 0x1A2: unknown flag
-            // 0x1A3: 00 normal / 01 turbo / 02 mechanical
-            // 0x1A4: 00 SOHC / 01 DOHC / 02 OHV / 03 Rotary --------------- last 4b not in JP
-            // 0x1A5: 00 L4 / 01 L6 / 02 V6 / 03 V8 / 04 V10 / 05 RE / 06 Boxer4 / 07 Boxer6
-            // 0x1A6: f susp - 00 strut / 01 trailing torsion beam / 02 double wishbone / 03 multilink / 04 parallel-link strut? / 05 multilink beam? / 06 macpherson strut? / 07 semi-trailing arm? / 08 torque arm
-            // 0x1A7: r susp
+            StringTableCount = 2;
         }
 
-        public override void Import(string filename)
+        public override void Read(Stream infile)
         {
-            base.Import(filename);
-            string carID = Encoding.ASCII.GetString(rawData[..5]);
-            CarIDCache.Add(carID);
+            base.Read(infile);
+            CarIDCache.Add(Encoding.ASCII.GetString(rawData[..5]));
         }
 
         protected override string CreateOutputFilename()
         {
             string filename = base.CreateOutputFilename();
-            string carID = Encoding.ASCII.GetString(rawData[..5]);
-            CarIDCache.Add(carID);
-            return filename.Replace(Path.GetExtension(filename), $"_{carID}{Path.GetExtension(filename)}");
+            return filename.Replace(Path.GetExtension(filename), $"_{Encoding.ASCII.GetString(rawData[..5])}{Path.GetExtension(filename)}");
+        }
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x1A8
+    public struct SpecData
+    {
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
+        public byte[] Name;
+        public ushort Unknown; // always 0x0100?
+        public ushort Unknown2; // always 0x08D4?
+        public ushort Unknown3; // always 0x08D4?
+        public ushort Width;
+        public ushort Height;
+        public ushort Wheelbase;
+        public byte Unknown4;
+        public byte Unknown5;
+        public ushort FrontTrack;
+        public ushort RearTrack;
+        public ushort ReverseGearRatio;
+        public ushort FirstGearRatio;
+        public ushort SecondGearRatio;
+        public ushort ThirdGearRatio;
+        public ushort FourthGearRatio;
+        public ushort FifthGearRatio;
+        public ushort SixthGearRatio;
+        public ushort SeventhGearRatio;
+        public ushort FinalDriveRatio;
+        public byte NumberOfGears;
+        public byte FlywheelInertia; // kg.m^2 - cannot be zero
+        public byte EngineBraking; // kgfm
+        public byte TurboLevel;
+        public byte FrontBrakeLevel;
+        public byte RearBrakeLevel;
+        public byte PowerMultiplier; // 0x30
+        public byte ShiftLimitRPM;
+        public byte RevLimitRPM;
+        public byte IdleRPMMaybe;
+        public byte TorqueCurveRPM1;
+        public byte TorqueCurveRPM2;
+        public byte TorqueCurveRPM3;
+        public byte TorqueCurveRPM4;
+        public byte TorqueCurveRPM5;
+        public byte TorqueCurveRPM6;
+        public byte TorqueCurveRPM7;
+        public byte TorqueCurveRPM8;
+        public byte TorqueCurveRPM9;
+        public byte TorqueCurveRPM10;
+        public byte TorqueCurveRPM11;
+        public byte TorqueCurveRPM12;
+        public byte TorqueCurveRPM13;
+        public byte TorqueCurveRPM14;
+        public byte TorqueCurveRPM15;
+        public byte TorqueCurveRPM16;
+        public byte Unknown6;
+        public byte Unknown7;
+        public byte Unknown8;
+        public byte Unknown9;
+        public byte Unknown10;
+        public byte Unknown11;
+        public byte Unknown12;
+        public byte Unknown13;
+        public byte Unknown14;
+        public byte Unknown15;
+        public byte Unknown16;
+        public byte Unknown17;
+        public byte Unknown18; // 0x50
+        public byte AWDMode;
+        public byte Unknown19;
+        public byte Unknown20;
+        public byte Unknown21;
+        public byte Unknown22;
+        public byte TorqueCurvePoints;
+        public byte Unknown23;
+        public byte Unknown24;
+        public byte Unknown25;
+        public ushort Weight;
+        public byte Unknown26;
+        public byte ClutchReleaseRPMMaybe;
+        public byte Unknown27;
+        public byte Unknown28;
+        public byte FrontBrakeTorque;
+        public byte RearBrakeTorque;
+        public byte Unknown29;
+        public byte Unknown30; // brake-related?
+        public byte FrontWheelInertia;
+        public byte RearWheelInertia;
+        public byte FrontTireSize1;
+        public byte FrontTireSize2;
+        public byte FrontTireSize3;
+        public byte RearTireSize1;
+        public byte RearTireSize2;
+        public byte RearTireSize3;
+        public byte FrontCamber;
+        public byte RearCamber;
+        public byte FrontSpringRate;
+        public byte FrontStabilizer;
+        public byte FrontBumpRubber; // 0x70
+        public byte FrontUnknown1;
+        public byte FrontUnknown2; // 0x00 in Suspension
+        public byte FrontDamperBound;
+        public byte FrontUnknown3; // 0x02 in Suspension
+        public byte FrontDamperBound2Maybe;
+        public byte FrontUnknown4; // 0x01 in Suspension
+        public byte FrontDamperRebound;
+        public byte FrontUnknown5; // 0x03 in Suspension
+        public byte FrontDamperRebound2Maybe;
+        public byte RearSpringRate;
+        public byte RearStabilizer;
+        public byte RearBumpRubber;
+        public byte RearUnknown1;
+        public byte RearUnknown2; // 0x05 in Suspension
+        public byte RearDamperBound;
+        public byte RearUnknown3; // 0x07 in Suspension
+        public byte RearDamperBound2Maybe;
+        public byte RearUnknown4; // 0x06 in Suspension
+        public byte RearDamperRebound;
+        public byte RearUnknown5; // 0x08 in Suspension
+        public byte RearDamperRebound2Maybe;
+        public byte FrontGrip;
+        public byte RearGrip;
+        public byte FrontDownforce;
+        public byte RearDownforce;
+        public byte Drivetrain; // 00 FR / 01 FF / 02 4WD / 03 MR
+        public byte ClutchTorque; // kgfm
+        public byte Unknown31;
+        public byte Unknown32;
+        public byte Unknown33;
+        public byte Unknown34;
+        public byte Unknown35; // 0x90
+        public byte Unknown36;
+        public byte Unknown37;
+        public byte Unknown38;
+        public byte Unknown39;
+        public byte Unknown40;
+        public byte Unknown41;
+        public byte Unknown42;
+        public byte Unknown43;
+        public byte Unknown44;
+        public byte Unknown45;
+        public byte Unknown46;
+        public byte Unknown47;
+        public byte Unknown48;
+        public byte Unknown49;
+        public byte Unknown50;
+        public byte Unknown51; // 0xA0
+        public byte Unknown52;
+        public byte Unknown53;
+        public byte Unknown54;
+        public byte Unknown55;
+        public byte Unknown56;
+        public byte Unknown57;
+        public byte Unknown58;
+        public byte Unknown59;
+        public byte Unknown60;
+        public byte Unknown61;
+        public byte Unknown62;
+        public byte Unknown63;
+        public byte Unknown64;
+        public byte Unknown65;
+        public byte Unknown66;
+        public byte Unknown67; // 0xB0
+        public byte Unknown68;
+        public byte Unknown69;
+        public byte Unknown70;
+        public byte Unknown71;
+        public byte Unknown72;
+        public byte Unknown73;
+        public byte Unknown74;
+        public byte Unknown75;
+        public byte Unknown76;
+        public byte Unknown77;
+        public byte Unknown78;
+        public byte Unknown79;
+        public byte Unknown80;
+        public byte Unknown81;
+        public byte Unknown82;
+        public byte Unknown83; // 0xC0
+        public byte Unknown84;
+        public byte Unknown85;
+        public byte Unknown86;
+        public byte Unknown87;
+        public byte Unknown88;
+        public byte Unknown89;
+        public byte Unknown90;
+        public byte Unknown91;
+        public byte Unknown92;
+        public byte Unknown93;
+        public byte Unknown94;
+        public byte Unknown95;
+        public byte Unknown96;
+        public byte Unknown97;
+        public byte Unknown98;
+        public byte Unknown99; // 0xD0
+        public byte Unknown100;
+        public byte Unknown101;
+        public byte Unknown102;
+        public byte Unknown103;
+        public byte Unknown104;
+        public byte Unknown105;
+        public byte Unknown106;
+        public byte Unknown107;
+        public byte Unknown108;
+        public byte Unknown109;
+        public byte Unknown110;
+        public byte Unknown111;
+        public byte Unknown112;
+        public byte Unknown113;
+        public byte Unknown114;
+        public byte Unknown115; // 0xE0
+        public byte Unknown116;
+        public byte Unknown117;
+        public byte Unknown118;
+        public byte Unknown119;
+        public byte Unknown120;
+        public byte Unknown121;
+        public byte Unknown122;
+        public byte Unknown123;
+        public byte Unknown124;
+        public byte Unknown125;
+        public byte Unknown126;
+        public byte Unknown127;
+        public byte Unknown128;
+        public byte Unknown129;
+        public byte Unknown130;
+        public byte Unknown131; // 0xF0
+        public byte Unknown132;
+        public byte Unknown133;
+        public byte Unknown134;
+        public byte Unknown135;
+        public byte Unknown136;
+        public byte Unknown137;
+        public byte Unknown138;
+        public byte Unknown139;
+        public byte Unknown140;
+        public byte Unknown141;
+        public byte Unknown142;
+        public byte Unknown143;
+        public byte Unknown144;
+        public byte Unknown145;
+        public byte Unknown146;
+        public byte Unknown147; // 0x100
+        public byte Unknown148;
+        public byte Unknown149;
+        public byte Unknown150;
+        public byte Unknown151;
+        public byte Unknown152;
+        public byte Unknown153;
+        public byte Unknown154;
+        public byte Unknown155;
+        public byte Unknown156;
+        public byte Unknown157;
+        public byte Unknown158;
+        public byte Unknown159;
+        public byte Unknown160;
+        public byte Unknown161;
+        public byte Unknown162;
+        public byte Unknown163; // 0x110
+        public byte Unknown164;
+        public byte Unknown165;
+        public byte Unknown166;
+        public byte Unknown167;
+        public byte Unknown168;
+        public byte FrontRideHeight;
+        public byte RearRideHeight;
+        public byte Unknown169;
+        public byte Unknown170; // drivetrain-related
+        public byte Unknown171;
+        public byte Unknown172;
+        public byte Unknown173;
+        public byte Unknown174;
+        public byte Unknown175;
+        public byte Unknown176;
+        public byte Unknown177;
+        public byte Unknown178;
+        public byte Unknown179;
+        public byte Unknown180;
+        public byte Unknown181;
+        public byte Unknown182;
+        public byte Unknown183;
+        public byte Unknown184;
+        public byte Unknown185;
+        public byte Unknown186;
+        public byte Unknown187;
+        public byte Unknown188;
+        public byte Unknown189;
+        public byte Unknown190;
+        public byte Unknown191;
+        public byte Unknown192;
+        public byte Unknown193; // 0x130
+        public byte Unknown194;
+        public byte Unknown195;
+        public byte Unknown196;
+        public byte Unknown197;
+        public byte Unknown198;
+        public byte Unknown199;
+        public byte Unknown201;
+        public byte Unknown202;
+        public byte Unknown203;
+        public byte Unknown204;
+        public byte Unknown205;
+        public byte Unknown206;
+        public byte Unknown207;
+        public ushort TorqueCurve1;
+        public ushort TorqueCurve2;
+        public ushort TorqueCurve3;
+        public ushort TorqueCurve4;
+        public ushort TorqueCurve5;
+        public ushort TorqueCurve6;
+        public ushort TorqueCurve7;
+        public ushort TorqueCurve8;
+        public ushort TorqueCurve9;
+        public ushort TorqueCurve10; // 0x150
+        public ushort TorqueCurve11;
+        public ushort TorqueCurve12;
+        public ushort TorqueCurve13;
+        public ushort TorqueCurve14;
+        public ushort TorqueCurve15;
+        public ushort TorqueCurve16;
+        public byte Unknown208; // start of 16 similar bytes - related to torque curve?
+        public byte Unknown209;
+        public byte Unknown210;
+        public byte Unknown211;
+        public byte Unknown212;
+        public byte Unknown213;
+        public byte Unknown214;
+        public byte Unknown215;
+        public byte Unknown216;
+        public byte Unknown217;
+        public byte Unknown218;
+        public byte Unknown219;
+        public byte Unknown220;
+        public byte Unknown221;
+        public byte Unknown222;
+        public byte Unknown223; // end of 16 similar bytes
+        public ushort Unknown224;
+        public byte Unknown225; // 0x170
+        public byte Unknown226;
+        public byte Unknown227;
+        public byte Unknown228;
+        public byte Unknown229;
+        public byte Unknown230;
+        public ushort EngineSound;
+        public byte TurboUnknown1;
+        public byte TurboUnknown2;
+        public byte TurboUnknown3;
+        public byte TurboUnknown4;
+        public byte TurboUnknown5;
+        public byte TurboUnknown6;
+        public ushort Unknown231;
+        public ushort MufflerSound;
+        public ushort Unknown232;
+        public uint Price;
+        public ushort NamePart1;
+        public ushort StringTablePart1;
+        public ushort NamePart2;
+        public ushort StringTablePart2;
+        public ushort Suspension; // 0x190
+        public ushort Tire;
+        public ushort Length;
+        public ushort Displacement;
+        public ushort Power;
+        public ushort PowerRPM;
+        public ushort Torque;
+        public ushort TorqueRPM;
+        public byte NewOrUsed; // 30 new / 31 used
+        public byte IsRacing; // 00 normal / 01 racing
+        public byte UnknownFlag;
+        public byte Aspiration; // 00 normal / 01 turbo / 02 mechanical
+        public byte EngineValvetrain; // 00 SOHC / 01 DOHC / 02 OHV / 03 Rotary
+        public byte EngineLayout; // 00 L4 / 01 L6 / 02 V6 / 03 V8 / 04 V10 / 05 RE / 06 Boxer4 / 07 Boxer6
+        public byte FrontSuspensionType; // 00 strut / 01 trailing torsion beam / 02 double wishbone / 03 multilink / 04 parallel-link strut? / 05 multilink beam? / 06 macpherson strut? / 07 semi-trailing arm? / 08 torque arm
+        public byte RearSuspensionType;
+    }
+
+    public sealed class SpecCSVMap : ClassMap<SpecData>
+    {
+        public SpecCSVMap(List<List<string>> tables)
+        {
+            Map(m => m.Name).TypeConverter(new HexStringConverter(6));
+            Map(m => m.Unknown);
+            Map(m => m.Unknown2);
+            Map(m => m.Unknown3);
+            Map(m => m.Width);
+            Map(m => m.Height);
+            Map(m => m.Wheelbase);
+            Map(m => m.Unknown4);
+            Map(m => m.Unknown5);
+            Map(m => m.FrontTrack);
+            Map(m => m.RearTrack);
+            Map(m => m.ReverseGearRatio);
+            Map(m => m.FirstGearRatio);
+            Map(m => m.SecondGearRatio);
+            Map(m => m.ThirdGearRatio);
+            Map(m => m.FourthGearRatio);
+            Map(m => m.FifthGearRatio);
+            Map(m => m.SixthGearRatio);
+            Map(m => m.SeventhGearRatio);
+            Map(m => m.FinalDriveRatio);
+            Map(m => m.NumberOfGears);
+            Map(m => m.FlywheelInertia);
+            Map(m => m.EngineBraking);
+            Map(m => m.TurboLevel);
+            Map(m => m.FrontBrakeLevel);
+            Map(m => m.RearBrakeLevel);
+            Map(m => m.PowerMultiplier);
+            Map(m => m.ShiftLimitRPM);
+            Map(m => m.RevLimitRPM);
+            Map(m => m.IdleRPMMaybe);
+            Map(m => m.TorqueCurveRPM1);
+            Map(m => m.TorqueCurveRPM2);
+            Map(m => m.TorqueCurveRPM3);
+            Map(m => m.TorqueCurveRPM4);
+            Map(m => m.TorqueCurveRPM5);
+            Map(m => m.TorqueCurveRPM6);
+            Map(m => m.TorqueCurveRPM7);
+            Map(m => m.TorqueCurveRPM8);
+            Map(m => m.TorqueCurveRPM9);
+            Map(m => m.TorqueCurveRPM10);
+            Map(m => m.TorqueCurveRPM11);
+            Map(m => m.TorqueCurveRPM12);
+            Map(m => m.TorqueCurveRPM13);
+            Map(m => m.TorqueCurveRPM14);
+            Map(m => m.TorqueCurveRPM15);
+            Map(m => m.TorqueCurveRPM16);
+            Map(m => m.Unknown6);
+            Map(m => m.Unknown7);
+            Map(m => m.Unknown8);
+            Map(m => m.Unknown9);
+            Map(m => m.Unknown10);
+            Map(m => m.Unknown11);
+            Map(m => m.Unknown12);
+            Map(m => m.Unknown13);
+            Map(m => m.Unknown14);
+            Map(m => m.Unknown15);
+            Map(m => m.Unknown16);
+            Map(m => m.Unknown17);
+            Map(m => m.Unknown18);
+            Map(m => m.AWDMode);
+            Map(m => m.Unknown19);
+            Map(m => m.Unknown20);
+            Map(m => m.Unknown21);
+            Map(m => m.Unknown22);
+            Map(m => m.TorqueCurvePoints);
+            Map(m => m.Unknown23);
+            Map(m => m.Unknown24);
+            Map(m => m.Unknown25);
+            Map(m => m.Weight);
+            Map(m => m.Unknown26);
+            Map(m => m.ClutchReleaseRPMMaybe);
+            Map(m => m.Unknown27);
+            Map(m => m.Unknown28);
+            Map(m => m.FrontBrakeTorque);
+            Map(m => m.RearBrakeTorque);
+            Map(m => m.Unknown29);
+            Map(m => m.Unknown30);
+            Map(m => m.FrontWheelInertia);
+            Map(m => m.RearWheelInertia);
+            Map(m => m.FrontTireSize1);
+            Map(m => m.FrontTireSize2);
+            Map(m => m.FrontTireSize3);
+            Map(m => m.RearTireSize1);
+            Map(m => m.RearTireSize2);
+            Map(m => m.RearTireSize3);
+            Map(m => m.FrontCamber);
+            Map(m => m.RearCamber);
+            Map(m => m.FrontSpringRate);
+            Map(m => m.FrontStabilizer);
+            Map(m => m.FrontBumpRubber);
+            Map(m => m.FrontUnknown1);
+            Map(m => m.FrontUnknown2);
+            Map(m => m.FrontDamperBound);
+            Map(m => m.FrontUnknown3);
+            Map(m => m.FrontDamperBound2Maybe);
+            Map(m => m.FrontUnknown4);
+            Map(m => m.FrontDamperRebound);
+            Map(m => m.FrontUnknown5);
+            Map(m => m.FrontDamperRebound2Maybe);
+            Map(m => m.RearSpringRate);
+            Map(m => m.RearStabilizer);
+            Map(m => m.RearBumpRubber);
+            Map(m => m.RearUnknown1);
+            Map(m => m.RearUnknown2);
+            Map(m => m.RearDamperBound);
+            Map(m => m.RearUnknown3);
+            Map(m => m.RearDamperBound2Maybe);
+            Map(m => m.RearUnknown4);
+            Map(m => m.RearDamperRebound);
+            Map(m => m.RearUnknown5);
+            Map(m => m.RearDamperRebound2Maybe);
+            Map(m => m.FrontGrip);
+            Map(m => m.RearGrip);
+            Map(m => m.FrontDownforce);
+            Map(m => m.RearDownforce);
+            Map(m => m.Drivetrain);
+            Map(m => m.ClutchTorque);
+            Map(m => m.Unknown31);
+            Map(m => m.Unknown32);
+            Map(m => m.Unknown33);
+            Map(m => m.Unknown34);
+            Map(m => m.Unknown35);
+            Map(m => m.Unknown36);
+            Map(m => m.Unknown37);
+            Map(m => m.Unknown38);
+            Map(m => m.Unknown39);
+            Map(m => m.Unknown40);
+            Map(m => m.Unknown41);
+            Map(m => m.Unknown42);
+            Map(m => m.Unknown43);
+            Map(m => m.Unknown44);
+            Map(m => m.Unknown45);
+            Map(m => m.Unknown46);
+            Map(m => m.Unknown47);
+            Map(m => m.Unknown48);
+            Map(m => m.Unknown49);
+            Map(m => m.Unknown50);
+            Map(m => m.Unknown51);
+            Map(m => m.Unknown52);
+            Map(m => m.Unknown53);
+            Map(m => m.Unknown54);
+            Map(m => m.Unknown55);
+            Map(m => m.Unknown56);
+            Map(m => m.Unknown57);
+            Map(m => m.Unknown58);
+            Map(m => m.Unknown59);
+            Map(m => m.Unknown60);
+            Map(m => m.Unknown61);
+            Map(m => m.Unknown62);
+            Map(m => m.Unknown63);
+            Map(m => m.Unknown64);
+            Map(m => m.Unknown65);
+            Map(m => m.Unknown66);
+            Map(m => m.Unknown67);
+            Map(m => m.Unknown68);
+            Map(m => m.Unknown69);
+            Map(m => m.Unknown70);
+            Map(m => m.Unknown71);
+            Map(m => m.Unknown72);
+            Map(m => m.Unknown73);
+            Map(m => m.Unknown74);
+            Map(m => m.Unknown75);
+            Map(m => m.Unknown76);
+            Map(m => m.Unknown77);
+            Map(m => m.Unknown78);
+            Map(m => m.Unknown79);
+            Map(m => m.Unknown80);
+            Map(m => m.Unknown81);
+            Map(m => m.Unknown82);
+            Map(m => m.Unknown83);
+            Map(m => m.Unknown84);
+            Map(m => m.Unknown85);
+            Map(m => m.Unknown86);
+            Map(m => m.Unknown87);
+            Map(m => m.Unknown88);
+            Map(m => m.Unknown89);
+            Map(m => m.Unknown90);
+            Map(m => m.Unknown91);
+            Map(m => m.Unknown92);
+            Map(m => m.Unknown93);
+            Map(m => m.Unknown94);
+            Map(m => m.Unknown95);
+            Map(m => m.Unknown96);
+            Map(m => m.Unknown97);
+            Map(m => m.Unknown98);
+            Map(m => m.Unknown99);
+            Map(m => m.Unknown100);
+            Map(m => m.Unknown101);
+            Map(m => m.Unknown102);
+            Map(m => m.Unknown103);
+            Map(m => m.Unknown104);
+            Map(m => m.Unknown105);
+            Map(m => m.Unknown106);
+            Map(m => m.Unknown107);
+            Map(m => m.Unknown108);
+            Map(m => m.Unknown109);
+            Map(m => m.Unknown110);
+            Map(m => m.Unknown111);
+            Map(m => m.Unknown112);
+            Map(m => m.Unknown113);
+            Map(m => m.Unknown114);
+            Map(m => m.Unknown115);
+            Map(m => m.Unknown116);
+            Map(m => m.Unknown117);
+            Map(m => m.Unknown118);
+            Map(m => m.Unknown119);
+            Map(m => m.Unknown120);
+            Map(m => m.Unknown121);
+            Map(m => m.Unknown122);
+            Map(m => m.Unknown123);
+            Map(m => m.Unknown124);
+            Map(m => m.Unknown125);
+            Map(m => m.Unknown126);
+            Map(m => m.Unknown127);
+            Map(m => m.Unknown128);
+            Map(m => m.Unknown129);
+            Map(m => m.Unknown130);
+            Map(m => m.Unknown131);
+            Map(m => m.Unknown132);
+            Map(m => m.Unknown133);
+            Map(m => m.Unknown134);
+            Map(m => m.Unknown135);
+            Map(m => m.Unknown136);
+            Map(m => m.Unknown137);
+            Map(m => m.Unknown138);
+            Map(m => m.Unknown139);
+            Map(m => m.Unknown140);
+            Map(m => m.Unknown141);
+            Map(m => m.Unknown142);
+            Map(m => m.Unknown143);
+            Map(m => m.Unknown144);
+            Map(m => m.Unknown145);
+            Map(m => m.Unknown146);
+            Map(m => m.Unknown147);
+            Map(m => m.Unknown148);
+            Map(m => m.Unknown149);
+            Map(m => m.Unknown150);
+            Map(m => m.Unknown151);
+            Map(m => m.Unknown152);
+            Map(m => m.Unknown153);
+            Map(m => m.Unknown154);
+            Map(m => m.Unknown155);
+            Map(m => m.Unknown156);
+            Map(m => m.Unknown157);
+            Map(m => m.Unknown158);
+            Map(m => m.Unknown159);
+            Map(m => m.Unknown160);
+            Map(m => m.Unknown161);
+            Map(m => m.Unknown162);
+            Map(m => m.Unknown163);
+            Map(m => m.Unknown164);
+            Map(m => m.Unknown165);
+            Map(m => m.Unknown166);
+            Map(m => m.Unknown167);
+            Map(m => m.Unknown168);
+            Map(m => m.FrontRideHeight);
+            Map(m => m.RearRideHeight);
+            Map(m => m.Unknown169);
+            Map(m => m.Unknown170);
+            Map(m => m.Unknown171);
+            Map(m => m.Unknown172);
+            Map(m => m.Unknown173);
+            Map(m => m.Unknown174);
+            Map(m => m.Unknown175);
+            Map(m => m.Unknown176);
+            Map(m => m.Unknown177);
+            Map(m => m.Unknown178);
+            Map(m => m.Unknown179);
+            Map(m => m.Unknown180);
+            Map(m => m.Unknown181);
+            Map(m => m.Unknown182);
+            Map(m => m.Unknown183);
+            Map(m => m.Unknown184);
+            Map(m => m.Unknown185);
+            Map(m => m.Unknown186);
+            Map(m => m.Unknown187);
+            Map(m => m.Unknown188);
+            Map(m => m.Unknown189);
+            Map(m => m.Unknown190);
+            Map(m => m.Unknown191);
+            Map(m => m.Unknown192);
+            Map(m => m.Unknown193);
+            Map(m => m.Unknown194);
+            Map(m => m.Unknown195);
+            Map(m => m.Unknown196);
+            Map(m => m.Unknown197);
+            Map(m => m.Unknown198);
+            Map(m => m.Unknown199);
+            Map(m => m.Unknown201);
+            Map(m => m.Unknown202);
+            Map(m => m.Unknown203);
+            Map(m => m.Unknown204);
+            Map(m => m.Unknown205);
+            Map(m => m.Unknown206);
+            Map(m => m.Unknown207);
+            Map(m => m.TorqueCurve1);
+            Map(m => m.TorqueCurve2);
+            Map(m => m.TorqueCurve3);
+            Map(m => m.TorqueCurve4);
+            Map(m => m.TorqueCurve5);
+            Map(m => m.TorqueCurve6);
+            Map(m => m.TorqueCurve7);
+            Map(m => m.TorqueCurve8);
+            Map(m => m.TorqueCurve9);
+            Map(m => m.TorqueCurve10);
+            Map(m => m.TorqueCurve11);
+            Map(m => m.TorqueCurve12);
+            Map(m => m.TorqueCurve13);
+            Map(m => m.TorqueCurve14);
+            Map(m => m.TorqueCurve15);
+            Map(m => m.TorqueCurve16);
+            Map(m => m.Unknown208);
+            Map(m => m.Unknown209);
+            Map(m => m.Unknown210);
+            Map(m => m.Unknown211);
+            Map(m => m.Unknown212);
+            Map(m => m.Unknown213);
+            Map(m => m.Unknown214);
+            Map(m => m.Unknown215);
+            Map(m => m.Unknown216);
+            Map(m => m.Unknown217);
+            Map(m => m.Unknown218);
+            Map(m => m.Unknown219);
+            Map(m => m.Unknown220);
+            Map(m => m.Unknown221);
+            Map(m => m.Unknown222);
+            Map(m => m.Unknown223);
+            Map(m => m.Unknown224);
+            Map(m => m.Unknown225);
+            Map(m => m.Unknown226);
+            Map(m => m.Unknown227);
+            Map(m => m.Unknown228);
+            Map(m => m.Unknown229);
+            Map(m => m.Unknown230);
+            Map(m => m.EngineSound);
+            Map(m => m.TurboUnknown1);
+            Map(m => m.TurboUnknown2);
+            Map(m => m.TurboUnknown3);
+            Map(m => m.TurboUnknown4);
+            Map(m => m.TurboUnknown5);
+            Map(m => m.TurboUnknown6);
+            Map(m => m.Unknown231);
+            Map(m => m.MufflerSound);
+            Map(m => m.Unknown232);
+            Map(m => m.Price);
+            Map(m => m.NamePart1).TypeConverter(new StringTableLookup(tables[0]));
+            Map(m => m.StringTablePart1).Convert(args => 0).Ignore();
+            Map(m => m.NamePart2).TypeConverter(new StringTableLookup(tables[1]));
+            Map(m => m.StringTablePart2).Convert(args => 1).Ignore();
+            Map(m => m.Suspension).PartFilename(nameof(Suspension));
+            Map(m => m.Tire).PartFilename(nameof(Tire));
+            Map(m => m.Length);
+            Map(m => m.Displacement);
+            Map(m => m.Power);
+            Map(m => m.PowerRPM);
+            Map(m => m.Torque);
+            Map(m => m.TorqueRPM);
+            Map(m => m.NewOrUsed);
+            Map(m => m.IsRacing);
+            Map(m => m.UnknownFlag);
+            Map(m => m.Aspiration);
+            Map(m => m.EngineValvetrain);
+            Map(m => m.EngineLayout);
+            Map(m => m.FrontSuspensionType);
+            Map(m => m.RearSuspensionType);
         }
     }
 }
