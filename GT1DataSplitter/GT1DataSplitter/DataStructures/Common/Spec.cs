@@ -113,12 +113,12 @@ namespace GT1.DataSplitter
         public byte Unknown30; // brake-related?
         public byte FrontWheelInertia;
         public byte RearWheelInertia;
-        public byte FrontTireSize1;
-        public byte FrontTireSize2;
-        public byte FrontTireSize3;
-        public byte RearTireSize1;
-        public byte RearTireSize2;
-        public byte RearTireSize3;
+        public byte FrontWheelDiameterInches;
+        public byte RearWheelDiameterInches;
+        public byte FrontTireWidthMM;
+        public byte RearTireWidthMM;
+        public byte FrontTireProfile;
+        public byte RearTireProfile;
         public byte FrontCamber;
         public byte RearCamber;
         public byte FrontSpringRate;
@@ -484,12 +484,12 @@ namespace GT1.DataSplitter
             Map(m => m.Unknown30);
             Map(m => m.FrontWheelInertia);
             Map(m => m.RearWheelInertia);
-            Map(m => m.FrontTireSize1);
-            Map(m => m.FrontTireSize2);
-            Map(m => m.FrontTireSize3);
-            Map(m => m.RearTireSize1);
-            Map(m => m.RearTireSize2);
-            Map(m => m.RearTireSize3);
+            Map(m => m.FrontWheelDiameterInches);
+            Map(m => m.RearWheelDiameterInches);
+            Map(m => m.FrontTireWidthMM).TypeConverter(new TireWidthConverter());
+            Map(m => m.RearTireWidthMM).TypeConverter(new TireWidthConverter());
+            Map(m => m.FrontTireProfile).TypeConverter(new TireProfileConverter());
+            Map(m => m.RearTireProfile).TypeConverter(new TireProfileConverter());
             Map(m => m.FrontCamber);
             Map(m => m.RearCamber);
             Map(m => m.FrontSpringRate);
