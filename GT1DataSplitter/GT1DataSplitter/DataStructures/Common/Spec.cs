@@ -292,7 +292,7 @@ namespace GT1.DataSplitter
         public byte FrontRideHeight;
         public byte RearRideHeight;
         public byte Unknown169;
-        public byte AWDTorqueSplitMaybe; // drivetrain-related
+        public byte AWDTorqueSplit;
         public byte Unknown171;
         public byte Unknown172;
         public byte Unknown173;
@@ -663,7 +663,7 @@ namespace GT1.DataSplitter
             Map(m => m.FrontRideHeight);
             Map(m => m.RearRideHeight);
             Map(m => m.Unknown169).Convert(args => 13).Ignore();
-            Map(m => m.AWDTorqueSplitMaybe);
+            Map(m => m.AWDTorqueSplit);
             Map(m => m.Unknown171).Convert(args => 4).Ignore();
             Map(m => m.Unknown172).Convert(args => 0).Ignore();
             Map(m => m.Unknown173).Convert(args => 52).Ignore();
