@@ -142,7 +142,7 @@ namespace GT1.LZSS
                 long skipForwardTo = 0;
                 long startOfPattern = -1;
                 ushort patternLength = 0;
-                for (long lookBackPosition = i - 4; lookBackPosition > 0; lookBackPosition--) // abort search if run out of file
+                for (long lookBackPosition = i - 1; lookBackPosition > 0; lookBackPosition--) // abort search if run out of file
                 {
                     input.Position = lookBackPosition; // step backwards through the window looking for matching patterns to what we need to compress
                     var currentPattern = new byte[3];
@@ -206,7 +206,10 @@ namespace GT1.LZSS
 
             if (flagsWritten > 0) // if the input file wasn't a multiple of 8 chunks long, write the remaining flags
             {
-                compressionFlags <<= (7 - flagsWritten);
+                if (flagsWritten < 7)
+                {
+                    compressionFlags <<= (7 - flagsWritten);
+                }
                 compressed.Position = lastFlagsPosition;
                 compressed.WriteByte(ReverseBits(compressionFlags));
             }
