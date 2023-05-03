@@ -141,7 +141,7 @@ namespace GT1.LZSS
 
                 long skipForwardTo = 0;
                 long startOfPattern = -1;
-                ushort patternLength = 0;
+                ushort patternLength = 3;
                 for (long lookBackPosition = i - 1; lookBackPosition > 0; lookBackPosition--) // abort search if run out of file
                 {
                     input.Position = lookBackPosition; // step backwards through the window looking for matching patterns to what we need to compress
@@ -150,10 +150,25 @@ namespace GT1.LZSS
 
                     if (currentPattern.SequenceEqual(nextPattern))
                     {
-                        // start looking for a longer match here
-
                         startOfPattern = lookBackPosition;
                         patternLength = 3;
+
+                        // start looking for a longer match at this position
+                        for (ushort newPatternLength = 4; newPatternLength <= 256; newPatternLength++)
+                        {
+                            nextPattern = new byte[newPatternLength];
+                            currentPattern = new byte[newPatternLength];
+                            input.Position = i;
+                            input.Read(nextPattern);
+                            input.Position = lookBackPosition;
+                            input.Read(currentPattern);
+
+                            if (currentPattern.SequenceEqual(nextPattern))
+                            {
+                                patternLength = newPatternLength;
+                                break;
+                            }
+                        }
 
                         if (lookBackPosition + patternLength > i)
                         {
@@ -189,7 +204,7 @@ namespace GT1.LZSS
                         compressed.WriteByte((byte)lookBackDistance);
                     }
                     compressionFlags |= CompressedFlag;
-                    i += 2;
+                    i += (patternLength - 1);
                 }
 
                 if (flagsWritten < 7)
