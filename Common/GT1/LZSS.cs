@@ -141,21 +141,25 @@ namespace GT1.LZSS
 
                 long skipForwardTo = 0;
                 long startOfPattern = -1;
-                ushort patternLength = 3;
+                int patternLength = 3;
                 for (long lookBackPosition = i - 1; lookBackPosition > 0; lookBackPosition--) // abort search if run out of file
                 {
                     input.Position = lookBackPosition; // step backwards through the window looking for matching patterns to what we need to compress
-                    var currentPattern = new byte[3];
+                    var currentPattern = new byte[patternLength];
                     input.Read(currentPattern);
 
                     if (currentPattern.SequenceEqual(nextPattern))
                     {
                         startOfPattern = lookBackPosition;
-                        patternLength = 3;
 
                         // start looking for a longer match at this position
-                        for (ushort newPatternLength = 4; newPatternLength <= 256; newPatternLength++)
+                        for (int newPatternLength = patternLength + 1; newPatternLength <= 256; newPatternLength++)
                         {
+                            if (i + newPatternLength > input.Length)
+                            {
+                                break;
+                            }
+
                             nextPattern = new byte[newPatternLength];
                             currentPattern = new byte[newPatternLength];
                             input.Position = i;
@@ -166,6 +170,9 @@ namespace GT1.LZSS
                             if (currentPattern.SequenceEqual(nextPattern))
                             {
                                 patternLength = newPatternLength;
+                            }
+                            else
+                            {
                                 break;
                             }
                         }
