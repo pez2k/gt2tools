@@ -93,7 +93,7 @@ namespace GT1.LZSS
 
         private static ushort ConsumeFlag(ushort compressionFlags) => (ushort)(compressionFlags >> 1);
 
-        public static void Compress(Stream input, Stream compressed)
+        public static void FakeCompress(Stream input, Stream compressed)
         {
             const byte NoCompressionFlags = 0;
             for (long i = 0; i < input.Length; i++)
@@ -106,9 +106,8 @@ namespace GT1.LZSS
             }
         }
 
-        public static void BrokenCompress(Stream input, Stream compressed)
+        public static void Compress(Stream input, Stream compressed, int windowSize = 2048)
         {
-            const int WindowSize = 1024;
             const byte NoCompressionFlags = 0;
             long lastFlagsPosition = 0;
             byte flagsWritten = 8;
@@ -192,7 +191,7 @@ namespace GT1.LZSS
                         input.Read(nextPattern);
                     }
 
-                    if (lookBackPosition == i - WindowSize) // end of window, abort
+                    if (lookBackPosition == i - windowSize) // end of window, abort
                     {
                         break;
                     }
