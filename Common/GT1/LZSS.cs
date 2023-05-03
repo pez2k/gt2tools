@@ -203,6 +203,13 @@ namespace GT1.LZSS
                     i = skipForwardTo;
                 }
             }
+
+            if (flagsWritten > 0) // if the input file wasn't a multiple of 8 chunks long, write the remaining flags
+            {
+                compressionFlags <<= (7 - flagsWritten);
+                compressed.Position = lastFlagsPosition;
+                compressed.WriteByte(ReverseBits(compressionFlags));
+            }
         }
 
         private static byte ReverseBits(byte input)
