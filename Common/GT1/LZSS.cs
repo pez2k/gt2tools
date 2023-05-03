@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using StreamExtensions;
 
@@ -107,16 +108,23 @@ namespace GT1.LZSS
 
         public static void BrokenCompress(Stream input, Stream compressed)
         {
+            const int WindowSize = 1024;
             const byte NoCompressionFlags = 0;
             long lastFlagsPosition = 0;
             byte flagsWritten = 8;
             byte compressionFlags = NoCompressionFlags;
             for (long i = 0; i < input.Length; i++)
             {
-                if (flagsWritten >= 8)
+                if (i % 100 == 0)
+                {
+                    Console.WriteLine($"Processed {i} bytes...");
+                }
+
+                if (flagsWritten >= 8) // if we've written 8 chunks, hop back and fill in the compression flags for them
                 {
                     compressed.Position = lastFlagsPosition;
                     compressed.WriteByte(ReverseBits(compressionFlags));
+                    compressionFlags = NoCompressionFlags; // reset flags
 
                     if (compressed.Length > 1)
                     {
@@ -134,9 +142,9 @@ namespace GT1.LZSS
                 long skipForwardTo = 0;
                 long startOfPattern = -1;
                 ushort patternLength = 0;
-                for (long lookBackPosition = i - 1; lookBackPosition > 0; lookBackPosition--) // abort search if run out of file
+                for (long lookBackPosition = i - 4; lookBackPosition > 0; lookBackPosition--) // abort search if run out of file
                 {
-                    input.Position = lookBackPosition;
+                    input.Position = lookBackPosition; // step backwards through the window looking for matching patterns to what we need to compress
                     var currentPattern = new byte[3];
                     input.Read(currentPattern);
 
@@ -154,7 +162,7 @@ namespace GT1.LZSS
                         break;
                     }
 
-                    if (lookBackPosition == i - 32768) // end of window, abort
+                    if (lookBackPosition == i - WindowSize) // end of window, abort
                     {
                         break;
                     }
@@ -162,7 +170,7 @@ namespace GT1.LZSS
 
                 if (startOfPattern == -1)
                 {
-                    compressed.WriteByte(nextPattern[0]); // failed to find a match, just write the current byte
+                    compressed.WriteByte(nextPattern[0]); // failed to find a match, just write the current byte - flag is already zero
                 }
                 else
                 {
@@ -181,6 +189,7 @@ namespace GT1.LZSS
                         compressed.WriteByte((byte)lookBackDistance);
                     }
                     compressionFlags |= CompressedFlag;
+                    i += 2;
                 }
 
                 if (flagsWritten < 7)
