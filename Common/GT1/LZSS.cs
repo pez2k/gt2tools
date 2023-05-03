@@ -148,9 +148,13 @@ namespace GT1.LZSS
                     var currentPattern = new byte[patternLength];
                     input.Read(currentPattern);
 
-                    if (currentPattern.SequenceEqual(nextPattern))
+                    if (currentPattern.SequenceEqual(nextPattern)) // found a match
                     {
-                        startOfPattern = lookBackPosition;
+                        long previousBest = startOfPattern;
+                        if (previousBest == -1)
+                        {
+                            startOfPattern = lookBackPosition; // record the first valid match as it's the best with the minimum pattern length
+                        }
 
                         // start looking for a longer match at this position
                         for (int newPatternLength = patternLength + 1; newPatternLength <= 256; newPatternLength++)
@@ -169,6 +173,7 @@ namespace GT1.LZSS
 
                             if (currentPattern.SequenceEqual(nextPattern))
                             {
+                                startOfPattern = lookBackPosition; // found a better position than the current best due to longer match
                                 patternLength = newPatternLength;
                             }
                             else
@@ -177,11 +182,14 @@ namespace GT1.LZSS
                             }
                         }
 
-                        if (lookBackPosition + patternLength > i)
+                        if (startOfPattern != previousBest) // if we've improved, re-evaluate whether we need to skip forward
                         {
-                            skipForwardTo = lookBackPosition + patternLength;
+                            skipForwardTo = lookBackPosition + patternLength > i ? lookBackPosition + patternLength : 0;
                         }
-                        break;
+
+                        nextPattern = new byte[patternLength]; // reset search pattern to the last successful length to see if we can find further matches that may end up being longer
+                        input.Position = i;
+                        input.Read(nextPattern);
                     }
 
                     if (lookBackPosition == i - WindowSize) // end of window, abort
