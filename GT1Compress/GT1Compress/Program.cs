@@ -19,7 +19,7 @@ namespace GT1.Compress
             int windowSize = 1024;
             if (args.Length == 2)
             {
-                if (int.TryParse(args[0], out int compressionLevel) && compressionLevel > 0 && compressionLevel <= 32)
+                if (int.TryParse(args[0], out int compressionLevel) && compressionLevel >= 0 && compressionLevel <= 32)
                 {
                     windowSize = compressionLevel * 1024;
                 }
@@ -34,7 +34,14 @@ namespace GT1.Compress
             {
                 using (FileStream output = new FileStream($"{filename}_compressed", FileMode.Create))
                 {
-                    LZSS.Compress(input, output, windowSize);
+                    if (windowSize == 0)
+                    {
+                        LZSS.FakeCompress(input, output);
+                    }
+                    else
+                    {
+                        LZSS.Compress(input, output, windowSize);
+                    }
                 }
             }
         }
