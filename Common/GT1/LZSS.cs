@@ -158,7 +158,7 @@ namespace GT1.LZSS
                         // start looking for a longer match at this position
                         for (int newPatternLength = patternLength + 1; newPatternLength <= 256; newPatternLength++)
                         {
-                            if (i + newPatternLength > input.Length)
+                            if (i + newPatternLength > input.Length || lookBackPosition + newPatternLength >= i) // disable matching patterns which lead past the start of the current pattern, as this currently breaks the game
                             {
                                 break;
                             }
@@ -181,10 +181,10 @@ namespace GT1.LZSS
                             }
                         }
 
-                        if (startOfPattern != previousBest) // if we've improved, re-evaluate whether we need to skip forward
+                        /*if (startOfPattern != previousBest) // if we've improved, re-evaluate whether we need to skip forward
                         {
                             skipForwardTo = lookBackPosition + patternLength > i ? lookBackPosition + patternLength : 0;
-                        }
+                        }*/
 
                         nextPattern = new byte[patternLength]; // reset search pattern to the last successful length to see if we can find further matches that may end up being longer
                         input.Position = i;
