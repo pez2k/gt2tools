@@ -11,6 +11,8 @@ namespace GT1ArchiveTool
         private const string Header = "LZIP";
         private const uint Version = 1;
         private const string Extension = ".gtz";
+        
+        private static readonly int[] alignmentModes = new int[] { 0, 0x800, 0x1000 }; // some ARCs are unaligned, some aligned to 0x800, and SOUND.DAT aligned to 0x1000
 
         static void Main(string[] args)
         {
@@ -19,12 +21,25 @@ namespace GT1ArchiveTool
                 string path = args[0];
                 if ((File.GetAttributes(path) & FileAttributes.Directory) != 0)
                 {
-                    Rebuild(path);
+                    Rebuild(path, alignmentModes[0]);
                 }
                 else
                 {
                     Extract(path);
                 }
+            }
+            else if (args.Length == 2)
+            {
+                int.TryParse(args[0], out int alignmentMode);
+                string path = args[1];
+                if ((File.GetAttributes(path) & FileAttributes.Directory) != 0)
+                {
+                    Rebuild(path, alignmentModes[alignmentMode]);
+                }
+            }
+            else
+            {
+                Console.WriteLine("Usage:\r\nGT1ArchiveTool.exe <ARC to unpack>\r\nGT1ArchiveTool.exe <directory to pack>\r\nGT1ArchiveTool.exe <alignment mode 0-2> <directory to pack>");
             }
         }
 
@@ -90,32 +105,41 @@ namespace GT1ArchiveTool
             }
         }
 
-        private static void Rebuild(string path)
+        private static void Rebuild(string path, int alignment)
         {
             using (var output = new FileStream($"{Path.GetFileName(path)}.dat", FileMode.Create, FileAccess.Write))
             {
                 output.WriteCharacters("@(#)GT-ARC");
                 output.WriteUShort(0);
-                output.WriteUShort(0x8001); // 00 01 in CARINF.DAT, seems not to matter, but breaks CAR.DAT if 00 01
+                output.WriteByte(1); // version?
+                output.WriteByte(0); // compression flag, filled in once we've inspected the files to pack
                 string[] files = Directory.EnumerateFiles(path).ToArray();
                 output.WriteUShort((ushort)files.Length);
                 output.SetLength(output.Position + (files.Length * 3 * 4));
 
+                bool containsCompressedFiles = false;
                 foreach (string filename in files)
                 {
                     if (Path.GetExtension(filename) == Extension)
                     {
-                        ImportGTZip(filename, output);
+                        containsCompressedFiles = true;
+                        ImportGTZip(filename, output, alignment);
                     }
                     else
                     {
-                        ImportFile(filename, output);
+                        ImportFile(filename, output, alignment);
                     }
+                }
+
+                if (containsCompressedFiles)
+                {
+                    output.Position = 0xD;
+                    output.WriteByte(0x80);
                 }
             }
         }
 
-        private static void ImportGTZip(string filename, Stream output)
+        private static void ImportGTZip(string filename, Stream output, int alignment)
         {
             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
@@ -138,22 +162,29 @@ namespace GT1ArchiveTool
                 }
 
                 uint uncompressedSize = file.ReadUInt();
-                ImportData(file, output, compressedSize, uncompressedSize);
+                ImportData(file, output, compressedSize, uncompressedSize, alignment);
             }
         }
 
-        private static void ImportFile(string filename, Stream output)
+        private static void ImportFile(string filename, Stream output, int alignment)
         {
             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
                 uint size = (uint)file.Length;
-                ImportData(file, output, size, size);
+                ImportData(file, output, size, size, alignment);
             }
         }
 
-        private static void ImportData(Stream input, Stream output, uint compressedSize, uint uncompressedSize)
+        private static void ImportData(Stream input, Stream output, uint compressedSize, uint uncompressedSize, int alignment)
         {
             long offset = output.Length;
+            if (alignment > 0)
+            {
+                while (offset % alignment != 0)
+                {
+                    offset++;
+                }
+            }
             output.WriteUInt((uint)offset);
             output.WriteUInt(compressedSize);
             output.WriteUInt(uncompressedSize);
