@@ -12,7 +12,7 @@ namespace GT1ArchiveTool
         private const uint Version = 1;
         private const string Extension = ".gtz";
         
-        private static readonly int[] alignmentModes = new int[] { 0, 0x800, 0x1000 }; // some ARCs are unaligned, some aligned to 0x800, and SOUND.DAT aligned to 0x1000
+        private static readonly int[] alignmentModes = new int[] { 0, 4, 0x800 }; // some ARCs are unaligned, some aligned to 0x4, some aligned to 0x800
 
         static void Main(string[] args)
         {
@@ -107,7 +107,7 @@ namespace GT1ArchiveTool
 
         private static void Rebuild(string path, int alignment)
         {
-            using (var output = new FileStream($"{Path.GetFileName(path)}.dat", FileMode.Create, FileAccess.Write))
+            using (var output = new FileStream($"{Path.GetFileName(path)}.DAT", FileMode.Create, FileAccess.Write))
             {
                 output.WriteCharacters("@(#)GT-ARC");
                 output.WriteUShort(0);
@@ -129,6 +129,16 @@ namespace GT1ArchiveTool
                     {
                         ImportFile(filename, output, alignment);
                     }
+                }
+
+                if (alignment > 0)
+                {
+                    long paddedLength = output.Length;
+                    while (paddedLength % alignment != 0)
+                    {
+                        paddedLength++;
+                    }
+                    output.SetLength(paddedLength);
                 }
 
                 if (containsCompressedFiles)
