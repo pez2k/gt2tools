@@ -10,17 +10,17 @@ namespace GT1.SystemEnvEditor
     {
         private readonly static string[] bgNames = new string[] { "Test", "tl_sky2", "tl_sky2g", "dawn", "dawn2", "dawn3", "c1_bg", "noon", "au", "m_sky_X" };
 
-        private ushort unknownCount1;
+        private ushort unknownCount;
         private ushort courseCount;
         private ushort carCount;
         private ushort carcadeCount;
         private ushort musicCount;
-        private ushort unknownCount2;
+        private ushort streamCount;
         private string[] courseCodes = Array.Empty<string>();
         private List<byte[]> courseModes = new();
         private byte[] courseBGs = Array.Empty<byte>();
         private string[] courseNames = Array.Empty<string>();
-        private ushort[] unknownData1 = Array.Empty<ushort>();
+        private ushort[] unknownData = Array.Empty<ushort>();
         private string[] carList = Array.Empty<string>();
         private List<byte>[] carColours = Array.Empty<List<byte>>();
         private string[] carNames = Array.Empty<string>();
@@ -28,7 +28,7 @@ namespace GT1.SystemEnvEditor
         private string[] musicCodes = Array.Empty<string>();
         private uint[] musicData = Array.Empty<uint>();
         private string[] musicNames = Array.Empty<string>();
-        private uint[] unknownData2 = Array.Empty<uint>();
+        private uint[] streamData = Array.Empty<uint>();
         private List<string> otherSettings = new();
 
         public void ReadFromBinary(string filename)
@@ -40,12 +40,12 @@ namespace GT1.SystemEnvEditor
                     throw new Exception("Not a GTENV file.");
                 }
 
-                unknownCount1 = file.ReadUShort();
+                unknownCount = file.ReadUShort();
                 courseCount = file.ReadUShort();
                 carCount = file.ReadUShort();
                 carcadeCount = file.ReadUShort();
                 musicCount = file.ReadUShort();
-                unknownCount2 = file.ReadUShort();
+                streamCount = file.ReadUShort();
                 file.Position = 0x48;
 
                 courseCodes = ReadStrings(file, courseCount);
@@ -64,10 +64,10 @@ namespace GT1.SystemEnvEditor
 
                 courseNames = ReadStrings(file, courseCount);
 
-                unknownData1 = new ushort[16];
+                unknownData = new ushort[16];
                 for (int i = 0; i < 16; i++)
                 {
-                    unknownData1[i] = file.ReadUShort();
+                    unknownData[i] = file.ReadUShort();
                 }
 
                 carList = new string[carCount];
@@ -108,10 +108,10 @@ namespace GT1.SystemEnvEditor
                 }
                 musicNames = ReadStrings(file, musicCount);
 
-                unknownData2 = new uint[22];
-                for (int i = 0; i < 22; i++)
+                streamData = new uint[streamCount * 2];
+                for (int i = 0; i < streamCount * 2; i++)
                 {
-                    unknownData2[i] = file.ReadUInt();
+                    streamData[i] = file.ReadUInt();
                 }
 
                 while (file.Position != file.Length)
@@ -278,7 +278,26 @@ namespace GT1.SystemEnvEditor
                 }
             }
 
-            using (FileStream file = new(Path.Combine(directory, "UnknownData1.csv"), FileMode.Open, FileAccess.Read))
+            using (FileStream file = new(Path.Combine(directory, "Streams.csv"), FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new(file))
+                {
+                    using (CsvReader csv = new(reader, csvConfig))
+                    {
+                        List<uint> readValues = new();
+                        csv.Read();
+                        while (csv.Read())
+                        {
+                            readValues.Add(uint.Parse(csv.GetField(0) ?? "", NumberStyles.HexNumber));
+                            readValues.Add(uint.Parse(csv.GetField(1) ?? "", NumberStyles.HexNumber));
+                        }
+                        streamData = readValues.ToArray();
+                        streamCount = (ushort)(readValues.Count / 2);
+                    }
+                }
+            }
+
+            using (FileStream file = new(Path.Combine(directory, "UnknownData.csv"), FileMode.Open, FileAccess.Read))
             {
                 using (StreamReader reader = new(file))
                 {
@@ -290,24 +309,7 @@ namespace GT1.SystemEnvEditor
                         {
                             readValues.Add(ushort.Parse(csv.GetField(0) ?? "", NumberStyles.HexNumber));
                         }
-                        unknownData1 = readValues.ToArray();
-                    }
-                }
-            }
-
-            using (FileStream file = new(Path.Combine(directory, "UnknownData2.csv"), FileMode.Open, FileAccess.Read))
-            {
-                using (StreamReader reader = new(file))
-                {
-                    using (CsvReader csv = new(reader, csvConfig))
-                    {
-                        List<uint> readValues = new();
-                        csv.Read();
-                        while (csv.Read())
-                        {
-                            readValues.Add(uint.Parse(csv.GetField(0) ?? "", NumberStyles.HexNumber));
-                        }
-                        unknownData2 = readValues.ToArray();
+                        unknownData = readValues.ToArray();
                     }
                 }
             }
@@ -320,8 +322,7 @@ namespace GT1.SystemEnvEditor
                     {
                         csv.Read();
                         csv.Read();
-                        unknownCount1 = ushort.Parse(csv.GetField(0) ?? "", NumberStyles.HexNumber);
-                        unknownCount2 = ushort.Parse(csv.GetField(1) ?? "", NumberStyles.HexNumber);
+                        unknownCount = ushort.Parse(csv.GetField(0) ?? "", NumberStyles.HexNumber);
                     }
                 }
             }
@@ -374,14 +375,13 @@ namespace GT1.SystemEnvEditor
                     {
                         writer.WriteLine($"music.name.{i}={musicNames[i]}");
                     }
+                    writer.WriteLine($"streams.code={string.Join(',', Enumerable.Range(0, streamCount).Select(i => $"{streamData[i * 2]:X},{streamData[(i * 2) + 1]:X}"))}");
                     foreach (string setting in otherSettings)
                     {
                         writer.WriteLine(setting);
                     }
-                    writer.WriteLine($"unknown.count.1={unknownCount1}");
-                    writer.WriteLine($"unknown.count.2={unknownCount2}");
-                    writer.WriteLine($"unknown.1={string.Join(',', unknownData1.Select(value => $"{value:X4}"))}");
-                    writer.WriteLine($"unknown.2={string.Join(',', unknownData2.Select(value => $"{value:X8}"))}");
+                    writer.WriteLine($"unknown.count={unknownCount}");
+                    writer.WriteLine($"unknown.code={string.Join(',', unknownData.Select(value => $"{value:X4}"))}");
                 }
             }
         }
@@ -393,12 +393,12 @@ namespace GT1.SystemEnvEditor
                 file.WriteCharacters("@(#)GTENV");
                 file.WriteByte(0);
 
-                file.WriteUShort(unknownCount1);
+                file.WriteUShort(unknownCount);
                 file.WriteUShort(courseCount);
                 file.WriteUShort(carCount);
                 file.WriteUShort(carcadeCount);
                 file.WriteUShort(musicCount);
-                file.WriteUShort(unknownCount2);
+                file.WriteUShort(streamCount);
                 file.Position = 0x48;
 
                 WriteStrings(file, courseCodes);
@@ -412,7 +412,7 @@ namespace GT1.SystemEnvEditor
 
                 WriteStrings(file, courseNames);
 
-                foreach (ushort unknown in unknownData1)
+                foreach (ushort unknown in unknownData)
                 {
                     file.WriteUShort(unknown);
                 }
@@ -452,9 +452,9 @@ namespace GT1.SystemEnvEditor
                 }
                 WriteStrings(file, musicNames);
 
-                foreach (uint unknown in unknownData2)
+                foreach (uint streamDataItem in streamData)
                 {
-                    file.WriteUInt(unknown);
+                    file.WriteUInt(streamDataItem);
                 }
 
                 foreach (string setting in otherSettings)
@@ -616,25 +616,27 @@ namespace GT1.SystemEnvEditor
                 }
             }
 
-            using (FileStream file = new(Path.Combine(directory, "UnknownData1.csv"), FileMode.Create, FileAccess.Write))
+            using (FileStream file = new(Path.Combine(directory, "Streams.csv"), FileMode.Create, FileAccess.Write))
             {
                 using (StreamWriter writer = new(file))
                 {
                     using (CsvWriter csv = new(writer, csvConfig))
                     {
-                        csv.WriteField("Unknown1");
+                        csv.WriteField("StartOffset");
+                        csv.WriteField("Length");
                         csv.NextRecord();
 
-                        foreach (ushort unknown in unknownData1)
+                        for (int i = 0; i < streamCount; i++)
                         {
-                            csv.WriteField($"{unknown:X4}");
+                            csv.WriteField($"{streamData[i * 2]:X8}");
+                            csv.WriteField($"{streamData[(i * 2) + 1]:X8}");
                             csv.NextRecord();
                         }
                     }
                 }
             }
 
-            using (FileStream file = new(Path.Combine(directory, "UnknownData2.csv"), FileMode.Create, FileAccess.Write))
+            using (FileStream file = new(Path.Combine(directory, "UnknownData.csv"), FileMode.Create, FileAccess.Write))
             {
                 using (StreamWriter writer = new(file))
                 {
@@ -643,9 +645,9 @@ namespace GT1.SystemEnvEditor
                         csv.WriteField("Unknown1");
                         csv.NextRecord();
 
-                        foreach (uint unknown in unknownData2)
+                        foreach (ushort unknown in unknownData)
                         {
-                            csv.WriteField($"{unknown:X8}");
+                            csv.WriteField($"{unknown:X4}");
                             csv.NextRecord();
                         }
                     }
@@ -659,11 +661,9 @@ namespace GT1.SystemEnvEditor
                     using (CsvWriter csv = new(writer, csvConfig))
                     {
                         csv.WriteField("UnknownCount1");
-                        csv.WriteField("UnknownCount2");
                         csv.NextRecord();
 
-                        csv.WriteField($"{unknownCount1:X4}");
-                        csv.WriteField($"{unknownCount2:X4}");
+                        csv.WriteField($"{unknownCount:X4}");
                         csv.NextRecord();
                     }
                 }
