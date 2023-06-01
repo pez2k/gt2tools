@@ -179,26 +179,15 @@ namespace GT1.SystemEnvEditor
                 }
             }
 
-            using (FileStream file = new(Path.Combine(directory, "Cars.csv"), FileMode.Open, FileAccess.Read))
+            SortedDictionary<string, string> cars = new();
+            ReadCars(Path.Combine(directory, "Cars.csv"), csvConfig, cars);
+            foreach (string csvPath in Directory.EnumerateFiles(directory, "Cars_*.csv"))
             {
-                using (StreamReader reader = new(file))
-                {
-                    using (CsvReader csv = new(reader, csvConfig))
-                    {
-                        List<string> readCarList = new();
-                        List<string> readCarNames = new();
-                        csv.Read();
-                        while (csv.Read())
-                        {
-                            readCarList.Add(csv.GetField(0) ?? "");
-                            readCarNames.Add(csv.GetField(1) ?? "");
-                        }
-                        carList = readCarList.ToArray();
-                        carNames = readCarNames.ToArray();
-                        carCount = (ushort)carList.Length;
-                    }
-                }
+                ReadCars(csvPath, csvConfig, cars);
             }
+            carList = cars.Keys.ToArray();
+            carNames = cars.Values.ToArray();
+            carCount = (ushort)carList.Length;
 
             using (FileStream file = new(Path.Combine(directory, "CarColours.csv"), FileMode.Open, FileAccess.Read))
             {
@@ -337,6 +326,27 @@ namespace GT1.SystemEnvEditor
                         otherSettings.Add(reader.ReadLine() ?? "");
                     }
                     otherSettings = otherSettings.Where(setting => !string.IsNullOrWhiteSpace(setting)).ToList();
+                }
+            }
+        }
+
+        private void ReadCars(string path, CsvConfiguration csvConfig, SortedDictionary<string, string> cars)
+        {
+            using (FileStream file = new(path, FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new(file))
+                {
+                    using (CsvReader csv = new(reader, csvConfig))
+                    {
+                        csv.Read();
+                        while (csv.Read())
+                        {
+                            if (!string.IsNullOrWhiteSpace(csv.GetField(0)))
+                            {
+                                cars[csv.GetField(0) ?? ""] = csv.GetField(1) ?? "";
+                            }
+                        }
+                    }
                 }
             }
         }
