@@ -14,7 +14,7 @@ namespace GT1.UsedCarEditor
             {
                 Price = file.ReadUShort(),
                 ID = file.ReadSingleByte(),
-                ColourID = file.ReadSingleByte(),
+                ColourID = file.ReadSingleByte()
             };
 
         public void WriteToCSV(CsvWriter csv)
@@ -23,6 +23,21 @@ namespace GT1.UsedCarEditor
             csv.WriteField(Price * 10);
             csv.WriteField(string.Format("{0:X2}", ColourID));
             csv.NextRecord();
+        }
+
+        public static Car ReadFromCSV(CsvReader csv) =>
+            new Car
+            {
+                ID = CarID.GetNumericID(csv.GetField(0) ?? ""),
+                Price = (ushort)(int.Parse(csv.GetField(1) ?? "") / 10),
+                ColourID = byte.Parse(csv.GetField(2) ?? "", System.Globalization.NumberStyles.HexNumber)
+            };
+
+        public void WriteToFile(Stream file)
+        {
+            file.WriteUShort(Price);
+            file.WriteByte(ID);
+            file.WriteByte(ColourID);
         }
     }
 }

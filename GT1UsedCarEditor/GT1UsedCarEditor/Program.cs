@@ -17,7 +17,7 @@ namespace GT1.UsedCarEditor
             {
                 if (Directory.Exists(args[0]))
                 {
-                    //WriteFile(args[0]);
+                    WriteFile(args[0]);
                 }
             }
             else if (File.Exists(args[0]))
@@ -25,7 +25,6 @@ namespace GT1.UsedCarEditor
                 ReadFile(args[0]);
             }
         }
-
 
         static void ReadFile(string path)
         {
@@ -43,6 +42,18 @@ namespace GT1.UsedCarEditor
             string directory = Path.GetFileNameWithoutExtension(path);
             Directory.CreateDirectory(directory);
             list.WriteToCSV(directory);
+        }
+
+        static void WriteFile(string path)
+        {
+            UsedCarList list = UsedCarList.ReadFromCSV(path);
+            using (FileStream file = new($"{Path.GetFileNameWithoutExtension(path)}.usedcar", FileMode.Create, FileAccess.Write))
+            {
+                file.WriteCharacters("@(#)USEDCAR");
+                file.Position = 0xE;
+                file.WriteUShort(6); // manufacturer count?
+                list.WriteToFile(file);
+            }
         }
     }
 }

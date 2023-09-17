@@ -24,5 +24,19 @@
                 manufacturer.WriteToCSV(weekDirectory);
             }
         }
+
+        public static Week ReadFromCSV(string directory) =>
+            new Week()
+            {
+                Manufacturers = manufacturers.Select(name => Manufacturer.ReadFromCSV(Path.Combine(directory, $"{name}.csv"), name)).ToArray()
+            };
+
+        public void WriteToFile(Stream file)
+        {
+            foreach (Manufacturer manufacturer in Manufacturers)
+            {
+                manufacturer.WriteToFile(file);
+            }
+        }
     }
 }
