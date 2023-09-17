@@ -6,48 +6,43 @@ namespace GT1.UsedCarEditor
     {
         static void Main(string[] args)
         {
-            string[] manufacturers = new string[] { "Toyota", "Nissan", "Mitsubishi", "Honda", "Mazda", "Subaru" };
-
-            using (FileStream file = new("_unknown0004.usedcar", FileMode.Open, FileAccess.Read))
+            if (args.Length != 1)
             {
-                using (TextWriter output = new StreamWriter("dump.txt"))
+                return;
+            }
+
+            FileAttributes attributes = File.GetAttributes(args[0]);
+
+            if (attributes.HasFlag(FileAttributes.Directory))
+            {
+                if (Directory.Exists(args[0]))
                 {
-                    file.Position = 0x10; // skip header
-                    const int WeekCount = 60;
-
-                    uint[] blockPointers = new uint[WeekCount];
-                    for (int i = 0; i < WeekCount; i++)
-                    {
-                        blockPointers[i] = file.ReadUInt();
-                    }
-
-                    for (int i = 0; i < WeekCount; i++)
-                    {
-                        file.Position = blockPointers[i];
-                        output.WriteLine($"Week {i}");
-                        output.WriteLine();
-
-                        foreach (string manufacturer in manufacturers)
-                        {
-                            output.WriteLine(manufacturer);
-                            uint carCount = file.ReadUInt();
-                            output.WriteLine($"{carCount} cars");
-                            output.WriteLine();
-
-                            for (int j = 0; j < carCount; j++)
-                            {
-                                ushort price = file.ReadUShort();
-                                byte carID = file.ReadSingleByte();
-                                byte colourID = file.ReadSingleByte();
-                                output.WriteLine($"Car ID: {carID:X2} Colour ID: {colourID:X2} Price: {price * 10} Cr");
-                            }
-                            output.WriteLine();
-                        }
-                        output.WriteLine();
-                        output.WriteLine();
-                    }
+                    //WriteFile(args[0]);
                 }
             }
+            else if (File.Exists(args[0]))
+            {
+                ReadFile(args[0]);
+            }
+        }
+
+
+        static void ReadFile(string path)
+        {
+            UsedCarList list;
+            using (FileStream file = new(path, FileMode.Open, FileAccess.Read))
+            {
+                string magic = file.ReadCharacters();
+                if (magic != "@(#)USEDCAR")
+                {
+                    return;
+                }
+                list = UsedCarList.ReadFromFile(file);
+            }
+
+            string directory = Path.GetFileNameWithoutExtension(path);
+            Directory.CreateDirectory(directory);
+            list.WriteToCSV(directory);
         }
     }
 }
