@@ -18,9 +18,17 @@ namespace GT1.DataSplitter
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance); // Required to support code pages, including 932
 
+            int windowSize = 0;
+            if (args.Length == 1 && int.TryParse(args[0], out int compressionLevel) && compressionLevel >= -1 && compressionLevel <= 32)
+            {
+                windowSize = compressionLevel * 1024;
+                BuildDataFile<CarInfData>(windowSize);
+                return;
+            }
+
             if (args.Length != 1)
             {
-                BuildDataFile<CarInfData>();
+                BuildDataFile<CarInfData>(windowSize);
                 return;
             }
             DumpDataFile<CarInfData>(args[0]);
@@ -41,7 +49,7 @@ namespace GT1.DataSplitter
             }
         }
 
-        private static void BuildDataFile<TData>() where TData : DataFile, new()
+        private static void BuildDataFile<TData>(int windowSize) where TData : DataFile, new()
         {
             using (StreamReader ids = File.OpenText("_ids.txt"))
             {
@@ -53,7 +61,7 @@ namespace GT1.DataSplitter
             TData data = new();
             data.ImportData();
             Directory.CreateDirectory("Output");
-            data.WriteData(Path.Combine("Output", "CARINF.DAT"));
+            data.WriteData(Path.Combine("Output", "CARINF.DAT"), windowSize);
         }
     }
 }

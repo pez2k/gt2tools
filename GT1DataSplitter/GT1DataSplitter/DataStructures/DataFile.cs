@@ -235,7 +235,7 @@ namespace GT1.DataSplitter
             return stringTables;
         }
 
-        public void WriteData(string filename)
+        public void WriteData(string filename, int windowSize)
         {
             using (MemoryStream stream = new())
             {
@@ -244,7 +244,18 @@ namespace GT1.DataSplitter
 
                 using (FileStream file = new(filename, FileMode.Create, FileAccess.ReadWrite))
                 {
-                    LZSS.Compress(stream, file);
+                    if (windowSize == 0)
+                    {
+                        LZSS.FakeCompress(stream, file);
+                    }
+                    else if (windowSize < 0)
+                    {
+                        stream.CopyTo(file);
+                    }
+                    else
+                    {
+                        LZSS.Compress(stream, file, windowSize);
+                    }
                 }
             }
         }
