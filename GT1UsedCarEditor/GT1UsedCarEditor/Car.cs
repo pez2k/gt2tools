@@ -1,4 +1,5 @@
-﻿using CsvHelper;
+﻿using System.Globalization;
+using CsvHelper;
 using StreamExtensions;
 
 namespace GT1.UsedCarEditor
@@ -14,7 +15,7 @@ namespace GT1.UsedCarEditor
             {
                 Price = file.ReadUShort(),
                 ID = file.ReadSingleByte(),
-                ColourID = file.ReadSingleByte()
+                ColourID = (byte)(file.ReadSingleByte() / 2)
             };
 
         public void WriteToCSV(CsvWriter csv)
@@ -30,14 +31,14 @@ namespace GT1.UsedCarEditor
             {
                 ID = CarID.GetNumericID(csv.GetField(0) ?? ""),
                 Price = (ushort)(int.Parse(csv.GetField(1) ?? "") / 10),
-                ColourID = byte.Parse(csv.GetField(2) ?? "", System.Globalization.NumberStyles.HexNumber)
+                ColourID = byte.Parse(csv.GetField(2) ?? "", NumberStyles.HexNumber)
             };
 
         public void WriteToFile(Stream file)
         {
             file.WriteUShort(Price);
             file.WriteByte(ID);
-            file.WriteByte(ColourID);
+            file.WriteByte((byte)(ColourID * 2));
         }
     }
 }
