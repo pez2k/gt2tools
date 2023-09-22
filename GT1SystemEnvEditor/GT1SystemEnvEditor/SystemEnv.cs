@@ -256,8 +256,10 @@ namespace GT1.SystemEnvEditor
                         {
                             readMusicCodes.Add(csv.GetField(0) ?? "");
                             readMusicNames.Add(csv.GetField(1) ?? "");
-                            readMusicData.Add(uint.Parse(csv.GetField(2) ?? "", NumberStyles.HexNumber));
-                            readMusicData.Add(uint.Parse(csv.GetField(3) ?? "", NumberStyles.HexNumber));
+                            uint streamNumber = uint.Parse(csv.GetField(2) ?? "", NumberStyles.HexNumber);
+                            uint startPosition = uint.Parse(csv.GetField(3) ?? "", NumberStyles.HexNumber);
+                            readMusicData.Add((startPosition << 2) + (streamNumber & 3));
+                            readMusicData.Add(uint.Parse(csv.GetField(4) ?? "", NumberStyles.HexNumber) << 2);
                         }
                         musicCodes = readMusicCodes.ToArray();
                         musicNames = readMusicNames.ToArray();
@@ -610,16 +612,18 @@ namespace GT1.SystemEnvEditor
                     {
                         csv.WriteField("Code");
                         csv.WriteField("Name");
-                        csv.WriteField("Unknown1");
-                        csv.WriteField("LengthMaybe");
+                        csv.WriteField("Stream");
+                        csv.WriteField("StartPosition");
+                        csv.WriteField("Length");
                         csv.NextRecord();
 
                         for (int i = 0; i < musicCount; i++)
                         {
                             csv.WriteField(musicCodes[i]);
                             csv.WriteField(musicNames[i]);
-                            csv.WriteField($"{musicData[i * 2]:X4}");
-                            csv.WriteField($"{musicData[(i * 2) + 1]:X4}");
+                            csv.WriteField($"{musicData[i * 2] & 3:X4}");
+                            csv.WriteField($"{musicData[i * 2] >> 2:X4}");
+                            csv.WriteField($"{musicData[(i * 2) + 1] >> 2:X4}");
                             csv.NextRecord();
                         }
                     }
