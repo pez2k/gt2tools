@@ -189,40 +189,29 @@ namespace GT1.SystemEnvEditor
             carNames = cars.Values.ToArray();
             carCount = (ushort)carList.Length;
 
-            using (FileStream file = new(Path.Combine(directory, "CarColours.csv"), FileMode.Open, FileAccess.Read))
+            SortedDictionary<string, string> readCarColours = new();
+            ReadCarColours(Path.Combine(directory, "CarColours.csv"), csvConfig, readCarColours);
+            foreach (string csvPath in Directory.EnumerateFiles(directory, "CarColours_*.csv"))
             {
-                using (StreamReader reader = new(file))
-                {
-                    using (CsvReader csv = new(reader, csvConfig))
-                    {
-                        List<string> readCarList = new();
-                        List<string> readColourIDs = new();
-                        csv.Read();
-                        while (csv.Read())
-                        {
-                            readCarList.Add(csv.GetField(0) ?? "");
-                            readColourIDs.Add(csv.GetField(1) ?? "");
-                        }
-                        
-                        if (readCarList.Count != carCount || !readCarList.SequenceEqual(carList))
-                        {
-                            throw new Exception("Car IDs in CarColours don't match car IDs in Cars.");
-                        }
-
-                        List<List<byte>> readCarColours = new(readColourIDs.Count);
-                        foreach (string readIDs in readColourIDs)
-                        {
-                            List<byte> parsedIDs = readIDs.Split(',').Select(colourID => byte.Parse(colourID, NumberStyles.HexNumber)).ToList();
-                            if (parsedIDs.Count > 16)
-                            {
-                                throw new Exception("Max of 16 colours per car.");
-                            }
-                            readCarColours.Add(parsedIDs);
-                        }
-                        carColours = readCarColours.ToArray();
-                    }
-                }
+                ReadCarColours(csvPath, csvConfig, readCarColours);
             }
+
+            if (readCarColours.Keys.Count != carCount || !readCarColours.Keys.SequenceEqual(carList))
+            {
+                throw new Exception("Car IDs in CarColours don't match car IDs in Cars.");
+            }
+
+            List<List<byte>> parsedCarColours = new(readCarColours.Values.Count);
+            foreach (string readIDs in readCarColours.Values)
+            {
+                List<byte> parsedIDs = readIDs.Split(',').Select(colourID => byte.Parse(colourID, NumberStyles.HexNumber)).ToList();
+                if (parsedIDs.Count > 16)
+                {
+                    throw new Exception("Max of 16 colours per car.");
+                }
+                parsedCarColours.Add(parsedIDs);
+            }
+            carColours = parsedCarColours.ToArray();
 
             using (FileStream file = new(Path.Combine(directory, "ArcadeCars.csv"), FileMode.Open, FileAccess.Read))
             {
@@ -347,6 +336,24 @@ namespace GT1.SystemEnvEditor
                             {
                                 cars[csv.GetField(0) ?? ""] = csv.GetField(1) ?? "";
                             }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ReadCarColours(string path, CsvConfiguration csvConfig, SortedDictionary<string, string> carColours)
+        {
+            using (FileStream file = new(path, FileMode.Open, FileAccess.Read))
+            {
+                using (StreamReader reader = new(file))
+                {
+                    using (CsvReader csv = new(reader, csvConfig))
+                    {
+                        csv.Read();
+                        while (csv.Read())
+                        {
+                            carColours[csv.GetField(0) ?? ""] = csv.GetField(1) ?? "";
                         }
                     }
                 }
