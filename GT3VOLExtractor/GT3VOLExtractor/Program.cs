@@ -9,8 +9,8 @@ namespace GT3.VOLExtractor
 {
     class Program
     {
-        private const uint HeaderMagic = 0xACB990AD; // RoFS, notted
-        private static byte[] filenames;
+        private const uint HeaderMagic = 0x53466F52; // RoFS
+        private static byte[] _fileNameBuffer;
         private static uint filenamesStart;
 
         public static void Main(string[] args)
@@ -36,11 +36,13 @@ namespace GT3.VOLExtractor
         {
             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
-                if (file.ReadUInt() != HeaderMagic)
+                uint magic = file.ReadUInt();
+                if (magic != ~HeaderMagic && magic != HeaderMagic)
                 {
                     Console.WriteLine("Not a valid VOL");
                     return;
                 }
+
                 ushort minorVersion = file.ReadUShort();
                 ushort majorVersion = file.ReadUShort();
                 if (minorVersion != 2 || majorVersion != 2)
@@ -48,15 +50,20 @@ namespace GT3.VOLExtractor
                     Console.WriteLine($"This tool only supports RoFS 2.2 VOL files. The provided VOL appears to be RoFS {majorVersion}.{minorVersion}");
                     return;
                 }
+
                 if (IsRoFS31VOL(file))
                 {
                     Console.WriteLine($"This tool only supports RoFS 2.2 VOL files. The provided VOL appears to be RoFS 3.1. Please use GT4FS by team eventHorizon instead");
                     return;
                 }
+
                 uint headerSize = file.ReadUInt();
                 filenamesStart = file.ReadUInt();
                 uint fileCountMaybe = file.ReadUInt();
-                LoadFilenames(file, headerSize);
+
+                bool encFilenames = magic == ~HeaderMagic;
+                LoadFilenames(file, headerSize, encFilenames);
+
                 Entry rootDirectory = Entry.Create(file.ReadUInt());
                 file.Position -= 4;
                 rootDirectory.Read(file);
@@ -82,17 +89,19 @@ namespace GT3.VOLExtractor
             return found31Header;
         }
 
-        private static void LoadFilenames(Stream file, uint filenamesEnd)
+        private static void LoadFilenames(Stream file, uint filenamesEnd, bool decodeFilenameBuffer)
         {
             uint filenamesLength = filenamesEnd - filenamesStart;
-            filenames = new byte[filenamesLength];
+            _fileNameBuffer = new byte[filenamesLength];
             long currentPosition = file.Position;
             file.Position = filenamesStart;
-            file.Read(filenames);
+            file.Read(_fileNameBuffer);
             file.Position = currentPosition;
-            for (int i = 0; i < filenames.Length; i++)
+
+            if (decodeFilenameBuffer)
             {
-                filenames[i] = (byte)~filenames[i];
+                for (int i = 0; i < _fileNameBuffer.Length; i++)
+                    _fileNameBuffer[i] = (byte)~_fileNameBuffer[i];
             }
         }
 
@@ -101,9 +110,9 @@ namespace GT3.VOLExtractor
             position -= filenamesStart;
 
             var filename = new StringBuilder();
-            for (uint i = position; i < filenames.Length; i++)
+            for (uint i = position; i < _fileNameBuffer.Length; i++)
             {
-                byte character = filenames[i];
+                byte character = _fileNameBuffer[i];
                 if (character == 0)
                 {
                     break;
