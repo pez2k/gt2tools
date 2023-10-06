@@ -1,17 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.352
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GT1Zip", "GT1Zip\GT1Zip.csproj", "{4072CA10-6AA0-4DF5-B1A1-33B4CB24FB98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GT1Zip", "GT1Zip\GT1Zip.csproj", "{4072CA10-6AA0-4DF5-B1A1-33B4CB24FB98}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Common", "..\Common\Common.shproj", "{643A1287-D41C-4A10-8740-FC8DEDB2848E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "..\Common\Common.csproj", "{BB78B6ED-EC28-42C5-A324-BFE53751C190}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.GT1", "..\Common\GT1\Common.GT1.csproj", "{9D1334B2-5D8B-4BF1-80D2-81CFC3A84024}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\Common\Common.projitems*{4072ca10-6aa0-4df5-b1a1-33b4cb24fb98}*SharedItemsImports = 4
-		..\Common\Common.projitems*{643a1287-d41c-4a10-8740-fc8dedb2848e}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -21,6 +19,14 @@ Global
 		{4072CA10-6AA0-4DF5-B1A1-33B4CB24FB98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4072CA10-6AA0-4DF5-B1A1-33B4CB24FB98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4072CA10-6AA0-4DF5-B1A1-33B4CB24FB98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB78B6ED-EC28-42C5-A324-BFE53751C190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB78B6ED-EC28-42C5-A324-BFE53751C190}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB78B6ED-EC28-42C5-A324-BFE53751C190}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB78B6ED-EC28-42C5-A324-BFE53751C190}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D1334B2-5D8B-4BF1-80D2-81CFC3A84024}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D1334B2-5D8B-4BF1-80D2-81CFC3A84024}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D1334B2-5D8B-4BF1-80D2-81CFC3A84024}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D1334B2-5D8B-4BF1-80D2-81CFC3A84024}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
