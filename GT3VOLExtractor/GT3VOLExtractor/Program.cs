@@ -10,7 +10,7 @@ namespace GT3.VOLExtractor
     class Program
     {
         private const uint HeaderMagic = 0x53466F52; // RoFS
-        private static byte[] _fileNameBuffer;
+        private static byte[] fileNameBuffer;
         private static uint filenamesStart;
 
         public static void Main(string[] args)
@@ -92,16 +92,18 @@ namespace GT3.VOLExtractor
         private static void LoadFilenames(Stream file, uint filenamesEnd, bool decodeFilenameBuffer)
         {
             uint filenamesLength = filenamesEnd - filenamesStart;
-            _fileNameBuffer = new byte[filenamesLength];
+            fileNameBuffer = new byte[filenamesLength];
             long currentPosition = file.Position;
             file.Position = filenamesStart;
-            file.Read(_fileNameBuffer);
+            file.Read(fileNameBuffer);
             file.Position = currentPosition;
 
             if (decodeFilenameBuffer)
             {
-                for (int i = 0; i < _fileNameBuffer.Length; i++)
-                    _fileNameBuffer[i] = (byte)~_fileNameBuffer[i];
+                for (int i = 0; i < fileNameBuffer.Length; i++)
+                {
+                    fileNameBuffer[i] = (byte)~fileNameBuffer[i];
+                }
             }
         }
 
@@ -110,9 +112,9 @@ namespace GT3.VOLExtractor
             position -= filenamesStart;
 
             var filename = new StringBuilder();
-            for (uint i = position; i < _fileNameBuffer.Length; i++)
+            for (uint i = position; i < fileNameBuffer.Length; i++)
             {
-                byte character = _fileNameBuffer[i];
+                byte character = fileNameBuffer[i];
                 if (character == 0)
                 {
                     break;
