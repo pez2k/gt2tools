@@ -21,7 +21,7 @@ namespace GT3.VOLExtractor
             Size = stream.ReadUInt();
         }
 
-        public override void Extract(string path, Stream stream)
+        public override void Extract(string path, Stream stream, bool decompress)
         {
             path = Path.Combine(path, Name);
             Console.WriteLine($"Extracting file: {path}");

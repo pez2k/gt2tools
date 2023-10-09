@@ -39,7 +39,7 @@ namespace GT3.VOLExtractor
             }
         }
 
-        public override void Extract(string path, Stream stream)
+        public override void Extract(string path, Stream stream, bool decompress)
         {
             path = Path.Combine(path, Name);
             Console.WriteLine($"Extracting directory: {path}");
@@ -51,7 +51,7 @@ namespace GT3.VOLExtractor
             {
                 if (entry.Name != "..")
                 {
-                    entry.Extract(path, stream);
+                    entry.Extract(path, stream, decompress);
                 }
             }
         }

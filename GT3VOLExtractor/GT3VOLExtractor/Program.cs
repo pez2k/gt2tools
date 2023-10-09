@@ -17,6 +17,8 @@ namespace GT3.VOLExtractor
         {
             if (args.Length > 1)
             {
+                bool decompressAll = args.Any(e => e == "--decompress-all" || e == "-da");
+
                 if (args[0] == "-r")
                 {
                     Import(args[1], args.Length > 2 ? args[2] : "gt3.vol");
@@ -25,14 +27,19 @@ namespace GT3.VOLExtractor
 
                 if (args[0] == "-e")
                 {
-                    Extract(args[1], args.Length > 2 ? args[2] : "extracted");
+                    Extract(args[1], args.Length > 2 ? args[2] : "extracted", decompressAll);
                     return;
                 }
+
+                
+
             }
-            Console.WriteLine("Usage:\r\nExtract: GT3VOLExtractor -e <VOL file> [<Output directory>]\r\nRebuild: GT3VOLExtractor -r <Input directory> [<VOL file>]");
+            Console.WriteLine("Usage:\r\n" +
+                "Extract: GT3VOLExtractor -e <VOL file> [<Output directory>] [--decompress-all/-da]\r\n" +
+                "Rebuild: GT3VOLExtractor -r <Input directory> [<VOL file>]");
         }
 
-        private static void Extract(string filename, string outputDirectory)
+        private static void Extract(string filename, string outputDirectory, bool decompressAll)
         {
             using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
@@ -67,7 +74,7 @@ namespace GT3.VOLExtractor
                 Entry rootDirectory = Entry.Create(file.ReadUInt());
                 file.Position -= 4;
                 rootDirectory.Read(file);
-                rootDirectory.Extract(outputDirectory, file);
+                rootDirectory.Extract(outputDirectory, file, decompressAll);
             }
         }
 

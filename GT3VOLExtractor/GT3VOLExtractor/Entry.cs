@@ -29,7 +29,7 @@ namespace GT3.VOLExtractor
 
         public abstract void Read(Stream stream);
 
-        public abstract void Extract(string path, Stream stream);
+        public abstract void Extract(string path, Stream stream, bool decompress);
 
         public abstract void Import(string path);
 
