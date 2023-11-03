@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using StreamExtensions;
+using System.IO.Compression;
 
 namespace GT3.VOLExtractor
 {
@@ -24,13 +25,56 @@ namespace GT3.VOLExtractor
             Size = stream.ReadUInt();
         }
 
-        public override void Extract(string path, Stream stream)
+        public override void Extract(string path, Stream stream, bool decompress)
         {
             var magic = new byte[4];
             stream.Position = Location * BlockSize;
             stream.Read(magic);
-            Name += GetExtension(magic);
-            base.Extract(path, stream);
+
+            if (decompress)
+            {
+                path = Path.Combine(path, Name);
+                stream.Position = Location * BlockSize;
+
+                if (GetExtension(magic) == PS2ZipExtension)
+                {
+                    Console.WriteLine($"Decompressing PS2ZIP (inflate) file: {path}");
+                    using (var output = new FileStream(path, FileMode.Create, FileAccess.Write))
+                    {
+                        int magic_ = stream.ReadInt();
+                        int decompSize = -stream.ReadInt();
+
+                        var deflateStream = new DeflateStream(stream, CompressionMode.Decompress);
+
+                        byte[] buffer = new byte[UncompressedSize];
+                        deflateStream.Read(buffer);
+                        output.Write(buffer);
+                    }
+                }
+                else if (GetExtension(magic) == GZipExtension)
+                {
+                    Console.WriteLine($"Decompressing GZip file: {path}");
+                    using (var output = new FileStream(path, FileMode.Create, FileAccess.Write))
+                    {
+                        var deflateStream = new GZipStream(stream, CompressionMode.Decompress);
+
+                        byte[] buffer = new byte[UncompressedSize];
+                        deflateStream.Read(buffer);
+                        output.Write(buffer);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Extracting file: {path}");
+                    base.Extract(path, stream, decompress);
+                }
+            }
+            else
+            {
+                Name += GetExtension(magic);
+                Console.WriteLine($"Extracting file: {path}");
+                base.Extract(path, stream, decompress);
+            }
         }
 
         private string GetExtension(byte[] magic)
