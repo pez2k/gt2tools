@@ -1,17 +1,14 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.438
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GT2CourseInfoEditor", "GT2CourseInfoEditor\GT2CourseInfoEditor.csproj", "{2E2C3787-6E16-41CC-B290-3859CFFE3EFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GT2CourseInfoEditor", "GT2CourseInfoEditor\GT2CourseInfoEditor.csproj", "{2E2C3787-6E16-41CC-B290-3859CFFE3EFA}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Common", "..\Common\Common.shproj", "{643A1287-D41C-4A10-8740-FC8DEDB2848E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "..\Common\Common.csproj", "{C7DFB106-52A5-4D5D-9851-E28F71CB9DCA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.GT2", "..\Common\GT2\Common.GT2.csproj", "{60AC0933-72AE-451F-A0C9-969630D7C691}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\Common\Common.projitems*{2e2c3787-6e16-41cc-b290-3859cffe3efa}*SharedItemsImports = 4
-		..\Common\Common.projitems*{643a1287-d41c-4a10-8740-fc8dedb2848e}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -21,11 +18,22 @@ Global
 		{2E2C3787-6E16-41CC-B290-3859CFFE3EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E2C3787-6E16-41CC-B290-3859CFFE3EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E2C3787-6E16-41CC-B290-3859CFFE3EFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7DFB106-52A5-4D5D-9851-E28F71CB9DCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7DFB106-52A5-4D5D-9851-E28F71CB9DCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7DFB106-52A5-4D5D-9851-E28F71CB9DCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7DFB106-52A5-4D5D-9851-E28F71CB9DCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60AC0933-72AE-451F-A0C9-969630D7C691}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60AC0933-72AE-451F-A0C9-969630D7C691}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60AC0933-72AE-451F-A0C9-969630D7C691}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60AC0933-72AE-451F-A0C9-969630D7C691}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {924442F9-EA12-44C4-8709-CA304C78717D}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\Common\Common.projitems*{2e2c3787-6e16-41cc-b290-3859cffe3efa}*SharedItemsImports = 4
 	EndGlobalSection
 EndGlobal
