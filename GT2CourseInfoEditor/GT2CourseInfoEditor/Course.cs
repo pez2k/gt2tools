@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
@@ -9,7 +9,7 @@ namespace GT2.CourseInfoEditor
 
     public struct Course
     {
-        public uint DisplayName;
+        public string DisplayName;
         public uint Filename;
         public bool IsNight;
         public bool IsEvening;
@@ -32,7 +32,7 @@ namespace GT2.CourseInfoEditor
     {
         public CourseCSVMap()
         {
-            Map(m => m.DisplayName).TypeConverter<TrackDisplayNameConverter>();
+            Map(m => m.DisplayName);
             Map(m => m.Filename).TypeConverter<TrackIdConverter>();
             Map(m => m.IsNight);
             Map(m => m.IsEvening);
@@ -62,23 +62,21 @@ namespace GT2.CourseInfoEditor
         }
     }
 
-    public class TrackDisplayNameConverter : ITypeConverter
-    {
-        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData) => 0;
-
-        public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
-        {
-            uint textAddress = (uint)value;
-            Program.DisplayNames.TryGetValue(textAddress, out string name);
-            return name;
-        }
-    }
-
     public class SkyboxNameConverter : ITypeConverter
     {
-        private readonly List<string> SkyboxNames = new List<string> { "au", "cartsky", "circle30sky", "circle80sky", "cloudtest", "dawn", "grinsky", "gv_sky", "indisky", "lagunasky", "licen_sky", "mskyX", "mskyX_2", "new_parmas_sky", "noon", "parma_sky", "romadark_sky", "romadsky", "roma_sh", "roma_sh_sky", "roma_sky", "sea_hare", "sea_ha_b", "sea_ha_c", "sea_ha_d", "sea_ha_e", "speedsky", "tesr_l2sky", "tl_sky2", "tl_sky2g", "tl_sky4", "tl_skyG", "tl_skyG2", "t_sky" };
+        private readonly string[] SkyboxNames = { "au", "cartsky", "circle30sky", "circle80sky", "cloudtest", "dawn", "grinsky", "gv_sky", "indisky", "lagunasky", "licen_sky", "mskyX", "mskyX_2", "new_parmas_sky", "noon", "parma_sky", "romadark_sky", "romadsky", "roma_sh", "roma_sh_sky", "roma_sky", "sea_hare", "sea_ha_b", "sea_ha_c", "sea_ha_d", "sea_ha_e", "speedsky", "tesr_l2sky", "tl_sky2", "tl_sky2g", "tl_sky4", "tl_skyG", "tl_skyG2", "t_sky" };
 
-        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData) => 0;
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            for (int i = 0; i < SkyboxNames.Length; i++)
+            {
+                if (SkyboxNames[i] == text)
+                {
+                    return (ushort)i;
+                }
+            }
+            throw new Exception($"Unrecognised skybox name: {text}");
+        }
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
