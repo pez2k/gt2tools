@@ -5,7 +5,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyTitle>GT2CourseInfoEditor</AssemblyTitle>
     <Product>GT2CourseInfoEditor</Product>
-    <Copyright>Copyright © pez2k 2019</Copyright>
+    <Copyright>Copyright © pez2k 2024</Copyright>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
