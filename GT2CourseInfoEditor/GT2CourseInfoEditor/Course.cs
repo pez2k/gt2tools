@@ -53,10 +53,7 @@ namespace GT2.CourseInfoEditor
 
     public class TrackIdConverter : ITypeConverter
     {
-        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
-        {
-            return text.ToTrackID();
-        }
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData) => text.ToTrackID();
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
@@ -67,10 +64,7 @@ namespace GT2.CourseInfoEditor
 
     public class TrackDisplayNameConverter : ITypeConverter
     {
-        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
-        {
-            return 0;
-        }
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData) => 0;
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
@@ -84,10 +78,7 @@ namespace GT2.CourseInfoEditor
     {
         private readonly List<string> SkyboxNames = new List<string> { "au", "cartsky", "circle30sky", "circle80sky", "cloudtest", "dawn", "grinsky", "gv_sky", "indisky", "lagunasky", "licen_sky", "mskyX", "mskyX_2", "new_parmas_sky", "noon", "parma_sky", "romadark_sky", "romadsky", "roma_sh", "roma_sh_sky", "roma_sky", "sea_hare", "sea_ha_b", "sea_ha_c", "sea_ha_d", "sea_ha_e", "speedsky", "tesr_l2sky", "tl_sky2", "tl_sky2g", "tl_sky4", "tl_skyG", "tl_skyG2", "t_sky" };
 
-        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
-        {
-            return 0;
-        }
+        public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData) => 0;
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {

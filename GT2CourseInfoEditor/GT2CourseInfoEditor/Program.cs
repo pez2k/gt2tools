@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using CsvHelper;
@@ -9,11 +10,11 @@ namespace GT2.CourseInfoEditor
 
     class Program
     {
-        public static Dictionary<uint, string> DisplayNames = new Dictionary<uint, string>();
+        public static Dictionary<uint, string> DisplayNames = new();
 
         static void Main(string[] args)
         {
-            using (var file = new FileStream(".crsinfo", FileMode.Open, FileAccess.Read))
+            using (FileStream file = new(".crsinfo", FileMode.Open, FileAccess.Read))
             {
                 file.ReadUInt(); // CRS\0
                 file.ReadUShort(); // 0x0002
@@ -24,29 +25,29 @@ namespace GT2.CourseInfoEditor
                 while (file.Position < file.Length)
                 {
                     uint start = (uint)file.Position;
-                    var bytes = new List<byte>();
+                    List<byte> stringBytes = new();
                     byte newByte;
                     do
                     {
-                        newByte = (byte)file.ReadByte();
+                        newByte = file.ReadSingleByte();
                         if (newByte != 0)
                         {
-                            bytes.Add(newByte);
+                            stringBytes.Add(newByte);
                         }
                     }
                     while (newByte != 0);
 
-                    string courseName = Encoding.UTF8.GetString(bytes.ToArray());
+                    string courseName = Encoding.UTF8.GetString(stringBytes.ToArray());
                     DisplayNames.Add(start, courseName);
                 }
 
                 file.Position = 8;
 
-                using (var outFile = new FileStream($"Courses.csv", FileMode.Create, FileAccess.Write))
+                using (FileStream outFile = new($"Courses.csv", FileMode.Create, FileAccess.Write))
                 {
-                    using (TextWriter output = new StreamWriter(outFile, Encoding.UTF8))
+                    using (StreamWriter output = new(outFile, Encoding.UTF8))
                     {
-                        using (CsvWriter csv = new CsvWriter(output))
+                        using (CsvWriter csv = new(output))
                         {
                             csv.Configuration.RegisterClassMap<CourseCSVMap>();
                             csv.Configuration.ShouldQuote = (field, context) => true;
@@ -57,7 +58,7 @@ namespace GT2.CourseInfoEditor
                             {
                                 long blockStart = file.Position;
 
-                                Course course = new Course();
+                                Course course = new();
                                 course.DisplayName = file.ReadUInt();
                                 course.Filename = file.ReadUInt();
 
@@ -81,7 +82,7 @@ namespace GT2.CourseInfoEditor
 
                                 if (file.Position != blockStart + (8 * 3))
                                 {
-                                    throw new System.Exception("Block size incorrect.");
+                                    throw new Exception("Block size incorrect.");
                                 }
 
                                 csv.WriteRecord(course);
@@ -93,15 +94,9 @@ namespace GT2.CourseInfoEditor
             }
         }
 
-        static bool IsBitSet(byte value, int position)
-        {
-            int flag = value;
-            flag = flag >> position;
-            flag = flag & 0x1;
-            return flag == 1;
-        }
+        private static bool IsBitSet(byte value, int position) => (value & (1 << position)) != 0;
 
-        static string ToRGBHex(ushort colour)
+        private static string ToRGBHex(ushort colour)
         {
             int R = colour & 0x1F;
             int G = (colour >> 5) & 0x1F;
