@@ -79,9 +79,14 @@ namespace StreamExtensions
 
         public static string ReadCharacters(this Stream stream)
         {
+            return ReadCharacters(stream, Encoding.ASCII);
+        }
+
+        public static string ReadCharacters(this Stream stream, Encoding encoding)
+        {
             byte characterByte;
             List<byte> bytes = new List<byte>();
-            while(true)
+            while (true)
             {
                 characterByte = stream.ReadSingleByte();
                 if (characterByte == 0)
@@ -90,12 +95,17 @@ namespace StreamExtensions
                 }
                 bytes.Add(characterByte);
             }
-            return Encoding.ASCII.GetString(bytes.ToArray());
+            return encoding.GetString(bytes.ToArray());
         }
 
         public static void WriteCharacters(this Stream stream, string characters)
         {
-            stream.Write(Encoding.ASCII.GetBytes(characters));
+            WriteCharacters(stream, characters, Encoding.ASCII);
+        }
+
+        public static void WriteCharacters(this Stream stream, string characters, Encoding encoding)
+        {
+            stream.Write(encoding.GetBytes(characters));
         }
 
         public static byte[] ToByteArray(this string value)
