@@ -64,13 +64,17 @@ namespace GT2.CourseInfoEditor
 
     public class SkyboxNameConverter : ITypeConverter
     {
-        private readonly string[] SkyboxNames = { "au", "cartsky", "circle30sky", "circle80sky", "cloudtest", "dawn", "grinsky", "gv_sky", "indisky", "lagunasky", "licen_sky", "mskyX", "mskyX_2", "new_parmas_sky", "noon", "parma_sky", "romadark_sky", "romadsky", "roma_sh", "roma_sh_sky", "roma_sky", "sea_hare", "sea_ha_b", "sea_ha_c", "sea_ha_d", "sea_ha_e", "speedsky", "tesr_l2sky", "tl_sky2", "tl_sky2g", "tl_sky4", "tl_skyG", "tl_skyG2", "t_sky" };
+        private readonly string[] skyboxNames = {
+            "au", "cartsky", "circle30sky", "circle80sky", "cloudtest", "dawn", "grinsky", "gv_sky", "indisky", "lagunasky", "licen_sky", "mskyX", "mskyX_2", "new_parmas_sky",
+            "noon", "parma_sky", "roma_sh", "roma_sh_sky", "roma_sky", "romadark_sky", "romadsky", "sea_ha_b", "sea_ha_c", "sea_ha_d", "sea_ha_e", "sea_hare", "speedsky", "t_sky",
+            "tesr_l2sky", "tl_sky2", "tl_sky2g", "tl_sky4", "tl_skyG", "tl_skyG2"
+        };
 
         public object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
         {
-            for (int i = 0; i < SkyboxNames.Length; i++)
+            for (int i = 0; i < skyboxNames.Length; i++)
             {
-                if (SkyboxNames[i] == text)
+                if (skyboxNames[i] == text)
                 {
                     return (ushort)i;
                 }
@@ -81,7 +85,7 @@ namespace GT2.CourseInfoEditor
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
             ushort textAddress = (ushort)value;
-            return SkyboxNames[textAddress];
+            return skyboxNames[textAddress];
         }
     }
 }
