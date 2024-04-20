@@ -79,13 +79,15 @@ namespace GT2.CourseInfoEditor
                     return (ushort)i;
                 }
             }
-            throw new Exception($"Unrecognised skybox name: {text}");
+            return ushort.TryParse(text, out ushort numericValue) ? numericValue
+                                                                  : throw new Exception($"Unrecognised skybox name: {text}");
         }
 
         public string ConvertToString(object value, IWriterRow row, MemberMapData memberMapData)
         {
-            ushort textAddress = (ushort)value;
-            return skyboxNames[textAddress];
+            ushort skyboxNumber = (ushort)value;
+            return skyboxNumber < skyboxNames.Length ? skyboxNames[skyboxNumber]
+                                                     : $"{skyboxNumber}";
         }
     }
 }
