@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using StreamExtensions;
 
-namespace GT2.SaveEditor
+namespace GT2.SaveEditor.License
 {
     public class LicenseTestRecord
     {

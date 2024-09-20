@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace GT2.SaveEditor
+namespace GT2.SaveEditor.Settings.Controller
 {
     public class ControllerSettings
     {

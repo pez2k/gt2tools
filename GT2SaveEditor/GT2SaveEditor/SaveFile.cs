@@ -3,6 +3,11 @@ using StreamExtensions;
 
 namespace GT2.SaveEditor
 {
+    using Garage;
+    using License;
+    using Settings;
+    using Settings.Controller;
+
     public class SaveFile
     {
         public LanguageEnum Language { get; set; }
@@ -18,6 +23,7 @@ namespace GT2.SaveEditor
         public LicenseData ICLicense { get; set; } = new();
         public LicenseData ALicense { get; set; } = new();
         public LicenseData BLicense { get; set; } = new();
+        public GarageData Garage { get; set; } = new();
 
         public void ReadFromSave(Stream file)
         {
@@ -46,6 +52,9 @@ namespace GT2.SaveEditor
             ICLicense.ReadFromSave(file);
             ALicense.ReadFromSave(file);
             BLicense.ReadFromSave(file);
+
+            file.Position += 0x1EC;
+            Garage.ReadFromSave(file);
         }
     }
 }

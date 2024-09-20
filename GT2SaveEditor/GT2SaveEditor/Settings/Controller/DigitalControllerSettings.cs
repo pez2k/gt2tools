@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using StreamExtensions;
 
-namespace GT2.SaveEditor
+namespace GT2.SaveEditor.Settings.Controller
 {
     public class DigitalControllerSettings
     {
@@ -14,7 +14,7 @@ namespace GT2.SaveEditor
         public ControllerButtonEnum ShiftUpButton { get; set; }
         public ControllerButtonEnum ShiftDownButton { get; set; }
         public ControllerButtonEnum ChangeViewsButton { get; set; }
-        public ControllerButtonEnum RearViewButton { get; set;  }
+        public ControllerButtonEnum RearViewButton { get; set; }
 
         public void ReadFromSave(Stream file)
         {

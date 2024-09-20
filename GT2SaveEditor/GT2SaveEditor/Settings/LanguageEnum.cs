@@ -1,4 +1,4 @@
-﻿namespace GT2.SaveEditor
+﻿namespace GT2.SaveEditor.Settings
 {
     public enum LanguageEnum
     {
