@@ -13,11 +13,20 @@ namespace GT2.SaveEditor.Settings
 
         public void ReadFromSave(Stream file)
         {
-            TyreWearEnabled = file.ReadSingleByte() == 1;
-            DamageEnabled = file.ReadSingleByte() == 1;
+            TyreWearEnabled = file.ReadByteAsBool();
+            DamageEnabled = file.ReadByteAsBool();
             Laps = file.ReadSingleByte();
             Handicap = file.ReadSingleByte();
             Boost = file.ReadSingleByte();
+        }
+
+        public void WriteToSave(Stream file)
+        {
+            file.WriteBoolAsByte(TyreWearEnabled);
+            file.WriteBoolAsByte(DamageEnabled);
+            file.WriteByte(Laps);
+            file.WriteByte(Handicap);
+            file.WriteByte(Boost);
         }
     }
 }

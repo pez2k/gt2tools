@@ -25,5 +25,22 @@ namespace GT2.SaveEditor.License
                 Records[i].ReadNameFromSave(file);
             }
         }
+
+        public void WriteToSave(Stream file)
+        {
+            file.Position += 0x1;
+            file.WriteByte((byte)BestResult);
+            file.Position += 0x2; // Mystery value
+
+            for (int i = 0; i < 5; i++)
+            {
+                Records[i].WriteTimeAndSpeedToSave(file);
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                Records[i].WriteNameToSave(file);
+            }
+        }
     }
 }

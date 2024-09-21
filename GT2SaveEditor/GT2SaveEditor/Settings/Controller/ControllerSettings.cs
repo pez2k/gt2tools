@@ -16,5 +16,14 @@ namespace GT2.SaveEditor.Settings.Controller
             file.Position += 0x9;
             NegconController.ReadFromSave(file);
         }
+
+        public void WriteToSave(Stream file)
+        {
+            DigitalController.WriteToSave(file);
+            file.Position += 0x1;
+            AnalogueController.WriteToSave(file);
+            file.Position += 0x9;
+            NegconController.WriteToSave(file);
+        }
     }
 }

@@ -18,10 +18,21 @@ namespace GT2.SaveEditor.Settings
             ReplayInfo = (ReplayInfoEnum)file.ReadSingleByte();
             CameraPosition = (CameraPositionEnum)file.ReadSingleByte();
             ChaseView = (ChaseViewEnum)file.ReadSingleByte();
-            CourseMap = file.ReadSingleByte() == 1;
+            CourseMap = file.ReadByteAsBool();
             ViewAngle = (ViewAngleEnum)file.ReadSingleByte();
             MusicVolume = file.ReadSingleByte();
             SFXVolume = file.ReadSingleByte();
+        }
+
+        public void WriteToSave(Stream file)
+        {
+            file.WriteByte((byte)ReplayInfo);
+            file.WriteByte((byte)CameraPosition);
+            file.WriteByte((byte)ChaseView);
+            file.WriteBoolAsByte(CourseMap);
+            file.WriteByte((byte)ViewAngle);
+            file.WriteByte(MusicVolume);
+            file.WriteByte(SFXVolume);
         }
     }
 }

@@ -25,5 +25,17 @@ namespace GT2.SaveEditor.Settings.Controller
             BrakeDeadzone = file.ReadUShort();
             BrakeLimit = file.ReadUShort();
         }
+
+        public void WriteToSave(Stream file)
+        {
+            file.WriteUShort(SteeringLimitLeft);
+            file.WriteUShort(SteeringCentreLeft);
+            file.WriteUShort(SteeringCentreRight);
+            file.WriteUShort(SteeringLimitRight);
+            file.WriteUShort(AccelerationDeadzone);
+            file.WriteUShort(AccelerationLimit);
+            file.WriteUShort(BrakeDeadzone);
+            file.WriteUShort(BrakeLimit);
+        }
     }
 }

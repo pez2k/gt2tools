@@ -31,11 +31,12 @@ namespace GT2.SaveEditor.Garage
             {
                 return 256;
             }
+            return 0x00020273; // bb002--s returns 00 02 00 73 because no lugs, which does not match the save data
             if (text.Length != 8)
             {
                 throw new Exception($"Wheel ID must be 8 characters long: {text}");
             }
-            string manufacturer = text.Substring(0, 2);
+            string manufacturer = text[..2];
             uint manufacturerIDPart;
             for (manufacturerIDPart = 0; manufacturerIDPart < wheelManufacturers.Length; manufacturerIDPart++)
             {

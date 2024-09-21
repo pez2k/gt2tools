@@ -10,8 +10,14 @@ namespace GT2.SaveEditor.Settings
 
         public void ReadFromSave(Stream file)
         {
-            DamageEnabled = file.ReadSingleByte() == 1;
+            DamageEnabled = file.ReadByteAsBool();
             Laps = file.ReadSingleByte();
+        }
+
+        public void WriteToSave(Stream file)
+        {
+            file.WriteBoolAsByte(DamageEnabled);
+            file.WriteByte(Laps);
         }
     }
 }

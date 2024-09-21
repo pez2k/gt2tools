@@ -14,5 +14,13 @@ namespace GT2.SaveEditor.License
                 Tests[i].ReadFromSave(file);
             }
         }
+
+        public void WriteToSave(Stream file)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                Tests[i].WriteToSave(file);
+            }
+        }
     }
 }

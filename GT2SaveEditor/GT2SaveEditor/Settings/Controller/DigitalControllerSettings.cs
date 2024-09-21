@@ -29,5 +29,19 @@ namespace GT2.SaveEditor.Settings.Controller
             ChangeViewsButton = (ControllerButtonEnum)file.ReadSingleByte();
             RearViewButton = (ControllerButtonEnum)file.ReadSingleByte();
         }
+
+        public void WriteToSave(Stream file)
+        {
+            file.WriteByte((byte)SteerLeftButton);
+            file.WriteByte((byte)SteerRightButton);
+            file.WriteByte((byte)AccelerateButton);
+            file.WriteByte((byte)BrakeButton);
+            file.WriteByte((byte)HandbrakeButton);
+            file.WriteByte((byte)ReverseButton);
+            file.WriteByte((byte)ShiftUpButton);
+            file.WriteByte((byte)ShiftDownButton);
+            file.WriteByte((byte)ChangeViewsButton);
+            file.WriteByte((byte)RearViewButton);
+        }
     }
 }

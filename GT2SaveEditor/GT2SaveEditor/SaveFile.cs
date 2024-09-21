@@ -56,5 +56,37 @@ namespace GT2.SaveEditor
             file.Position += 0x1EC;
             Garage.ReadFromSave(file);
         }
+
+        public void WriteToSave(Stream file)
+        {
+            file.WriteByte((byte)Language);
+
+            file.Position += 0x1;
+            ArcadeSettings.WriteToSave(file);
+            TwoPlayerSettings.WriteToSave(file);
+
+            file.Position += 0x1;
+            Player1Controller.WriteToSave(file);
+
+            file.Position += 0x4;
+            Player2Controller.WriteToSave(file);
+
+            file.Position += 0x4;
+            GlobalSettings.WriteToSave(file);
+
+            file.Position += 0x43;
+            file.WriteUInt(Day);
+
+            file.Position += 0x131C;
+            SLicense.WriteToSave(file);
+            IALicense.WriteToSave(file);
+            IBLicense.WriteToSave(file);
+            ICLicense.WriteToSave(file);
+            ALicense.WriteToSave(file);
+            BLicense.WriteToSave(file);
+
+            file.Position += 0x1EC;
+            Garage.WriteToSave(file);
+        }
     }
 }

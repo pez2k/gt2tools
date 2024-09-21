@@ -31,5 +31,30 @@ namespace GT2.SaveEditor.Garage
             PlayerName = file.ReadCharacters();
             file.Position = nameStart + 13;
         }
+
+        public void WriteToSave(Stream file)
+        {
+            file.WriteUInt((uint)Cars.Length);
+            long carsStart = file.Position;
+
+            foreach (GarageCar car in Cars)
+            {
+                car.WriteToSave(file);
+            }
+
+            while (file.Position < carsStart + (0xA4 * 100))
+            {
+                file.WriteByte(0);
+            }
+            file.WriteUInt(Money);
+            file.WriteShort(CurrentCar);
+            file.Position += 0x1;
+            long nameStart = file.Position;
+            file.WriteCharacters(PlayerName);
+            while (file.Position < nameStart + 13)
+            {
+                file.WriteByte(0);
+            }
+        }
     }
 }

@@ -86,5 +86,47 @@ namespace GT2.SaveEditor.Garage
             RacingModified = (powerAndRMFlag & 0x8000) > 0;
             PurchasedParts.ReadFromSave(file);
         }
+
+        public void WriteToSave(Stream file)
+        {
+            file.WriteUInt(Name.ToCarID());
+            file.WriteByte(Colour);
+            file.Position += 0x3;
+            file.WriteUInt(WheelFilenameConverter.ConvertFromString(WheelFilename));
+            file.WriteUShort(Brakes);
+            file.WriteUShort(BrakeController);
+            file.WriteUShort(Steer);
+            file.Position += 0x6;
+            file.WriteUShort(Gear);
+            file.WriteUShort(Suspension);
+            file.WriteUShort(LSD);
+            file.WriteUShort(TiresFront);
+            file.WriteUShort(TiresRear);
+            file.WriteUShort(Lightweight);
+            file.WriteUShort(RacingModify);
+            file.WriteUShort(PortPolish);
+            file.WriteUShort(EngineBalancing);
+            file.WriteUShort(Displacement);
+            file.WriteUShort(Computer);
+            file.WriteUShort(NATune);
+            file.WriteUShort(TurbineKit);
+            file.WriteUShort(Flywheel);
+            file.WriteUShort(Clutch);
+            file.WriteUShort(Propshaft);
+            file.WriteUShort(Muffler);
+            file.WriteUShort(Intercooler);
+            file.WriteUShort(ASC);
+            file.WriteUShort(TCS);
+            file.WriteUShort(Wheels);
+
+            file.Position += 0x4A; // Skip over the car settings for now
+
+            file.WriteUInt(BodyFilename.ToCarID());
+            file.WriteUInt(CarValue);
+            file.WriteUShort(DisplayedWeight);
+            file.WriteUShort(DisplayedTorque);
+            file.WriteUShort((ushort)(DisplayedPower | (RacingModified ? 0x8000 : 0)));
+            PurchasedParts.WriteToSave(file);
+        }
     }
 }

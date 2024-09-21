@@ -34,12 +34,33 @@ namespace GT2.SaveEditor.Settings.Controller
             ChangeViewsButton = (ControllerButtonEnum)file.ReadSingleByte();
             RearViewButton = (ControllerButtonEnum)file.ReadSingleByte();
             file.Position += 0x17;
-            VibrationEnabled = file.ReadSingleByte() == 1;
+            VibrationEnabled = file.ReadByteAsBool();
             file.Position += 0x4;
             SteeringMode = (AnalogueSteeringModeEnum)file.ReadSingleByte();
             AccelerateBrakeMode = (AnalogueAccelerateBrakeModeEnum)file.ReadSingleByte();
             LastDigitalAccelerateButton = (ControllerButtonEnum)file.ReadSingleByte();
             LastDigitalBrakeButton = (ControllerButtonEnum)file.ReadSingleByte();
+        }
+
+        public void WriteToSave(Stream file)
+        {
+            file.WriteByte((byte)SteerLeftButton);
+            file.WriteByte((byte)SteerRightButton);
+            file.WriteByte((byte)AccelerateButton);
+            file.WriteByte((byte)BrakeButton);
+            file.WriteByte((byte)HandbrakeButton);
+            file.WriteByte((byte)ReverseButton);
+            file.WriteByte((byte)ShiftUpButton);
+            file.WriteByte((byte)ShiftDownButton);
+            file.WriteByte((byte)ChangeViewsButton);
+            file.WriteByte((byte)RearViewButton);
+            file.Position += 0x17;
+            file.WriteBoolAsByte(VibrationEnabled);
+            file.Position += 0x4;
+            file.WriteByte((byte)SteeringMode);
+            file.WriteByte((byte)AccelerateBrakeMode);
+            file.WriteByte((byte)LastDigitalAccelerateButton);
+            file.WriteByte((byte)LastDigitalBrakeButton);
         }
     }
 }
