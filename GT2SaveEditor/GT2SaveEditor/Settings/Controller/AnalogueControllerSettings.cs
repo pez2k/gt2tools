@@ -34,7 +34,7 @@ namespace GT2.SaveEditor.Settings.Controller
             ChangeViewsButton = (ControllerButtonEnum)file.ReadSingleByte();
             RearViewButton = (ControllerButtonEnum)file.ReadSingleByte();
             file.Position += 0x17;
-            VibrationEnabled = file.ReadByteAsBool();
+            VibrationEnabled = !file.ReadByteAsBool();
             file.Position += 0x4;
             SteeringMode = (AnalogueSteeringModeEnum)file.ReadSingleByte();
             AccelerateBrakeMode = (AnalogueAccelerateBrakeModeEnum)file.ReadSingleByte();
@@ -55,7 +55,7 @@ namespace GT2.SaveEditor.Settings.Controller
             file.WriteByte((byte)ChangeViewsButton);
             file.WriteByte((byte)RearViewButton);
             file.Position += 0x17;
-            file.WriteBoolAsByte(VibrationEnabled);
+            file.WriteBoolAsByte(!VibrationEnabled);
             file.Position += 0x4;
             file.WriteByte((byte)SteeringMode);
             file.WriteByte((byte)AccelerateBrakeMode);
