@@ -17,7 +17,9 @@ namespace GT2.SaveEditor
         public ControllerSettings Player2Controller { get; set; } = new();
         public GlobalSettings GlobalSettings { get; set; } = new();
         public ArcadeResults ArcadeResults { get; set; } = new();
-        public GTModeData GTModeData { get; set; } = new();
+        public GTModeStats GTModeStats { get; set; } = new();
+        public ArcadeRecords ArcadeRecords { get; set; } = new();
+        public GTModeProgress GTModeProgress { get; set; } = new();
 
         public void ReadFromSave(Stream file)
         {
@@ -32,7 +34,11 @@ namespace GT2.SaveEditor
             ArcadeResults.ReadFromSave(file);
 
             file.Position += 0x28;
-            GTModeData.ReadFromSave(file);
+            GTModeStats.ReadFromSave(file);
+            ArcadeRecords.ReadFromSave(file);
+
+            file.Position += 0x48;
+            GTModeProgress.ReadFromSave(file);
         }
 
         public void WriteToSave(Stream file)
@@ -48,7 +54,11 @@ namespace GT2.SaveEditor
             ArcadeResults.WriteToSave(file);
 
             file.Position += 0x28;
-            GTModeData.WriteToSave(file);
+            GTModeStats.WriteToSave(file);
+            ArcadeRecords.WriteToSave(file);
+
+            file.Position += 0x48;
+            GTModeProgress.WriteToSave(file);
         }
     }
 }
