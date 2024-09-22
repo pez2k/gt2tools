@@ -25,7 +25,7 @@ namespace GT2.SaveEditor
 
         static SaveFile ReadSave(Stream file, int offset)
         {
-            file.Position = offset + 0x200; // Skip 4 header frames
+            file.Position = offset;
             SaveFile save = new();
             save.ReadFromSave(file);
             return save;
@@ -33,7 +33,7 @@ namespace GT2.SaveEditor
 
         static void WriteSave(Stream file, int offset, SaveFile save)
         {
-            file.Position = offset + 0x200; // Skip 4 header frames
+            file.Position = offset;
             save.WriteToSave(file);
             ChecksumSave(file, offset);
         }
