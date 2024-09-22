@@ -29,9 +29,8 @@ namespace GT2.SaveEditor.GTMode.Garage
         {
             if (string.IsNullOrEmpty(text))
             {
-                return 256;
+                return 0x100;
             }
-            return 0x00020273; // TODO: bb002--s returns 00 02 00 73 because no lugs, which does not match the save data
             if (text.Length != 8)
             {
                 throw new Exception($"Wheel ID must be 8 characters long: {text}");
@@ -58,7 +57,7 @@ namespace GT2.SaveEditor.GTMode.Garage
             }
             lugsPart = lugsPart * 0x20 << 8;
             uint colourPart = text.Substring(7, 1)[0];
-            return manufacturerIDPart + wheelNumberPart + lugsPart + colourPart;
+            return manufacturerIDPart + wheelNumberPart + lugsPart + colourPart + 0x200;
         }
 
         public static string ConvertToString(uint data)
