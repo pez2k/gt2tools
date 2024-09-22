@@ -35,7 +35,7 @@ namespace GT2.SaveEditor.GTMode
             TotalWinnings = file.ReadUInt();
             EventResults.ReadFromSave(file);
 
-            file.Position += 0x1287;
+            file.Position += 0x1284;
             SLicense.ReadFromSave(file);
             IALicense.ReadFromSave(file);
             IBLicense.ReadFromSave(file);
@@ -59,7 +59,7 @@ namespace GT2.SaveEditor.GTMode
             file.WriteUInt(TotalWinnings);
             EventResults.WriteToSave(file);
 
-            file.Position += 0x1287;
+            file.Position += 0x1284;
             SLicense.WriteToSave(file);
             IALicense.WriteToSave(file);
             IBLicense.WriteToSave(file);

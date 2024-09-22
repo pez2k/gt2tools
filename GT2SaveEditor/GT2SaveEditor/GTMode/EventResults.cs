@@ -5,7 +5,7 @@ namespace GT2.SaveEditor.GTMode
 {
     public class EventResults
     {
-        private const int EventCount = 242;
+        private const int EventCount = 248;
 
         public EventResultEnum[] Results { get; set; } = new EventResultEnum[EventCount];
 
