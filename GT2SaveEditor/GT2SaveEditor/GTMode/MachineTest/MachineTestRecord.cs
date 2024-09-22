@@ -33,6 +33,7 @@ namespace GT2.SaveEditor.GTMode.MachineTest
             file.Write(junkData);
             file.Position = stringStart;
             file.WriteCharacters(Name);
+            file.WriteByte(0);
             file.Position = stringStart + 12;
         }
 
