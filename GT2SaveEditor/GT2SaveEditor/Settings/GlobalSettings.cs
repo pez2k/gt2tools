@@ -22,6 +22,7 @@ namespace GT2.SaveEditor.Settings
             ViewAngle = (ViewAngleEnum)file.ReadSingleByte();
             MusicVolume = file.ReadSingleByte();
             SFXVolume = file.ReadSingleByte();
+            file.Position += 0x3; // Unknown 1b value, always 01?
         }
 
         public void WriteToSave(Stream file)
@@ -33,6 +34,7 @@ namespace GT2.SaveEditor.Settings
             file.WriteByte((byte)ViewAngle);
             file.WriteByte(MusicVolume);
             file.WriteByte(SFXVolume);
+            file.Position += 0x3;
         }
     }
 }

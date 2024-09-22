@@ -17,6 +17,7 @@ namespace GT2.SaveEditor.GTMode
                 Results[i] = (EventResultEnum)(resultPair & 0x0F);
                 Results[i + 1] = (EventResultEnum)((resultPair & 0xF0) >> 4);
             }
+            file.Position += 0x4;
         }
 
         public void WriteToSave(Stream file)
@@ -25,6 +26,7 @@ namespace GT2.SaveEditor.GTMode
             {
                 file.WriteByte((byte)((byte)Results[i + 1] << 4 | (byte)Results[i]));
             }
+            file.Position += 0x4;
         }
     }
 }

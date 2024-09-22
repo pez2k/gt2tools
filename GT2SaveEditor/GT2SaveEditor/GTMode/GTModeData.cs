@@ -15,6 +15,7 @@ namespace GT2.SaveEditor.GTMode
         public uint SumOfRankings { get; set; } // e.g. 1 + 3 + 5 for 3 races finishing 1st, 3rd, and 5th - guaranteed to be equal to or higher than the above
         public uint TotalWinnings { get; set; }
         public EventResults EventResults { get; set; } = new();
+        public bool EndingMovieUnlocked { get; set; }
         public LicenseData SLicense { get; set; } = new();
         public LicenseData IALicense { get; set; } = new();
         public LicenseData IBLicense { get; set; } = new();
@@ -35,7 +36,11 @@ namespace GT2.SaveEditor.GTMode
             TotalWinnings = file.ReadUInt();
             EventResults.ReadFromSave(file);
 
-            file.Position += 0x1284;
+            file.Position += 0x7D;
+            EndingMovieUnlocked = file.ReadByteAsBool();
+            file.Position += 0x2;
+
+            file.Position += 0x1200; // Event records most likely
             SLicense.ReadFromSave(file);
             IALicense.ReadFromSave(file);
             IBLicense.ReadFromSave(file);
@@ -59,7 +64,11 @@ namespace GT2.SaveEditor.GTMode
             file.WriteUInt(TotalWinnings);
             EventResults.WriteToSave(file);
 
-            file.Position += 0x1284;
+            file.Position += 0x7D;
+            file.WriteBoolAsByte(EndingMovieUnlocked);
+            file.Position += 0x2;
+
+            file.Position += 0x1200;
             SLicense.WriteToSave(file);
             IALicense.WriteToSave(file);
             IBLicense.WriteToSave(file);

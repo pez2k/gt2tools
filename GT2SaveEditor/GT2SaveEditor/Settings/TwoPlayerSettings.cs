@@ -18,6 +18,7 @@ namespace GT2.SaveEditor.Settings
             Laps = file.ReadSingleByte();
             Handicap = file.ReadSingleByte();
             Boost = file.ReadSingleByte();
+            file.Position += 0x1;
         }
 
         public void WriteToSave(Stream file)
@@ -27,6 +28,7 @@ namespace GT2.SaveEditor.Settings
             file.WriteByte(Laps);
             file.WriteByte(Handicap);
             file.WriteByte(Boost);
+            file.Position += 0x1;
         }
     }
 }
