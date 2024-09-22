@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GT2.SaveEditor.Garage
+namespace GT2.SaveEditor.GTMode.Garage
 {
     public static class WheelFilenameConverter
     {
@@ -31,7 +31,7 @@ namespace GT2.SaveEditor.Garage
             {
                 return 256;
             }
-            return 0x00020273; // bb002--s returns 00 02 00 73 because no lugs, which does not match the save data
+            return 0x00020273; // TODO: bb002--s returns 00 02 00 73 because no lugs, which does not match the save data
             if (text.Length != 8)
             {
                 throw new Exception($"Wheel ID must be 8 characters long: {text}");
@@ -45,7 +45,7 @@ namespace GT2.SaveEditor.Garage
                     break;
                 }
             }
-            manufacturerIDPart = (manufacturerIDPart * 0x10) << 24;
+            manufacturerIDPart = manufacturerIDPart * 0x10 << 24;
             uint wheelNumberPart = uint.Parse(text.Substring(2, 3)) << 16;
             uint lugsPart;
             string lugs = text.Substring(6, 1);
@@ -56,7 +56,7 @@ namespace GT2.SaveEditor.Garage
                     break;
                 }
             }
-            lugsPart = (lugsPart * 0x20) << 8;
+            lugsPart = lugsPart * 0x20 << 8;
             uint colourPart = text.Substring(7, 1)[0];
             return manufacturerIDPart + wheelNumberPart + lugsPart + colourPart;
         }
@@ -69,8 +69,8 @@ namespace GT2.SaveEditor.Garage
             }
 
             string manufacturer = wheelManufacturers[(data >> 24) / 0x10];
-            uint wheelNumber = (data >> 16) & 0xFF;
-            string lugs = wheelLugs[((data >> 8) & 0xFF) / 0x20];
+            uint wheelNumber = data >> 16 & 0xFF;
+            string lugs = wheelLugs[(data >> 8 & 0xFF) / 0x20];
             char colour = (char)(data & 0xFF);
             return $"{manufacturer}{wheelNumber:D3}-{lugs}{colour}";
         }

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using StreamExtensions;
 
-namespace GT2.SaveEditor.Garage
+namespace GT2.SaveEditor.GTMode.Garage
 {
     public class PurchasedParts
     {
@@ -119,7 +119,7 @@ namespace GT2.SaveEditor.Garage
             file.Position += 0x3;
         }
 
-        private static bool IsBitSet(byte value, byte bitPosition) => (value & (1 << bitPosition)) > 0;
+        private static bool IsBitSet(byte value, byte bitPosition) => (value & 1 << bitPosition) > 0;
 
         public void WriteToSave(Stream file)
         {
@@ -192,6 +192,6 @@ namespace GT2.SaveEditor.Garage
             file.Position += 0x3;
         }
 
-        private static byte SetBit(byte value, byte bitPosition, bool set) => set ? (byte)(value | (1 << bitPosition)) : value;
+        private static byte SetBit(byte value, byte bitPosition, bool set) => set ? (byte)(value | 1 << bitPosition) : value;
     }
 }

@@ -3,8 +3,7 @@ using StreamExtensions;
 
 namespace GT2.SaveEditor
 {
-    using Garage;
-    using License;
+    using GTMode;
     using Settings;
     using Settings.Controller;
 
@@ -16,14 +15,7 @@ namespace GT2.SaveEditor
         public ControllerSettings Player1Controller { get; set; } = new();
         public ControllerSettings Player2Controller { get; set; } = new();
         public GlobalSettings GlobalSettings { get; set; } = new();
-        public uint Day { get; set; }
-        public LicenseData SLicense { get; set; } = new();
-        public LicenseData IALicense { get; set; } = new();
-        public LicenseData IBLicense { get; set; } = new();
-        public LicenseData ICLicense { get; set; } = new();
-        public LicenseData ALicense { get; set; } = new();
-        public LicenseData BLicense { get; set; } = new();
-        public GarageData Garage { get; set; } = new();
+        public GTModeData GTModeData { get; set; } = new();
 
         public void ReadFromSave(Stream file)
         {
@@ -43,18 +35,7 @@ namespace GT2.SaveEditor
             GlobalSettings.ReadFromSave(file);
 
             file.Position += 0x43;
-            Day = file.ReadUInt();
-
-            file.Position += 0x131C;
-            SLicense.ReadFromSave(file);
-            IALicense.ReadFromSave(file);
-            IBLicense.ReadFromSave(file);
-            ICLicense.ReadFromSave(file);
-            ALicense.ReadFromSave(file);
-            BLicense.ReadFromSave(file);
-
-            file.Position += 0x1EC;
-            Garage.ReadFromSave(file);
+            GTModeData.ReadFromSave(file);
         }
 
         public void WriteToSave(Stream file)
@@ -75,18 +56,7 @@ namespace GT2.SaveEditor
             GlobalSettings.WriteToSave(file);
 
             file.Position += 0x43;
-            file.WriteUInt(Day);
-
-            file.Position += 0x131C;
-            SLicense.WriteToSave(file);
-            IALicense.WriteToSave(file);
-            IBLicense.WriteToSave(file);
-            ICLicense.WriteToSave(file);
-            ALicense.WriteToSave(file);
-            BLicense.WriteToSave(file);
-
-            file.Position += 0x1EC;
-            Garage.WriteToSave(file);
+            GTModeData.WriteToSave(file);
         }
     }
 }

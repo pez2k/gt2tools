@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using StreamExtensions;
 
-namespace GT2.SaveEditor.Garage
+namespace GT2.SaveEditor.GTMode.Garage
 {
     using CarNameConversion;
 

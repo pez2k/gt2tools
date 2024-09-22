@@ -1,4 +1,4 @@
-﻿namespace GT2.SaveEditor.License
+﻿namespace GT2.SaveEditor.GTMode.License
 {
     public enum LicenseTestResultEnum
     {

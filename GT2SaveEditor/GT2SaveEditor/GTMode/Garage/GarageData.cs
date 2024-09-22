@@ -2,7 +2,7 @@
 using System.IO;
 using StreamExtensions;
 
-namespace GT2.SaveEditor.Garage
+namespace GT2.SaveEditor.GTMode.Garage
 {
     public class GarageData
     {
@@ -23,7 +23,7 @@ namespace GT2.SaveEditor.Garage
                 Cars[i].ReadFromSave(file);
             }
 
-            file.Position = carsStart + (0xA4 * 100);
+            file.Position = carsStart + 0xA4 * 100;
             Money = file.ReadUInt();
             CurrentCar = file.ReadShort();
             file.Position += 0x1;
@@ -42,7 +42,7 @@ namespace GT2.SaveEditor.Garage
                 car.WriteToSave(file);
             }
 
-            while (file.Position < carsStart + (0xA4 * 100))
+            while (file.Position < carsStart + 0xA4 * 100)
             {
                 file.WriteByte(0);
             }
