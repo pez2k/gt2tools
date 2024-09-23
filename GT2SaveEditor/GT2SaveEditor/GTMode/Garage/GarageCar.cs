@@ -38,16 +38,17 @@ namespace GT2.SaveEditor.GTMode.Garage
         public ushort TCS { get; set; }
         public ushort Wheels { get; set; }
         public ushort PowerMultiplier { get; set; }
-        public ushort GearReverse { get; set; }
-        public ushort Gear1 { get; set; }
-        public ushort Gear2 { get; set; }
-        public ushort Gear3 { get; set; }
-        public ushort Gear4 { get; set; }
-        public ushort Gear5 { get; set; }
-        public ushort Gear6 { get; set; }
-        public ushort Gear7 { get; set; }
+        public short GearReverse { get; set; }
+        public short Gear1 { get; set; }
+        public short Gear2 { get; set; }
+        public short Gear3 { get; set; }
+        public short Gear4 { get; set; }
+        public short Gear5 { get; set; }
+        public short Gear6 { get; set; }
+        public short Gear7 { get; set; }
         public ushort FinalDriveRatio { get; set; }
-        public ushort GearAutoSetting { get; set; }
+        public sbyte GearAutoSetting { get; set; }
+        public sbyte TorqueSplit { get; set; }
         public byte BrakeLevelFront { get; set; }
         public byte BrakeLevelRear { get; set; }
         public byte DownforceFront { get; set; }
@@ -135,16 +136,17 @@ namespace GT2.SaveEditor.GTMode.Garage
             TCS = file.ReadUShort();
             Wheels = file.ReadUShort();
             PowerMultiplier = file.ReadUShort();
-            GearReverse = file.ReadUShort();
-            Gear1 = file.ReadUShort();
-            Gear2 = file.ReadUShort();
-            Gear3 = file.ReadUShort();
-            Gear4 = file.ReadUShort();
-            Gear5 = file.ReadUShort();
-            Gear6 = file.ReadUShort();
-            Gear7 = file.ReadUShort();
+            GearReverse = file.ReadShortFixed();
+            Gear1 = file.ReadShortFixed();
+            Gear2 = file.ReadShortFixed();
+            Gear3 = file.ReadShortFixed();
+            Gear4 = file.ReadShortFixed();
+            Gear5 = file.ReadShortFixed();
+            Gear6 = file.ReadShortFixed();
+            Gear7 = file.ReadShortFixed();
             FinalDriveRatio = file.ReadUShort();
-            GearAutoSetting = file.ReadUShort();
+            GearAutoSetting = file.ReadSByte();
+            TorqueSplit = file.ReadSByte();
             BrakeLevelFront = file.ReadSingleByte();
             BrakeLevelRear = file.ReadSingleByte();
             DownforceFront = file.ReadSingleByte();
@@ -233,16 +235,17 @@ namespace GT2.SaveEditor.GTMode.Garage
             file.WriteUShort(TCS);
             file.WriteUShort(Wheels);
             file.WriteUShort(PowerMultiplier);
-            file.WriteUShort(GearReverse);
-            file.WriteUShort(Gear1);
-            file.WriteUShort(Gear2);
-            file.WriteUShort(Gear3);
-            file.WriteUShort(Gear4);
-            file.WriteUShort(Gear5);
-            file.WriteUShort(Gear6);
-            file.WriteUShort(Gear7);
+            file.WriteShortFixed(GearReverse);
+            file.WriteShortFixed(Gear1);
+            file.WriteShortFixed(Gear2);
+            file.WriteShortFixed(Gear3);
+            file.WriteShortFixed(Gear4);
+            file.WriteShortFixed(Gear5);
+            file.WriteShortFixed(Gear6);
+            file.WriteShortFixed(Gear7);
             file.WriteUShort(FinalDriveRatio);
-            file.WriteUShort(GearAutoSetting);
+            file.WriteSByte(GearAutoSetting);
+            file.WriteSByte(TorqueSplit);
             file.WriteByte(BrakeLevelFront);
             file.WriteByte(BrakeLevelRear);
             file.WriteByte(DownforceFront);

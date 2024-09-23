@@ -25,7 +25,7 @@ namespace GT2.SaveEditor.GTMode.Garage
 
             file.Position = carsStart + 0xA4 * 100;
             Money = file.ReadUInt();
-            CurrentCar = file.ReadShort();
+            CurrentCar = file.ReadShortFixed();
             file.Position += 0x1;
             long nameStart = file.Position;
             PlayerName = file.ReadCharacters();
@@ -47,7 +47,7 @@ namespace GT2.SaveEditor.GTMode.Garage
                 file.WriteByte(0);
             }
             file.WriteUInt(Money);
-            file.WriteShort(CurrentCar);
+            file.WriteShortFixed(CurrentCar);
             file.Position += 0x1;
             long nameStart = file.Position;
             file.WriteCharacters(PlayerName);
