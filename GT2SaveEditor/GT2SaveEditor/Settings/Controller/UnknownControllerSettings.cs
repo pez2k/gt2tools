@@ -3,10 +3,10 @@ using StreamExtensions;
 
 namespace GT2.SaveEditor.Settings.Controller
 {
-    public class DigitalControllerSettings
+    public class UnknownControllerSettings
     {
-        public ControllerButtonEnum SteerLeftButton { get; set; }
-        public ControllerButtonEnum SteerRightButton { get; set; }
+        public UnknownSteeringButtonEnum SteerLeftButton { get; set; }
+        public UnknownSteeringButtonEnum SteerRightButton { get; set; }
         public ControllerButtonEnum AccelerateButton { get; set; }
         public ControllerButtonEnum BrakeButton { get; set; }
         public ControllerButtonEnum HandbrakeButton { get; set; }
@@ -15,11 +15,13 @@ namespace GT2.SaveEditor.Settings.Controller
         public ControllerButtonEnum ShiftDownButton { get; set; }
         public ControllerButtonEnum ChangeViewsButton { get; set; }
         public ControllerButtonEnum RearViewButton { get; set; }
+        public ushort UnknownDeadzone { get; set; }
+        public ushort UnknownLimit { get; set; }
 
         public void ReadBindingsFromSave(Stream file)
         {
-            SteerLeftButton = (ControllerButtonEnum)file.ReadSingleByte();
-            SteerRightButton = (ControllerButtonEnum)file.ReadSingleByte();
+            SteerLeftButton = (UnknownSteeringButtonEnum)file.ReadSingleByte();
+            SteerRightButton = (UnknownSteeringButtonEnum)file.ReadSingleByte();
             AccelerateButton = (ControllerButtonEnum)file.ReadSingleByte();
             BrakeButton = (ControllerButtonEnum)file.ReadSingleByte();
             HandbrakeButton = (ControllerButtonEnum)file.ReadSingleByte();
@@ -28,7 +30,12 @@ namespace GT2.SaveEditor.Settings.Controller
             ShiftDownButton = (ControllerButtonEnum)file.ReadSingleByte();
             ChangeViewsButton = (ControllerButtonEnum)file.ReadSingleByte();
             RearViewButton = (ControllerButtonEnum)file.ReadSingleByte();
-            file.Position += 0x1;
+        }
+
+        public void ReadSettingsFromSave(Stream file)
+        {
+            UnknownDeadzone = file.ReadUShort();
+            UnknownLimit = file.ReadUShort();
         }
 
         public void WriteBindingsToSave(Stream file)
@@ -43,7 +50,12 @@ namespace GT2.SaveEditor.Settings.Controller
             file.WriteByte((byte)ShiftDownButton);
             file.WriteByte((byte)ChangeViewsButton);
             file.WriteByte((byte)RearViewButton);
-            file.Position += 0x1;
+        }
+
+        public void WriteSettingsToSave(Stream file)
+        {
+            file.WriteUShort(UnknownDeadzone);
+            file.WriteUShort(UnknownLimit);
         }
     }
 }
