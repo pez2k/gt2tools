@@ -85,8 +85,8 @@ namespace GT2.SaveEditor.GTMode.Garage
         public byte TCSLevel { get; set; }
         public ushort EngineSoundID { get; set; }
         public EngineSoundVariantEnum EngineSoundVariant { get; set; } // Reflects which specific sound file will be used, based on aspiration and muffler upgrade level - not always up to date, possibly only set properly by pre-race parts menu
-        public byte Unknown1 { get; set; }
-        public byte Unknown2 { get; set; }
+        public byte Manufacturer { get; set; }
+        public byte Aspiration { get; set; } // 0xC0 for non-turbo including MA, 0xC2 for turbo - might actually be flags but with the first two set for every car?
         public byte GearAutoSettingAtLastGearCalculation { get; set; } // The auto setting value at the last point the slider was used (i.e. what the ratios were calculated from)
         public ushort FinalDriveRatioAtLastGearCalculation { get; set; } // The final drive ratio value at the last point the auto setting slider was used (i.e. what the ratios were calculated from)
         public TireUpgradeLevelEnum TiresFrontUpgradeLevelAtLastGearCalculation { get; set; } // The front tire upgrade level at the last point the auto setting slider was used (i.e. what the ratios were calculated from, presumably looking up wheel diameter)
@@ -96,6 +96,7 @@ namespace GT2.SaveEditor.GTMode.Garage
         public ushort DisplayedWeight { get; set; }
         public ushort DisplayedTorque { get; set; }
         public ushort DisplayedPower { get; set; }
+        public bool HasCVTBehaviour { get; set; }
         public bool RacingModified { get; set; }
         public PurchasedParts PurchasedParts { get; set; } = new();
         public ushort Dirtiness { get; set; }
@@ -182,8 +183,8 @@ namespace GT2.SaveEditor.GTMode.Garage
             TCSLevel = file.ReadSingleByte();
             EngineSoundID = file.ReadUShort();
             EngineSoundVariant = (EngineSoundVariantEnum)file.ReadSingleByte();
-            Unknown1 = file.ReadSingleByte();
-            Unknown2 = file.ReadSingleByte();
+            Manufacturer = file.ReadSingleByte();
+            Aspiration = file.ReadSingleByte();
             GearAutoSettingAtLastGearCalculation = file.ReadSingleByte();
             FinalDriveRatioAtLastGearCalculation = file.ReadUShort();
             TiresFrontUpgradeLevelAtLastGearCalculation = (TireUpgradeLevelEnum)file.ReadUShort();
@@ -193,9 +194,10 @@ namespace GT2.SaveEditor.GTMode.Garage
             CarValue = file.ReadUInt();
             DisplayedWeight = file.ReadUShort();
             DisplayedTorque = file.ReadUShort();
-            ushort powerAndRMFlag = file.ReadUShort();
-            DisplayedPower = (ushort)(powerAndRMFlag & 0x7FFF);
-            RacingModified = (powerAndRMFlag & 0x8000) > 0;
+            ushort displayedPowerAndFlags = file.ReadUShort();
+            DisplayedPower = (ushort)(displayedPowerAndFlags & 0x3FFF);
+            HasCVTBehaviour = (displayedPowerAndFlags & 0x4000) > 0;
+            RacingModified = (displayedPowerAndFlags & 0x8000) > 0;
             PurchasedParts.ReadFromSave(file);
             Dirtiness = file.ReadUShort();
         }
@@ -281,8 +283,8 @@ namespace GT2.SaveEditor.GTMode.Garage
             file.WriteByte(TCSLevel);
             file.WriteUShort(EngineSoundID);
             file.WriteByte((byte)EngineSoundVariant);
-            file.WriteByte(Unknown1);
-            file.WriteByte(Unknown2);
+            file.WriteByte(Manufacturer);
+            file.WriteByte(Aspiration);
             file.WriteByte(GearAutoSettingAtLastGearCalculation);
             file.WriteUShort(FinalDriveRatioAtLastGearCalculation);
             file.WriteUShort((ushort)TiresFrontUpgradeLevelAtLastGearCalculation);
@@ -292,7 +294,7 @@ namespace GT2.SaveEditor.GTMode.Garage
             file.WriteUInt(CarValue);
             file.WriteUShort(DisplayedWeight);
             file.WriteUShort(DisplayedTorque);
-            file.WriteUShort((ushort)(DisplayedPower | (RacingModified ? 0x8000 : 0)));
+            file.WriteUShort((ushort)(DisplayedPower | (HasCVTBehaviour ? 0x4000 : 0) | (RacingModified ? 0x8000 : 0)));
             PurchasedParts.WriteToSave(file);
             file.WriteUShort(Dirtiness);
         }
