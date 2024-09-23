@@ -84,14 +84,13 @@ namespace GT2.SaveEditor.GTMode.Garage
         public byte ASCLevel { get; set; }
         public byte TCSLevel { get; set; }
         public ushort EngineSoundID { get; set; }
-        public byte EngineSoundLevel { get; set; }
+        public EngineSoundVariantEnum EngineSoundVariant { get; set; } // Reflects which specific sound file will be used, based on aspiration and muffler upgrade level - not always up to date, possibly only set properly by pre-race parts menu
         public byte Unknown1 { get; set; }
         public byte Unknown2 { get; set; }
-        public byte Unknown3 { get; set; }
-        public ushort Unknown4 { get; set; }
-        public ushort Unknown5 { get; set; }
-        public ushort Unknown6 { get; set; }
-        public ushort Unknown7 { get; set; }
+        public byte GearAutoSettingAtLastGearCalculation { get; set; } // The auto setting value at the last point the slider was used (i.e. what the ratios were calculated from)
+        public ushort FinalDriveRatioAtLastGearCalculation { get; set; } // The final drive ratio value at the last point the auto setting slider was used (i.e. what the ratios were calculated from)
+        public TireUpgradeLevelEnum TiresFrontUpgradeLevelAtLastGearCalculation { get; set; } // The front tire upgrade level at the last point the auto setting slider was used (i.e. what the ratios were calculated from, presumably looking up wheel diameter)
+        public TireUpgradeLevelEnum TiresRearUpgradeLevelAtLastGearCalculation { get; set; } // The rear tire upgrade level at the last point the auto setting slider was used (i.e. what the ratios were calculated from, presumably looking up wheel diameter)
         public string BodyFilename { get; set; } = "";
         public uint CarValue { get; set; }
         public ushort DisplayedWeight { get; set; }
@@ -182,14 +181,14 @@ namespace GT2.SaveEditor.GTMode.Garage
             ASCLevel = file.ReadSingleByte();
             TCSLevel = file.ReadSingleByte();
             EngineSoundID = file.ReadUShort();
-            EngineSoundLevel = file.ReadSingleByte();
+            EngineSoundVariant = (EngineSoundVariantEnum)file.ReadSingleByte();
             Unknown1 = file.ReadSingleByte();
             Unknown2 = file.ReadSingleByte();
-            Unknown3 = file.ReadSingleByte();
-            Unknown4 = file.ReadUShort();
-            Unknown5 = file.ReadUShort();
-            Unknown6 = file.ReadUShort();
-            Unknown7 = file.ReadUShort();
+            GearAutoSettingAtLastGearCalculation = file.ReadSingleByte();
+            FinalDriveRatioAtLastGearCalculation = file.ReadUShort();
+            TiresFrontUpgradeLevelAtLastGearCalculation = (TireUpgradeLevelEnum)file.ReadUShort();
+            TiresRearUpgradeLevelAtLastGearCalculation = (TireUpgradeLevelEnum)file.ReadUShort();
+            file.Position += 0x2;
             BodyFilename = file.ReadUInt().ToCarName();
             CarValue = file.ReadUInt();
             DisplayedWeight = file.ReadUShort();
@@ -281,14 +280,14 @@ namespace GT2.SaveEditor.GTMode.Garage
             file.WriteByte(ASCLevel);
             file.WriteByte(TCSLevel);
             file.WriteUShort(EngineSoundID);
-            file.WriteByte(EngineSoundLevel);
+            file.WriteByte((byte)EngineSoundVariant);
             file.WriteByte(Unknown1);
             file.WriteByte(Unknown2);
-            file.WriteByte(Unknown3);
-            file.WriteUShort(Unknown4);
-            file.WriteUShort(Unknown5);
-            file.WriteUShort(Unknown6);
-            file.WriteUShort(Unknown7);
+            file.WriteByte(GearAutoSettingAtLastGearCalculation);
+            file.WriteUShort(FinalDriveRatioAtLastGearCalculation);
+            file.WriteUShort((ushort)TiresFrontUpgradeLevelAtLastGearCalculation);
+            file.WriteUShort((ushort)TiresRearUpgradeLevelAtLastGearCalculation);
+            file.Position += 0x2;
             file.WriteUInt(BodyFilename.ToCarID());
             file.WriteUInt(CarValue);
             file.WriteUShort(DisplayedWeight);
