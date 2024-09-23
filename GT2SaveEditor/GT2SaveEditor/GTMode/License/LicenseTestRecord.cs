@@ -36,7 +36,7 @@ namespace GT2.SaveEditor.GTMode.License
             file.WriteInt(Sector2Time);
             file.WriteInt(Sector3Time);
             file.WriteUShort(Speed);
-            file.Position += 0x2;
+            file.WriteUShort(0xFFFF);
         }
 
         public void WriteNameToSave(Stream file)

@@ -28,7 +28,7 @@ namespace GT2.SaveEditor.Settings.Controller
             UnknownController.WriteBindingsToSave(file);
             AnalogueController.WriteSettingsToSave(file);
             NegconController.WriteSettingsToSave(file);
-            UnknownController.ReadSettingsFromSave(file);
+            UnknownController.WriteSettingsToSave(file);
         }
     }
 }

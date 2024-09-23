@@ -37,7 +37,7 @@ namespace GT2.SaveEditor.Arcade
             file.WriteInt(Sector2Time);
             file.WriteInt(Sector3Time);
             file.WriteUShort(Speed);
-            file.Position += 0x2;
+            file.WriteUShort(0xFFFF);
             file.WriteUInt(CarName == "" ? 0 : CarName.ToCarID());
             long stringStart = file.Position;
             file.WriteCharacters(Name);
