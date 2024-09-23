@@ -116,7 +116,7 @@ namespace GT2.SaveEditor.GTMode.Garage
             TurbineKitStage2 = IsBitSet(equippedParts6, 7);
             TurbineKitStage3 = IsBitSet(equippedParts7, 0);
             TurbineKitStage4 = IsBitSet(equippedParts7, 1);
-            file.Position += 0x3;
+            file.Position += 0x1;
         }
 
         private static bool IsBitSet(byte value, byte bitPosition) => (value & 1 << bitPosition) > 0;
@@ -189,7 +189,7 @@ namespace GT2.SaveEditor.GTMode.Garage
             file.WriteByte(equippedParts5);
             file.WriteByte(equippedParts6);
             file.WriteByte(equippedParts7);
-            file.Position += 0x3;
+            file.Position += 0x1;
         }
 
         private static byte SetBit(byte value, byte bitPosition, bool set) => set ? (byte)(value | 1 << bitPosition) : value;
