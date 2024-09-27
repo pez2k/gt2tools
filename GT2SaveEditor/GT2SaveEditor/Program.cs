@@ -18,6 +18,13 @@ namespace GT2.SaveEditor
                 {
                     file.Position = 0;
                     file.CopyTo(outfile);
+
+                    outfile.Position = offset;
+                    for (int i = 0; i < (0x2000 * 4); i++) // Blank the 4 blocks in the memory card for a clean write
+                    {
+                        outfile.WriteByte(0);
+                    }
+
                     WriteSave(outfile, offset, save);
                 }
             }
