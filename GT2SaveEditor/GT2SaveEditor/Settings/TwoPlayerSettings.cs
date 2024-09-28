@@ -5,29 +5,29 @@ namespace GT2.SaveEditor.Settings
 {
     public class TwoPlayerSettings
     {
-        public bool TyreWearEnabled { get; set; }
+        public TireDamageEnum TireDamage { get; set; }
         public bool DamageEnabled { get; set; }
         public byte Laps { get; set; }
-        public byte Handicap { get; set; }
-        public byte Boost { get; set; }
+        public sbyte Handicap { get; set; }
+        public BoostEnum Boost { get; set; }
 
         public void ReadFromSave(Stream file)
         {
-            TyreWearEnabled = file.ReadByteAsBool();
+            TireDamage = (TireDamageEnum)file.ReadSingleByte();
             DamageEnabled = file.ReadByteAsBool();
             Laps = file.ReadSingleByte();
-            Handicap = file.ReadSingleByte();
-            Boost = file.ReadSingleByte();
+            Handicap = file.ReadSByte();
+            Boost = (BoostEnum)file.ReadSingleByte();
             file.Position += 0x1;
         }
 
         public void WriteToSave(Stream file)
         {
-            file.WriteBoolAsByte(TyreWearEnabled);
+            file.WriteByte((byte)TireDamage);
             file.WriteBoolAsByte(DamageEnabled);
             file.WriteByte(Laps);
-            file.WriteByte(Handicap);
-            file.WriteByte(Boost);
+            file.WriteSByte(Handicap);
+            file.WriteByte((byte)Boost);
             file.Position += 0x1;
         }
     }
