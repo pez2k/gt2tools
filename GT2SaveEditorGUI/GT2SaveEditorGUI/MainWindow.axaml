@@ -1,0 +1,150 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mw="using:GT2.SaveEditor.GUI"
+        mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="600"
+        x:Class="GT2.SaveEditor.GUI.MainWindow"
+        Title="GT2 Save Editor"
+        x:DataType="mw:MainWindowViewModel">
+  <Design.DataContext>
+    <mw:MainWindowViewModel />
+  </Design.DataContext>
+  <DockPanel>
+    <Menu DockPanel.Dock="Top">
+      <MenuItem Header="_File">
+        <MenuItem Header="_Open"/>
+        <MenuItem Header="_Save" Click="MenuItem_Click"/>
+        <Separator/>
+        <MenuItem Header="_Exit"/>
+      </MenuItem>
+      <MenuItem Header="_Help">
+        <MenuItem Header="About"/>
+      </MenuItem>
+    </Menu>
+    <TabControl Margin="5" SelectedIndex="0">
+      <TabItem Header="Settings" FontSize="18">
+        <TabControl Margin="-10 5" TabStripPlacement="Left">
+          <TabItem Header="Global" FontSize="18">
+            <Grid RowDefinitions="40,40,40,40,40,40,40,40,40" ColumnDefinitions="130,*">
+              <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Language</TextBlock>
+              <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding LanguageEnum}" SelectedItem="{Binding Data.Language}" />
+              <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Player Name</TextBlock>
+              <TextBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Width="200" MaxLength="11" Text="{Binding Data.GTModeProgress.Garage.PlayerName}"></TextBox>
+              <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Replay Info</TextBlock>
+              <ComboBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ReplayInfoEnum}" SelectedItem="{Binding Data.GlobalSettings.ReplayInfo}" />
+              <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Camera Position</TextBlock>
+              <ComboBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding CameraPositionEnum}" SelectedItem="{Binding Data.GlobalSettings.CameraPosition}" />
+              <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Chase View</TextBlock>
+              <ComboBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ChaseViewEnum}" SelectedItem="{Binding Data.GlobalSettings.ChaseView}" />
+              <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Course Map</TextBlock>
+              <CheckBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding Data.GlobalSettings.CourseMap}" />
+              <TextBlock Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">View Angle</TextBlock>
+              <ComboBox Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ViewAngleEnum}" SelectedItem="{Binding Data.GlobalSettings.ViewAngle}" />
+              <TextBlock Grid.Row="7" Grid.Column="0" VerticalAlignment="Center">Music Volume</TextBlock>
+              <Slider Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Width="200" Minimum="0" Maximum="255" Ticks="0,16,32,48,64,80,96,112,128,144,160,176,192,208,224,240,255" IsSnapToTickEnabled="True" Value="{Binding Data.GlobalSettings.MusicVolume}" />
+              <TextBlock Grid.Row="8" Grid.Column="0" VerticalAlignment="Center">SFX Volume</TextBlock>
+              <Slider Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Width="200" Minimum="0" Maximum="255" Ticks="0,16,32,48,64,80,96,112,128,144,160,176,192,208,224,240,255" IsSnapToTickEnabled="True" Value="{Binding Data.GlobalSettings.SFXVolume}" />
+            </Grid>
+          </TabItem>
+          <TabItem Header="Arcade" FontSize="18">
+          </TabItem>
+          <TabItem Header="2 Player" FontSize="18">
+          </TabItem>
+        </TabControl>
+      </TabItem>
+      <TabItem Header="1P Controller" FontSize="18">
+        <TabControl Margin="-10 5" TabStripPlacement="Left">
+          <TabItem Header="Digital" FontSize="18">
+            <Grid RowDefinitions="40,40,40,40,40,40,40,40,40,40" ColumnDefinitions="110,*">
+              <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Steer Left</TextBlock>
+              <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.DigitalController.SteerLeftButton}" IsEnabled="False" />
+              <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Steer Right</TextBlock>
+              <ComboBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.DigitalController.SteerRightButton}" IsEnabled="False" />
+              <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Accelerate</TextBlock>
+              <ComboBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.DigitalController.AccelerateButton}" />
+              <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Brake</TextBlock>
+              <ComboBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.DigitalController.BrakeButton}" />
+              <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Reverse</TextBlock>
+              <ComboBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.DigitalController.ReverseButton}" />
+              <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Handbrake</TextBlock>
+              <ComboBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.DigitalController.HandbrakeButton}" />
+              <TextBlock Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Shift Up</TextBlock>
+              <ComboBox Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.DigitalController.ShiftUpButton}" />
+              <TextBlock Grid.Row="7" Grid.Column="0" VerticalAlignment="Center">Shift Down</TextBlock>
+              <ComboBox Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.DigitalController.ShiftDownButton}" />
+              <TextBlock Grid.Row="8" Grid.Column="0" VerticalAlignment="Center">Rear View</TextBlock>
+              <ComboBox Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.DigitalController.RearViewButton}" />
+              <TextBlock Grid.Row="9" Grid.Column="0" VerticalAlignment="Center">Change Views</TextBlock>
+              <ComboBox Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.DigitalController.ChangeViewsButton}" />
+            </Grid>
+          </TabItem>
+          <TabItem Header="Analog" FontSize="18">
+          </TabItem>
+          <TabItem Header="NeGcon" FontSize="18">
+          </TabItem>
+        </TabControl>
+      </TabItem>
+      <TabItem Header="2P Controller" FontSize="18">
+      </TabItem>
+      <TabItem Header="Licenses" FontSize="18">
+        <TabControl Margin="5" TabStripPlacement="Left">
+          <TabItem Header="IC" FontSize="18">
+            <StackPanel Spacing="10">
+              <Expander VerticalAlignment="Top">
+                <Expander.Header>
+                  <StackPanel Orientation="Horizontal" Spacing="5" Height="50" VerticalAlignment="Top">
+                    <Label Margin="5" VerticalAlignment="Center" FontSize="20" Width="70">IC-1</Label>
+                    <RadioButton GroupName="IC-1" Content="None" Margin="5" VerticalAlignment="Center"/>
+                    <RadioButton GroupName="IC-1" Content="Kids Prize" Margin="5" VerticalAlignment="Center"/>
+                    <RadioButton GroupName="IC-1" Content="Bronze" Margin="5" VerticalAlignment="Center"/>
+                    <RadioButton GroupName="IC-1" Content="Silver" Margin="5" VerticalAlignment="Center"/>
+                    <RadioButton GroupName="IC-1" Content="Gold" Margin="5" VerticalAlignment="Center"/>
+                  </StackPanel>
+                </Expander.Header>
+                <Grid RowDefinitions="*,*" ColumnDefinitions="150,*">
+                  <TextBlock Grid.Row="0" Grid.Column="0"
+                              VerticalAlignment="Center">Search</TextBlock>
+                  <TextBox Grid.Row="0" Grid.Column="1"
+                            Watermark="Search text" Width="200" />
+                  <TextBlock Grid.Row="1" Grid.Column="0"
+                              VerticalAlignment="Center">Case sensitive?</TextBlock>
+                  <CheckBox Grid.Row="1" Grid.Column="1" />
+                </Grid>
+              </Expander>
+
+              <Expander VerticalAlignment="Top">
+                <Expander.Header>
+                  <StackPanel Orientation="Horizontal" Spacing="5" Height="50" VerticalAlignment="Top">
+                    <Label Margin="5" VerticalAlignment="Center" FontSize="20" Width="70">IC-2</Label>
+                    <RadioButton GroupName="IC-2" Content="None" Margin="5" VerticalAlignment="Center"/>
+                    <RadioButton GroupName="IC-2" Content="Kids Prize" Margin="5" VerticalAlignment="Center"/>
+                    <RadioButton GroupName="IC-2" Content="Bronze" Margin="5" VerticalAlignment="Center"/>
+                    <RadioButton GroupName="IC-2" Content="Silver" Margin="5" VerticalAlignment="Center"/>
+                    <RadioButton GroupName="IC-2" Content="Gold" Margin="5" VerticalAlignment="Center"/>
+                  </StackPanel>
+                </Expander.Header>
+                <Grid RowDefinitions="*,*" ColumnDefinitions="150,*">
+                  <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Records TODO</TextBlock>
+                  <TextBox Grid.Row="0" Grid.Column="1" Watermark="Search text" Width="200" />
+                  <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Case sensitive?</TextBlock>
+                  <CheckBox Grid.Row="1" Grid.Column="1" />
+                </Grid>
+              </Expander>
+            </StackPanel>
+          </TabItem>
+          <TabItem Header="A" FontSize="18">
+          </TabItem>
+          <TabItem Header="B" FontSize="18">
+          </TabItem>
+        </TabControl>
+      </TabItem>
+      <TabItem Header="Arcade" FontSize="18">
+      </TabItem>
+      <TabItem Header="GT Mode" FontSize="18">
+      </TabItem>
+      <TabItem Header="Machine Test" FontSize="18">
+      </TabItem>
+    </TabControl>
+  </DockPanel>
+</Window>
