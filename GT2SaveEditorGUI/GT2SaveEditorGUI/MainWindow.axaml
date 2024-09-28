@@ -2,13 +2,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:mw="using:GT2.SaveEditor.GUI"
+        xmlns:se="using:GT2.SaveEditor.GUI"
         mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="600"
         x:Class="GT2.SaveEditor.GUI.MainWindow"
         Title="GT2 Save Editor"
-        x:DataType="mw:MainWindowViewModel">
+        x:DataType="se:MainWindowViewModel">
   <Design.DataContext>
-    <mw:MainWindowViewModel />
+    <se:MainWindowViewModel />
   </Design.DataContext>
   <DockPanel>
     <Menu DockPanel.Dock="Top">
@@ -48,8 +48,27 @@
             </Grid>
           </TabItem>
           <TabItem Header="Arcade" FontSize="18">
+            <Grid RowDefinitions="40,40" ColumnDefinitions="130,*">
+              <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Damage Enabled</TextBlock>
+              <CheckBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding Data.ArcadeSettings.DamageEnabled}" />
+              <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Laps</TextBlock>
+              <NumericUpDown Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Width="200" FormatString="0" Minimum="1" Maximum="99" Value="{Binding Data.ArcadeSettings.Laps}" />
+            </Grid>
           </TabItem>
           <TabItem Header="2 Player" FontSize="18">
+            <Grid RowDefinitions="40,40,40,40,40" ColumnDefinitions="130,*">
+              <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Tyre Wear</TextBlock>
+              <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding TireDamageEnum}" SelectedItem="{Binding Data.TwoPlayerSettings.TireDamage}" />
+              <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Damage Enabled</TextBlock>
+              <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding Data.TwoPlayerSettings.DamageEnabled}" />
+              <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Laps</TextBlock>
+              <NumericUpDown Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Width="200" FormatString="0" Minimum="1" Maximum="99" Value="{Binding Data.TwoPlayerSettings.Laps}" />
+              <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Handicap Start</TextBlock>
+              <Slider Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Width="200" Minimum="-100" Maximum="100" TickFrequency="1" IsSnapToTickEnabled="True" x:Name="HandicapStart" Value="{Binding Data.TwoPlayerSettings.Handicap}" />
+              <TextBlock Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Margin="210 0 0 0" Text="{Binding #HandicapStart.Value, Converter={x:Static se:Converters.HandicapStartConverter}}" />
+              <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Slow Car Boost</TextBlock>
+              <ComboBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding BoostEnum}" SelectedItem="{Binding Data.TwoPlayerSettings.Boost}" />
+            </Grid>
           </TabItem>
         </TabControl>
       </TabItem>
@@ -90,29 +109,42 @@
       <TabItem Header="Licenses" FontSize="18">
         <TabControl Margin="5" TabStripPlacement="Left">
           <TabItem Header="IC" FontSize="18">
-            <StackPanel Spacing="10">
-              <Expander VerticalAlignment="Top">
-                <Expander.Header>
-                  <StackPanel Orientation="Horizontal" Spacing="5" Height="50" VerticalAlignment="Top">
-                    <Label Margin="5" VerticalAlignment="Center" FontSize="20" Width="70">IC-1</Label>
-                    <RadioButton GroupName="IC-1" Content="None" Margin="5" VerticalAlignment="Center"/>
-                    <RadioButton GroupName="IC-1" Content="Kids Prize" Margin="5" VerticalAlignment="Center"/>
-                    <RadioButton GroupName="IC-1" Content="Bronze" Margin="5" VerticalAlignment="Center"/>
-                    <RadioButton GroupName="IC-1" Content="Silver" Margin="5" VerticalAlignment="Center"/>
-                    <RadioButton GroupName="IC-1" Content="Gold" Margin="5" VerticalAlignment="Center"/>
-                  </StackPanel>
-                </Expander.Header>
-                <Grid RowDefinitions="*,*" ColumnDefinitions="150,*">
-                  <TextBlock Grid.Row="0" Grid.Column="0"
-                              VerticalAlignment="Center">Search</TextBlock>
-                  <TextBox Grid.Row="0" Grid.Column="1"
-                            Watermark="Search text" Width="200" />
-                  <TextBlock Grid.Row="1" Grid.Column="0"
-                              VerticalAlignment="Center">Case sensitive?</TextBlock>
-                  <CheckBox Grid.Row="1" Grid.Column="1" />
-                </Grid>
-              </Expander>
+            <ScrollViewer>
+              <ItemsControl ItemsSource="{Binding BLicense}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel Spacing="10"/>
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Expander VerticalAlignment="Top">
+                      <Expander.Header>
+                        <StackPanel Orientation="Horizontal" Spacing="5" Height="50" VerticalAlignment="Top">
+                          <Label Margin="5" VerticalAlignment="Center" FontSize="20" Width="70" Content="{Binding Name}" />
+                          <!-- Needs a converter from enum to bool with a parameter of the value for the button, two-way mode -->
+                          <RadioButton GroupName="{Binding Name}" Content="None" Margin="5" VerticalAlignment="Center"/>
+                          <RadioButton GroupName="{Binding Name}" Content="Kids Prize" Margin="5" VerticalAlignment="Center"/>
+                          <RadioButton GroupName="{Binding Name}" Content="Bronze" Margin="5" VerticalAlignment="Center"/>
+                          <RadioButton GroupName="{Binding Name}" Content="Silver" Margin="5" VerticalAlignment="Center"/>
+                          <RadioButton GroupName="{Binding Name}" Content="Gold" Margin="5" VerticalAlignment="Center"/>
+                        </StackPanel>
+                      </Expander.Header>
+                      <Grid RowDefinitions="*,*" ColumnDefinitions="150,*">
+                        <TextBlock Grid.Row="0" Grid.Column="0"
+                                    VerticalAlignment="Center">Search</TextBlock>
+                        <TextBox Grid.Row="0" Grid.Column="1"
+                                  Watermark="Search text" Width="200" />
+                        <TextBlock Grid.Row="1" Grid.Column="0"
+                                    VerticalAlignment="Center">Case sensitive?</TextBlock>
+                        <CheckBox Grid.Row="1" Grid.Column="1" />
+                      </Grid>
+                    </Expander>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
 
+              <!--
               <Expander VerticalAlignment="Top">
                 <Expander.Header>
                   <StackPanel Orientation="Horizontal" Spacing="5" Height="50" VerticalAlignment="Top">
@@ -130,8 +162,8 @@
                   <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Case sensitive?</TextBlock>
                   <CheckBox Grid.Row="1" Grid.Column="1" />
                 </Grid>
-              </Expander>
-            </StackPanel>
+              </Expander>-->
+            </ScrollViewer>
           </TabItem>
           <TabItem Header="A" FontSize="18">
           </TabItem>
