@@ -103,6 +103,30 @@
             </Grid>
           </TabItem>
           <TabItem Header="Analog" FontSize="18">
+            <Grid RowDefinitions="40,40,40,40,40,40,40,40,40,40,40" ColumnDefinitions="110,*">
+              <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Steer Left</TextBlock>
+              <ComboBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding AnalogueSteeringButtonEnum}" SelectedItem="{Binding Data.Player1Controller.AnalogueController.SteerLeftButton}" IsEnabled="False" />
+              <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Steer Right</TextBlock>
+              <ComboBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding AnalogueSteeringButtonEnum}" SelectedItem="{Binding Data.Player1Controller.AnalogueController.SteerRightButton}" IsEnabled="False" />
+              <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Accelerate</TextBlock>
+              <ComboBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding AnalogueAccelerateBrakeButtonEnum}" SelectedItem="{Binding Data.Player1Controller.AnalogueController.AccelerateButton}" />
+              <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Brake</TextBlock>
+              <ComboBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding AnalogueAccelerateBrakeButtonEnum}" SelectedItem="{Binding Data.Player1Controller.AnalogueController.BrakeButton}" />
+              <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Reverse</TextBlock>
+              <ComboBox Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.AnalogueController.ReverseButton}" />
+              <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">Handbrake</TextBlock>
+              <ComboBox Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.AnalogueController.HandbrakeButton}" />
+              <TextBlock Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">Shift Up</TextBlock>
+              <ComboBox Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.AnalogueController.ShiftUpButton}" />
+              <TextBlock Grid.Row="7" Grid.Column="0" VerticalAlignment="Center">Shift Down</TextBlock>
+              <ComboBox Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.AnalogueController.ShiftDownButton}" />
+              <TextBlock Grid.Row="8" Grid.Column="0" VerticalAlignment="Center">Rear View</TextBlock>
+              <ComboBox Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.AnalogueController.RearViewButton}" />
+              <TextBlock Grid.Row="9" Grid.Column="0" VerticalAlignment="Center">Change Views</TextBlock>
+              <ComboBox Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" Width="200" ItemsSource="{Binding ControllerButtonEnum}" SelectedItem="{Binding Data.Player1Controller.AnalogueController.ChangeViewsButton}" />
+              <TextBlock Grid.Row="10" Grid.Column="0" VerticalAlignment="Center">Vibration</TextBlock>
+              <CheckBox Grid.Row="10" Grid.Column="1" VerticalAlignment="Center" IsChecked="{Binding Data.Player1Controller.AnalogueController.VibrationEnabled}" />
+            </Grid>
           </TabItem>
           <TabItem Header="NeGcon" FontSize="18">
           </TabItem>

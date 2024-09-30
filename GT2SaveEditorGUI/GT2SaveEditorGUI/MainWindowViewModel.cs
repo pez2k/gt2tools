@@ -22,6 +22,8 @@ namespace GT2.SaveEditor.GUI
         public BoostEnum[] BoostEnum { get; } = GetEnumValues<BoostEnum>();
 
         public ControllerButtonEnum[] ControllerButtonEnum { get; } = GetEnumValues<ControllerButtonEnum>();
+        public AnalogueSteeringButtonEnum[] AnalogueSteeringButtonEnum { get; } = GetEnumValues<AnalogueSteeringButtonEnum>();
+        public AnalogueAccelerateBrakeButtonEnum[] AnalogueAccelerateBrakeButtonEnum { get; } = GetEnumValues<AnalogueAccelerateBrakeButtonEnum>();
 
         public ObservableCollection<LicenseTestViewModel>? SLicense { get; set; }
         public ObservableCollection<LicenseTestViewModel>? IALicense { get; set; }
