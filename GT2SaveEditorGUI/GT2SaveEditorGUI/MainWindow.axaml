@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:se="using:GT2.SaveEditor.GUI"
+        xmlns:li="using:GT2.SaveEditor.GTMode.License"
         mc:Ignorable="d" d:DesignWidth="850" d:DesignHeight="600"
         x:Class="GT2.SaveEditor.GUI.MainWindow"
         Title="GT2 Save Editor"
@@ -10,6 +11,9 @@
   <Design.DataContext>
     <se:MainWindowViewModel />
   </Design.DataContext>
+  <Window.Resources>
+    <se:LicenseTestResultButtonConverter x:Key="LicenseTestResultButtonConverter" />
+  </Window.Resources>
   <DockPanel>
     <Menu DockPanel.Dock="Top">
       <MenuItem Header="_File">
@@ -108,7 +112,17 @@
       </TabItem>
       <TabItem Header="Licenses" FontSize="18">
         <TabControl Margin="5" TabStripPlacement="Left">
+          <TabItem Header="S" FontSize="18">
+          </TabItem>
+          <TabItem Header="IA" FontSize="18">
+          </TabItem>
+          <TabItem Header="IB" FontSize="18">
+          </TabItem>
           <TabItem Header="IC" FontSize="18">
+          </TabItem>
+          <TabItem Header="A" FontSize="18">
+          </TabItem>
+          <TabItem Header="B" FontSize="18">
             <ScrollViewer>
               <ItemsControl ItemsSource="{Binding BLicense}">
                 <ItemsControl.ItemsPanel>
@@ -121,53 +135,35 @@
                     <Expander VerticalAlignment="Top">
                       <Expander.Header>
                         <StackPanel Orientation="Horizontal" Spacing="5" Height="50" VerticalAlignment="Top">
+                          <Canvas Width="10" Height="50" Background="{Binding BestResult, Converter={x:Static se:Converters.LicenseResultColourConverter}}" />
                           <Label Margin="5" VerticalAlignment="Center" FontSize="20" Width="70" Content="{Binding Name}" />
-                          <!-- Needs a converter from enum to bool with a parameter of the value for the button, two-way mode -->
-                          <RadioButton GroupName="{Binding Name}" Content="None" Margin="5" VerticalAlignment="Center"/>
-                          <RadioButton GroupName="{Binding Name}" Content="Kids Prize" Margin="5" VerticalAlignment="Center"/>
-                          <RadioButton GroupName="{Binding Name}" Content="Bronze" Margin="5" VerticalAlignment="Center"/>
-                          <RadioButton GroupName="{Binding Name}" Content="Silver" Margin="5" VerticalAlignment="Center"/>
-                          <RadioButton GroupName="{Binding Name}" Content="Gold" Margin="5" VerticalAlignment="Center"/>
+                          <RadioButton GroupName="{Binding Name}" Content="None" Margin="5" VerticalAlignment="Center" IsChecked="{Binding BestResult, Converter={StaticResource LicenseTestResultButtonConverter}, ConverterParameter=None}"/>
+                          <RadioButton GroupName="{Binding Name}" Content="Kids Prize" Margin="5" VerticalAlignment="Center" IsChecked="{Binding BestResult, Converter={StaticResource LicenseTestResultButtonConverter}, ConverterParameter=KidsPrize}"/>
+                          <RadioButton GroupName="{Binding Name}" Content="Bronze" Margin="5" VerticalAlignment="Center" IsChecked="{Binding BestResult, Converter={StaticResource LicenseTestResultButtonConverter}, ConverterParameter=Bronze}"/>
+                          <RadioButton GroupName="{Binding Name}" Content="Silver" Margin="5" VerticalAlignment="Center" IsChecked="{Binding BestResult, Converter={StaticResource LicenseTestResultButtonConverter}, ConverterParameter=Silver}"/>
+                          <RadioButton GroupName="{Binding Name}" Content="Gold" Margin="5" VerticalAlignment="Center" IsChecked="{Binding BestResult, Converter={StaticResource LicenseTestResultButtonConverter}, ConverterParameter=Gold}"/>
+                          <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" Margin="40 0 0 0">Records</TextBlock>
                         </StackPanel>
                       </Expander.Header>
-                      <Grid RowDefinitions="*,*" ColumnDefinitions="150,*">
-                        <TextBlock Grid.Row="0" Grid.Column="0"
-                                    VerticalAlignment="Center">Search</TextBlock>
-                        <TextBox Grid.Row="0" Grid.Column="1"
-                                  Watermark="Search text" Width="200" />
-                        <TextBlock Grid.Row="1" Grid.Column="0"
-                                    VerticalAlignment="Center">Case sensitive?</TextBlock>
-                        <CheckBox Grid.Row="1" Grid.Column="1" />
-                      </Grid>
+                      <ItemsControl ItemsSource="{Binding Records}">
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Height="40" Margin="50 0 0 0" VerticalAlignment="Top">
+                              <Label VerticalAlignment="Center" Width="100" Content="{ReflectionBinding Sector1Time, Converter={x:Static se:Converters.RecordTimeConverter}}" />
+                              <Label VerticalAlignment="Center" Width="100" Content="{ReflectionBinding Sector2Time, Converter={x:Static se:Converters.RecordTimeConverter}}" />
+                              <Label VerticalAlignment="Center" Width="100" Content="{ReflectionBinding Sector3Time, Converter={x:Static se:Converters.RecordTimeConverter}}" />
+                              <Label VerticalAlignment="Center" Width="100" Content="{ReflectionBinding TotalTime, Converter={x:Static se:Converters.RecordTimeConverter}}" />
+                              <Label VerticalAlignment="Center" Width="100" Content="{ReflectionBinding Speed, Converter={x:Static se:Converters.RecordSpeedConverter}}" />
+                              <Label VerticalAlignment="Center" Width="100" Content="{ReflectionBinding Name}" />
+                            </StackPanel>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
                     </Expander>
                   </DataTemplate>
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
-
-              <!--
-              <Expander VerticalAlignment="Top">
-                <Expander.Header>
-                  <StackPanel Orientation="Horizontal" Spacing="5" Height="50" VerticalAlignment="Top">
-                    <Label Margin="5" VerticalAlignment="Center" FontSize="20" Width="70">IC-2</Label>
-                    <RadioButton GroupName="IC-2" Content="None" Margin="5" VerticalAlignment="Center"/>
-                    <RadioButton GroupName="IC-2" Content="Kids Prize" Margin="5" VerticalAlignment="Center"/>
-                    <RadioButton GroupName="IC-2" Content="Bronze" Margin="5" VerticalAlignment="Center"/>
-                    <RadioButton GroupName="IC-2" Content="Silver" Margin="5" VerticalAlignment="Center"/>
-                    <RadioButton GroupName="IC-2" Content="Gold" Margin="5" VerticalAlignment="Center"/>
-                  </StackPanel>
-                </Expander.Header>
-                <Grid RowDefinitions="*,*" ColumnDefinitions="150,*">
-                  <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Records TODO</TextBlock>
-                  <TextBox Grid.Row="0" Grid.Column="1" Watermark="Search text" Width="200" />
-                  <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Case sensitive?</TextBlock>
-                  <CheckBox Grid.Row="1" Grid.Column="1" />
-                </Grid>
-              </Expander>-->
             </ScrollViewer>
-          </TabItem>
-          <TabItem Header="A" FontSize="18">
-          </TabItem>
-          <TabItem Header="B" FontSize="18">
           </TabItem>
         </TabControl>
       </TabItem>
