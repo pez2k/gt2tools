@@ -13,10 +13,12 @@ namespace ISOLayerSplit
             {
                 Console.WriteLine("Usage: ISOLayerSplit <input disc image> <output filename for second layer>");
                 Console.WriteLine("e.g. ISOLayerSplit game.iso layer2.iso");
+                return;
             }
             else if (!File.Exists(args[0]))
             {
                 Console.WriteLine("Could not open the input file.");
+                return;
             }
 
             using (var disc = new FileStream(args[0], FileMode.Open, FileAccess.Read))
