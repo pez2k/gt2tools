@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <OutputType>Exe</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyTitle>GT2ModelTool</AssemblyTitle>
     <Product>GT2ModelTool</Product>
     <Copyright>Copyright © pez2k 2025</Copyright>
