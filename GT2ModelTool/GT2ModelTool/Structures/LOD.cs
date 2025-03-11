@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace GT2.ModelTool.Structures
 {
+    using ExportMetadata;
     using StreamExtensions;
 
     public class LOD
@@ -233,14 +234,18 @@ namespace GT2.ModelTool.Structures
         }
 
         public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber,
-                               Dictionary<string, int?> materialNames, Stream unknownData)
+                               Dictionary<string, int?> materialNames, Stream unknownData, LODMetadata metadata, List<MaterialMetadata> materialMetadata)
         {
             unknownData.Write(unknown);
             unknownData.WriteByte(unknown2);
             unknownData.WriteByte(unknown3);
 
+            metadata.Unknown2 = unknown2;
+            metadata.Unknown3 = unknown3;
+
             double scaleFactor = ConvertScale(Scale);
             writer.WriteLine($"g lod{lodNumber}/scale={scaleFactor}");
+            metadata.Scale = scaleFactor;
 
             writer.WriteLine("# vertices");
             Vertices.ForEach(vertex => vertex.WriteToOBJ(writer, scaleFactor));
@@ -253,16 +258,16 @@ namespace GT2.ModelTool.Structures
             coords.ForEach(coord => coord.WriteToOBJ(writer));
 
             writer.WriteLine("# triangles");
-            Triangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, materialNames));
+            Triangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, materialNames, materialMetadata));
 
             writer.WriteLine("# quads");
-            Quads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, materialNames));
+            Quads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, materialNames, materialMetadata));
 
             writer.WriteLine("# UV triangles");
-            UVTriangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialNames));
+            UVTriangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialNames, materialMetadata));
 
             writer.WriteLine("# UV quads");
-            UVQuads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialNames));
+            UVQuads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialNames, materialMetadata));
         }
 
         public static double ConvertScale(ushort scale) // from commongear's research

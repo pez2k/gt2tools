@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Text.Json;
 using System.Threading;
 using StreamExtensions;
 
 namespace GT2.ModelTool
 {
+    using ExportMetadata;
     using Structures;
 
     class Program
     {
+        private static readonly JsonSerializerOptions serializerOptions = new() { WriteIndented = true };
+
         private const ushort UnknownDataVersion = 1;
 
         static void Main(string[] args)
@@ -119,14 +123,22 @@ namespace GT2.ModelTool
         private static void WriteOBJ(Model model, string path, string filename, bool isNight)
         {
             filename += isNight ? "_night" : "";
-            using (TextWriter modelWriter = new StreamWriter(Path.Combine(path, $"{filename}.obj")))
+            string objFileName = $"{filename}.obj";
+            using (TextWriter modelWriter = new StreamWriter(Path.Combine(path, objFileName)))
             {
                 using (TextWriter materialWriter = new StreamWriter(Path.Combine(path, $"{filename}.mtl")))
                 {
-                    using (FileStream unknownData = new FileStream(Path.Combine(path, $"{filename}.bin"), FileMode.Create, FileAccess.ReadWrite))
+                    using (FileStream unknownData = new(Path.Combine(path, $"{filename}.bin"), FileMode.Create, FileAccess.ReadWrite))
                     {
                         unknownData.WriteUShort(UnknownDataVersion);
-                        model.WriteToOBJ(modelWriter, materialWriter, filename, unknownData);
+
+                        ModelMetadata metadata = new() { ModelFilename = objFileName };
+                        model.WriteToOBJ(modelWriter, materialWriter, filename, unknownData, metadata);
+
+                        using (StreamWriter jsonWriter = new(Path.Combine(path, $"{filename}.json")))
+                        {
+                            jsonWriter.Write(JsonSerializer.Serialize(metadata, serializerOptions));
+                        }
                     }
                 }
             }

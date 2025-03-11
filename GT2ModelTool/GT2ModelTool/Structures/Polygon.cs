@@ -7,6 +7,8 @@ using StreamExtensions;
 
 namespace GT2.ModelTool.Structures
 {
+    using ExportMetadata;
+
     public class Polygon
     {
         public Vertex Vertex0 { get; set; }
@@ -21,8 +23,6 @@ namespace GT2.ModelTool.Structures
         public Normal Vertex2Normal { get; set; }
         public Normal Vertex3Normal { get; set; }
         public bool IsQuad => Vertex3 != null;
-
-        public static List<byte> values = new List<byte>();
 
         public virtual void ReadFromCDO(Stream stream, bool isQuad, List<Vertex> vertices, List<Normal> normals)
         {
@@ -267,16 +267,26 @@ namespace GT2.ModelTool.Structures
         }
 
         public void WriteToOBJ(TextWriter writer, bool isQuad, List<Vertex> vertices, List<Normal> normals,
-                               int firstVertexNumber, int firstNormalNumber, Dictionary<string, int?> materialNames)
+                               int firstVertexNumber, int firstNormalNumber, Dictionary<string, int?> materialNames, List<MaterialMetadata> metadata)
         {
             string materialName = $"untextured/order={RenderOrder}/flags={RenderFlags}";
             materialNames[materialName] = null;
+            metadata.Add(GenerateMaterialMetadata(materialName) with { IsUntextured = true });
             writer.WriteLine($"usemtl {materialName}");
             writer.WriteLine($"f {WriteVertexToOBJ(Vertex0, Vertex0Normal, vertices, normals, firstVertexNumber, firstNormalNumber)} " +
                              $"{WriteVertexToOBJ(Vertex1, Vertex1Normal, vertices, normals, firstVertexNumber, firstNormalNumber)} " +
                              $"{WriteVertexToOBJ(Vertex2, Vertex2Normal, vertices, normals, firstVertexNumber, firstNormalNumber)}" +
                              (isQuad ? $" {WriteVertexToOBJ(Vertex3, Vertex3Normal, vertices, normals, firstVertexNumber, firstNormalNumber)}" : ""));
         }
+
+        protected MaterialMetadata GenerateMaterialMetadata(string materialName) =>
+            new MaterialMetadata
+            {
+                Name = materialName,
+                RenderOrder = RenderOrder,
+                IsBrakeLight = (RenderFlags & 4) != 0,
+                IsMatte = (RenderFlags & 8) == 0
+            };
 
         private string WriteVertexToOBJ(Vertex vertex, Normal normal, List<Vertex> vertices, List<Normal> normals, int firstVertexNumber, int firstNormalNumber) =>
             $"{vertices.IndexOf(vertex) + firstVertexNumber}//{normals.IndexOf(normal) + firstNormalNumber}";

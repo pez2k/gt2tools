@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace GT2.ModelTool.Structures
 {
+    using ExportMetadata;
     using StreamExtensions;
 
     public class Model
@@ -125,7 +126,7 @@ namespace GT2.ModelTool.Structures
             Shadow.WriteToCDO(stream);
         }
 
-        public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename, Stream unknownData)
+        public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename, Stream unknownData, ModelMetadata metadata)
         {
             unknownData.WriteUShort(Unknown1);
             unknownData.WriteUShort(Unknown2);
@@ -140,21 +141,28 @@ namespace GT2.ModelTool.Structures
             int coordNumber = 1;
             var materialNames = new Dictionary<string, int?>();
 
+            WheelMetadata[] wheelMetadata = [ metadata.WheelFrontLeft, metadata.WheelFrontRight, metadata.WheelRearLeft, metadata.WheelRearRight ];
+
             for (int i = 0; i < WheelPositions.Count; i++)
             {
-                WheelPositions[i].WriteToOBJ(modelWriter, i, vertexNumber);
+                WheelPositions[i].WriteToOBJ(modelWriter, i, vertexNumber, wheelMetadata[i]);
                 vertexNumber++;
             }
 
+            LODMetadata[] lodMetadata = [ metadata.LOD0, metadata.LOD1, metadata.LOD2 ];
+            List<MaterialMetadata> materialMetadata = [];
+
             for (int i = 0; i < LODs.Count; i++)
             {
-                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber, materialNames, unknownData);
+                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber, materialNames, unknownData, lodMetadata[i], materialMetadata);
                 vertexNumber += LODs[i].Vertices.Count;
                 normalNumber += LODs[i].Normals.Count;
                 coordNumber += LODs[i].GetAllUVCoords().Count;
             }
 
-            Shadow.WriteToOBJ(modelWriter, vertexNumber, unknownData);
+            metadata.Materials = materialMetadata.Distinct().ToArray();
+
+            Shadow.WriteToOBJ(modelWriter, vertexNumber, unknownData, metadata.Shadow);
             vertexNumber += Shadow.Vertices.Count; // Not strictly needed, but required to stay in sync if the shadow writing is moved before another part
 
             materialWriter.WriteLine("newmtl untextured");

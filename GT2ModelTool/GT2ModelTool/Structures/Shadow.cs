@@ -4,6 +4,7 @@ using System.Linq;
 
 namespace GT2.ModelTool.Structures
 {
+    using ExportMetadata;
     using StreamExtensions;
 
     public class Shadow
@@ -153,14 +154,19 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        public void WriteToOBJ(TextWriter writer, int firstVertexNumber, Stream unknownData)
+        public void WriteToOBJ(TextWriter writer, int firstVertexNumber, Stream unknownData, ShadowMetadata metadata)
         {
             unknownData.WriteUShort(unknown);
             unknownData.WriteByte(unknown2);
             unknownData.WriteByte(unknown3);
 
+            metadata.Unknown = unknown;
+            metadata.Unknown2 = unknown2;
+            metadata.Unknown3 = unknown3;
+
             double scaleFactor = LOD.ConvertScale(Scale);
             writer.WriteLine($"g shadow/scale={scaleFactor}");
+            metadata.Scale = scaleFactor;
 
             writer.WriteLine("# vertices");
             Vertices.ForEach(vertex => vertex.WriteToOBJ(writer, scaleFactor));

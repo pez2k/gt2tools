@@ -2,6 +2,7 @@
 
 namespace GT2.ModelTool.Structures
 {
+    using ExportMetadata;
     using StreamExtensions;
 
     public class WheelPosition
@@ -33,11 +34,12 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(W);
         }
 
-        public void WriteToOBJ(TextWriter writer, int wheelNumber, int vertexNumber)
+        public void WriteToOBJ(TextWriter writer, int wheelNumber, int vertexNumber, WheelMetadata metadata)
         {
             writer.WriteLine($"g wheelpos{wheelNumber}/w={W}");
             writer.WriteLine($"v {X * Vertex.UnitsToMetres} {Y * Vertex.UnitsToMetres} {Z * Vertex.UnitsToMetres} {W * Vertex.UnitsToMetres}");
             writer.WriteLine($"f {vertexNumber} {vertexNumber} {vertexNumber}");
+            metadata.W = W;
         }
 
         public void ReadFromOBJ(Vertex vertex, short wValue)
