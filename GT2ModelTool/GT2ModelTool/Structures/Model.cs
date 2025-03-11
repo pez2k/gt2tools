@@ -363,6 +363,8 @@ namespace GT2.ModelTool.Structures
             }
             while (line != null);
 
+            currentLOD?.ReadFromOBJ(vertices, normals, usedVertexIDs, usedNormalIDs);
+
             if (wheelPositions.Any(position => position == null))
             {
                 throw new Exception("One or more of the four wheel position objects are missing.");
