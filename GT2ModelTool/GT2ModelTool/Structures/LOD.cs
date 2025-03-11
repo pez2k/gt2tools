@@ -311,5 +311,12 @@ namespace GT2.ModelTool.Structures
                 unknown3 = unknownData.ReadSingleByte();
             }
         }
+
+        public void ReadFromOBJ(List<Vertex> vertices, List<Normal> normals, List<int> usedVertexIDs, List<int> usedNormalIDs)
+        {
+            Vertices = usedVertexIDs.OrderBy(id => id).Distinct().Select(id => vertices[id]).ToList();
+            Normals = usedNormalIDs.OrderBy(id => id).Distinct().Select(id => normals[id]).ToList();
+            GenerateBoundingBox();
+        }
     }
 }

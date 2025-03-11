@@ -33,12 +33,11 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(W);
         }
 
-        public void WriteToOBJ(TextWriter writer, int wheelNumber)
+        public void WriteToOBJ(TextWriter writer, int wheelNumber, int vertexNumber)
         {
             writer.WriteLine($"g wheelpos{wheelNumber}/w={W}");
             writer.WriteLine($"v {X * Vertex.UnitsToMetres} {Y * Vertex.UnitsToMetres} {Z * Vertex.UnitsToMetres} {W * Vertex.UnitsToMetres}");
-            wheelNumber++;
-            writer.WriteLine($"f {wheelNumber} {wheelNumber} {wheelNumber}");
+            writer.WriteLine($"f {vertexNumber} {vertexNumber} {vertexNumber}");
         }
 
         public void ReadFromOBJ(Vertex vertex, short wValue)

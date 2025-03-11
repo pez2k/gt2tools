@@ -67,7 +67,7 @@ namespace GT2.ModelTool.Structures
                 WheelPositions.Add(wheelPosition);
             }
 
-            WheelPositions = new List<WheelPosition> { WheelPositions[2], WheelPositions[3], WheelPositions[0], WheelPositions[1] };
+            WheelPositions = [ WheelPositions[2], WheelPositions[3], WheelPositions[0], WheelPositions[1] ];
 
             Unknown1 = stream.ReadUShort();
             Unknown2 = stream.ReadUShort();
@@ -101,7 +101,7 @@ namespace GT2.ModelTool.Structures
         public void WriteToCDO(Stream stream)
         {
             // GT header
-            stream.Write(new byte[] { 0x47, 0x54, 0x02 });
+            stream.Write([0x47, 0x54, 0x02]);
             stream.Position = 0x18;
             stream.WriteUShort(Unknown1);
             stream.WriteUShort(Unknown2);
@@ -134,16 +134,17 @@ namespace GT2.ModelTool.Structures
             unknownData.Write(Unknown5);
 
             modelWriter.WriteLine($"mtllib {filename}.mtl");
-
-            for (int i = 0; i < WheelPositions.Count; i++)
-            {
-                WheelPositions[i].WriteToOBJ(modelWriter, i);
-            }
-
-            int vertexNumber = WheelPositions.Count + 1;
+            
+            int vertexNumber = 1;
             int normalNumber = 1;
             int coordNumber = 1;
             var materialNames = new Dictionary<string, int?>();
+
+            for (int i = 0; i < WheelPositions.Count; i++)
+            {
+                WheelPositions[i].WriteToOBJ(modelWriter, i, vertexNumber);
+                vertexNumber++;
+            }
 
             for (int i = 0; i < LODs.Count; i++)
             {
@@ -154,6 +155,7 @@ namespace GT2.ModelTool.Structures
             }
 
             Shadow.WriteToOBJ(modelWriter, vertexNumber, unknownData);
+            vertexNumber += Shadow.Vertices.Count; // Not strictly needed, but required to stay in sync if the shadow writing is moved before another part
 
             materialWriter.WriteLine("newmtl untextured");
             materialWriter.WriteLine("Kd 0 0 0");
@@ -195,7 +197,6 @@ namespace GT2.ModelTool.Structures
             int currentLODNumber = -1;
             bool shadow = false;
             string currentMaterial = "untextured";
-            Vertex wheelPositionCandidate = null;
             LOD currentLOD = null;
             var vertices = new List<Vertex>();
             var normals = new List<Normal>();
@@ -207,7 +208,7 @@ namespace GT2.ModelTool.Structures
             do
             {
                 line = reader.ReadLine();
-                if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#"))
+                if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
                 {
                     continue;
                 }
@@ -216,10 +217,49 @@ namespace GT2.ModelTool.Structures
                 {
                     if (line.StartsWith("o ") || line.StartsWith("g "))
                     {
-                        string[] objectNameParts = line.Split(' ')[1].Split('/');
-                        if (objectNameParts[0].StartsWith("wheelpos"))
+                        if (currentLOD != null)
                         {
-                            currentWheelPosition = int.Parse(objectNameParts[0].Replace("wheelpos", ""));
+                            currentLOD.ReadFromOBJ(vertices, normals, usedVertexIDs, usedNormalIDs);
+                            usedVertexIDs.Clear();
+                            usedNormalIDs.Clear();
+                        }
+                        currentScale = 1;
+                        currentLOD = null;
+                        currentLODNumber = -1;
+                        shadow = false;
+                        currentWheelPosition = -1;
+                        currentWheelPositionWValue = 0;
+
+                        string[] objectNameParts = line.Split(' ')[1].Split('/');
+                        string objectName = objectNameParts[0];
+
+                        if (objectName.StartsWith("lod"))
+                        {
+                            if (!int.TryParse(objectName.Replace("lod", ""), out currentLODNumber))
+                            {
+                                throw new Exception($"Could not read LOD number from object name '{objectName}'");
+                            }
+                            currentLOD = new LOD();
+                            currentLOD.PrepareForOBJRead(unknownData);
+                            lods[currentLODNumber] = currentLOD;
+                            currentScale = GetScale(objectNameParts);
+                            currentLOD.Scale = LOD.ConvertScale(currentScale);
+                        }
+                        else if (objectName.StartsWith("shadow"))
+                        {
+                            shadow = true;
+                            Shadow = new Shadow();
+                            Shadow.PrepareForOBJRead(unknownData);
+                            shadowVertexStartID = vertices.Count;
+                            currentScale = GetScale(objectNameParts);
+                            Shadow.Scale = LOD.ConvertScale(currentScale);
+                        }
+                        else if (objectName.StartsWith("wheelpos"))
+                        {
+                            if (!int.TryParse(objectName.Replace("wheelpos", ""), out currentWheelPosition))
+                            {
+                                throw new Exception($"Could not read wheel position number from object name '{objectName}'");
+                            }
                             foreach (string namePart in objectNameParts)
                             {
                                 string[] keyAndValue = namePart.Split('=');
@@ -229,43 +269,6 @@ namespace GT2.ModelTool.Structures
                                 }
                             }
                         }
-                        else if (objectNameParts[0].StartsWith("lod"))
-                        {
-                            if (wheelPositions.Any(position => position == null))
-                            {
-                                //throw new Exception("Expected four wheel position objects before any LOD objects."); // TODO: is this safe to remove?
-                            }
-                            if (currentLOD != null)
-                            {
-                                currentLOD.Vertices = usedVertexIDs.OrderBy(id => id).Distinct().Select(id => vertices[id]).ToList();
-                                usedVertexIDs = new List<int>();
-                                currentLOD.Normals = usedNormalIDs.OrderBy(id => id).Distinct().Select(id => normals[id]).ToList();
-                                usedNormalIDs = new List<int>();
-                                currentLOD.GenerateBoundingBox();
-                            }
-                            currentLODNumber = int.Parse(objectNameParts[0].Replace("lod", ""));
-                            currentLOD = new LOD();
-                            currentLOD.PrepareForOBJRead(unknownData);
-                            lods[currentLODNumber] = currentLOD;
-                            currentScale = GetScale(objectNameParts);
-                            currentLOD.Scale = LOD.ConvertScale(currentScale);
-                        }
-                        else if (objectNameParts[0].StartsWith("shadow"))
-                        {
-                            if (lods.Any(lod => lod == null))
-                            {
-                                throw new Exception("Expected three LOD objects before shadow object.");
-                            }
-                            currentLOD.Vertices = usedVertexIDs.OrderBy(id => id).Distinct().Select(id => vertices[id]).ToList();
-                            currentLOD.Normals = usedNormalIDs.OrderBy(id => id).Distinct().Select(id => normals[id]).ToList();
-                            currentLOD.GenerateBoundingBox();
-                            shadow = true;
-                            Shadow = new Shadow();
-                            Shadow.PrepareForOBJRead(unknownData);
-                            shadowVertexStartID = vertices.Count;
-                            currentScale = GetScale(objectNameParts);
-                            Shadow.Scale = LOD.ConvertScale(currentScale);
-                        }
                     }
                     else if (line.StartsWith("v "))
                     {
@@ -274,15 +277,19 @@ namespace GT2.ModelTool.Structures
                             var vertex = new ShadowVertex();
                             vertex.ReadFromOBJ(line, currentScale);
                             Shadow.Vertices.Add(vertex);
+                            vertices.Add(new Vertex()); // Avoid the number of vertices desyncing if the shadow was before another object
                         }
                         else
                         {
                             var vertex = new Vertex();
                             vertex.ReadFromOBJ(line, currentScale);
                             vertices.Add(vertex);
-                            if (currentLODNumber == -1)
+
+                            if (currentWheelPosition != -1)
                             {
-                                wheelPositionCandidate = vertex;
+                                var position = new WheelPosition();
+                                position.ReadFromOBJ(vertex, currentWheelPositionWValue);
+                                wheelPositions[currentWheelPosition] = position;
                             }
                         }
                     }
@@ -317,10 +324,9 @@ namespace GT2.ModelTool.Structures
                                 Shadow.Triangles.Add(polygon);
                             }
                         }
-                        else if (currentLODNumber == -1)
+                        else if (currentWheelPosition != -1)
                         {
                             continue;
-                            //throw new Exception("Face found outside of a LOD or shadow.");
                         }
                         else if (currentMaterial.StartsWith("untextured"))
                         {
@@ -349,29 +355,35 @@ namespace GT2.ModelTool.Structures
                             }
                         }
                     }
-
-                    if (currentWheelPosition != -1 && wheelPositionCandidate != null)
-                    {
-                        var position = new WheelPosition();
-                        position.ReadFromOBJ(wheelPositionCandidate, currentWheelPositionWValue);
-                        wheelPositions[currentWheelPosition] = position;
-                        wheelPositionCandidate = null;
-                        currentWheelPosition = -1;
-                    }
                 }
                 catch (Exception exception)
                 {
-                    throw new Exception($"Line:{line}\r\n{exception.Message}", exception);
+                    throw new Exception($"Line: {line}\r\n{exception.Message}", exception);
                 }
             }
             while (line != null);
+
+            if (wheelPositions.Any(position => position == null))
+            {
+                throw new Exception("One or more of the four wheel position objects are missing.");
+            }
+
+            if (lods.Any(lod => lod == null))
+            {
+                throw new Exception("One or more of the three LOD objects are missing.");
+            }
+
+            if (Shadow == null)
+            {
+                throw new Exception("The shadow object is missing.");
+            }
 
             Shadow.GenerateBoundingBox();
             LODs = lods.ToList();
             WheelPositions = wheelPositions.ToList();
         }
 
-        private double GetScale(string[] objectNameParts)
+        private static double GetScale(string[] objectNameParts)
         {
             foreach (string part in objectNameParts)
             {
