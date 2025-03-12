@@ -269,7 +269,7 @@ namespace GT2.ModelTool.Structures
         public void WriteToOBJ(TextWriter writer, bool isQuad, List<Vertex> vertices, List<Normal> normals,
                                int firstVertexNumber, int firstNormalNumber, Dictionary<string, int?> materialNames, List<MaterialMetadata> metadata)
         {
-            string materialName = $"untextured/order={RenderOrder}/flags={RenderFlags}";
+            string materialName = $"untextured_{GenerateMaterialName()}";
             materialNames[materialName] = null;
             metadata.Add(GenerateMaterialMetadata(materialName) with { IsUntextured = true });
             writer.WriteLine($"usemtl {materialName}");
@@ -279,14 +279,20 @@ namespace GT2.ModelTool.Structures
                              (isQuad ? $" {WriteVertexToOBJ(Vertex3, Vertex3Normal, vertices, normals, firstVertexNumber, firstNormalNumber)}" : ""));
         }
 
+        protected string GenerateMaterialName() => $"order{RenderOrder:D2}{(IsBrakeLight() ? "_brake" : "")}{(IsMatte() ? "_matte" : "")}";
+
         protected MaterialMetadata GenerateMaterialMetadata(string materialName) =>
             new MaterialMetadata
             {
                 Name = materialName,
                 RenderOrder = RenderOrder,
-                IsBrakeLight = (RenderFlags & 4) != 0,
-                IsMatte = (RenderFlags & 8) == 0
+                IsBrakeLight = IsBrakeLight(),
+                IsMatte = IsMatte()
             };
+
+        protected bool IsBrakeLight() => (RenderFlags & 4) != 0;
+
+        protected bool IsMatte() => (RenderFlags & 8) == 0;
 
         private string WriteVertexToOBJ(Vertex vertex, Normal normal, List<Vertex> vertices, List<Normal> normals, int firstVertexNumber, int firstNormalNumber) =>
             $"{vertices.IndexOf(vertex) + firstVertexNumber}//{normals.IndexOf(normal) + firstNormalNumber}";
