@@ -337,11 +337,11 @@ namespace GT2.ModelTool.Structures
                     RenderOrder = order;
                     foundRenderOrder = true;
                 }
-                else if (part == "brake")
+                else if (part.StartsWith("brake"))
                 {
                     RenderFlags |= 4;
                 }
-                else if (part == "matte")
+                else if (part.StartsWith("matte"))
                 {
                     isMatte = true;
                 }
