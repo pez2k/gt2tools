@@ -3,6 +3,10 @@
     public class ModelMetadata
     {
         public string ModelFilename { get; set; } = "";
+        public ushort FrontWheelRadius { get; set; }
+        public ushort FrontWheelWidth { get; set; }
+        public ushort RearWheelRadius { get; set; }
+        public ushort RearWheelWidth { get; set; }
         public LODMetadata LOD0 { get; set; } = new();
         public LODMetadata LOD1 { get; set; } = new();
         public LODMetadata LOD2 { get; set; } = new();

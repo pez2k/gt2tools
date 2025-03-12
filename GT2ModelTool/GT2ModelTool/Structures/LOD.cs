@@ -11,6 +11,17 @@ namespace GT2.ModelTool.Structures
     public class LOD
     {
         private byte[] unknown = new byte[44];
+        private uint unknown40;
+        private uint unknown41;
+        private uint unknown42;
+        private uint unknown43;
+        private uint unknown44;
+        private uint unknown45;
+        private uint unknown46;
+        private uint unknown47;
+        private uint unknown48;
+        private uint unknown49;
+        private uint unknown50;
         private short lowBoundX;
         private short lowBoundY;
         private short lowBoundZ;
@@ -19,8 +30,7 @@ namespace GT2.ModelTool.Structures
         private short highBoundY;
         private short highBoundZ;
         private short highBoundW;
-        private byte unknown2;
-        private byte unknown3;
+        private ushort unknown2;
 
         public ushort Scale { get; set; }
         public List<Vertex> Vertices { get; set; }
@@ -40,6 +50,19 @@ namespace GT2.ModelTool.Structures
             ushort uvTriangleCount = stream.ReadUShort();
             ushort uvQuadCount = stream.ReadUShort();
             stream.Read(unknown);
+            stream.Position -= 44;
+            unknown40 = stream.ReadUInt();
+            unknown41 = stream.ReadUInt();
+            unknown42 = stream.ReadUInt();
+            unknown43 = stream.ReadUInt();
+            unknown44 = stream.ReadUInt();
+            unknown45 = stream.ReadUInt();
+            unknown46 = stream.ReadUInt();
+            unknown47 = stream.ReadUInt();
+            unknown48 = stream.ReadUInt();
+            unknown49 = stream.ReadUInt();
+            unknown50 = stream.ReadUInt();
+
             lowBoundX = stream.ReadShort(); // at 8C0
             lowBoundY = stream.ReadShort();
             lowBoundZ = stream.ReadShort();
@@ -49,8 +72,7 @@ namespace GT2.ModelTool.Structures
             highBoundZ = stream.ReadShort();
             highBoundW = stream.ReadShort();
             Scale = stream.ReadUShort(); // at 8D0
-            unknown2 = stream.ReadSingleByte();
-            unknown3 = stream.ReadSingleByte();
+            unknown2 = stream.ReadUShort(); // 13E8 LOD0/1, 14C1 LOD2
 
             Vertices = new List<Vertex>(vertexCount);
             Normals = new List<Normal>(normalCount);
@@ -199,8 +221,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(highBoundZ);
             stream.WriteShort(highBoundW);
             stream.WriteUShort(Scale);
-            stream.WriteByte(unknown2);
-            stream.WriteByte(unknown3);
+            stream.WriteUShort(unknown2);
 
             foreach (Vertex vertex in Vertices)
             {
@@ -237,11 +258,20 @@ namespace GT2.ModelTool.Structures
                                Dictionary<string, int?> materialNames, Stream unknownData, LODMetadata metadata, List<MaterialMetadata> materialMetadata)
         {
             unknownData.Write(unknown);
-            unknownData.WriteByte(unknown2);
-            unknownData.WriteByte(unknown3);
+            unknownData.WriteUShort(unknown2);
 
-            metadata.Unknown2 = unknown2;
-            metadata.Unknown3 = unknown3;
+            metadata.ReplayZoomRelatedMaybe = unknown2;
+            metadata.Unknown40 = unknown40;
+            metadata.Unknown41 = unknown41;
+            metadata.Unknown42 = unknown42;
+            metadata.Unknown43 = unknown43;
+            metadata.Unknown44 = unknown44;
+            metadata.Unknown45 = unknown45;
+            metadata.Unknown46 = unknown46;
+            metadata.Unknown47 = unknown47;
+            metadata.Unknown48 = unknown48;
+            metadata.Unknown49 = unknown49;
+            metadata.Unknown50 = unknown50;
 
             double scaleFactor = ConvertScale(Scale);
             writer.WriteLine($"g lod{lodNumber}/scale={scaleFactor}");
@@ -312,8 +342,7 @@ namespace GT2.ModelTool.Structures
             if (unknownData != null)
             {
                 unknownData.Read(unknown);
-                unknown2 = unknownData.ReadSingleByte();
-                unknown3 = unknownData.ReadSingleByte();
+                unknown2 = unknownData.ReadUShort();
             }
         }
 

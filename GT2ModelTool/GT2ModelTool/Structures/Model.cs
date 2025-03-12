@@ -10,26 +10,36 @@ namespace GT2.ModelTool.Structures
 
     public class Model
     {
-        public ushort Unknown1 { get; set; }
-        public ushort Unknown2 { get; set; }
-        public ushort Unknown3 { get; set; }
-        public ushort Unknown4 { get; set; }
+        public ushort FrontWheelRadius { get; set; }
+        public ushort FrontWheelWidth { get; set; }
+        public ushort RearWheelRadius { get; set; }
+        public ushort RearWheelWidth { get; set; }
         public List<WheelPosition> WheelPositions { get; set; } = new List<WheelPosition>(4);
-        public byte[] Unknown5 { get; set; } = new byte[26];
+        public byte[] UnknownAll { get; set; } = new byte[26];
+        public ushort LOD0Padding { get; set; }
+        public ushort LOD0MaxDistance { get; set; }
+        public uint LOD0Unknown { get; set; }
+        public ushort LOD1Padding { get; set; }
+        public ushort LOD1MaxDistance { get; set; }
+        public uint LOD1Unknown { get; set; } // non-zero
+        public ushort LOD2Padding { get; set; }
+        public ushort LOD2MaxDistance { get; set; }
+        public uint LOD2Unknown { get; set; } // non-zero
+
         public List<LOD> LODs { get; set; }
         public Shadow Shadow { get; set; }
 
         public void ReadFromCDO(Stream stream) {
             stream.Position = 0x08;
-            Unknown1 = stream.ReadUShort();
-            if (Unknown1 == 0) {
+            FrontWheelRadius = stream.ReadUShort();
+            if (FrontWheelRadius == 0) {
                 stream.Position = 0x18;
-                Unknown1 = stream.ReadUShort();
+                FrontWheelRadius = stream.ReadUShort();
             }
 
-            Unknown2 = stream.ReadUShort();
-            Unknown3 = stream.ReadUShort();
-            Unknown4 = stream.ReadUShort();
+            FrontWheelWidth = stream.ReadUShort();
+            RearWheelRadius = stream.ReadUShort();
+            RearWheelWidth = stream.ReadUShort();
 
             for (int i = 0; i < 4; i++) {
                 var wheelPosition = new WheelPosition();
@@ -41,7 +51,19 @@ namespace GT2.ModelTool.Structures
             ushort lodCount = stream.ReadUShort();
             LODs = new List<LOD>(lodCount);
 
-            stream.Read(Unknown5);
+            stream.Read(UnknownAll);
+            stream.Position -= UnknownAll.Length;
+
+            stream.Position += 2;
+            LOD0Padding = stream.ReadUShort();
+            LOD0MaxDistance = stream.ReadUShort();
+            LOD0Unknown = stream.ReadUInt();
+            LOD1Padding = stream.ReadUShort();
+            LOD1MaxDistance = stream.ReadUShort();
+            LOD1Unknown = stream.ReadUInt();
+            LOD2Padding = stream.ReadUShort();
+            LOD2MaxDistance = stream.ReadUShort();
+            LOD2Unknown = stream.ReadUInt();
 
             for (int i = 0; i < lodCount; i++)
             {
@@ -70,10 +92,10 @@ namespace GT2.ModelTool.Structures
 
             WheelPositions = [ WheelPositions[2], WheelPositions[3], WheelPositions[0], WheelPositions[1] ];
 
-            Unknown1 = stream.ReadUShort();
-            Unknown2 = stream.ReadUShort();
-            Unknown3 = stream.ReadUShort();
-            Unknown4 = stream.ReadUShort();
+            FrontWheelRadius = stream.ReadUShort();
+            FrontWheelWidth = stream.ReadUShort();
+            RearWheelRadius = stream.ReadUShort();
+            RearWheelWidth = stream.ReadUShort();
 
             stream.Position += 0x04;
             ushort lodCount = stream.ReadUShort();
@@ -104,10 +126,10 @@ namespace GT2.ModelTool.Structures
             // GT header
             stream.Write([0x47, 0x54, 0x02]);
             stream.Position = 0x18;
-            stream.WriteUShort(Unknown1);
-            stream.WriteUShort(Unknown2);
-            stream.WriteUShort(Unknown3);
-            stream.WriteUShort(Unknown4);
+            stream.WriteUShort(FrontWheelRadius);
+            stream.WriteUShort(FrontWheelWidth);
+            stream.WriteUShort(RearWheelRadius);
+            stream.WriteUShort(RearWheelWidth);
 
             foreach (WheelPosition wheelPosition in WheelPositions)
             {
@@ -116,7 +138,7 @@ namespace GT2.ModelTool.Structures
 
             stream.Position = 0x868;
             stream.WriteUShort((ushort)LODs.Count);
-            stream.Write(Unknown5);
+            stream.Write(UnknownAll);
 
             foreach (LOD lod in LODs)
             {
@@ -128,11 +150,25 @@ namespace GT2.ModelTool.Structures
 
         public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename, Stream unknownData, ModelMetadata metadata)
         {
-            unknownData.WriteUShort(Unknown1);
-            unknownData.WriteUShort(Unknown2);
-            unknownData.WriteUShort(Unknown3);
-            unknownData.WriteUShort(Unknown4);
-            unknownData.Write(Unknown5);
+            unknownData.WriteUShort(FrontWheelRadius);
+            unknownData.WriteUShort(FrontWheelWidth);
+            unknownData.WriteUShort(RearWheelRadius);
+            unknownData.WriteUShort(RearWheelWidth);
+            unknownData.Write(UnknownAll);
+
+            metadata.FrontWheelRadius = FrontWheelRadius;
+            metadata.FrontWheelWidth = FrontWheelWidth;
+            metadata.RearWheelRadius = RearWheelRadius;
+            metadata.RearWheelWidth = RearWheelWidth;
+            metadata.LOD0.HeaderAlwaysZero = LOD0Padding;
+            metadata.LOD0.MaxDistance = LOD0MaxDistance;
+            metadata.LOD0.HeaderUnknown = LOD0Unknown;
+            metadata.LOD1.HeaderAlwaysZero = LOD1Padding;
+            metadata.LOD1.MaxDistance = LOD1MaxDistance;
+            metadata.LOD1.HeaderUnknown = LOD1Unknown;
+            metadata.LOD2.HeaderAlwaysZero = LOD2Padding;
+            metadata.LOD2.MaxDistance = LOD2MaxDistance;
+            metadata.LOD2.HeaderUnknown = LOD2Unknown;
 
             modelWriter.WriteLine($"mtllib {filename}.mtl");
             
@@ -190,11 +226,11 @@ namespace GT2.ModelTool.Structures
         {
             if (unknownData != null)
             {
-                Unknown1 = unknownData.ReadUShort();
-                Unknown2 = unknownData.ReadUShort();
-                Unknown3 = unknownData.ReadUShort();
-                Unknown4 = unknownData.ReadUShort();
-                unknownData.Read(Unknown5);
+                FrontWheelRadius = unknownData.ReadUShort();
+                FrontWheelWidth = unknownData.ReadUShort();
+                RearWheelRadius = unknownData.ReadUShort();
+                RearWheelWidth = unknownData.ReadUShort();
+                unknownData.Read(UnknownAll);
             }
 
             var lods = new LOD[3];

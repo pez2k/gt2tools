@@ -47,7 +47,7 @@ namespace GT2.ModelTool.Structures
             X = vertex.X;
             Y = vertex.Y;
             Z = vertex.Z;
-            W = vertex.Padding == 0 ? wValue : vertex.Padding;
+            W = vertex.W == 0 ? wValue : vertex.W;
         }
     }
 }

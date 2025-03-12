@@ -13,14 +13,14 @@ namespace GT2.ModelTool.Structures
         public short X { get; set; }
         public short Y { get; set; }
         public short Z { get; set; }
-        public short Padding { get; set; } = 0;
+        public short W { get; set; } = 0;
 
         public void ReadFromCDO(Stream stream)
         {
             X = stream.ReadShort();
             Y = stream.ReadShort();
             Z = stream.ReadShort();
-            Padding = stream.ReadShort();
+            W = stream.ReadShort();
         }
 
         public void ReadFromCAR(Stream stream)
@@ -34,7 +34,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(X);
             stream.WriteShort(Y);
             stream.WriteShort(Z);
-            stream.WriteShort(Padding);
+            stream.WriteShort(W);
         }
 
         public void WriteToOBJ(TextWriter writer, double scale) =>
@@ -52,7 +52,7 @@ namespace GT2.ModelTool.Structures
             Z = (short)Math.Round(double.Parse(parts[3]) / scale / UnitsToMetres);
             if (parts.Length == 5)
             {
-                Padding = (short)Math.Round(double.Parse(parts[4]) / scale / UnitsToMetres);
+                W = (short)Math.Round(double.Parse(parts[4]) / scale / UnitsToMetres);
             }
         }
     }
