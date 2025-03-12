@@ -113,7 +113,7 @@ namespace GT2.ModelTool.Structures
             {
                 throw new Exception("Face does not contain exactly three or four vertices.");
             }
-            ParseMaterial(currentMaterial.Split('/'));
+            ParseMaterial(currentMaterial);
             (Vertex0, Vertex0Normal, Vertex0UV) = ParseVertex(parts[1], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
             (Vertex1, Vertex1Normal, Vertex1UV) = ParseVertex(parts[2], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
             (Vertex2, Vertex2Normal, Vertex2UV) = ParseVertex(parts[3], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
@@ -124,17 +124,31 @@ namespace GT2.ModelTool.Structures
             FaceType = IsQuad ? 45 : 37;
         }
 
-        protected override void ParseMaterial(string[] parts)
+        protected override bool ParseMaterialParts(string[] parts)
+        {
+            foreach (string part in parts)
+            {
+                if (part.StartsWith("palette") && ushort.TryParse(part.Replace("palette", ""), out ushort paletteIndex) && paletteIndex < 16)
+                {
+                    PaletteIndex = paletteIndex;
+                    return base.ParseMaterialParts(parts);
+                }
+            }
+            return false;
+        }
+
+        protected override bool ParseMaterialPartsLegacy(string[] parts)
         {
             foreach (string part in parts)
             {
                 string[] pair = part.Split('=');
-                if (pair[0] == "palette")
+                if (pair[0] == "palette" && ushort.TryParse(pair[1], out ushort paletteIndex) && paletteIndex < 16)
                 {
-                    PaletteIndex = ushort.Parse(pair[1]);
+                    PaletteIndex = paletteIndex;
+                    return base.ParseMaterialPartsLegacy(parts);
                 }
             }
-            base.ParseMaterial(parts);
+            return false;
         }
 
         private (Vertex v, Normal n, UVCoordinate u) ParseVertex(string value, List<Vertex> vertices, List<Normal> normals, List<UVCoordinate> uvCoords,

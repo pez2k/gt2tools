@@ -298,7 +298,7 @@ namespace GT2.ModelTool.Structures
             {
                 throw new Exception("Face does not contain exactly three or four vertices.");
             }
-            ParseMaterial(currentMaterial.Split('/'));
+            ParseMaterial(currentMaterial);
             (Vertex0, Vertex0Normal) = ParseVertex(parts[1], vertices, normals, usedVertexIDs, usedNormalIDs);
             (Vertex1, Vertex1Normal) = ParseVertex(parts[2], vertices, normals, usedVertexIDs, usedNormalIDs);
             (Vertex2, Vertex2Normal) = ParseVertex(parts[3], vertices, normals, usedVertexIDs, usedNormalIDs);
@@ -309,20 +309,66 @@ namespace GT2.ModelTool.Structures
             FaceType = IsQuad ? 40 : 32;
         }
 
-        protected virtual void ParseMaterial(string[] parts)
+        protected void ParseMaterial(string materialName)
         {
+            bool success = (materialName.Contains('/') && ParseMaterialPartsLegacy(materialName.Split('/'))) ||
+                           (materialName.Contains('_') && ParseMaterialParts(materialName.Split('_')));
+            if (!success)
+            {
+                throw new Exception($"Could not parse material name '{materialName}'");
+            }
+        }
+
+        protected virtual bool ParseMaterialParts(string[] parts)
+        {
+            bool foundRenderOrder = false;
+            bool isMatte = false;
+
+            foreach (string part in parts)
+            {
+                if (part.StartsWith("order") && int.TryParse(part.Replace("order", ""), out int order) && order >= 0 && order < 32) // TODO: check upper bound
+                {
+                    RenderOrder = order;
+                    foundRenderOrder = true;
+                }
+                else if (part == "brake")
+                {
+                    RenderFlags |= 4;
+                }
+                else if (part == "matte")
+                {
+                    isMatte = true;
+                }
+            }
+
+            if (!isMatte)
+            {
+                RenderFlags |= 8;
+            }
+
+            return foundRenderOrder;
+        }
+
+        protected virtual bool ParseMaterialPartsLegacy(string[] parts)
+        {
+            bool foundOrder = false;
+            bool foundFlags = false;
+
             foreach (string part in parts)
             {
                 string[] pair = part.Split('=');
-                if (pair[0] == "order")
+                if (pair[0] == "order" && int.TryParse(pair[1], out int order) && order >= 0 && order < 32) // TODO: check upper bound
                 {
-                    RenderOrder = int.Parse(pair[1]);
+                    RenderOrder = order;
+                    foundOrder = true;
                 }
-                else if (pair[0] == "flags")
+                else if (pair[0] == "flags" && int.TryParse(pair[1], out int flags) && flags >= 0 && flags < 13)
                 {
-                    RenderFlags = int.Parse(pair[1]);
+                    RenderFlags = flags;
+                    foundFlags = true;
                 }
             }
+            return foundOrder && foundFlags;
         }
 
         private (Vertex v, Normal n) ParseVertex(string value, List<Vertex> vertices, List<Normal> normals, List<int> usedVertexIDs, List<int> usedNormalIDs)
