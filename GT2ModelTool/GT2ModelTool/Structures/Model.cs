@@ -162,16 +162,8 @@ namespace GT2.ModelTool.Structures
             Shadow.WriteToCDO(stream);
         }
 
-        public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename, Stream unknownData, ModelMetadata metadata)
+        public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename, ModelMetadata metadata)
         {
-            unknownData.WriteUShort(menuFrontWheelRadius);
-            unknownData.WriteUShort(menuFrontWheelWidth);
-            unknownData.WriteUShort(menuRearWheelRadius);
-            unknownData.WriteUShort(menuRearWheelWidth);
-            unknownData.WriteUShort(lod0MaxDistance);
-            unknownData.WriteUShort(lod1MaxDistance);
-            unknownData.WriteUShort(lod2MaxDistance);
-
             metadata.MenuWheels.FrontWheelRadius = menuFrontWheelRadius;
             metadata.MenuWheels.FrontWheelWidth = menuFrontWheelWidth;
             metadata.MenuWheels.RearWheelRadius = menuRearWheelRadius;
@@ -209,7 +201,7 @@ namespace GT2.ModelTool.Structures
 
             for (int i = 0; i < LODs.Count; i++)
             {
-                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber, materialNames, unknownData, lodMetadata[i], materialMetadata);
+                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber, materialNames, lodMetadata[i], materialMetadata);
                 vertexNumber += LODs[i].Vertices.Count;
                 normalNumber += LODs[i].Normals.Count;
                 coordNumber += LODs[i].GetAllUVCoords().Count;
@@ -217,7 +209,7 @@ namespace GT2.ModelTool.Structures
 
             metadata.Materials = materialMetadata.Distinct().ToArray();
 
-            Shadow.WriteToOBJ(modelWriter, vertexNumber, unknownData, metadata.Shadow);
+            Shadow.WriteToOBJ(modelWriter, vertexNumber, metadata.Shadow);
             vertexNumber += Shadow.Vertices.Count; // Not strictly needed, but required to stay in sync if the shadow writing is moved before another part
 
             materialWriter.WriteLine("newmtl untextured");
@@ -241,24 +233,22 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        public void ReadFromOBJ(TextReader reader, Stream unknownData)
+        public void ReadFromOBJ(TextReader reader, ModelMetadata metadata)
         {
-            if (unknownData != null)
-            {
-                menuFrontWheelRadius = unknownData.ReadUShort();
-                menuFrontWheelWidth = unknownData.ReadUShort();
-                menuRearWheelRadius = unknownData.ReadUShort();
-                menuRearWheelWidth = unknownData.ReadUShort();
-                lod0MaxDistance = unknownData.ReadUShort();
-                lod1MaxDistance = unknownData.ReadUShort();
-                lod2MaxDistance = unknownData.ReadUShort();
-            }
+            menuFrontWheelRadius = metadata.MenuWheels.FrontWheelRadius;
+            menuFrontWheelWidth = metadata.MenuWheels.FrontWheelWidth;
+            menuRearWheelRadius = metadata.MenuWheels.RearWheelRadius;
+            menuRearWheelWidth = metadata.MenuWheels.RearWheelWidth;
+            lod0MaxDistance = metadata.LOD0.MaxDistance;
+            lod1MaxDistance = metadata.LOD1.MaxDistance;
+            lod2MaxDistance = metadata.LOD2.MaxDistance;
 
             var lods = new LOD[3];
+            LODMetadata[] lodMetadata = [ metadata.LOD0, metadata.LOD1, metadata.LOD2 ];
             var wheelPositions = new WheelPosition[4];
+            short[] wheelXOffsets = [ metadata.MenuWheels.FrontLeftXOffset, metadata.MenuWheels.FrontRightXOffset, metadata.MenuWheels.RearLeftXOffset, metadata.MenuWheels.RearRightXOffset ];
             string line;
             int currentWheelPosition = -1;
-            short currentWheelPositionWValue = 0;
             int currentLODNumber = -1;
             bool shadow = false;
             string currentMaterial = "untextured";
@@ -293,7 +283,6 @@ namespace GT2.ModelTool.Structures
                         currentLODNumber = -1;
                         shadow = false;
                         currentWheelPosition = -1;
-                        currentWheelPositionWValue = 0;
 
                         string[] objectNameParts = line.Split(' ')[1].Split('/');
                         string objectName = objectNameParts[0];
@@ -305,33 +294,24 @@ namespace GT2.ModelTool.Structures
                                 throw new Exception($"Could not read LOD number from object name '{objectName}'");
                             }
                             currentLOD = new LOD();
-                            currentLOD.PrepareForOBJRead(unknownData);
+                            LODMetadata currentMetadata = lodMetadata[currentLODNumber];
+                            currentLOD.PrepareForOBJRead(currentMetadata);
                             lods[currentLODNumber] = currentLOD;
-                            currentScale = GetScale(objectNameParts);
-                            currentLOD.Scale = LOD.ConvertScale(currentScale);
+                            currentScale = currentMetadata.Scale;
                         }
                         else if (objectName.StartsWith("shadow"))
                         {
                             shadow = true;
                             Shadow = new Shadow();
-                            Shadow.PrepareForOBJRead(unknownData);
+                            Shadow.PrepareForOBJRead(metadata.Shadow);
                             shadowVertexStartID = vertices.Count;
-                            currentScale = GetScale(objectNameParts);
-                            Shadow.Scale = LOD.ConvertScale(currentScale);
+                            currentScale = metadata.Shadow.Scale;
                         }
                         else if (objectName.StartsWith("wheelpos"))
                         {
                             if (!int.TryParse(objectName.Replace("wheelpos", ""), out currentWheelPosition))
                             {
                                 throw new Exception($"Could not read wheel position number from object name '{objectName}'");
-                            }
-                            foreach (string namePart in objectNameParts)
-                            {
-                                string[] keyAndValue = namePart.Split('=');
-                                if (keyAndValue.Length == 2 && keyAndValue[0] == "w")
-                                {
-                                    currentWheelPositionWValue = short.Parse(keyAndValue[1]);
-                                }
                             }
                         }
                     }
@@ -353,7 +333,7 @@ namespace GT2.ModelTool.Structures
                             if (currentWheelPosition != -1)
                             {
                                 var position = new WheelPosition();
-                                position.ReadFromOBJ(vertex, currentWheelPositionWValue);
+                                position.ReadFromOBJ(vertex, wheelXOffsets[currentWheelPosition]);
                                 wheelPositions[currentWheelPosition] = position;
                             }
                         }

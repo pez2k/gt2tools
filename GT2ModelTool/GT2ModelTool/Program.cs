@@ -3,7 +3,6 @@ using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
-using StreamExtensions;
 
 namespace GT2.ModelTool
 {
@@ -13,8 +12,6 @@ namespace GT2.ModelTool
     class Program
     {
         private static readonly JsonSerializerOptions serializerOptions = new() { WriteIndented = true };
-
-        private const ushort UnknownDataVersion = 2;
 
         static void Main(string[] args)
         {
@@ -38,7 +35,7 @@ namespace GT2.ModelTool
                 case ".cno":
                     model = ReadGT2(inputPath);
                     break;
-                case ".obj":
+                case ".json":
                     model = ReadOBJ(inputPath);
                     break;
                 default:
@@ -85,31 +82,20 @@ namespace GT2.ModelTool
 
         private static Model ReadOBJ(string filename)
         {
-            using (TextReader modelReader = new StreamReader(filename))
+            ModelMetadata metadata;
+            using (StreamReader jsonReader = new(filename))
             {
-                using (Stream unknownData = TryOpenUnknownDataFile(filename))
-                {
-                    var model = new Model();
-                    model.ReadFromOBJ(modelReader, unknownData);
-                    return model;
-                }
+                metadata = JsonSerializer.Deserialize<ModelMetadata>(jsonReader.ReadToEnd());
             }
-        }
 
-        private static Stream TryOpenUnknownDataFile(string objFilename)
-        {
-            string binFilename = Path.GetFileNameWithoutExtension(objFilename) + ".bin";
-            if (File.Exists(binFilename))
+            string path = Path.GetDirectoryName(filename);
+
+            using (TextReader modelReader = new StreamReader(Path.Combine(path, metadata.ModelFilename)))
             {
-                var stream = new FileStream(binFilename, FileMode.Open, FileAccess.Read);
-                if (stream.ReadUShort() == UnknownDataVersion)
-                {
-                    return stream;
-                }
-                Console.WriteLine("Incorrect unknown data version, skipping...");
-                stream.Dispose();
+                var model = new Model();
+                model.ReadFromOBJ(modelReader, metadata);
+                return model;
             }
-            return null;
         }
 
         private static void WriteGT2(Model model, string path, string filename, bool isNight)
@@ -128,17 +114,12 @@ namespace GT2.ModelTool
             {
                 using (TextWriter materialWriter = new StreamWriter(Path.Combine(path, $"{filename}.mtl")))
                 {
-                    using (FileStream unknownData = new(Path.Combine(path, $"{filename}.bin"), FileMode.Create, FileAccess.ReadWrite))
+                    ModelMetadata metadata = new() { ModelFilename = objFileName };
+                    model.WriteToOBJ(modelWriter, materialWriter, filename, metadata);
+
+                    using (StreamWriter jsonWriter = new(Path.Combine(path, $"{filename}.json")))
                     {
-                        unknownData.WriteUShort(UnknownDataVersion);
-
-                        ModelMetadata metadata = new() { ModelFilename = objFileName };
-                        model.WriteToOBJ(modelWriter, materialWriter, filename, unknownData, metadata);
-
-                        using (StreamWriter jsonWriter = new(Path.Combine(path, $"{filename}.json")))
-                        {
-                            jsonWriter.Write(JsonSerializer.Serialize(metadata, serializerOptions));
-                        }
+                        jsonWriter.Write(JsonSerializer.Serialize(metadata, serializerOptions));
                     }
                 }
             }

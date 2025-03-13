@@ -267,14 +267,12 @@ namespace GT2.ModelTool.Structures
         }
 
         public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber,
-                               Dictionary<string, int?> materialNames, Stream unknownData, LODMetadata metadata, List<MaterialMetadata> materialMetadata)
+                               Dictionary<string, int?> materialNames, LODMetadata metadata, List<MaterialMetadata> materialMetadata)
         {
-            unknownData.WriteUShort(scaleRelatedMaybe);
-
             metadata.ScaleRelatedMaybe = scaleRelatedMaybe;
 
             double scaleFactor = ConvertScale(Scale);
-            writer.WriteLine($"g lod{lodNumber}/scale={scaleFactor}");
+            writer.WriteLine($"g lod{lodNumber}");
             metadata.Scale = scaleFactor;
 
             writer.WriteLine("# vertices");
@@ -331,7 +329,7 @@ namespace GT2.ModelTool.Structures
             UVTriangles.SelectMany(polygon => new UVCoordinate[] { polygon.Vertex0UV, polygon.Vertex1UV, polygon.Vertex2UV })
                        .Concat(UVQuads.SelectMany(polygon => new UVCoordinate[] { polygon.Vertex0UV, polygon.Vertex1UV, polygon.Vertex2UV, polygon.Vertex3UV })).ToList();
 
-        public void PrepareForOBJRead(Stream unknownData)
+        public void PrepareForOBJRead(LODMetadata metadata)
         {
             Vertices = new List<Vertex>();
             Normals = new List<Normal>();
@@ -339,10 +337,8 @@ namespace GT2.ModelTool.Structures
             Quads = new List<Polygon>();
             UVTriangles = new List<UVPolygon>();
             UVQuads = new List<UVPolygon>();
-            if (unknownData != null)
-            {
-                scaleRelatedMaybe = unknownData.ReadUShort();
-            }
+            Scale = ConvertScale(metadata.Scale);
+            scaleRelatedMaybe = metadata.ScaleRelatedMaybe;
         }
 
         public void ReadFromOBJ(List<Vertex> vertices, List<Normal> normals, List<int> usedVertexIDs, List<int> usedNormalIDs)

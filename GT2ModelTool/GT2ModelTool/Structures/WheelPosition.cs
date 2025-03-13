@@ -36,18 +36,18 @@ namespace GT2.ModelTool.Structures
 
         public void WriteToOBJ(TextWriter writer, int wheelNumber, int vertexNumber, List<short> menuWheelOffsets)
         {
-            writer.WriteLine($"g wheelpos{wheelNumber}/w={MenuX}");
+            writer.WriteLine($"g wheelpos{wheelNumber}");
             writer.WriteLine($"v {X * Vertex.UnitsToMetres} {Y * Vertex.UnitsToMetres} {Z * Vertex.UnitsToMetres} {MenuX * Vertex.UnitsToMetres}");
             writer.WriteLine($"f {vertexNumber} {vertexNumber} {vertexNumber}");
             menuWheelOffsets.Add((short)(X - MenuX));
         }
 
-        public void ReadFromOBJ(Vertex vertex, short wValue)
+        public void ReadFromOBJ(Vertex vertex, short menuXOffset)
         {
             X = vertex.X;
             Y = vertex.Y;
             Z = vertex.Z;
-            MenuX = vertex.W == 0 ? wValue : vertex.W;
+            MenuX = (short)(vertex.X - menuXOffset);
         }
     }
 }

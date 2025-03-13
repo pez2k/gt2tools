@@ -150,14 +150,12 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        public void WriteToOBJ(TextWriter writer, int firstVertexNumber, Stream unknownData, ShadowMetadata metadata)
+        public void WriteToOBJ(TextWriter writer, int firstVertexNumber, ShadowMetadata metadata)
         {
-            unknownData.WriteUShort(scaleRelatedMaybe);
-
             metadata.ScaleRelatedMaybe = scaleRelatedMaybe;
 
             double scaleFactor = LOD.ConvertScale(Scale);
-            writer.WriteLine($"g shadow/scale={scaleFactor}");
+            writer.WriteLine($"g shadow");
             metadata.Scale = scaleFactor;
 
             writer.WriteLine("# vertices");
@@ -170,15 +168,13 @@ namespace GT2.ModelTool.Structures
             Quads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, firstVertexNumber));
         }
 
-        public void PrepareForOBJRead(Stream unknownData)
+        public void PrepareForOBJRead(ShadowMetadata metadata)
         {
             Vertices = new List<ShadowVertex>();
             Triangles = new List<ShadowPolygon>();
             Quads = new List<ShadowPolygon>();
-            if (unknownData != null)
-            {
-                scaleRelatedMaybe = unknownData.ReadUShort();
-            }
+            Scale = LOD.ConvertScale(metadata.Scale);
+            scaleRelatedMaybe = metadata.ScaleRelatedMaybe;
         }
     }
 }
