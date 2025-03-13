@@ -152,7 +152,6 @@ namespace GT2.ModelTool.Structures
 
         public void WriteToOBJ(TextWriter writer, int firstVertexNumber, Stream unknownData, ShadowMetadata metadata)
         {
-            unknownData.WriteUShort(0);
             unknownData.WriteUShort(scaleRelatedMaybe);
 
             metadata.ScaleRelatedMaybe = scaleRelatedMaybe;
@@ -178,7 +177,6 @@ namespace GT2.ModelTool.Structures
             Quads = new List<ShadowPolygon>();
             if (unknownData != null)
             {
-                unknownData.ReadUShort(); // skip the always zero bytes
                 scaleRelatedMaybe = unknownData.ReadUShort();
             }
         }

@@ -10,7 +10,6 @@ namespace GT2.ModelTool.Structures
 
     public class LOD
     {
-        private byte[] unknown = new byte[44];
         private short lowBoundX;
         private short lowBoundY;
         private short lowBoundZ;
@@ -38,8 +37,6 @@ namespace GT2.ModelTool.Structures
             stream.Position += sizeof(ushort) * 2;
             ushort uvTriangleCount = stream.ReadUShort();
             ushort uvQuadCount = stream.ReadUShort();
-            stream.Read(unknown);
-            stream.Position -= 44;
             stream.Position += 4; // always 0
             uint verticesOffset = stream.ReadUInt(); // start of LOD data to start of verts list - always 0x50, this and the below offsets are transformed to pointers in RAM hence 4 bytes of space
             uint unknownOffset = stream.ReadUInt(); // always 0, but still becomes a pointer in RAM
@@ -272,7 +269,6 @@ namespace GT2.ModelTool.Structures
         public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber,
                                Dictionary<string, int?> materialNames, Stream unknownData, LODMetadata metadata, List<MaterialMetadata> materialMetadata)
         {
-            unknownData.Write(unknown);
             unknownData.WriteUShort(scaleRelatedMaybe);
 
             metadata.ScaleRelatedMaybe = scaleRelatedMaybe;
@@ -345,7 +341,6 @@ namespace GT2.ModelTool.Structures
             UVQuads = new List<UVPolygon>();
             if (unknownData != null)
             {
-                unknownData.Read(unknown);
                 scaleRelatedMaybe = unknownData.ReadUShort();
             }
         }

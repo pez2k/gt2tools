@@ -14,7 +14,7 @@ namespace GT2.ModelTool
     {
         private static readonly JsonSerializerOptions serializerOptions = new() { WriteIndented = true };
 
-        private const ushort UnknownDataVersion = 1;
+        private const ushort UnknownDataVersion = 2;
 
         static void Main(string[] args)
         {
