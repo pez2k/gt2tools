@@ -105,7 +105,7 @@ namespace GT2.ModelTool.Structures
                                         int firstNormalNumber, UVCoordinate coord, List<UVCoordinate> coords, int firstCoordNumber) =>
             $"{vertices.IndexOf(vertex) + firstVertexNumber}/{coords.IndexOf(coord) + firstCoordNumber}/{normals.IndexOf(normal) + firstNormalNumber}";
 
-        public void ReadFromOBJ(string line, List<Vertex> vertices, List<Normal> normals, List<UVCoordinate> uvCoords, string currentMaterial,
+        public void ReadFromOBJ(string line, List<Vertex> vertices, List<Normal> normals, List<UVCoordinate> uvCoords, MaterialMetadata material,
                                 List<int> usedVertexIDs, List<int> usedNormalIDs)
         {
             string[] parts = line.Split(' ');
@@ -113,7 +113,7 @@ namespace GT2.ModelTool.Structures
             {
                 throw new Exception("Face does not contain exactly three or four vertices.");
             }
-            ParseMaterial(currentMaterial);
+            ApplyMaterial(material);
             (Vertex0, Vertex0Normal, Vertex0UV) = ParseVertex(parts[1], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
             (Vertex1, Vertex1Normal, Vertex1UV) = ParseVertex(parts[2], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
             (Vertex2, Vertex2Normal, Vertex2UV) = ParseVertex(parts[3], vertices, normals, uvCoords, usedVertexIDs, usedNormalIDs);
@@ -124,31 +124,14 @@ namespace GT2.ModelTool.Structures
             FaceType = IsQuad ? 45 : 37;
         }
 
-        protected override bool ParseMaterialParts(string[] parts)
+        protected override void ApplyMaterial(MaterialMetadata material)
         {
-            foreach (string part in parts)
+            if (material.IsUntextured || material.PaletteIndex == null)
             {
-                if (part.StartsWith("palette") && ushort.TryParse(part.Replace("palette", ""), out ushort paletteIndex) && paletteIndex < 16)
-                {
-                    PaletteIndex = paletteIndex;
-                    return base.ParseMaterialParts(parts);
-                }
+                throw new Exception($"Untextured material name '{material.Name}' loaded for textured polygon");
             }
-            return false;
-        }
-
-        protected override bool ParseMaterialPartsLegacy(string[] parts)
-        {
-            foreach (string part in parts)
-            {
-                string[] pair = part.Split('=');
-                if (pair[0] == "palette" && ushort.TryParse(pair[1], out ushort paletteIndex) && paletteIndex < 16)
-                {
-                    PaletteIndex = paletteIndex;
-                    return base.ParseMaterialPartsLegacy(parts);
-                }
-            }
-            return false;
+            PaletteIndex = material.PaletteIndex ?? 0;
+            base.ApplyMaterial(material);
         }
 
         private (Vertex v, Normal n, UVCoordinate u) ParseVertex(string value, List<Vertex> vertices, List<Normal> normals, List<UVCoordinate> uvCoords,

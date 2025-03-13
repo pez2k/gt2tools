@@ -251,7 +251,8 @@ namespace GT2.ModelTool.Structures
             int currentWheelPosition = -1;
             int currentLODNumber = -1;
             bool shadow = false;
-            string currentMaterial = "untextured";
+            string currentMaterialName = "untextured";
+            MaterialMetadata currentMaterial = null;
             LOD currentLOD = null;
             var vertices = new List<Vertex>();
             var normals = new List<Normal>();
@@ -260,9 +261,11 @@ namespace GT2.ModelTool.Structures
             var usedNormalIDs = new List<int>();
             int shadowVertexStartID = 0;
             double currentScale = 1;
+            int lineNumber = 0;
             do
             {
                 line = reader.ReadLine();
+                lineNumber++;
                 if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
                 {
                     continue;
@@ -283,6 +286,7 @@ namespace GT2.ModelTool.Structures
                         currentLODNumber = -1;
                         shadow = false;
                         currentWheelPosition = -1;
+                        currentMaterial = null;
 
                         string[] objectNameParts = line.Split(' ')[1].Split('/');
                         string objectName = objectNameParts[0];
@@ -352,14 +356,18 @@ namespace GT2.ModelTool.Structures
                     }
                     else if (line.StartsWith("usemtl "))
                     {
-                        currentMaterial = line.Split(' ')[1];
+                        currentMaterialName = line.Split(' ')[1];
+                        if (!shadow)
+                        {
+                            currentMaterial = FindMaterial(currentMaterialName, metadata.Materials);
+                        }
                     }
                     else if (line.StartsWith("f "))
                     {
                         if (shadow)
                         {
                             var polygon = new ShadowPolygon();
-                            polygon.ReadFromOBJ(line, Shadow.Vertices, shadowVertexStartID, currentMaterial);
+                            polygon.ReadFromOBJ(line, Shadow.Vertices, shadowVertexStartID, currentMaterialName);
                             if (polygon.IsQuad)
                             {
                                 Shadow.Quads.Add(polygon);
@@ -373,37 +381,44 @@ namespace GT2.ModelTool.Structures
                         {
                             continue;
                         }
-                        else if (currentMaterial.StartsWith("untextured"))
-                        {
-                            var polygon = new Polygon();
-                            polygon.ReadFromOBJ(line, vertices, normals, currentMaterial, usedVertexIDs, usedNormalIDs);
-                            if (polygon.IsQuad)
-                            {
-                                currentLOD.Quads.Add(polygon);
-                            }
-                            else
-                            {
-                                currentLOD.Triangles.Add(polygon);
-                            }
-                        }
                         else
                         {
-                            var polygon = new UVPolygon();
-                            polygon.ReadFromOBJ(line, vertices, normals, uvCoords, currentMaterial, usedVertexIDs, usedNormalIDs);
-                            if (polygon.IsQuad)
+                            if (currentMaterial == null)
                             {
-                                currentLOD.UVQuads.Add(polygon);
+                                throw new Exception("No material specified for face");
+                            }
+                            if (currentMaterial.IsUntextured)
+                            {
+                                var polygon = new Polygon();
+                                polygon.ReadFromOBJ(line, vertices, normals, currentMaterial, usedVertexIDs, usedNormalIDs);
+                                if (polygon.IsQuad)
+                                {
+                                    currentLOD.Quads.Add(polygon);
+                                }
+                                else
+                                {
+                                    currentLOD.Triangles.Add(polygon);
+                                }
                             }
                             else
                             {
-                                currentLOD.UVTriangles.Add(polygon);
+                                var polygon = new UVPolygon();
+                                polygon.ReadFromOBJ(line, vertices, normals, uvCoords, currentMaterial, usedVertexIDs, usedNormalIDs);
+                                if (polygon.IsQuad)
+                                {
+                                    currentLOD.UVQuads.Add(polygon);
+                                }
+                                else
+                                {
+                                    currentLOD.UVTriangles.Add(polygon);
+                                }
                             }
                         }
                     }
                 }
                 catch (Exception exception)
                 {
-                    throw new Exception($"Line: {line}\r\n{exception.Message}", exception);
+                    throw new Exception($"Line {lineNumber}: {line}\r\n{exception.Message}", exception);
                 }
             }
             while (line != null);
@@ -428,6 +443,109 @@ namespace GT2.ModelTool.Structures
             Shadow.GenerateBoundingBox();
             LODs = lods.ToList();
             WheelPositions = wheelPositions.ToList();
+        }
+
+        private static MaterialMetadata FindMaterial(string materialName, MaterialMetadata[] materials) =>
+            LoadMaterial(materialName, materials)
+                ?? ParseMaterialName(materialName)
+                ?? ParseMaterialNameLegacy(materialName)
+                ?? throw new Exception($"Could not find or parse material name '{materialName}'");
+
+        private static MaterialMetadata LoadMaterial(string materialName, MaterialMetadata[] materials)
+        {
+            MaterialMetadata material = materials.Where(material => material.Name == materialName).FirstOrDefault();
+            if (material != null)
+            {
+                if (material.RenderOrder < 0 || material.RenderOrder >= 32) // TODO: check bounds
+                {
+                    throw new Exception($"Material '{material.Name}' has missing or invalid render order in JSON file");
+                }
+
+                if (!material.IsUntextured && (material.PaletteIndex == null || material.PaletteIndex < 0 || material.PaletteIndex >= 16))
+                {
+                    throw new Exception($"Material '{material.Name}' has missing or invalid palette index in JSON file");
+                }
+            }
+            return material;
+        }
+
+        private static MaterialMetadata ParseMaterialName(string materialName)
+        {
+            if (!materialName.Contains('_'))
+            {
+                return null;
+            }
+            MaterialMetadata material = new();
+            string[] parts = materialName.Split('_');
+            bool foundRenderOrder = false;
+
+            foreach (string part in parts)
+            {
+                if (part.StartsWith("untextured"))
+                {
+                    material.PaletteIndex = null;
+                    material.IsUntextured = true;
+                }
+                else if (part.StartsWith("palette") && ushort.TryParse(part.Replace("palette", ""), out ushort paletteIndex) && paletteIndex < 16)
+                {
+                    material.PaletteIndex = paletteIndex;
+                    material.IsUntextured = false;
+                }
+                else if (part.StartsWith("order") && int.TryParse(part.Replace("order", ""), out int order) && order >= 0 && order < 32) // TODO: check upper bound
+                {
+                    material.RenderOrder = order;
+                    foundRenderOrder = true;
+                }
+                else if (part.StartsWith("brake"))
+                {
+                    material.IsBrakeLight = true;
+                }
+                else if (part.StartsWith("matte"))
+                {
+                    material.IsMatte = true;
+                }
+            }
+
+            return (material.IsUntextured || material.PaletteIndex != null) && foundRenderOrder ? material : null;
+        }
+
+        private static MaterialMetadata ParseMaterialNameLegacy(string materialName)
+        {
+            if (!materialName.Contains('/'))
+            {
+                return null;
+            }
+            MaterialMetadata material = new();
+            string[] parts = materialName.Split('/');
+            bool foundOrder = false;
+            bool foundFlags = false;
+
+            foreach (string part in parts)
+            {
+                string[] pair = part.Split('=');
+                if (part.StartsWith("untextured"))
+                {
+                    material.PaletteIndex = null;
+                    material.IsUntextured = true;
+                }
+                else if (pair[0] == "palette" && ushort.TryParse(pair[1], out ushort paletteIndex) && paletteIndex < 16)
+                {
+                    material.PaletteIndex = paletteIndex;
+                    material.IsUntextured = false;
+                }
+                else if (pair[0] == "order" && int.TryParse(pair[1], out int order) && order >= 0 && order < 32) // TODO: check upper bound
+                {
+                    material.RenderOrder = order;
+                    foundOrder = true;
+                }
+                else if (pair[0] == "flags" && int.TryParse(pair[1], out int flags) && flags >= 0 && flags < 13)
+                {
+                    material.IsBrakeLight = (flags & 4) != 0;
+                    material.IsMatte = (flags & 8) == 0;
+                    foundFlags = true;
+                }
+            }
+            return (material.IsUntextured || material.PaletteIndex != null) && foundOrder && foundFlags ? material : null;
         }
 
         private static double GetScale(string[] objectNameParts)

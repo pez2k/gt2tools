@@ -10,7 +10,7 @@ namespace GT2.ModelTool.ExportMetadata
         public bool IsUntextured { get; set; }
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public int? PaletteIndex { get; set; }
+        public ushort? PaletteIndex { get; set; }
 
         public int RenderOrder { get; set; }
 
