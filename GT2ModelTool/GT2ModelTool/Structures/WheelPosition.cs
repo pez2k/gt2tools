@@ -1,8 +1,8 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace GT2.ModelTool.Structures
 {
-    using ExportMetadata;
     using StreamExtensions;
 
     public class WheelPosition
@@ -34,12 +34,12 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(MenuX);
         }
 
-        public void WriteToOBJ(TextWriter writer, int wheelNumber, int vertexNumber, WheelMetadata metadata)
+        public void WriteToOBJ(TextWriter writer, int wheelNumber, int vertexNumber, List<short> menuWheelOffsets)
         {
             writer.WriteLine($"g wheelpos{wheelNumber}/w={MenuX}");
             writer.WriteLine($"v {X * Vertex.UnitsToMetres} {Y * Vertex.UnitsToMetres} {Z * Vertex.UnitsToMetres} {MenuX * Vertex.UnitsToMetres}");
             writer.WriteLine($"f {vertexNumber} {vertexNumber} {vertexNumber}");
-            metadata.MenuXOffset = X - MenuX;
+            menuWheelOffsets.Add((short)(X - MenuX));
         }
 
         public void ReadFromOBJ(Vertex vertex, short wValue)

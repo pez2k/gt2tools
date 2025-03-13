@@ -172,10 +172,10 @@ namespace GT2.ModelTool.Structures
             unknownData.WriteUShort(lod1MaxDistance);
             unknownData.WriteUShort(lod2MaxDistance);
 
-            metadata.MenuFrontWheelRadius = menuFrontWheelRadius;
-            metadata.MenuFrontWheelWidth = menuFrontWheelWidth;
-            metadata.MenuRearWheelRadius = menuRearWheelRadius;
-            metadata.MenuRearWheelWidth = menuRearWheelWidth;
+            metadata.MenuWheels.FrontWheelRadius = menuFrontWheelRadius;
+            metadata.MenuWheels.FrontWheelWidth = menuFrontWheelWidth;
+            metadata.MenuWheels.RearWheelRadius = menuRearWheelRadius;
+            metadata.MenuWheels.RearWheelWidth = menuRearWheelWidth;
             metadata.LOD0.MaxDistance = lod0MaxDistance;
             metadata.LOD1.MaxDistance = lod1MaxDistance;
             metadata.LOD2.MaxDistance = lod2MaxDistance;
@@ -187,13 +187,22 @@ namespace GT2.ModelTool.Structures
             int coordNumber = 1;
             var materialNames = new Dictionary<string, int?>();
 
-            WheelMetadata[] wheelMetadata = [ metadata.WheelFrontLeft, metadata.WheelFrontRight, metadata.WheelRearLeft, metadata.WheelRearRight ];
-
+            List<short> menuWheelOffsets = [];
             for (int i = 0; i < WheelPositions.Count; i++)
             {
-                WheelPositions[i].WriteToOBJ(modelWriter, i, vertexNumber, wheelMetadata[i]);
+                WheelPositions[i].WriteToOBJ(modelWriter, i, vertexNumber, menuWheelOffsets);
                 vertexNumber++;
             }
+
+            if (WheelPositions.Count != 4)
+            {
+                throw new Exception("Expected 4 wheel positions");
+            }
+
+            metadata.MenuWheels.FrontLeftXOffset = menuWheelOffsets[0];
+            metadata.MenuWheels.FrontRightXOffset = menuWheelOffsets[1];
+            metadata.MenuWheels.RearLeftXOffset = menuWheelOffsets[2];
+            metadata.MenuWheels.RearRightXOffset = menuWheelOffsets[3];
 
             LODMetadata[] lodMetadata = [ metadata.LOD0, metadata.LOD1, metadata.LOD2 ];
             List<MaterialMetadata> materialMetadata = [];
