@@ -9,7 +9,6 @@ namespace GT2.ModelTool.Structures
 
     public class Shadow
     {
-        private ushort unknown;
         private short lowBoundX;
         private short lowBoundY;
         private short lowBoundZ;
@@ -18,8 +17,7 @@ namespace GT2.ModelTool.Structures
         private short highBoundY;
         private short highBoundZ;
         private short highBoundW;
-        private byte unknown2;
-        private byte unknown3;
+        private ushort scaleRelatedMaybe;
 
         public ushort Scale { get; set; }
         public List<ShadowVertex> Vertices { get; set; }
@@ -31,7 +29,7 @@ namespace GT2.ModelTool.Structures
             ushort vertexCount = stream.ReadUShort(); // 3B40
             ushort triangleCount = stream.ReadUShort();
             ushort quadCount = stream.ReadUShort();
-            unknown = stream.ReadUShort();
+            ushort unknownCount = stream.ReadUShort(); // always 0?
             lowBoundX = stream.ReadShort();
             lowBoundY = stream.ReadShort();
             lowBoundZ = stream.ReadShort();
@@ -41,8 +39,7 @@ namespace GT2.ModelTool.Structures
             highBoundZ = stream.ReadShort();
             highBoundW = stream.ReadShort();
             Scale = stream.ReadUShort();
-            unknown2 = stream.ReadSingleByte();
-            unknown3 = stream.ReadSingleByte();
+            scaleRelatedMaybe = stream.ReadUShort();
 
             Vertices = new List<ShadowVertex>(vertexCount); // 3B5C
             Triangles = new List<ShadowPolygon>(triangleCount); // 3BBC
@@ -125,7 +122,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteUShort((ushort)Vertices.Count);
             stream.WriteUShort((ushort)Triangles.Count);
             stream.WriteUShort((ushort)Quads.Count);
-            stream.WriteUShort(unknown);
+            stream.WriteUShort(0); // always 0
             stream.WriteShort(lowBoundX);
             stream.WriteShort(lowBoundY);
             stream.WriteShort(lowBoundZ);
@@ -135,8 +132,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(highBoundZ);
             stream.WriteShort(highBoundW);
             stream.WriteUShort(Scale);
-            stream.WriteByte(unknown2);
-            stream.WriteByte(unknown3);
+            stream.WriteUShort(scaleRelatedMaybe);
 
             foreach (ShadowVertex vertex in Vertices)
             {
@@ -156,13 +152,10 @@ namespace GT2.ModelTool.Structures
 
         public void WriteToOBJ(TextWriter writer, int firstVertexNumber, Stream unknownData, ShadowMetadata metadata)
         {
-            unknownData.WriteUShort(unknown);
-            unknownData.WriteByte(unknown2);
-            unknownData.WriteByte(unknown3);
+            unknownData.WriteUShort(0);
+            unknownData.WriteUShort(scaleRelatedMaybe);
 
-            metadata.Unknown = unknown;
-            metadata.Unknown2 = unknown2;
-            metadata.Unknown3 = unknown3;
+            metadata.ScaleRelatedMaybe = scaleRelatedMaybe;
 
             double scaleFactor = LOD.ConvertScale(Scale);
             writer.WriteLine($"g shadow/scale={scaleFactor}");
@@ -185,9 +178,8 @@ namespace GT2.ModelTool.Structures
             Quads = new List<ShadowPolygon>();
             if (unknownData != null)
             {
-                unknown = unknownData.ReadUShort();
-                unknown2 = unknownData.ReadSingleByte();
-                unknown3 = unknownData.ReadSingleByte();
+                unknownData.ReadUShort(); // skip the always zero bytes
+                scaleRelatedMaybe = unknownData.ReadUShort();
             }
         }
     }

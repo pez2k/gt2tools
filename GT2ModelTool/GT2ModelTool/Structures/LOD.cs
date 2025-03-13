@@ -11,17 +11,6 @@ namespace GT2.ModelTool.Structures
     public class LOD
     {
         private byte[] unknown = new byte[44];
-        private uint unknown40;
-        private uint unknown41;
-        private uint unknown42;
-        private uint unknown43;
-        private uint unknown44;
-        private uint unknown45;
-        private uint unknown46;
-        private uint unknown47;
-        private uint unknown48;
-        private uint unknown49;
-        private uint unknown50;
         private short lowBoundX;
         private short lowBoundY;
         private short lowBoundZ;
@@ -30,7 +19,7 @@ namespace GT2.ModelTool.Structures
         private short highBoundY;
         private short highBoundZ;
         private short highBoundW;
-        private ushort unknown2;
+        private ushort scaleRelatedMaybe;
 
         public ushort Scale { get; set; }
         public List<Vertex> Vertices { get; set; }
@@ -51,18 +40,17 @@ namespace GT2.ModelTool.Structures
             ushort uvQuadCount = stream.ReadUShort();
             stream.Read(unknown);
             stream.Position -= 44;
-            unknown40 = stream.ReadUInt();
-            unknown41 = stream.ReadUInt();
-            unknown42 = stream.ReadUInt();
-            unknown43 = stream.ReadUInt();
-            unknown44 = stream.ReadUInt();
-            unknown45 = stream.ReadUInt();
-            unknown46 = stream.ReadUInt();
-            unknown47 = stream.ReadUInt();
-            unknown48 = stream.ReadUInt();
-            unknown49 = stream.ReadUInt();
-            unknown50 = stream.ReadUInt();
-
+            stream.Position += 4; // always 0
+            uint verticesOffset = stream.ReadUInt(); // start of LOD data to start of verts list - always 0x50, this and the below offsets are transformed to pointers in RAM hence 4 bytes of space
+            uint unknownOffset = stream.ReadUInt(); // always 0, but still becomes a pointer in RAM
+            uint normalsOffset = stream.ReadUInt();
+            uint trianglesOffset = stream.ReadUInt();
+            uint quadsOffset = stream.ReadUInt();
+            uint unknownDataTypeOffset = stream.ReadUInt(); // corresponds to the skipped zero counts in the count list
+            uint unknownDataType2Offset = stream.ReadUInt();
+            uint uvTrianglesOffset = stream.ReadUInt(); // same value as the two above as they are always zero length
+            uint uvQuadsOffset = stream.ReadUInt();
+            uint unknownOffset2 = stream.ReadUInt(); // always 0, becomes the same pointer as the above, different pointer to the other 0 value
             lowBoundX = stream.ReadShort(); // at 8C0
             lowBoundY = stream.ReadShort();
             lowBoundZ = stream.ReadShort();
@@ -72,7 +60,7 @@ namespace GT2.ModelTool.Structures
             highBoundZ = stream.ReadShort();
             highBoundW = stream.ReadShort();
             Scale = stream.ReadUShort(); // at 8D0
-            unknown2 = stream.ReadUShort(); // 13E8 LOD0/1, 14C1 LOD2
+            scaleRelatedMaybe = stream.ReadUShort(); // 13E8 LOD0/1, 14C1 LOD2
 
             Vertices = new List<Vertex>(vertexCount);
             Normals = new List<Normal>(normalCount);
@@ -204,6 +192,7 @@ namespace GT2.ModelTool.Structures
 
         public void WriteToCDO(Stream stream)
         {
+            long startPosition = stream.Position;
             stream.WriteUShort((ushort)Vertices.Count);
             stream.WriteUShort((ushort)Normals.Count);
             stream.WriteUShort((ushort)Triangles.Count);
@@ -211,7 +200,16 @@ namespace GT2.ModelTool.Structures
             stream.Position += sizeof(ushort) * 2;
             stream.WriteUShort((ushort)UVTriangles.Count);
             stream.WriteUShort((ushort)UVQuads.Count);
-            stream.Write(unknown);
+
+            stream.WriteUInt(0);
+            stream.WriteUInt(0x50); // vertices offset, i.e. fixed size of header so no need to do it dynamically
+            stream.WriteUInt(0); // unknown offset, always 0
+
+            long offsetsPosition = stream.Position;
+            stream.Position += 4 * 7; // reserve space for the offsets of each type of data to be filled in later
+
+            stream.WriteUInt(0); // unknown offset, always 0
+
             stream.WriteShort(lowBoundX);
             stream.WriteShort(lowBoundY);
             stream.WriteShort(lowBoundZ);
@@ -221,57 +219,63 @@ namespace GT2.ModelTool.Structures
             stream.WriteShort(highBoundZ);
             stream.WriteShort(highBoundW);
             stream.WriteUShort(Scale);
-            stream.WriteUShort(unknown2);
+            stream.WriteUShort(scaleRelatedMaybe);
 
             foreach (Vertex vertex in Vertices)
             {
                 vertex.WriteToCDO(stream);
             }
 
+            offsetsPosition = WriteOffset(stream, startPosition, offsetsPosition); // file offset of normals data
             foreach (Normal normal in Normals)
             {
                 normal.WriteToCDO(stream);
             }
 
+            offsetsPosition = WriteOffset(stream, startPosition, offsetsPosition); // file offset of triangles data
             foreach (Polygon triangle in Triangles)
             {
                 triangle.WriteToCDO(stream, false, Vertices, Normals);
             }
 
+            offsetsPosition = WriteOffset(stream, startPosition, offsetsPosition); // file offset of quads data
             foreach (Polygon quad in Quads)
             {
                 quad.WriteToCDO(stream, true, Vertices, Normals);
             }
 
+            offsetsPosition = WriteOffset(stream, startPosition, offsetsPosition); // file offset of unknown data (zero count and thus length)
+            offsetsPosition = WriteOffset(stream, startPosition, offsetsPosition); // file offset of unknown data 2 (zero count and thus length)
+            offsetsPosition = WriteOffset(stream, startPosition, offsetsPosition); // file offset of UV triangles data
             foreach (UVPolygon uvTriangle in UVTriangles)
             {
                 uvTriangle.WriteToCDO(stream, false, Vertices, Normals);
             }
 
+            WriteOffset(stream, startPosition, offsetsPosition); // file offset of UV quads data
             foreach (UVPolygon uvQuad in UVQuads)
             {
                 uvQuad.WriteToCDO(stream, true, Vertices, Normals);
             }
         }
 
+        private static long WriteOffset(Stream stream, long startPosition, long offsetsPosition)
+        {
+            long dataPosition = stream.Position;
+            stream.Position = offsetsPosition;
+            stream.WriteUInt((uint)(dataPosition - startPosition));
+            offsetsPosition = stream.Position;
+            stream.Position = dataPosition;
+            return offsetsPosition;
+        }
+
         public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber,
                                Dictionary<string, int?> materialNames, Stream unknownData, LODMetadata metadata, List<MaterialMetadata> materialMetadata)
         {
             unknownData.Write(unknown);
-            unknownData.WriteUShort(unknown2);
+            unknownData.WriteUShort(scaleRelatedMaybe);
 
-            metadata.ReplayZoomRelatedMaybe = unknown2;
-            metadata.Unknown40 = unknown40;
-            metadata.Unknown41 = unknown41;
-            metadata.Unknown42 = unknown42;
-            metadata.Unknown43 = unknown43;
-            metadata.Unknown44 = unknown44;
-            metadata.Unknown45 = unknown45;
-            metadata.Unknown46 = unknown46;
-            metadata.Unknown47 = unknown47;
-            metadata.Unknown48 = unknown48;
-            metadata.Unknown49 = unknown49;
-            metadata.Unknown50 = unknown50;
+            metadata.ScaleRelatedMaybe = scaleRelatedMaybe;
 
             double scaleFactor = ConvertScale(Scale);
             writer.WriteLine($"g lod{lodNumber}/scale={scaleFactor}");
@@ -342,7 +346,7 @@ namespace GT2.ModelTool.Structures
             if (unknownData != null)
             {
                 unknownData.Read(unknown);
-                unknown2 = unknownData.ReadUShort();
+                scaleRelatedMaybe = unknownData.ReadUShort();
             }
         }
 

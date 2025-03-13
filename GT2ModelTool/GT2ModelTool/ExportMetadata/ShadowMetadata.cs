@@ -3,8 +3,6 @@
     public class ShadowMetadata
     {
         public double Scale { get; set; }
-        public ushort Unknown { get; set; }
-        public byte Unknown2 { get; set; }
-        public byte Unknown3 { get; set; }
+        public ushort ScaleRelatedMaybe { get; set; }
     }
 }

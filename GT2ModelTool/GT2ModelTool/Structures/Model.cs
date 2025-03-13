@@ -10,36 +10,33 @@ namespace GT2.ModelTool.Structures
 
     public class Model
     {
-        public ushort FrontWheelRadius { get; set; }
-        public ushort FrontWheelWidth { get; set; }
-        public ushort RearWheelRadius { get; set; }
-        public ushort RearWheelWidth { get; set; }
+        public ushort MenuFrontWheelRadius { get; set; }
+        public ushort MenuFrontWheelWidth { get; set; }
+        public ushort MenuRearWheelRadius { get; set; }
+        public ushort MenuRearWheelWidth { get; set; }
         public List<WheelPosition> WheelPositions { get; set; } = new List<WheelPosition>(4);
-        public byte[] UnknownAll { get; set; } = new byte[26];
-        public ushort LOD0Padding { get; set; }
-        public ushort LOD0MaxDistance { get; set; }
-        public uint LOD0Unknown { get; set; }
-        public ushort LOD1Padding { get; set; }
-        public ushort LOD1MaxDistance { get; set; }
-        public uint LOD1Unknown { get; set; } // non-zero
-        public ushort LOD2Padding { get; set; }
-        public ushort LOD2MaxDistance { get; set; }
-        public uint LOD2Unknown { get; set; } // non-zero
+        public byte[] UnknownAll { get; set; } = new byte[24];
+        public ushort LOD0MaxDistance { get; set; } // default 5, transformed to 400 in RAM
+        public uint LOD0Offset { get; set; }
+        public ushort LOD1MaxDistance { get; set; } // default 15, transformed to 3600 in RAM
+        public uint LOD1Offset { get; set; }
+        public ushort LOD2MaxDistance { get; set; } // default 300, transformed to 1440000 in RAM
+        public uint LOD2Offset { get; set; }
 
         public List<LOD> LODs { get; set; }
         public Shadow Shadow { get; set; }
 
         public void ReadFromCDO(Stream stream) {
             stream.Position = 0x08;
-            FrontWheelRadius = stream.ReadUShort();
-            if (FrontWheelRadius == 0) {
+            MenuFrontWheelRadius = stream.ReadUShort();
+            if (MenuFrontWheelRadius == 0) {
                 stream.Position = 0x18;
-                FrontWheelRadius = stream.ReadUShort();
+                MenuFrontWheelRadius = stream.ReadUShort();
             }
 
-            FrontWheelWidth = stream.ReadUShort();
-            RearWheelRadius = stream.ReadUShort();
-            RearWheelWidth = stream.ReadUShort();
+            MenuFrontWheelWidth = stream.ReadUShort();
+            MenuRearWheelRadius = stream.ReadUShort();
+            MenuRearWheelWidth = stream.ReadUShort();
 
             for (int i = 0; i < 4; i++) {
                 var wheelPosition = new WheelPosition();
@@ -48,22 +45,21 @@ namespace GT2.ModelTool.Structures
             }
 
             stream.Position += 0x828;
-            ushort lodCount = stream.ReadUShort();
-            LODs = new List<LOD>(lodCount);
+            uint lodCount = stream.ReadUInt();
+            LODs = new List<LOD>((int)lodCount);
 
             stream.Read(UnknownAll);
             stream.Position -= UnknownAll.Length;
 
-            stream.Position += 2;
-            LOD0Padding = stream.ReadUShort();
+            stream.Position += 2; // 2b of zeros, this and the following 2b are replaced in RAM with some near-exponential value calculated from the LOD max distance
             LOD0MaxDistance = stream.ReadUShort();
-            LOD0Unknown = stream.ReadUInt();
-            LOD1Padding = stream.ReadUShort();
+            LOD0Offset = stream.ReadUInt(); // file offset for start of LOD0 data, becomes a pointer in RAM - always 0 instead of the real value
+            stream.Position += 2;
             LOD1MaxDistance = stream.ReadUShort();
-            LOD1Unknown = stream.ReadUInt();
-            LOD2Padding = stream.ReadUShort();
+            LOD1Offset = stream.ReadUInt(); // file offset for start of LOD1 data, becomes a pointer in RAM
+            stream.Position += 2;
             LOD2MaxDistance = stream.ReadUShort();
-            LOD2Unknown = stream.ReadUInt();
+            LOD2Offset = stream.ReadUInt(); // file offset for start of LOD2 data, becomes a pointer in RAM
 
             for (int i = 0; i < lodCount; i++)
             {
@@ -92,10 +88,10 @@ namespace GT2.ModelTool.Structures
 
             WheelPositions = [ WheelPositions[2], WheelPositions[3], WheelPositions[0], WheelPositions[1] ];
 
-            FrontWheelRadius = stream.ReadUShort();
-            FrontWheelWidth = stream.ReadUShort();
-            RearWheelRadius = stream.ReadUShort();
-            RearWheelWidth = stream.ReadUShort();
+            MenuFrontWheelRadius = stream.ReadUShort();
+            MenuFrontWheelWidth = stream.ReadUShort();
+            MenuRearWheelRadius = stream.ReadUShort();
+            MenuRearWheelWidth = stream.ReadUShort();
 
             stream.Position += 0x04;
             ushort lodCount = stream.ReadUShort();
@@ -123,13 +119,18 @@ namespace GT2.ModelTool.Structures
 
         public void WriteToCDO(Stream stream)
         {
+            if (LODs.Count != 3)
+            {
+                throw new Exception("CDO requires 3 LODs");
+            }
+
             // GT header
             stream.Write([0x47, 0x54, 0x02]);
             stream.Position = 0x18;
-            stream.WriteUShort(FrontWheelRadius);
-            stream.WriteUShort(FrontWheelWidth);
-            stream.WriteUShort(RearWheelRadius);
-            stream.WriteUShort(RearWheelWidth);
+            stream.WriteUShort(MenuFrontWheelRadius);
+            stream.WriteUShort(MenuFrontWheelWidth);
+            stream.WriteUShort(MenuRearWheelRadius);
+            stream.WriteUShort(MenuRearWheelWidth);
 
             foreach (WheelPosition wheelPosition in WheelPositions)
             {
@@ -137,38 +138,52 @@ namespace GT2.ModelTool.Structures
             }
 
             stream.Position = 0x868;
-            stream.WriteUShort((ushort)LODs.Count);
-            stream.Write(UnknownAll);
+            stream.WriteUInt((uint)LODs.Count);
+            stream.WriteUShort(0); // padding before LOD0 max distance
+            stream.WriteUShort(LOD0MaxDistance);
+            stream.WriteUInt(0); // should be LOD0 file offset, but is always 0
+            stream.WriteUShort(0); // padding before LOD1 max distance
+            stream.WriteUShort(LOD1MaxDistance);
+            long lod1OffsetPosition = stream.Position;
+            stream.WriteUInt(0); // placeholder for LOD1 file offset
+            stream.WriteUShort(0); // padding before LOD2 max distance
+            stream.WriteUShort(LOD2MaxDistance);
+            long lod2OffsetPosition = stream.Position;
+            stream.WriteUInt(0); // placeholder for LOD2 file offset
 
+            List<long> lodOffsets = [];
             foreach (LOD lod in LODs)
             {
+                lodOffsets.Add(stream.Position);
                 lod.WriteToCDO(stream);
             }
+
+            long dataPosition = stream.Position;
+            stream.Position = lod1OffsetPosition;
+            stream.WriteUInt((uint)lodOffsets[1]);
+            stream.Position = lod2OffsetPosition;
+            stream.WriteUInt((uint)lodOffsets[2]);
+            stream.Position = dataPosition;
 
             Shadow.WriteToCDO(stream);
         }
 
         public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename, Stream unknownData, ModelMetadata metadata)
         {
-            unknownData.WriteUShort(FrontWheelRadius);
-            unknownData.WriteUShort(FrontWheelWidth);
-            unknownData.WriteUShort(RearWheelRadius);
-            unknownData.WriteUShort(RearWheelWidth);
+            unknownData.WriteUShort(MenuFrontWheelRadius);
+            unknownData.WriteUShort(MenuFrontWheelWidth);
+            unknownData.WriteUShort(MenuRearWheelRadius);
+            unknownData.WriteUShort(MenuRearWheelWidth);
+            unknownData.WriteUShort(0); // the format expects the top 2b of the LOD count here, always 00 00
             unknownData.Write(UnknownAll);
 
-            metadata.FrontWheelRadius = FrontWheelRadius;
-            metadata.FrontWheelWidth = FrontWheelWidth;
-            metadata.RearWheelRadius = RearWheelRadius;
-            metadata.RearWheelWidth = RearWheelWidth;
-            metadata.LOD0.HeaderAlwaysZero = LOD0Padding;
+            metadata.MenuFrontWheelRadius = MenuFrontWheelRadius;
+            metadata.MenuFrontWheelWidth = MenuFrontWheelWidth;
+            metadata.MenuRearWheelRadius = MenuRearWheelRadius;
+            metadata.MenuRearWheelWidth = MenuRearWheelWidth;
             metadata.LOD0.MaxDistance = LOD0MaxDistance;
-            metadata.LOD0.HeaderUnknown = LOD0Unknown;
-            metadata.LOD1.HeaderAlwaysZero = LOD1Padding;
             metadata.LOD1.MaxDistance = LOD1MaxDistance;
-            metadata.LOD1.HeaderUnknown = LOD1Unknown;
-            metadata.LOD2.HeaderAlwaysZero = LOD2Padding;
             metadata.LOD2.MaxDistance = LOD2MaxDistance;
-            metadata.LOD2.HeaderUnknown = LOD2Unknown;
 
             modelWriter.WriteLine($"mtllib {filename}.mtl");
             
@@ -226,11 +241,15 @@ namespace GT2.ModelTool.Structures
         {
             if (unknownData != null)
             {
-                FrontWheelRadius = unknownData.ReadUShort();
-                FrontWheelWidth = unknownData.ReadUShort();
-                RearWheelRadius = unknownData.ReadUShort();
-                RearWheelWidth = unknownData.ReadUShort();
+                MenuFrontWheelRadius = unknownData.ReadUShort();
+                MenuFrontWheelWidth = unknownData.ReadUShort();
+                MenuRearWheelRadius = unknownData.ReadUShort();
+                MenuRearWheelWidth = unknownData.ReadUShort();
+                unknownData.ReadUShort(); // top 2b of LOD count, always 00 00
                 unknownData.Read(UnknownAll);
+                LOD0MaxDistance = UnknownAll.Skip(2).Take(2).ToArray().ReadUShort(); // dirty parsing of unknown data file in lieu of replacing it
+                LOD1MaxDistance = UnknownAll.Skip(10).Take(2).ToArray().ReadUShort();
+                LOD2MaxDistance = UnknownAll.Skip(18).Take(2).ToArray().ReadUShort();
             }
 
             var lods = new LOD[3];

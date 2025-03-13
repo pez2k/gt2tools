@@ -2,6 +2,6 @@
 {
     public class WheelMetadata
     {
-        public int W { get; set; }
+        public int MenuXOffset { get; set; }
     }
 }
