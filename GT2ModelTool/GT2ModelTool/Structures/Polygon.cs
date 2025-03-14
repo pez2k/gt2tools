@@ -267,10 +267,9 @@ namespace GT2.ModelTool.Structures
         }
 
         public void WriteToOBJ(TextWriter writer, bool isQuad, List<Vertex> vertices, List<Normal> normals,
-                               int firstVertexNumber, int firstNormalNumber, Dictionary<string, int?> materialNames, List<MaterialMetadata> metadata)
+                               int firstVertexNumber, int firstNormalNumber, List<MaterialMetadata> metadata)
         {
             string materialName = $"untextured_{GenerateMaterialName()}";
-            materialNames[materialName] = null;
             metadata.Add(GenerateMaterialMetadata(materialName) with { IsUntextured = true });
             writer.WriteLine($"usemtl {materialName}");
             writer.WriteLine($"f {WriteVertexToOBJ(Vertex0, Vertex0Normal, vertices, normals, firstVertexNumber, firstNormalNumber)} " +

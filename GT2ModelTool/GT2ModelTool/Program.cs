@@ -180,6 +180,7 @@ namespace GT2.ModelTool
             {
                 throw new Exception($"JSON error: {nameof(unvalidatedMetadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.GradientMaterialName)} is missing or blank");
             }
+            metadata.Shadow.GradientMaterialName = unvalidatedMetadata.Shadow.GradientMaterialName;
             metadata.Shadow.Scale = ValidateDouble(unvalidatedMetadata.Shadow.Scale, $"{nameof(unvalidatedMetadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.Scale)}");
             metadata.Shadow.ScaleRelatedMaybe = ValidateUShort(unvalidatedMetadata.Shadow.ScaleRelatedMaybe, $"{nameof(unvalidatedMetadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.ScaleRelatedMaybe)}");
             metadata.Materials = unvalidatedMetadata.Materials.Select(ValidateMaterial).ToArray();

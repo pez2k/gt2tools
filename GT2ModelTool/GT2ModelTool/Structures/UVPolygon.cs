@@ -89,10 +89,9 @@ namespace GT2.ModelTool.Structures
         }
 
         public void WriteToOBJ(TextWriter writer, bool isQuad, List<Vertex> vertices, List<Normal> normals, int firstVertexNumber,
-                               int firstNormalNumber, List<UVCoordinate> coords, int firstCoordNumber, Dictionary<string, int?> materialNames, List<MaterialMetadata> metadata)
+                               int firstNormalNumber, List<UVCoordinate> coords, int firstCoordNumber, List<MaterialMetadata> metadata)
         {
             string materialName = $"palette{PaletteIndex:D2}_{GenerateMaterialName()}";
-            materialNames[materialName] = PaletteIndex;
             metadata.Add(GenerateMaterialMetadata(materialName) with { PaletteIndex = PaletteIndex });
             writer.WriteLine($"usemtl {materialName}");
             writer.WriteLine($"f {WriteVertexToOBJ(Vertex0, Vertex0Normal, vertices, normals, firstVertexNumber, firstNormalNumber, Vertex0UV, coords, firstCoordNumber)} " +

@@ -182,13 +182,12 @@ namespace GT2.ModelTool.Structures
             int vertexNumber = 1;
             int normalNumber = 1;
             int coordNumber = 1;
-            var materialNames = new Dictionary<string, int?>();
 
             List<short> menuWheelOffsets = [];
             for (int i = 0; i < WheelPositions.Count; i++)
             {
                 WheelPositions[i].WriteToOBJ(modelWriter, i, vertexNumber, menuWheelOffsets);
-                vertexNumber++;
+                vertexNumber += 4;
             }
 
             if (WheelPositions.Count != 4)
@@ -206,7 +205,7 @@ namespace GT2.ModelTool.Structures
 
             for (int i = 0; i < LODs.Count; i++)
             {
-                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber, materialNames, lodMetadata[i], materialMetadata);
+                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber, lodMetadata[i], materialMetadata);
                 vertexNumber += LODs[i].Vertices.Count;
                 normalNumber += LODs[i].Normals.Count;
                 coordNumber += LODs[i].GetAllUVCoords().Count;
@@ -224,16 +223,16 @@ namespace GT2.ModelTool.Structures
             materialWriter.WriteLine("newmtl shadowgradient");
             materialWriter.WriteLine("Kd 0.1 0.1 0.1");
 
-            foreach (var materialName in materialNames)
+            foreach (MaterialMetadata material in metadata.Materials)
             {
-                materialWriter.WriteLine($"newmtl {materialName.Key}");
-                if (materialName.Value == null)
+                materialWriter.WriteLine($"newmtl {material.Name}");
+                if (material.IsUntextured)
                 {
                     materialWriter.WriteLine("Kd 0 0 0");
                 }
                 else
                 {
-                    materialWriter.WriteLine($"map_Kd palette{materialName.Value}.bmp");
+                    materialWriter.WriteLine($"map_Kd palette{material.PaletteIndex.Value}.bmp");
                 }
             }
         }
@@ -253,7 +252,9 @@ namespace GT2.ModelTool.Structures
             var wheelPositions = new WheelPosition[4];
             short[] wheelXOffsets = [ metadata.MenuWheels.FrontLeftXOffset, metadata.MenuWheels.FrontRightXOffset, metadata.MenuWheels.RearLeftXOffset, metadata.MenuWheels.RearRightXOffset ];
             string line;
-            int currentWheelPosition = -1;
+            WheelPosition currentWheelPosition = null;
+            int currentWheelPositionNumber = -1;
+            List<Vertex> wheelPositionVertices = [];
             int currentLODNumber = -1;
             bool shadow = false;
             string currentMaterialName = "untextured";
@@ -286,11 +287,17 @@ namespace GT2.ModelTool.Structures
                             usedVertexIDs.Clear();
                             usedNormalIDs.Clear();
                         }
-                        currentScale = 1;
+                        else if (currentWheelPosition != null)
+                        {
+                            currentWheelPosition.ReadFromOBJ(wheelPositionVertices, wheelXOffsets[currentWheelPositionNumber]);
+                            wheelPositionVertices.Clear();
+                        }
                         currentLOD = null;
                         currentLODNumber = -1;
+                        currentScale = 1;
                         shadow = false;
-                        currentWheelPosition = -1;
+                        currentWheelPosition = null;
+                        currentWheelPositionNumber = -1;
                         currentMaterial = null;
 
                         string[] objectNameParts = line.Split(' ')[1].Split('/');
@@ -318,10 +325,12 @@ namespace GT2.ModelTool.Structures
                         }
                         else if (objectName.StartsWith("wheelpos"))
                         {
-                            if (!int.TryParse(objectName.Replace("wheelpos", ""), out currentWheelPosition))
+                            if (!int.TryParse(objectName.Replace("wheelpos", ""), out currentWheelPositionNumber))
                             {
                                 throw new Exception($"Could not read wheel position number from object name '{objectName}'");
                             }
+                            currentWheelPosition = new WheelPosition();
+                            wheelPositions[currentWheelPositionNumber] = currentWheelPosition;
                         }
                     }
                     else if (line.StartsWith("v "))
@@ -339,11 +348,9 @@ namespace GT2.ModelTool.Structures
                             vertex.ReadFromOBJ(line, currentScale);
                             vertices.Add(vertex);
 
-                            if (currentWheelPosition != -1)
+                            if (currentWheelPosition != null)
                             {
-                                var position = new WheelPosition();
-                                position.ReadFromOBJ(vertex, wheelXOffsets[currentWheelPosition]);
-                                wheelPositions[currentWheelPosition] = position;
+                                wheelPositionVertices.Add(vertex);
                             }
                         }
                     }
@@ -362,7 +369,7 @@ namespace GT2.ModelTool.Structures
                     else if (line.StartsWith("usemtl "))
                     {
                         currentMaterialName = line.Split(' ')[1];
-                        if (!shadow)
+                        if (currentLOD != null) // Only LODs have material properties
                         {
                             currentMaterial = FindMaterial(currentMaterialName, metadata.Materials);
                         }
@@ -382,8 +389,9 @@ namespace GT2.ModelTool.Structures
                                 Shadow.Triangles.Add(polygon);
                             }
                         }
-                        else if (currentWheelPosition != -1)
+                        else if (currentWheelPosition != null)
                         {
+                            // Ignore faces for wheel positions, we only need the vertex positions
                             continue;
                         }
                         else
@@ -428,7 +436,9 @@ namespace GT2.ModelTool.Structures
             }
             while (line != null);
 
+            // Finalise any objects that might still be open
             currentLOD?.ReadFromOBJ(vertices, normals, usedVertexIDs, usedNormalIDs);
+            currentWheelPosition?.ReadFromOBJ(wheelPositionVertices, wheelXOffsets[currentWheelPositionNumber]);
 
             if (wheelPositions.Any(position => position == null))
             {

@@ -267,7 +267,7 @@ namespace GT2.ModelTool.Structures
         }
 
         public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber,
-                               Dictionary<string, int?> materialNames, LODMetadata metadata, List<MaterialMetadata> materialMetadata)
+                               LODMetadata metadata, List<MaterialMetadata> materialMetadata)
         {
             metadata.ScaleRelatedMaybe = scaleRelatedMaybe;
 
@@ -286,16 +286,16 @@ namespace GT2.ModelTool.Structures
             coords.ForEach(coord => coord.WriteToOBJ(writer));
 
             writer.WriteLine("# triangles");
-            Triangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, materialNames, materialMetadata));
+            Triangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, materialMetadata));
 
             writer.WriteLine("# quads");
-            Quads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, materialNames, materialMetadata));
+            Quads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, materialMetadata));
 
             writer.WriteLine("# UV triangles");
-            UVTriangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialNames, materialMetadata));
+            UVTriangles.ForEach(polygon => polygon.WriteToOBJ(writer, false, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialMetadata));
 
             writer.WriteLine("# UV quads");
-            UVQuads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialNames, materialMetadata));
+            UVQuads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialMetadata));
         }
 
         public static double ConvertScale(ushort scale) // from commongear's research
