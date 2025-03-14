@@ -160,6 +160,11 @@ namespace GT2.ModelTool.Structures
             stream.Position = dataPosition;
 
             Shadow.WriteToCDO(stream);
+
+            if (stream.Position >= 0x5000)
+            {
+                throw new Exception($"Maximum CDO file size exceeded: {stream.Position} of {0x5000} bytes");
+            }
         }
 
         public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename, ModelMetadata metadata)
@@ -440,6 +445,19 @@ namespace GT2.ModelTool.Structures
                 throw new Exception("The shadow object is missing");
             }
 
+            for (int i = 0; i < 3; i++)
+            {
+                if (lods[i].Vertices.Count > 256)
+                {
+                    throw new Exception($"LOD{i} has more than the maximum of 256 vertices");
+                }
+            }
+
+            if (Shadow.Vertices.Count > 256)
+            {
+                throw new Exception($"Shadow has more than the maximum of 256 vertices");
+            }
+
             Shadow.GenerateBoundingBox();
             LODs = lods.ToList();
             WheelPositions = wheelPositions.ToList();
@@ -456,7 +474,7 @@ namespace GT2.ModelTool.Structures
             MaterialMetadata material = materials.Where(material => material.Name == materialName).FirstOrDefault();
             if (material != null)
             {
-                if (material.RenderOrder < 0 || material.RenderOrder >= 32) // TODO: check bounds
+                if (material.RenderOrder < 0 || material.RenderOrder >= 32)
                 {
                     throw new Exception($"Material '{material.Name}' has missing or invalid render order in JSON file");
                 }
@@ -491,7 +509,7 @@ namespace GT2.ModelTool.Structures
                     material.PaletteIndex = paletteIndex;
                     material.IsUntextured = false;
                 }
-                else if (part.StartsWith("order") && int.TryParse(part.Replace("order", ""), out int order) && order >= 0 && order < 32) // TODO: check upper bound
+                else if (part.StartsWith("order") && int.TryParse(part.Replace("order", ""), out int order) && order >= 0 && order < 32)
                 {
                     material.RenderOrder = order;
                     foundRenderOrder = true;
@@ -533,7 +551,7 @@ namespace GT2.ModelTool.Structures
                     material.PaletteIndex = paletteIndex;
                     material.IsUntextured = false;
                 }
-                else if (pair[0] == "order" && int.TryParse(pair[1], out int order) && order >= 0 && order < 32) // TODO: check upper bound
+                else if (pair[0] == "order" && int.TryParse(pair[1], out int order) && order >= 0 && order < 32)
                 {
                     material.RenderOrder = order;
                     foundOrder = true;

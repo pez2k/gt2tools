@@ -27,7 +27,8 @@ namespace GT2.ModelTool
             {
                 if (args.Length != 2)
                 {
-                    Console.WriteLine("Incorrect usage.");
+                    Console.WriteLine("Common usage:\r\nExport to OBJ: GT2ModelTool -oe filename.cdo\r\nImport to CDO: GT2ModelTool -o2 filename.json\r\n\r\nPress any key to exit.");
+                    Console.ReadKey();
                     return;
                 }
 
@@ -35,27 +36,19 @@ namespace GT2.ModelTool
                 Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
                 string inputPath = args[1];
                 string fileExtension = Path.GetExtension(inputPath).ToLower();
-                Model model;
-                switch (fileExtension)
+                Model model = fileExtension switch
                 {
-                    case ".car":
-                        model = ReadGT1(inputPath);
-                        break;
-                    case ".cdo":
-                    case ".cno":
-                        model = ReadGT2(inputPath);
-                        break;
-                    case ".json":
-                        model = ReadOBJ(inputPath);
-                        break;
-                    default:
-                        Console.WriteLine("Unsupported input type.");
-                        return;
-                }
+                    ".car" => ReadGT1(inputPath),
+                    ".cdo" => ReadGT2(inputPath),
+                    ".cno" => ReadGT2(inputPath),
+                    ".json" => ReadOBJ(inputPath),
+                    _ => throw new Exception($"Unsupported input type '{fileExtension}' - must be a .car, .cdo, .cno, or .json file")
+                };
 
                 string directory = Path.GetDirectoryName(inputPath);
                 string filename = Path.GetFileNameWithoutExtension(inputPath);
                 bool isNight = fileExtension == ".cno" || filename.EndsWith("_night");
+
                 switch (args[0])
                 {
                     case "-o2":
@@ -65,8 +58,7 @@ namespace GT2.ModelTool
                         WriteOBJ(model, directory, filename, isNight);
                         break;
                     default:
-                        Console.WriteLine("Unsupported output type.");
-                        return;
+                        throw new Exception($"Unsupported output type '{args[0]}' - must be -oe for editable files or -o2 for GT2 format");
                 }
             }
             catch (Exception exception)
@@ -131,6 +123,11 @@ namespace GT2.ModelTool
                     if (parts.Length == 2)
                     {
                         throw new Exception($"JSON error: Invalid object, expected {parts[1].TrimEnd('.')}");
+                    }
+                    parts = exception.Message.Split("literal 'true'. ");
+                    if (parts.Length == 2)
+                    {
+                        throw new Exception($"JSON error: Text strings must be wrapped in double quotes. {parts[1].TrimEnd('.')}");
                     }
                     throw new Exception($"JSON error: Invalid JSON. {exception.Message.TrimEnd('.').Replace("GT2.ModelTool.ExportMetadata.Unvalidated", "")}");
                 }
