@@ -152,6 +152,7 @@ namespace GT2.ModelTool.Structures
 
         public void WriteToOBJ(TextWriter writer, int firstVertexNumber, ShadowMetadata metadata)
         {
+            metadata.GradientMaterialName = "shadowgradient";
             metadata.ScaleRelatedMaybe = scaleRelatedMaybe;
 
             double scaleFactor = LOD.ConvertScale(Scale);

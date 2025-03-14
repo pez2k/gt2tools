@@ -5,6 +5,8 @@ using StreamExtensions;
 
 namespace GT2.ModelTool.Structures
 {
+    using ExportMetadata;
+
     public class ShadowPolygon
     {
         public ShadowVertex Vertex0 { get; set; }
@@ -77,7 +79,7 @@ namespace GT2.ModelTool.Structures
         private string WriteVertexToOBJ(ShadowVertex vertex, List<ShadowVertex> vertices, int firstVertexNumber) =>
             $"{vertices.IndexOf(vertex) + firstVertexNumber}";
 
-        public void ReadFromOBJ(string line, List<ShadowVertex> vertices, int startID, string material)
+        public void ReadFromOBJ(string line, List<ShadowVertex> vertices, int startID, string material, ShadowMetadata metadata)
         {
             string[] parts = line.Split(' ');
             if (parts.Length < 4 || parts.Length > 5)
@@ -91,7 +93,7 @@ namespace GT2.ModelTool.Structures
             {
                 Vertex3 = ParseVertex(parts[4], vertices, startID);
             }
-            IsGradientShaded = material == "shadowgradient";
+            IsGradientShaded = material == metadata.GradientMaterialName;
         }
 
         private ShadowVertex ParseVertex(string value, List<ShadowVertex> vertices, int startID)

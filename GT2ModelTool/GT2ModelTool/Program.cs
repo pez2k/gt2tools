@@ -169,8 +169,12 @@ namespace GT2.ModelTool
             ValidateLOD(metadata.LOD0, unvalidatedMetadata.LOD0, nameof(unvalidatedMetadata.LOD0));
             ValidateLOD(metadata.LOD1, unvalidatedMetadata.LOD1, nameof(unvalidatedMetadata.LOD1));
             ValidateLOD(metadata.LOD2, unvalidatedMetadata.LOD2, nameof(unvalidatedMetadata.LOD2));
-            metadata.Shadow.Scale = ValidateDouble(unvalidatedMetadata.Shadow.Scale, $"{nameof(metadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.Scale)}");
-            metadata.Shadow.ScaleRelatedMaybe = ValidateUShort(unvalidatedMetadata.Shadow.ScaleRelatedMaybe, $"{nameof(metadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.ScaleRelatedMaybe)}");
+            if (string.IsNullOrWhiteSpace(unvalidatedMetadata.Shadow.GradientMaterialName))
+            {
+                throw new Exception($"JSON error: {nameof(unvalidatedMetadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.GradientMaterialName)} is missing or blank");
+            }
+            metadata.Shadow.Scale = ValidateDouble(unvalidatedMetadata.Shadow.Scale, $"{nameof(unvalidatedMetadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.Scale)}");
+            metadata.Shadow.ScaleRelatedMaybe = ValidateUShort(unvalidatedMetadata.Shadow.ScaleRelatedMaybe, $"{nameof(unvalidatedMetadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.ScaleRelatedMaybe)}");
             metadata.Materials = unvalidatedMetadata.Materials.Select(ValidateMaterial).ToArray();
             return metadata;
         }

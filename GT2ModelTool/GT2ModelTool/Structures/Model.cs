@@ -372,7 +372,7 @@ namespace GT2.ModelTool.Structures
                         if (shadow)
                         {
                             var polygon = new ShadowPolygon();
-                            polygon.ReadFromOBJ(line, Shadow.Vertices, shadowVertexStartID, currentMaterialName);
+                            polygon.ReadFromOBJ(line, Shadow.Vertices, shadowVertexStartID, currentMaterialName, metadata.Shadow);
                             if (polygon.IsQuad)
                             {
                                 Shadow.Quads.Add(polygon);
