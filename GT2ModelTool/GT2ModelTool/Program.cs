@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 
 namespace GT2.ModelTool
@@ -13,6 +14,12 @@ namespace GT2.ModelTool
     class Program
     {
         private static readonly JsonSerializerOptions serializerOptions = new() { WriteIndented = true };
+        private static readonly JsonSerializerOptions deserializerOptions = new()
+        {
+            AllowTrailingCommas = true,
+            NumberHandling = JsonNumberHandling.AllowReadingFromString,
+            ReadCommentHandling = JsonCommentHandling.Skip
+        };
 
         static void Main(string[] args)
         {
@@ -99,7 +106,34 @@ namespace GT2.ModelTool
                 {
                     throw new Exception("JSON file is blank");
                 }
-                unvalidatedMetadata = JsonSerializer.Deserialize<UnvalidatedModelMetadata>(json);
+                try
+                {
+                    unvalidatedMetadata = JsonSerializer.Deserialize<UnvalidatedModelMetadata>(json, deserializerOptions);
+                }
+                catch (JsonException exception)
+                {
+                    string[] parts = exception.Message.Split("System.Nullable`1[System.Double]. ");
+                    if (parts.Length == 2)
+                    {
+                        throw new Exception($"JSON error: Invalid number. {parts[1].TrimEnd('.')}");
+                    }
+                    parts = exception.Message.Split("System.String. ");
+                    if (parts.Length == 2)
+                    {
+                        throw new Exception($"JSON error: Invalid text string. {parts[1].TrimEnd('.')}");
+                    }
+                    parts = exception.Message.Split("System.Boolean. ");
+                    if (parts.Length == 2)
+                    {
+                        throw new Exception($"JSON error: Invalid value - only true and false are allowed, without quotes. {parts[1].TrimEnd('.')}");
+                    }
+                    parts = exception.Message.Split("GT2.ModelTool.ExportMetadata.Unvalidated");
+                    if (parts.Length == 2)
+                    {
+                        throw new Exception($"JSON error: Invalid object, expected {parts[1].TrimEnd('.')}");
+                    }
+                    throw new Exception($"JSON error: Invalid JSON. {exception.Message.TrimEnd('.').Replace("GT2.ModelTool.ExportMetadata.Unvalidated", "")}");
+                }
             }
 
             ModelMetadata metadata = ValidateMetadata(unvalidatedMetadata);
