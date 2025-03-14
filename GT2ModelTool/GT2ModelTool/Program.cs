@@ -165,14 +165,14 @@ namespace GT2.ModelTool
             }
 
             metadata.ModelFilename = unvalidatedMetadata.ModelFilename;
-            metadata.MenuWheels.FrontWheelDiameter = ValidateDouble(unvalidatedMetadata.MenuWheels.FrontWheelDiameter, nameof(unvalidatedMetadata.MenuWheels.FrontWheelDiameter));
-            metadata.MenuWheels.FrontWheelWidth = ValidateDouble(unvalidatedMetadata.MenuWheels.FrontWheelWidth, nameof(unvalidatedMetadata.MenuWheels.FrontWheelWidth));
-            metadata.MenuWheels.RearWheelDiameter = ValidateDouble(unvalidatedMetadata.MenuWheels.RearWheelDiameter, nameof(unvalidatedMetadata.MenuWheels.RearWheelDiameter));
-            metadata.MenuWheels.RearWheelWidth = ValidateDouble(unvalidatedMetadata.MenuWheels.RearWheelWidth, nameof(unvalidatedMetadata.MenuWheels.RearWheelWidth));
-            metadata.MenuWheels.FrontLeftXOffset = ValidateShort(unvalidatedMetadata.MenuWheels.FrontLeftXOffset, nameof(unvalidatedMetadata.MenuWheels.FrontLeftXOffset));
-            metadata.MenuWheels.FrontRightXOffset = ValidateShort(unvalidatedMetadata.MenuWheels.FrontRightXOffset, nameof(unvalidatedMetadata.MenuWheels.FrontRightXOffset));
-            metadata.MenuWheels.RearLeftXOffset = ValidateShort(unvalidatedMetadata.MenuWheels.RearLeftXOffset, nameof(unvalidatedMetadata.MenuWheels.RearLeftXOffset));
-            metadata.MenuWheels.RearRightXOffset = ValidateShort(unvalidatedMetadata.MenuWheels.RearRightXOffset, nameof(unvalidatedMetadata.MenuWheels.RearRightXOffset));
+            metadata.MenuWheels.FrontWheelDiameter = ValidatePositiveDouble(unvalidatedMetadata.MenuWheels.FrontWheelDiameter, nameof(unvalidatedMetadata.MenuWheels.FrontWheelDiameter));
+            metadata.MenuWheels.FrontWheelWidth = ValidatePositiveDouble(unvalidatedMetadata.MenuWheels.FrontWheelWidth, nameof(unvalidatedMetadata.MenuWheels.FrontWheelWidth));
+            metadata.MenuWheels.RearWheelDiameter = ValidatePositiveDouble(unvalidatedMetadata.MenuWheels.RearWheelDiameter, nameof(unvalidatedMetadata.MenuWheels.RearWheelDiameter));
+            metadata.MenuWheels.RearWheelWidth = ValidatePositiveDouble(unvalidatedMetadata.MenuWheels.RearWheelWidth, nameof(unvalidatedMetadata.MenuWheels.RearWheelWidth));
+            metadata.MenuWheels.FrontLeftXOffset = ValidateSignedDouble(unvalidatedMetadata.MenuWheels.FrontLeftXOffset, nameof(unvalidatedMetadata.MenuWheels.FrontLeftXOffset));
+            metadata.MenuWheels.FrontRightXOffset = ValidateSignedDouble(unvalidatedMetadata.MenuWheels.FrontRightXOffset, nameof(unvalidatedMetadata.MenuWheels.FrontRightXOffset));
+            metadata.MenuWheels.RearLeftXOffset = ValidateSignedDouble(unvalidatedMetadata.MenuWheels.RearLeftXOffset, nameof(unvalidatedMetadata.MenuWheels.RearLeftXOffset));
+            metadata.MenuWheels.RearRightXOffset = ValidateSignedDouble(unvalidatedMetadata.MenuWheels.RearRightXOffset, nameof(unvalidatedMetadata.MenuWheels.RearRightXOffset));
             ValidateLOD(metadata.LOD0, unvalidatedMetadata.LOD0, nameof(unvalidatedMetadata.LOD0));
             ValidateLOD(metadata.LOD1, unvalidatedMetadata.LOD1, nameof(unvalidatedMetadata.LOD1));
             ValidateLOD(metadata.LOD2, unvalidatedMetadata.LOD2, nameof(unvalidatedMetadata.LOD2));
@@ -181,7 +181,7 @@ namespace GT2.ModelTool
                 throw new Exception($"JSON error: {nameof(unvalidatedMetadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.GradientMaterialName)} is missing or blank");
             }
             metadata.Shadow.GradientMaterialName = unvalidatedMetadata.Shadow.GradientMaterialName;
-            metadata.Shadow.Scale = ValidateDouble(unvalidatedMetadata.Shadow.Scale, $"{nameof(unvalidatedMetadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.Scale)}");
+            metadata.Shadow.Scale = ValidatePositiveDouble(unvalidatedMetadata.Shadow.Scale, $"{nameof(unvalidatedMetadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.Scale)}");
             metadata.Shadow.ScaleRelatedMaybe = ValidateUShort(unvalidatedMetadata.Shadow.ScaleRelatedMaybe, $"{nameof(unvalidatedMetadata.Shadow)}.{nameof(unvalidatedMetadata.Shadow.ScaleRelatedMaybe)}");
             metadata.Materials = unvalidatedMetadata.Materials.Select(ValidateMaterial).ToArray();
             return metadata;
@@ -190,7 +190,7 @@ namespace GT2.ModelTool
         private static void ValidateLOD(LODMetadata metadata, UnvalidatedLODMetadata unvalidatedMetadata, string lodName)
         {
             metadata.MaxDistance = ValidateUShort(unvalidatedMetadata.MaxDistance, $"{lodName}.{nameof(unvalidatedMetadata.MaxDistance)}");
-            metadata.Scale = ValidateDouble(unvalidatedMetadata.Scale, $"{lodName}.{nameof(unvalidatedMetadata.Scale)}");
+            metadata.Scale = ValidatePositiveDouble(unvalidatedMetadata.Scale, $"{lodName}.{nameof(unvalidatedMetadata.Scale)}");
             metadata.ScaleRelatedMaybe = ValidateUShort(unvalidatedMetadata.ScaleRelatedMaybe, $"{lodName}.{nameof(unvalidatedMetadata.ScaleRelatedMaybe)}");
         }
 
@@ -228,14 +228,13 @@ namespace GT2.ModelTool
                                                                                      : value > ushort.MaxValue ? throw new Exception($"JSON error: {fieldName} is too large")
                                                                                                                : (ushort)value.Value;
 
-        private static short ValidateShort(double? value, string fieldName) =>
+        private static double ValidateSignedDouble(double? value, string fieldName) =>
             value is null ? throw new Exception($"JSON error: {fieldName} is missing")
-                          : !double.IsInteger(value.Value) ? throw new Exception($"JSON error: {fieldName} must be a whole number")
-                                                           : value < short.MinValue ? throw new Exception($"JSON error: {fieldName} is too small")
-                                                                                    : value > short.MaxValue ? throw new Exception($"JSON error: {fieldName} is too large")
-                                                                                                             : (short)value.Value;
+                          : value < double.MinValue ? throw new Exception($"JSON error: {fieldName} is too small")
+                                                    : value > double.MaxValue ? throw new Exception($"JSON error: {fieldName} is too large")
+                                                                              : value.Value;
 
-        private static double ValidateDouble(double? value, string fieldName) =>
+        private static double ValidatePositiveDouble(double? value, string fieldName) =>
             value is null or 0 ? throw new Exception($"JSON error: {fieldName} is missing or zero")
                                : value < 0 ? throw new Exception($"JSON error: {fieldName} cannot be negative")
                                            : value.Value;

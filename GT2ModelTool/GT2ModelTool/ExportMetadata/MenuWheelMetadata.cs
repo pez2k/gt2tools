@@ -6,9 +6,9 @@
         public double FrontWheelWidth { get; set; }
         public double RearWheelDiameter { get; set; }
         public double RearWheelWidth { get; set; }
-        public short FrontLeftXOffset { get; set; }
-        public short FrontRightXOffset { get; set; }
-        public short RearLeftXOffset { get; set; }
-        public short RearRightXOffset { get; set; }
+        public double FrontLeftXOffset { get; set; }
+        public double FrontRightXOffset { get; set; }
+        public double RearLeftXOffset { get; set; }
+        public double RearRightXOffset { get; set; }
     }
 }

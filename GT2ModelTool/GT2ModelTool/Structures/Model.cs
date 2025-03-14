@@ -195,10 +195,10 @@ namespace GT2.ModelTool.Structures
                 throw new Exception("Expected 4 wheel positions");
             }
 
-            metadata.MenuWheels.FrontLeftXOffset = menuWheelOffsets[0];
-            metadata.MenuWheels.FrontRightXOffset = menuWheelOffsets[1];
-            metadata.MenuWheels.RearLeftXOffset = menuWheelOffsets[2];
-            metadata.MenuWheels.RearRightXOffset = menuWheelOffsets[3];
+            metadata.MenuWheels.FrontLeftXOffset = menuWheelOffsets[0] * Vertex.UnitsToMetres;
+            metadata.MenuWheels.FrontRightXOffset = menuWheelOffsets[1] * Vertex.UnitsToMetres;
+            metadata.MenuWheels.RearLeftXOffset = menuWheelOffsets[2] * Vertex.UnitsToMetres;
+            metadata.MenuWheels.RearRightXOffset = menuWheelOffsets[3] * Vertex.UnitsToMetres;
 
             LODMetadata[] lodMetadata = [ metadata.LOD0, metadata.LOD1, metadata.LOD2 ];
             List<MaterialMetadata> materialMetadata = [];
@@ -250,7 +250,12 @@ namespace GT2.ModelTool.Structures
             var lods = new LOD[3];
             LODMetadata[] lodMetadata = [ metadata.LOD0, metadata.LOD1, metadata.LOD2 ];
             var wheelPositions = new WheelPosition[4];
-            short[] wheelXOffsets = [ metadata.MenuWheels.FrontLeftXOffset, metadata.MenuWheels.FrontRightXOffset, metadata.MenuWheels.RearLeftXOffset, metadata.MenuWheels.RearRightXOffset ];
+            short[] wheelXOffsets = [
+                (short)(metadata.MenuWheels.FrontLeftXOffset / Vertex.UnitsToMetres),
+                (short)(metadata.MenuWheels.FrontRightXOffset / Vertex.UnitsToMetres),
+                (short)(metadata.MenuWheels.RearLeftXOffset / Vertex.UnitsToMetres),
+                (short)(metadata.MenuWheels.RearRightXOffset / Vertex.UnitsToMetres)
+            ];
             string line;
             WheelPosition currentWheelPosition = null;
             int currentWheelPositionNumber = -1;
