@@ -2,10 +2,10 @@
 {
     public class MenuWheelMetadata
     {
-        public ushort FrontWheelRadius { get; set; }
-        public ushort FrontWheelWidth { get; set; }
-        public ushort RearWheelRadius { get; set; }
-        public ushort RearWheelWidth { get; set; }
+        public double FrontWheelDiameter { get; set; }
+        public double FrontWheelWidth { get; set; }
+        public double RearWheelDiameter { get; set; }
+        public double RearWheelWidth { get; set; }
         public short FrontLeftXOffset { get; set; }
         public short FrontRightXOffset { get; set; }
         public short RearLeftXOffset { get; set; }

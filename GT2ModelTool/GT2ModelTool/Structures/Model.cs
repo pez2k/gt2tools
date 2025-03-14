@@ -169,10 +169,10 @@ namespace GT2.ModelTool.Structures
 
         public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename, ModelMetadata metadata)
         {
-            metadata.MenuWheels.FrontWheelRadius = menuFrontWheelRadius;
-            metadata.MenuWheels.FrontWheelWidth = menuFrontWheelWidth;
-            metadata.MenuWheels.RearWheelRadius = menuRearWheelRadius;
-            metadata.MenuWheels.RearWheelWidth = menuRearWheelWidth;
+            metadata.MenuWheels.FrontWheelDiameter = menuFrontWheelRadius * 2 * Vertex.UnitsToMetres;
+            metadata.MenuWheels.FrontWheelWidth = menuFrontWheelWidth * Vertex.UnitsToMetres;
+            metadata.MenuWheels.RearWheelDiameter = menuRearWheelRadius * 2 * Vertex.UnitsToMetres;
+            metadata.MenuWheels.RearWheelWidth = menuRearWheelWidth * Vertex.UnitsToMetres;
             metadata.LOD0.MaxDistance = lod0MaxDistance;
             metadata.LOD1.MaxDistance = lod1MaxDistance;
             metadata.LOD2.MaxDistance = lod2MaxDistance;
@@ -240,10 +240,10 @@ namespace GT2.ModelTool.Structures
 
         public void ReadFromOBJ(TextReader reader, ModelMetadata metadata)
         {
-            menuFrontWheelRadius = metadata.MenuWheels.FrontWheelRadius;
-            menuFrontWheelWidth = metadata.MenuWheels.FrontWheelWidth;
-            menuRearWheelRadius = metadata.MenuWheels.RearWheelRadius;
-            menuRearWheelWidth = metadata.MenuWheels.RearWheelWidth;
+            menuFrontWheelRadius = (ushort)(metadata.MenuWheels.FrontWheelDiameter / 2 / Vertex.UnitsToMetres);
+            menuFrontWheelWidth = (ushort)(metadata.MenuWheels.FrontWheelWidth / Vertex.UnitsToMetres);
+            menuRearWheelRadius = (ushort)(metadata.MenuWheels.RearWheelDiameter / 2 / Vertex.UnitsToMetres);
+            menuRearWheelWidth = (ushort)(metadata.MenuWheels.RearWheelWidth / Vertex.UnitsToMetres);
             lod0MaxDistance = metadata.LOD0.MaxDistance;
             lod1MaxDistance = metadata.LOD1.MaxDistance;
             lod2MaxDistance = metadata.LOD2.MaxDistance;
