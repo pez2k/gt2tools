@@ -313,7 +313,7 @@ namespace GT2.ModelTool.Structures
         {
             if (value < 1 || (value > 1 && value % 2 != 0))
             {
-                throw new Exception("Invalid scale value - must be 1, a power of 2, or 1 over a power of 2.");
+                throw new Exception($"Invalid scale value '{value}' - must be 1, a power of 2, or 1 over a power of 2");
             }
 
             int bits = 0;

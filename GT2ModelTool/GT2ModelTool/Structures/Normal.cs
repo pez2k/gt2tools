@@ -71,7 +71,7 @@ namespace GT2.ModelTool.Structures
             double total = Math.Sqrt((X * X) + (Y * Y) + (Z * Z));
             if (total < 0.995 || total > 1.005)
             {
-                throw new Exception("Invalid unit vector.");
+                throw new Exception("Invalid unit vector");
             }
         }
 
@@ -97,7 +97,7 @@ namespace GT2.ModelTool.Structures
             string[] parts = line.Split(' ');
             if (parts.Length != 4)
             {
-                throw new Exception("Normal does not contain exactly three axis values.");
+                throw new Exception("Normal does not contain exactly three axis values");
             }
             X = double.Parse(parts[1]);
             Y = double.Parse(parts[2]);

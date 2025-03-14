@@ -45,7 +45,7 @@ namespace GT2.ModelTool.Structures
             string[] parts = line.Split(' ').Where(part => !string.IsNullOrWhiteSpace(part)).ToArray();
             if (parts.Length < 4 || parts.Length > 5)
             {
-                throw new Exception("Vertex does not contain exactly three coordinate values.");
+                throw new Exception("Vertex does not contain exactly three coordinate values");
             }
             X = (short)Math.Round(double.Parse(parts[1]) / scale / UnitsToMetres);
             Y = (short)Math.Round(double.Parse(parts[2]) / scale / UnitsToMetres);

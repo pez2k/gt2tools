@@ -427,17 +427,17 @@ namespace GT2.ModelTool.Structures
 
             if (wheelPositions.Any(position => position == null))
             {
-                throw new Exception("One or more of the four wheel position objects are missing.");
+                throw new Exception("One or more of the four wheel position objects are missing");
             }
 
             if (lods.Any(lod => lod == null))
             {
-                throw new Exception("One or more of the three LOD objects are missing.");
+                throw new Exception("One or more of the three LOD objects are missing");
             }
 
             if (Shadow == null)
             {
-                throw new Exception("The shadow object is missing.");
+                throw new Exception("The shadow object is missing");
             }
 
             Shadow.GenerateBoundingBox();
