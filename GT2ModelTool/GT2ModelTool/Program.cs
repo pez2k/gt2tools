@@ -10,6 +10,7 @@ namespace GT2.ModelTool
 {
     using ExportMetadata;
     using Structures;
+    using Transforms;
 
     class Program
     {
@@ -57,6 +58,12 @@ namespace GT2.ModelTool
                     case "-oe":
                         WriteOBJ(model, directory, filename, isNight);
                         break;
+#if DEBUG
+                    case "-o2t":
+                        ModelTransform.Transform(model, filename, isNight);
+                        WriteGT2(model, directory, filename, isNight);
+                        break;
+#endif
                     default:
                         throw new Exception($"Unsupported output type '{args[0]}' - must be -oe for editable files or -o2 for GT2 format");
                 }
