@@ -165,6 +165,7 @@ namespace GT2.ModelTool
             }
 
             metadata.ModelFilename = unvalidatedMetadata.ModelFilename;
+            metadata.AllowUnmappedMaterials = unvalidatedMetadata.AllowUnmappedMaterials;
             metadata.MenuWheels.FrontWheelDiameter = ValidatePositiveDouble(unvalidatedMetadata.MenuWheels.FrontWheelDiameter, nameof(unvalidatedMetadata.MenuWheels.FrontWheelDiameter));
             metadata.MenuWheels.FrontWheelWidth = ValidatePositiveDouble(unvalidatedMetadata.MenuWheels.FrontWheelWidth, nameof(unvalidatedMetadata.MenuWheels.FrontWheelWidth));
             metadata.MenuWheels.RearWheelDiameter = ValidatePositiveDouble(unvalidatedMetadata.MenuWheels.RearWheelDiameter, nameof(unvalidatedMetadata.MenuWheels.RearWheelDiameter));

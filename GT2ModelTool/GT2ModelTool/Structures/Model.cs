@@ -376,7 +376,7 @@ namespace GT2.ModelTool.Structures
                         currentMaterialName = line.Split(' ')[1];
                         if (currentLOD != null) // Only LODs have material properties
                         {
-                            currentMaterial = FindMaterial(currentMaterialName, metadata.Materials);
+                            currentMaterial = FindMaterial(currentMaterialName, metadata.Materials, metadata.AllowUnmappedMaterials);
                         }
                     }
                     else if (line.StartsWith("f "))
@@ -478,11 +478,13 @@ namespace GT2.ModelTool.Structures
             WheelPositions = wheelPositions.ToList();
         }
 
-        private static MaterialMetadata FindMaterial(string materialName, MaterialMetadata[] materials) =>
-            LoadMaterial(materialName, materials)
-                ?? ParseMaterialName(materialName)
-                ?? ParseMaterialNameLegacy(materialName)
-                ?? throw new Exception($"Could not find or parse material name '{materialName}'");
+        private static MaterialMetadata FindMaterial(string materialName, MaterialMetadata[] materials, bool allowUnmappedMaterials) =>
+            allowUnmappedMaterials ? LoadMaterial(materialName, materials)
+                                        ?? ParseMaterialName(materialName)
+                                        ?? ParseMaterialNameLegacy(materialName)
+                                        ?? throw new Exception($"Could not find or parse material name '{materialName}'")
+                                   : LoadMaterial(materialName, materials)
+                                        ?? throw new Exception($"Could not find material name '{materialName}' in JSON file");
 
         private static MaterialMetadata LoadMaterial(string materialName, MaterialMetadata[] materials)
         {

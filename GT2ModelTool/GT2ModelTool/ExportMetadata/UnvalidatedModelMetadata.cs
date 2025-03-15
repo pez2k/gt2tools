@@ -3,6 +3,7 @@
     public class UnvalidatedModelMetadata
     {
         public string ModelFilename { get; set; } = "";
+        public bool AllowUnmappedMaterials { get; set; }
         public UnvalidatedMenuWheelMetadata MenuWheels { get; set; } = new();
         public UnvalidatedLODMetadata LOD0 { get; set; } = new();
         public UnvalidatedLODMetadata LOD1 { get; set; } = new();
