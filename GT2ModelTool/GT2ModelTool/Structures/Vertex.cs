@@ -55,5 +55,7 @@ namespace GT2.ModelTool.Structures
                 W = (short)Math.Round(double.Parse(parts[4]) / scale / UnitsToMetres);
             }
         }
+
+        public Vertex CreateDuplicate() => new Vertex { X = X, Y = Y, Z = Z, W = W };
     }
 }

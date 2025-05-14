@@ -56,7 +56,10 @@ namespace GT2.ModelTool
                         WriteGT2(model, directory, filename, isNight);
                         break;
                     case "-oe":
-                        WriteOBJ(model, directory, filename, isNight);
+                        WriteOBJ(model, directory, filename, isNight, splitOverlappingFaces: false);
+                        break;
+                    case "-oes":
+                        WriteOBJ(model, directory, filename, isNight, splitOverlappingFaces: true);
                         break;
 #if DEBUG
                     case "-o2t":
@@ -65,7 +68,7 @@ namespace GT2.ModelTool
                         break;
 #endif
                     default:
-                        throw new Exception($"Unsupported output type '{args[0]}' - must be -oe for editable files or -o2 for GT2 format");
+                        throw new Exception($"Unsupported output type '{args[0]}' - must be -oe or -oes for editable files or -o2 for GT2 format");
                 }
             }
             catch (Exception exception)
@@ -248,7 +251,7 @@ namespace GT2.ModelTool
             }
         }
 
-        private static void WriteOBJ(Model model, string path, string filename, bool isNight)
+        private static void WriteOBJ(Model model, string path, string filename, bool isNight, bool splitOverlappingFaces)
         {
             filename += isNight ? "_night" : "";
             string objFileName = $"{filename}.obj";
@@ -257,7 +260,7 @@ namespace GT2.ModelTool
                 using (TextWriter materialWriter = new StreamWriter(Path.Combine(path, $"{filename}.mtl")))
                 {
                     ModelMetadata metadata = new() { ModelFilename = objFileName };
-                    model.WriteToOBJ(modelWriter, materialWriter, filename, metadata);
+                    model.WriteToOBJ(modelWriter, materialWriter, filename, metadata, splitOverlappingFaces);
 
                     using (StreamWriter jsonWriter = new(Path.Combine(path, $"{filename}.json")))
                     {

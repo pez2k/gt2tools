@@ -167,7 +167,7 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename, ModelMetadata metadata)
+        public void WriteToOBJ(TextWriter modelWriter, TextWriter materialWriter, string filename, ModelMetadata metadata, bool splitOverlappingFaces)
         {
             metadata.MenuWheels.FrontWheelDiameter = menuFrontWheelRadius * 2 * Vertex.UnitsToMetres;
             metadata.MenuWheels.FrontWheelWidth = menuFrontWheelWidth * Vertex.UnitsToMetres;
@@ -205,7 +205,7 @@ namespace GT2.ModelTool.Structures
 
             for (int i = 0; i < LODs.Count; i++)
             {
-                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber, lodMetadata[i], materialMetadata);
+                LODs[i].WriteToOBJ(modelWriter, i, vertexNumber, normalNumber, coordNumber, lodMetadata[i], materialMetadata, splitOverlappingFaces);
                 vertexNumber += LODs[i].Vertices.Count;
                 normalNumber += LODs[i].Normals.Count;
                 coordNumber += LODs[i].GetAllUVCoords().Count;

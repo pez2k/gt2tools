@@ -327,7 +327,7 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        private (Vertex v, Normal n) ParseVertex(string value, List<Vertex> vertices, List<Normal> normals, List<int> usedVertexIDs, List<int> usedNormalIDs)
+        private static (Vertex v, Normal n) ParseVertex(string value, List<Vertex> vertices, List<Normal> normals, List<int> usedVertexIDs, List<int> usedNormalIDs)
         {
             string[] vertexData = value.Split('/');
             int vertexID = int.Parse(vertexData[0]) - 1;
@@ -341,6 +341,34 @@ namespace GT2.ModelTool.Structures
                 usedNormalIDs.Add(normalID);
             }
             return (vertex, normal);
+        }
+
+        public bool IsDuplicateOf(Polygon polygon) =>
+            (polygon != this) && UsesVertex(polygon.Vertex0) && UsesVertex(polygon.Vertex1) && UsesVertex(polygon.Vertex2) && (!polygon.IsQuad || UsesVertex(polygon.Vertex3));
+
+        private bool UsesVertex(Vertex vertex) => Vertex0 == vertex || Vertex1 == vertex || Vertex2 == vertex || (IsQuad && Vertex3 == vertex);
+
+        public void DuplicateVertices(List<Vertex> vertices, Dictionary<Vertex, Vertex> duplicatedVertices)
+        {
+            Vertex0 = DuplicateVertex(Vertex0, vertices, duplicatedVertices);
+            Vertex1 = DuplicateVertex(Vertex1, vertices, duplicatedVertices);
+            Vertex2 = DuplicateVertex(Vertex2, vertices, duplicatedVertices);
+
+            if (IsQuad)
+            {
+                Vertex3 = DuplicateVertex(Vertex3, vertices, duplicatedVertices);
+            }
+        }
+
+        private static Vertex DuplicateVertex(Vertex original, List<Vertex> vertices, Dictionary<Vertex, Vertex> duplicatedVertices)
+        {
+            if (!duplicatedVertices.TryGetValue(original, out Vertex duplicate))
+            {
+                duplicate = original.CreateDuplicate();
+                vertices.Add(duplicate);
+                duplicatedVertices.Add(original, duplicate);
+            }
+            return duplicate;
         }
     }
 }

@@ -267,8 +267,13 @@ namespace GT2.ModelTool.Structures
         }
 
         public void WriteToOBJ(TextWriter writer, int lodNumber, int firstVertexNumber, int firstNormalNumber, int firstCoordNumber,
-                               LODMetadata metadata, List<MaterialMetadata> materialMetadata)
+                               LODMetadata metadata, List<MaterialMetadata> materialMetadata, bool splitOverlappingFaces)
         {
+            if (splitOverlappingFaces)
+            {
+                SplitOverlappingFaces();
+            }
+
             metadata.ScaleRelatedMaybe = scaleRelatedMaybe;
 
             double scaleFactor = ConvertScale(Scale);
@@ -296,6 +301,27 @@ namespace GT2.ModelTool.Structures
 
             writer.WriteLine("# UV quads");
             UVQuads.ForEach(polygon => polygon.WriteToOBJ(writer, true, Vertices, Normals, firstVertexNumber, firstNormalNumber, coords, firstCoordNumber, materialMetadata));
+        }
+
+        private void SplitOverlappingFaces()
+        {
+            Dictionary<Vertex, Vertex> duplicatedVertices = [];
+            SplitOverlappingFaces(Triangles, duplicatedVertices);
+            SplitOverlappingFaces(Quads, duplicatedVertices);
+            SplitOverlappingFaces(UVTriangles, duplicatedVertices);
+            SplitOverlappingFaces(UVQuads, duplicatedVertices);
+        }
+
+        private void SplitOverlappingFaces<TPolygon>(List<TPolygon> polygons, Dictionary<Vertex, Vertex> duplicatedVertices) where TPolygon : Polygon
+        {
+            for (int i = polygons.Count - 1; i >= 0; i--)
+            {
+                TPolygon polygon = polygons[i];
+                if (polygons.Where(previousPolygon => previousPolygon.IsDuplicateOf(polygon)).Any()) // If there's a duplicate earlier in the list of faces, we're the overlapping face
+                {
+                    polygon.DuplicateVertices(Vertices, duplicatedVertices);
+                }
+            }
         }
 
         public static double ConvertScale(ushort scale) // from commongear's research
