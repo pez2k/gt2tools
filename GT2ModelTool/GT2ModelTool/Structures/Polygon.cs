@@ -18,6 +18,7 @@ namespace GT2.ModelTool.Structures
         public int RenderOrder { get; set; } = 0b10000;
         public int RenderFlags { get; set; }
         public int FaceType { get; set; }
+        public int FaceColour { get; set; }
         public Normal Vertex0Normal { get; set; }
         public Normal Vertex1Normal { get; set; }
         public Normal Vertex2Normal { get; set; }
@@ -84,6 +85,7 @@ namespace GT2.ModelTool.Structures
             {
                 throw new Exception($"Unrecognised face type {FaceType}");
             }
+            FaceColour = faceTypeData & 0xFFFFFF;
         }
 
         public virtual void ReadFromCAR(Stream stream, bool isQuad, List<Vertex> vertices, List<Normal> normals)
@@ -263,7 +265,7 @@ namespace GT2.ModelTool.Structures
             stream.WriteUShort((ushort)((normal0Ref << 5) + RenderOrder));
             stream.WriteUShort((ushort)(RenderFlags << 12));
             stream.WriteUInt((uint)((normal1Ref << 1) + (normal2Ref << 10) + (normal3Ref << 19)));
-            stream.WriteUInt((uint)(FaceType << 24));
+            stream.WriteUInt((uint)((FaceType << 24) + FaceColour));
         }
 
         public void WriteToOBJ(TextWriter writer, bool isQuad, List<Vertex> vertices, List<Normal> normals,
