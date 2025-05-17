@@ -4,6 +4,7 @@
     {
         public string ModelFilename { get; set; } = "";
         public bool AllowUnmappedMaterials { get; set; }
+        public bool MergeOverlappingFaces { get; set; }
         public UnvalidatedMenuWheelMetadata MenuWheels { get; set; } = new();
         public UnvalidatedLODMetadata LOD0 { get; set; } = new();
         public UnvalidatedLODMetadata LOD1 { get; set; } = new();

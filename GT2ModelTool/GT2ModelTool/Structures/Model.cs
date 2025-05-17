@@ -200,6 +200,7 @@ namespace GT2.ModelTool.Structures
             metadata.MenuWheels.RearLeftXOffset = menuWheelOffsets[2] * Vertex.UnitsToMetres;
             metadata.MenuWheels.RearRightXOffset = menuWheelOffsets[3] * Vertex.UnitsToMetres;
 
+            metadata.MergeOverlappingFaces = splitOverlappingFaces;
             LODMetadata[] lodMetadata = [ metadata.LOD0, metadata.LOD1, metadata.LOD2 ];
             List<MaterialMetadata> materialMetadata = [];
 
@@ -272,6 +273,8 @@ namespace GT2.ModelTool.Structures
             var usedNormalIDs = new List<int>();
             int shadowVertexStartID = 0;
             double currentScale = 1;
+            List<Vertex> currentLODVertices = [];
+            Dictionary<Vertex, Vertex> duplicateVertices = [];
             int lineNumber = 0;
             do
             {
@@ -288,7 +291,9 @@ namespace GT2.ModelTool.Structures
                     {
                         if (currentLOD != null)
                         {
-                            currentLOD.ReadFromOBJ(vertices, normals, usedVertexIDs, usedNormalIDs);
+                            currentLOD.ReadFromOBJ(vertices, normals, usedVertexIDs, usedNormalIDs, metadata.MergeOverlappingFaces, duplicateVertices);
+                            currentLODVertices.Clear();
+                            duplicateVertices.Clear();
                             usedVertexIDs.Clear();
                             usedNormalIDs.Clear();
                         }
@@ -352,10 +357,19 @@ namespace GT2.ModelTool.Structures
                             var vertex = new Vertex();
                             vertex.ReadFromOBJ(line, currentScale);
                             vertices.Add(vertex);
+                            currentLODVertices.Add(vertex);
 
                             if (currentWheelPosition != null)
                             {
                                 wheelPositionVertices.Add(vertex);
+                            }
+                            else if (metadata.MergeOverlappingFaces)
+                            {
+                                Vertex matchingVertex = currentLODVertices.FirstOrDefault(vertex.IsDuplicateOf);
+                                if (matchingVertex != null)
+                                {
+                                    duplicateVertices.Add(vertex, matchingVertex);
+                                }
                             }
                         }
                     }
@@ -442,7 +456,7 @@ namespace GT2.ModelTool.Structures
             while (line != null);
 
             // Finalise any objects that might still be open
-            currentLOD?.ReadFromOBJ(vertices, normals, usedVertexIDs, usedNormalIDs);
+            currentLOD?.ReadFromOBJ(vertices, normals, usedVertexIDs, usedNormalIDs, metadata.MergeOverlappingFaces, duplicateVertices);
             currentWheelPosition?.ReadFromOBJ(wheelPositionVertices, wheelXOffsets[currentWheelPositionNumber]);
 
             if (wheelPositions.Any(position => position == null))

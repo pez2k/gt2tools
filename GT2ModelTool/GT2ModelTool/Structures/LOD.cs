@@ -367,11 +367,54 @@ namespace GT2.ModelTool.Structures
             scaleRelatedMaybe = metadata.ScaleRelatedMaybe;
         }
 
-        public void ReadFromOBJ(List<Vertex> vertices, List<Normal> normals, List<int> usedVertexIDs, List<int> usedNormalIDs)
+        public void ReadFromOBJ(List<Vertex> vertices, List<Normal> normals, List<int> usedVertexIDs, List<int> usedNormalIDs, bool mergeOverlappingFaces, Dictionary<Vertex, Vertex> duplicateVertices)
         {
-            Vertices = usedVertexIDs.OrderBy(id => id).Distinct().Select(id => vertices[id]).ToList();
+            if (mergeOverlappingFaces)
+            {
+                MergeOverlappingFaces(Triangles, duplicateVertices);
+                MergeOverlappingFaces(Quads, duplicateVertices);
+                MergeOverlappingFaces(UVTriangles, duplicateVertices);
+                MergeOverlappingFaces(UVQuads, duplicateVertices);
+
+                // Only include vertices that are still in use after merging
+                Vertices = usedVertexIDs.OrderBy(id => id).Distinct()
+                                        .Select(id => vertices[id])
+                                        .Where(vertex => Triangles.Any(triangle => triangle.UsesVertex(vertex)) || Quads.Any(quad => quad.UsesVertex(vertex))
+                                                             || UVTriangles.Any(triangle => triangle.UsesVertex(vertex)) || UVQuads.Any(quad => quad.UsesVertex(vertex)))
+                                        .ToList();
+            }
+            else
+            {
+                Vertices = usedVertexIDs.OrderBy(id => id).Distinct().Select(id => vertices[id]).ToList();
+            }
+
             Normals = usedNormalIDs.OrderBy(id => id).Distinct().Select(id => normals[id]).ToList();
             GenerateBoundingBox();
+        }
+
+        private static void MergeOverlappingFaces<TPolygon>(List<TPolygon> polygons, Dictionary<Vertex, Vertex> duplicateVertices) where TPolygon : Polygon
+        {
+            foreach (Polygon polygon in polygons)
+            {
+                Vertex vertex3 = null;
+                // Are all of the vertices duplicates?
+                if (duplicateVertices.TryGetValue(polygon.Vertex0, out Vertex vertex0) && duplicateVertices.TryGetValue(polygon.Vertex1, out Vertex vertex1)
+                        && duplicateVertices.TryGetValue(polygon.Vertex2, out Vertex vertex2) && (!polygon.IsQuad || duplicateVertices.TryGetValue(polygon.Vertex3, out vertex3)))
+                {
+                    // Does another face of the same type use all of the same original vertices?
+                    if (polygons.Any(previousPolygon => previousPolygon != polygon && previousPolygon.UsesVertex(vertex0) && previousPolygon.UsesVertex(vertex1)
+                                                            && previousPolygon.UsesVertex(vertex2) && (!previousPolygon.IsQuad || previousPolygon.UsesVertex(vertex3))))
+                    {
+                        polygon.Vertex0 = vertex0;
+                        polygon.Vertex1 = vertex1;
+                        polygon.Vertex2 = vertex2;
+                        if (polygon.IsQuad)
+                        {
+                            polygon.Vertex3 = vertex3;
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -57,5 +57,7 @@ namespace GT2.ModelTool.Structures
         }
 
         public Vertex CreateDuplicate() => new Vertex { X = X, Y = Y, Z = Z, W = W };
+
+        public bool IsDuplicateOf(Vertex vertex) => X == vertex.X && Y == vertex.Y && Z == vertex.Z && W == vertex.W;
     }
 }

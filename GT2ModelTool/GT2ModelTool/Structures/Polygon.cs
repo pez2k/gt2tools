@@ -18,7 +18,7 @@ namespace GT2.ModelTool.Structures
         public int RenderOrder { get; set; } = 0b10000;
         public int RenderFlags { get; set; }
         public int FaceType { get; set; }
-        public int FaceColour { get; set; }
+        public int FaceColour { get; set; } // BGR555
         public Normal Vertex0Normal { get; set; }
         public Normal Vertex1Normal { get; set; }
         public Normal Vertex2Normal { get; set; }
@@ -348,7 +348,7 @@ namespace GT2.ModelTool.Structures
         public bool IsDuplicateOf(Polygon polygon) =>
             (polygon != this) && UsesVertex(polygon.Vertex0) && UsesVertex(polygon.Vertex1) && UsesVertex(polygon.Vertex2) && (!polygon.IsQuad || UsesVertex(polygon.Vertex3));
 
-        private bool UsesVertex(Vertex vertex) => Vertex0 == vertex || Vertex1 == vertex || Vertex2 == vertex || (IsQuad && Vertex3 == vertex);
+        public bool UsesVertex(Vertex vertex) => Vertex0 == vertex || Vertex1 == vertex || Vertex2 == vertex || (IsQuad && Vertex3 == vertex);
 
         public void DuplicateVertices(List<Vertex> vertices, Dictionary<Vertex, Vertex> duplicatedVertices)
         {

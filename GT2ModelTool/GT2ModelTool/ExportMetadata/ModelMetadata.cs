@@ -9,6 +9,9 @@ namespace GT2.ModelTool.ExportMetadata
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public bool AllowUnmappedMaterials { get; set; }
 
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public bool MergeOverlappingFaces { get; set; }
+
         public MenuWheelMetadata MenuWheels { get; set; } = new();
         public LODMetadata LOD0 { get; set; } = new();
         public LODMetadata LOD1 { get; set; } = new();
