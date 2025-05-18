@@ -306,18 +306,19 @@ namespace GT2.ModelTool.Structures
         private void SplitOverlappingFaces()
         {
             Dictionary<Vertex, Vertex> duplicatedVertices = [];
-            SplitOverlappingFaces(Triangles, duplicatedVertices);
-            SplitOverlappingFaces(Quads, duplicatedVertices);
-            SplitOverlappingFaces(UVTriangles, duplicatedVertices);
-            SplitOverlappingFaces(UVQuads, duplicatedVertices);
+            SplitOverlappingFaces(Triangles, UVTriangles, duplicatedVertices);
+            SplitOverlappingFaces(Quads, UVQuads, duplicatedVertices);
+            SplitOverlappingFaces(UVTriangles, Triangles, duplicatedVertices);
+            SplitOverlappingFaces(UVQuads, Quads, duplicatedVertices);
         }
 
-        private void SplitOverlappingFaces<TPolygon>(List<TPolygon> polygons, Dictionary<Vertex, Vertex> duplicatedVertices) where TPolygon : Polygon
+        private void SplitOverlappingFaces<TPolygon, TPolygon2>(List<TPolygon> polygons, List<TPolygon2> polygons2, Dictionary<Vertex, Vertex> duplicatedVertices) where TPolygon : Polygon where TPolygon2 : Polygon
         {
             for (int i = polygons.Count - 1; i >= 0; i--)
             {
                 TPolygon polygon = polygons[i];
-                if (polygons.Where(previousPolygon => previousPolygon.IsDuplicateOf(polygon)).Any()) // If there's a duplicate earlier in the list of faces, we're the overlapping face
+                if (polygons.Where(previousPolygon => previousPolygon.IsDuplicateOf(polygon)).Any() ||
+                    polygons2.Where(previousPolygon => previousPolygon.IsDuplicateOf(polygon)).Any()) // If there's a duplicate earlier in the list of faces, we're the overlapping face
                 {
                     polygon.DuplicateVertices(Vertices, duplicatedVertices);
                 }
@@ -371,10 +372,10 @@ namespace GT2.ModelTool.Structures
         {
             if (mergeOverlappingFaces)
             {
-                MergeOverlappingFaces(Triangles, duplicateVertices);
-                MergeOverlappingFaces(Quads, duplicateVertices);
-                MergeOverlappingFaces(UVTriangles, duplicateVertices);
-                MergeOverlappingFaces(UVQuads, duplicateVertices);
+                MergeOverlappingFaces(Triangles, UVTriangles, duplicateVertices);
+                MergeOverlappingFaces(Quads, UVQuads, duplicateVertices);
+                MergeOverlappingFaces(UVTriangles, Triangles, duplicateVertices);
+                MergeOverlappingFaces(UVQuads, Quads, duplicateVertices);
 
                 // Only include vertices that are still in use after merging
                 Vertices = usedVertexIDs.OrderBy(id => id).Distinct()
@@ -392,7 +393,7 @@ namespace GT2.ModelTool.Structures
             GenerateBoundingBox();
         }
 
-        private static void MergeOverlappingFaces<TPolygon>(List<TPolygon> polygons, Dictionary<Vertex, Vertex> duplicateVertices) where TPolygon : Polygon
+        private static void MergeOverlappingFaces<TPolygon, TPolygon2>(List<TPolygon> polygons, List<TPolygon2> polygons2, Dictionary<Vertex, Vertex> duplicateVertices) where TPolygon : Polygon where TPolygon2 : Polygon
         {
             foreach (Polygon polygon in polygons)
             {
@@ -403,7 +404,9 @@ namespace GT2.ModelTool.Structures
                 {
                     // Does another face of the same type use all of the same original vertices?
                     if (polygons.Any(previousPolygon => previousPolygon != polygon && previousPolygon.UsesVertex(vertex0) && previousPolygon.UsesVertex(vertex1)
-                                                            && previousPolygon.UsesVertex(vertex2) && (!previousPolygon.IsQuad || previousPolygon.UsesVertex(vertex3))))
+                                                            && previousPolygon.UsesVertex(vertex2) && (!previousPolygon.IsQuad || previousPolygon.UsesVertex(vertex3))) ||
+                        polygons2.Any(previousPolygon => previousPolygon != polygon && previousPolygon.UsesVertex(vertex0) && previousPolygon.UsesVertex(vertex1)
+                                                             && previousPolygon.UsesVertex(vertex2) && (!previousPolygon.IsQuad || previousPolygon.UsesVertex(vertex3))))
                     {
                         polygon.Vertex0 = vertex0;
                         polygon.Vertex1 = vertex1;
