@@ -232,7 +232,8 @@ namespace GT2.ModelTool.Structures
                     int R = material.SolidColour & 0xFF;
                     int G = (material.SolidColour >> 8) & 0xFF;
                     int B = (material.SolidColour >> 16) & 0xFF;
-                    materialWriter.WriteLine($"Kd {R} {G} {B}");
+                    (double R2, double G2, double B2) = ConvertColourToLinearRGB(R, G, B); // Blender expects linear RGB for diffuse colours, but no real standard
+                    materialWriter.WriteLine($"Kd {R2} {G2} {B2}");
                 }
                 else
                 {
@@ -240,6 +241,11 @@ namespace GT2.ModelTool.Structures
                 }
             }
         }
+
+        private static (double R, double G, double B) ConvertColourToLinearRGB(int R, int G, int B) =>
+            (NonLinearToLinearRGB(R / 255.0), NonLinearToLinearRGB(G / 255.0), NonLinearToLinearRGB(B / 255.0));
+
+        private static double NonLinearToLinearRGB(double value) => value <= 0.04045 ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
 
         public void ReadFromOBJ(TextReader reader, string directory, ModelMetadata metadata)
         {
@@ -546,11 +552,12 @@ namespace GT2.ModelTool.Structures
                     else if (line.StartsWith("Kd "))
                     {
                         string[] parts = line.Split(' ');
-                        if (parts.Length >= 4 && double.TryParse(parts[1], out double R) && R >= 0 && R < 256
-                                              && double.TryParse(parts[2], out double G) && G >= 0 && G < 256
-                                              && double.TryParse(parts[3], out double B) && B >= 0 && B < 256)
+                        if (parts.Length >= 4 && double.TryParse(parts[1], out double R) && R >= 0 && R <= 1
+                                              && double.TryParse(parts[2], out double G) && G >= 0 && G <= 1
+                                              && double.TryParse(parts[3], out double B) && B >= 0 && B <= 1)
                         {
-                            int diffuseColour = (int)R + ((int)G << 8) + ((int)B << 16);
+                            (int R2, int G2, int B2) = ConvertColourFromLinearRGB(R, G, B);
+                            int diffuseColour = R2 + (G2 << 8) + (B2 << 16);
                             if (diffuseColour > 0 && !string.IsNullOrEmpty(currentMaterialName))
                             {
                                 materialColours.Add(currentMaterialName, diffuseColour);
@@ -567,6 +574,13 @@ namespace GT2.ModelTool.Structures
 
             return materialColours;
         }
+
+        private static (int R, int G, int B) ConvertColourFromLinearRGB(double R, double G, double B) =>
+            ((int)(LinearToNonLinearRGB(R) * 255), (int)(LinearToNonLinearRGB(G) * 255), (int)(LinearToNonLinearRGB(B) * 255));
+
+        private static double LinearToNonLinearRGB(double value) =>
+            value <= 0.0031308 ? value * 12.92
+                               : (Math.Pow(value, 1 / 2.4) * 1.055) - 0.055;
 
         private static MaterialMetadata FindMaterial(string materialName, MaterialMetadata[] materials, bool allowUnmappedMaterials) =>
             allowUnmappedMaterials ? LoadMaterial(materialName, materials)
