@@ -145,7 +145,8 @@ namespace GT2.ModelTool
 
             ModelMetadata metadata = ValidateMetadata(unvalidatedMetadata);
 
-            string objectFilename = Path.Combine(Path.GetDirectoryName(filename), metadata.ModelFilename);
+            string directory = Path.GetDirectoryName(filename);
+            string objectFilename = Path.Combine(directory, metadata.ModelFilename);
             if (!File.Exists(objectFilename))
             {
                 throw new Exception($"Could not find or access a file named {metadata.ModelFilename}");
@@ -154,7 +155,7 @@ namespace GT2.ModelTool
             using (TextReader modelReader = new StreamReader(objectFilename))
             {
                 var model = new Model();
-                model.ReadFromOBJ(modelReader, metadata);
+                model.ReadFromOBJ(modelReader, directory, metadata);
                 return model;
             }
         }

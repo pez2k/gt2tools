@@ -19,5 +19,8 @@ namespace GT2.ModelTool.ExportMetadata
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public bool IsMatte { get; set; }
+
+        [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
+        public int SolidColour { get; set; }
     }
 }

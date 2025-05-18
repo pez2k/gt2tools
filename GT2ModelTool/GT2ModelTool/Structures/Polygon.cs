@@ -18,7 +18,7 @@ namespace GT2.ModelTool.Structures
         public int RenderOrder { get; set; } = 0b10000;
         public int RenderFlags { get; set; }
         public int FaceType { get; set; }
-        public int FaceColour { get; set; } // BGR555
+        public int FaceColour { get; set; } // BGR888
         public Normal Vertex0Normal { get; set; }
         public Normal Vertex1Normal { get; set; }
         public Normal Vertex2Normal { get; set; }
@@ -272,7 +272,7 @@ namespace GT2.ModelTool.Structures
                                int firstVertexNumber, int firstNormalNumber, List<MaterialMetadata> metadata)
         {
             string materialName = $"untextured_{GenerateMaterialName()}";
-            metadata.Add(GenerateMaterialMetadata(materialName) with { IsUntextured = true });
+            metadata.Add(GenerateMaterialMetadata(materialName) with { IsUntextured = true, SolidColour = FaceColour });
             writer.WriteLine($"usemtl {materialName}");
             writer.WriteLine($"f {WriteVertexToOBJ(Vertex0, Vertex0Normal, vertices, normals, firstVertexNumber, firstNormalNumber)} " +
                              $"{WriteVertexToOBJ(Vertex1, Vertex1Normal, vertices, normals, firstVertexNumber, firstNormalNumber)} " +
@@ -280,7 +280,7 @@ namespace GT2.ModelTool.Structures
                              (isQuad ? $" {WriteVertexToOBJ(Vertex3, Vertex3Normal, vertices, normals, firstVertexNumber, firstNormalNumber)}" : ""));
         }
 
-        protected string GenerateMaterialName() => $"order{RenderOrder:D2}{(IsBrakeLight() ? "_brake" : "")}{(IsMatte() ? "_matte" : "")}";
+        protected string GenerateMaterialName() => $"order{RenderOrder:D2}{(IsBrakeLight() ? "_brake" : "")}{(IsMatte() ? "_matte" : "")}{(FaceColour == 0 ? "" : $"_{FaceColour:X6}")}";
 
         protected MaterialMetadata GenerateMaterialMetadata(string materialName) =>
             new MaterialMetadata
@@ -314,6 +314,10 @@ namespace GT2.ModelTool.Structures
                 (Vertex3, Vertex3Normal) = ParseVertex(parts[4], vertices, normals, usedVertexIDs, usedNormalIDs);
             }
             FaceType = IsQuad ? 40 : 32;
+            if (material.SolidColour > 0)
+            {
+                FaceColour = material.SolidColour;
+            }
         }
 
         protected virtual void ApplyMaterial(MaterialMetadata material)

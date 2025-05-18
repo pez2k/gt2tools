@@ -229,7 +229,10 @@ namespace GT2.ModelTool.Structures
                 materialWriter.WriteLine($"newmtl {material.Name}");
                 if (material.IsUntextured)
                 {
-                    materialWriter.WriteLine("Kd 0 0 0");
+                    int R = material.SolidColour & 0xFF;
+                    int G = (material.SolidColour >> 8) & 0xFF;
+                    int B = (material.SolidColour >> 16) & 0xFF;
+                    materialWriter.WriteLine($"Kd {R} {G} {B}");
                 }
                 else
                 {
@@ -238,7 +241,7 @@ namespace GT2.ModelTool.Structures
             }
         }
 
-        public void ReadFromOBJ(TextReader reader, ModelMetadata metadata)
+        public void ReadFromOBJ(TextReader reader, string directory, ModelMetadata metadata)
         {
             menuFrontWheelRadius = (ushort)(metadata.MenuWheels.FrontWheelDiameter / 2 / Vertex.UnitsToMetres);
             menuFrontWheelWidth = (ushort)(metadata.MenuWheels.FrontWheelWidth / Vertex.UnitsToMetres);
@@ -275,6 +278,7 @@ namespace GT2.ModelTool.Structures
             double currentScale = 1;
             List<Vertex> currentLODVertices = [];
             Dictionary<Vertex, Vertex> duplicateVertices = [];
+            Dictionary<string, int> materialColours = [];
             int lineNumber = 0;
             do
             {
@@ -287,7 +291,25 @@ namespace GT2.ModelTool.Structures
 
                 try
                 {
-                    if (line.StartsWith("o ") || line.StartsWith("g "))
+                    if (line.StartsWith("mtllib "))
+                    {
+                        string[] parts = line.Split(' ');
+                        if (parts.Length == 2)
+                        {
+                            string materialFilename = parts[1];
+                            string materialFilePath = Path.Combine(directory, materialFilename);
+                            if (!File.Exists(materialFilePath))
+                            {
+                                throw new Exception($"Could not find or access a file named {materialFilename}");
+                            }
+
+                            using (TextReader materialReader = new StreamReader(materialFilePath))
+                            {
+                                materialColours = ReadMTLFile(materialReader);
+                            }
+                        }
+                    }
+                    else if (line.StartsWith("o ") || line.StartsWith("g "))
                     {
                         if (currentLOD != null)
                         {
@@ -391,6 +413,10 @@ namespace GT2.ModelTool.Structures
                         if (currentLOD != null) // Only LODs have material properties
                         {
                             currentMaterial = FindMaterial(currentMaterialName, metadata.Materials, metadata.AllowUnmappedMaterials);
+                            if (materialColours.TryGetValue(currentMaterialName, out int materialColour))
+                            {
+                                currentMaterial.SolidColour = materialColour;
+                            }
                         }
                     }
                     else if (line.StartsWith("f "))
@@ -490,6 +516,56 @@ namespace GT2.ModelTool.Structures
             Shadow.GenerateBoundingBox();
             LODs = lods.ToList();
             WheelPositions = wheelPositions.ToList();
+        }
+
+        private static Dictionary<string, int> ReadMTLFile(TextReader reader)
+        {
+            string line;
+            int lineNumber = 0;
+            string currentMaterialName = null;
+            Dictionary<string, int> materialColours = [];
+            do
+            {
+                line = reader.ReadLine();
+                lineNumber++;
+                if (string.IsNullOrWhiteSpace(line) || line.StartsWith('#'))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    if (line.StartsWith("newmtl "))
+                    {
+                        string[] parts = line.Split(' ');
+                        if (parts.Length > 1)
+                        {
+                            currentMaterialName = parts[1];
+                        }
+                    }
+                    else if (line.StartsWith("Kd "))
+                    {
+                        string[] parts = line.Split(' ');
+                        if (parts.Length >= 4 && double.TryParse(parts[1], out double R) && R >= 0 && R < 256
+                                              && double.TryParse(parts[2], out double G) && G >= 0 && G < 256
+                                              && double.TryParse(parts[3], out double B) && B >= 0 && B < 256)
+                        {
+                            int diffuseColour = (int)R + ((int)G << 8) + ((int)B << 16);
+                            if (diffuseColour > 0 && !string.IsNullOrEmpty(currentMaterialName))
+                            {
+                                materialColours.Add(currentMaterialName, diffuseColour);
+                            }
+                        }
+                    }
+                }
+                catch (Exception exception)
+                {
+                    throw new Exception($"MTL file line {lineNumber}: {line}\r\n{exception.Message}", exception);
+                }
+            }
+            while (line != null);
+
+            return materialColours;
         }
 
         private static MaterialMetadata FindMaterial(string materialName, MaterialMetadata[] materials, bool allowUnmappedMaterials) =>
