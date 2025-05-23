@@ -5,8 +5,8 @@
     <AssemblyTitle>GT2ModelTool</AssemblyTitle>
     <Product>GT2ModelTool</Product>
     <Copyright>Copyright © pez2k 2025</Copyright>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Common.csproj" />
