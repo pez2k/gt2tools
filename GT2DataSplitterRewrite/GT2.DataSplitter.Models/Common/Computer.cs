@@ -1,0 +1,6 @@
+﻿namespace GT2.DataSplitter.Models.Common
+{
+    public class Computer : GenericEngineUpgrade
+    {
+    }
+}
