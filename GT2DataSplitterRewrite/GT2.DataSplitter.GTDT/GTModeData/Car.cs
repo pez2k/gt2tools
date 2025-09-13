@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.GTModeData
 {
     using CarNameConversion;
 
-    public class Car : MappedDataStructure<Car.Data>
+    public class Car : MappedDataStructure<Car.Data, Models.GTMode.Car>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x48
         public struct Data
@@ -46,7 +46,7 @@ namespace GT2.DataSplitter.GTDT.GTModeData
             public uint Price; // 0x44
         }
 
-        public Models.GTMode.Car MapToModel(UnicodeStringTable strings) =>
+        public override Models.GTMode.Car MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.GTMode.Car
             {
                 CarId = data.CarId.ToCarName(),
@@ -78,8 +78,8 @@ namespace GT2.DataSplitter.GTDT.GTModeData
                 TractionControlSystem = data.TractionControlSystem,
                 RimsCode3 = data.RimsCode3,
                 ManufacturerID = data.ManufacturerID,
-                NameFirstPart = strings.Get(data.NameFirstPart),
-                NameSecondPart = strings.Get(data.NameSecondPart),
+                NameFirstPart = unicode.Get(data.NameFirstPart),
+                NameSecondPart = unicode.Get(data.NameSecondPart),
                 HasAllTiresBought = data.HasAllTiresBought == 1,
                 Year = data.Year,
                 Unknown = data.Unknown,

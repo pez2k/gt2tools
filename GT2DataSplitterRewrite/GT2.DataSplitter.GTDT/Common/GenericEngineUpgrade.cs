@@ -4,20 +4,20 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class GenericEngineUpgrade : MappedDataStructure<GenericEngineUpgrade.Data>
+    [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0xC
+    public struct GenericEngineUpgradeData
     {
-        [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0xC
-        public struct Data
-        {
-            public uint CarId;
-            public uint Price;
-            public byte Stage;
-            public sbyte PowerbandScaling;
-            public sbyte RPMIncrease;
-            public byte PowerMultiplier;
-        }
+        public uint CarId;
+        public uint Price;
+        public byte Stage;
+        public sbyte PowerbandScaling;
+        public sbyte RPMIncrease;
+        public byte PowerMultiplier;
+    }
 
-        public TModel MapToModel<TModel>() where TModel : Models.Common.GenericEngineUpgrade, new() =>
+    public class GenericEngineUpgrade<TModel> : MappedDataStructure<GenericEngineUpgradeData, TModel> where TModel : Models.Common.GenericEngineUpgrade, new()
+    {
+        public override TModel MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new TModel
             {
                 CarId = data.CarId.ToCarName(),

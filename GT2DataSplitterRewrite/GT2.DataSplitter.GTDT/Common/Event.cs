@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using Models.Enums;
 
-    public class Event : MappedDataStructure<Event.Data>
+    public class Event : MappedDataStructure<Event.Data, Models.Common.Event>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x9C
         public struct Data
@@ -82,11 +82,11 @@ namespace GT2.DataSplitter.GTDT.Common
             public ushort CarRestrictionFlags; // (0x9a) flags to restrict the type of car you use for this race. 0x100 = non-race car, 0x200 = just race car
         }
 
-        public Models.Common.Event MapToModel(ASCIIStringTable strings) =>
+        public override Models.Common.Event MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.Event
             {
-                EventName = strings.Get(data.EventName),
-                TrackName = strings.Get(data.TrackName),
+                EventName = ascii.Get(data.EventName),
+                TrackName = ascii.Get(data.TrackName),
                 Opponent1 = data.Opponent1,
                 Opponent2 = data.Opponent2,
                 Opponent3 = data.Opponent3,
@@ -151,7 +151,7 @@ namespace GT2.DataSplitter.GTDT.Common
                 PrizeMoney5th = data.PrizeMoney5th,
                 PrizeMoney6th = data.PrizeMoney6th,
                 PrizeCars = data.PrizeCars,
-                TrackBannerPool = strings.Get(data.TrackBannerPool),
+                TrackBannerPool = ascii.Get(data.TrackBannerPool),
                 PSRestriction = data.PSRestriction,
                 SeriesChampBonus = data.SeriesChampBonus,
                 CarRestrictionFlags = data.CarRestrictionFlags

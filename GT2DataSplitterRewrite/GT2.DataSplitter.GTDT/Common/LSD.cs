@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class LSD : MappedDataStructure<LSD.Data>
+    public class LSD : MappedDataStructure<LSD.Data, Models.Common.LSD>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x20
         public struct Data
@@ -37,7 +37,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte MaxDecelRear;
         }
 
-        public Models.Common.LSD MapToModel() =>
+        public override Models.Common.LSD MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.LSD
             {
                 CarId = data.CarId.ToCarName(),

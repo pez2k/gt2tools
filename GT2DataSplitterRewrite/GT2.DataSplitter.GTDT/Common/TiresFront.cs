@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class TiresFront : MappedDataStructure<TiresFront.Data>
+    public class TiresFront : MappedDataStructure<TiresFront.Data, Models.Common.TiresFront>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x10
         public struct Data
@@ -21,7 +21,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte GripMultiplier;
         }
 
-        public Models.Common.TiresFront MapToModel() =>
+        public override Models.Common.TiresFront MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.TiresFront
             {
                 CarId = data.CarId.ToCarName(),

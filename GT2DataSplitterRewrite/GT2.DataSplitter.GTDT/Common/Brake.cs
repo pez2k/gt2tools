@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class Brake : MappedDataStructure<Brake.Data>
+    public class Brake : MappedDataStructure<Brake.Data, Models.Common.Brake>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0xC
         public struct Data
@@ -17,7 +17,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte RearBrakesUnknown;
         }
 
-        public Models.Common.Brake MapToModel() =>
+        public override Models.Common.Brake MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.Brake
             {
                 CarId = data.CarId.ToCarName(),

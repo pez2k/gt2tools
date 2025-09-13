@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class Flywheel : MappedDataStructure<Flywheel.Data>
+    public class Flywheel : MappedDataStructure<Flywheel.Data, Models.Common.Flywheel>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0xC
         public struct Data
@@ -17,7 +17,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte InertialWeight;
         }
 
-        public Models.Common.Flywheel MapToModel() =>
+        public override Models.Common.Flywheel MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.Flywheel
             {
                 CarId = data.CarId.ToCarName(),

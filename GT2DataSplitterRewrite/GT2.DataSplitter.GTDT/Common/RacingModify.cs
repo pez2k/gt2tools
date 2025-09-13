@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class RacingModify : MappedDataStructure<RacingModify.Data>
+    public class RacingModify : MappedDataStructure<RacingModify.Data, Models.Common.RacingModify>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x1C
         public struct Data
@@ -29,7 +29,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public ushort Width; // rm car width - in mm
         }
 
-        public Models.Common.RacingModify MapToModel() =>
+        public override Models.Common.RacingModify MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.RacingModify
             {
                 CarId = data.CarId.ToCarName(),

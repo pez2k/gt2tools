@@ -2,7 +2,7 @@
 
 namespace GT2.DataSplitter.GTDT.Common
 {
-    public class Wheel : MappedDataStructure<Wheel.Data>
+    public class Wheel : MappedDataStructure<Wheel.Data, Models.Common.Wheel>
     {
         private readonly string[] wheelManufacturers =
         [
@@ -29,7 +29,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte Unknown3; // always 2 for named, 0-3 for unnamed
         }
 
-        public Models.Common.Wheel MapToModel() =>
+        public override Models.Common.Wheel MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.Wheel
             {
                 WheelId = ToWheelName(data.WheelId),

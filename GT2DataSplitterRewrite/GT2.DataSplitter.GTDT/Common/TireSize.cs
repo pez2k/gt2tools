@@ -2,7 +2,7 @@
 
 namespace GT2.DataSplitter.GTDT.Common
 {
-    public class TireSize : MappedDataStructure<TireSize.Data>
+    public class TireSize : MappedDataStructure<TireSize.Data, Models.Common.TireSize>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x04
         public struct Data
@@ -13,7 +13,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte Padding;
         }
 
-        public Models.Common.TireSize MapToModel() =>
+        public override Models.Common.TireSize MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.TireSize
             {
                 DiameterInches = data.DiameterInches,

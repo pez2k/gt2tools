@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class Steer : MappedDataStructure<Steer.Data>
+    public class Steer : MappedDataStructure<Steer.Data, Models.Common.Steer>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x18
         public struct Data
@@ -29,7 +29,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte Unknown2;
         }
 
-        public Models.Common.Steer MapToModel() =>
+        public override Models.Common.Steer MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.Steer
             {
                 CarId = data.CarId.ToCarName(),

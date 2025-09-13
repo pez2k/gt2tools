@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class TurbineKit : MappedDataStructure<TurbineKit.Data>
+    public class TurbineKit : MappedDataStructure<TurbineKit.Data, Models.Common.TurbineKit>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x14
         public struct Data
@@ -25,7 +25,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte LowRPMPowerMultiplier;
         }
 
-        public Models.Common.TurbineKit MapToModel() =>
+        public override Models.Common.TurbineKit MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.TurbineKit
             {
                 CarId = data.CarId.ToCarName(),

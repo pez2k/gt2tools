@@ -1,10 +1,10 @@
 ﻿namespace GT2.DataSplitter.GTDT.Common
 {
-    public class TractionControlSystem : DataStructure
+    public class TractionControlSystem : DataStructureWithModel<Models.Common.TractionControlSystem>
     {
         public TractionControlSystem() => Size = 0x10;
 
-        public Models.Common.TractionControlSystem MapToModel() =>
+        public override Models.Common.TractionControlSystem MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.TractionControlSystem
             {
                 Data = rawData

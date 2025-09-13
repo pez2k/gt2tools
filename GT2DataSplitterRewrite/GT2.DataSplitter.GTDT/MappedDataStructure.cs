@@ -2,7 +2,7 @@
 
 namespace GT2.DataSplitter.GTDT
 {
-    public abstract class MappedDataStructure<TStructure> : DataStructure
+    public abstract class MappedDataStructure<TStructure, TModel> : DataStructureWithModel<TModel>
     {
         protected TStructure? data;
 

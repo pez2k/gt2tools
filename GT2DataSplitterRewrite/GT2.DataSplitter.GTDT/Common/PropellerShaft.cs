@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class PropellerShaft : MappedDataStructure<PropellerShaft.Data>
+    public class PropellerShaft : MappedDataStructure<PropellerShaft.Data, Models.Common.PropellerShaft>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0xC
         public struct Data
@@ -17,7 +17,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte Inertia2;
         }
 
-        public Models.Common.PropellerShaft MapToModel() =>
+        public override Models.Common.PropellerShaft MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.PropellerShaft
             {
                 CarId = data.CarId.ToCarName(),

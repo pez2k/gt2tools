@@ -1,10 +1,10 @@
 ﻿namespace GT2.DataSplitter.GTDT.LicenseData
 {
-    using Common;
-
-    public class TireCompoundLicense : TireCompound
+    public class TireCompoundLicense : DataStructureWithModel<Models.License.TireCompoundLicense>
     {
-        public override Models.License.TireCompoundLicense MapToModel() =>
+        public TireCompoundLicense() => Size = 0x40;
+
+        public override Models.License.TireCompoundLicense MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.License.TireCompoundLicense
             {
                 Data = rawData

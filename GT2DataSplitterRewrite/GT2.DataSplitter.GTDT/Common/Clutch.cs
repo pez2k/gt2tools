@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class Clutch : MappedDataStructure<Clutch.Data>
+    public class Clutch : MappedDataStructure<Clutch.Data, Models.Common.Clutch>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x10
         public struct Data
@@ -21,7 +21,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte Unknown2;
         }
 
-        public Models.Common.Clutch MapToModel() =>
+        public override Models.Common.Clutch MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.Clutch
             {
                 CarId = data.CarId.ToCarName(),

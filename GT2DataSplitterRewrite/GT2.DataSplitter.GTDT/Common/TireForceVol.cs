@@ -2,7 +2,7 @@
 
 namespace GT2.DataSplitter.GTDT.Common
 {
-    public class TireForceVol : MappedDataStructure<TireForceVol.Data>
+    public class TireForceVol : MappedDataStructure<TireForceVol.Data, Models.Common.TireForceVol>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x08
         public struct Data
@@ -17,7 +17,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte Padding;
         }
 
-        public Models.Common.TireForceVol MapToModel() =>
+        public override Models.Common.TireForceVol MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.TireForceVol
             {
                 TarmacGrip = data.TarmacGrip,

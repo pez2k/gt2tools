@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.GTModeRace
 {
     using CarNameConversion;
 
-    public class EnemyCars : MappedDataStructure<EnemyCars.Data>
+    public class EnemyCars : MappedDataStructure<EnemyCars.Data, Models.GTMode.EnemyCars>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x60
         public struct Data
@@ -73,7 +73,7 @@ namespace GT2.DataSplitter.GTDT.GTModeRace
             public ushort OpponentId; // 0x5e
         }
 
-        public Models.GTMode.EnemyCars MapToModel() =>
+        public override Models.GTMode.EnemyCars MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.GTMode.EnemyCars
             {
                 CarId = data.CarId.ToCarName(),

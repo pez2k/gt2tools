@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class Lightweight : MappedDataStructure<Lightweight.Data>
+    public class Lightweight : MappedDataStructure<Lightweight.Data, Models.Common.Lightweight>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0xC
         public struct Data
@@ -16,7 +16,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte Stage;
         }
 
-        public Models.Common.Lightweight MapToModel() =>
+        public override Models.Common.Lightweight MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.Lightweight
             {
                 CarId = data.CarId.ToCarName(),

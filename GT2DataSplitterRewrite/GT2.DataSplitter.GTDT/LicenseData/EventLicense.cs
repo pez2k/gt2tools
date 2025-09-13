@@ -3,13 +3,13 @@
     using Common;
     using Models.Enums;
 
-    public class EventLicense : MappedDataStructure<Event.Data>
+    public class EventLicense : MappedDataStructure<Event.Data, Models.License.EventLicense>
     {
-        public Models.License.EventLicense MapToModel(ASCIIStringTable strings) =>
+        public override Models.License.EventLicense MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.License.EventLicense
             {
-                EventName = strings.Get(data.EventName),
-                TrackName = strings.Get(data.TrackName),
+                EventName = ascii.Get(data.EventName),
+                TrackName = ascii.Get(data.TrackName),
                 Opponent1 = data.Opponent1,
                 Opponent2 = data.Opponent2,
                 Opponent3 = data.Opponent3,
@@ -74,7 +74,7 @@
                 PrizeMoney5th = data.PrizeMoney5th,
                 PrizeMoney6th = data.PrizeMoney6th,
                 PrizeCars = data.PrizeCars,
-                TrackBannerPool = strings.Get(data.TrackBannerPool),
+                TrackBannerPool = ascii.Get(data.TrackBannerPool),
                 PSRestriction = data.PSRestriction,
                 SeriesChampBonus = data.SeriesChampBonus,
                 CarRestrictionFlags = data.CarRestrictionFlags

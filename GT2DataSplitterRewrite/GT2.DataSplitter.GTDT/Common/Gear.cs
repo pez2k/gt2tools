@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class Gear : MappedDataStructure<Gear.Data>
+    public class Gear : MappedDataStructure<Gear.Data, Models.Common.Gear>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x24
         public struct Data
@@ -30,7 +30,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte MaxAutoSetting;
         }
 
-        public Models.Common.Gear MapToModel() =>
+        public override Models.Common.Gear MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.Gear
             {
                 CarId = data.CarId.ToCarName(),

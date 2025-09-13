@@ -5,7 +5,7 @@ namespace GT2.DataSplitter.GTDT.Common
     using CarNameConversion;
     using Models.Enums;
 
-    public class Drivetrain : MappedDataStructure<Drivetrain.Data>
+    public class Drivetrain : MappedDataStructure<Drivetrain.Data, Models.Common.Drivetrain>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x10
         public struct Data
@@ -25,7 +25,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte RearDriveInertia;
         }
 
-        public Models.Common.Drivetrain MapToModel() =>
+        public override Models.Common.Drivetrain MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.Drivetrain
             {
                 CarId = data.CarId.ToCarName(),

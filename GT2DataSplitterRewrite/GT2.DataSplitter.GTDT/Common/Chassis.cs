@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class Chassis : MappedDataStructure<Chassis.Data>
+    public class Chassis : MappedDataStructure<Chassis.Data, Models.Common.Chassis>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x14
         public struct Data
@@ -24,7 +24,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte Unknown8;
         }
 
-        public Models.Common.Chassis MapToModel() =>
+        public override Models.Common.Chassis MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.Chassis
             {
                 CarId = data.CarId.ToCarName(),

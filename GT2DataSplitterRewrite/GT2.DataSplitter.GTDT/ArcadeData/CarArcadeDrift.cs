@@ -2,9 +2,9 @@
 {
     using CarNameConversion;
 
-    public class CarArcadeDrift : CarArcadeRacing
+    public class CarArcadeDrift : MappedDataStructure<CarArcadeRacing.Data, Models.Arcade.CarArcadeDrift>
     {
-        public override Models.Arcade.CarArcadeDrift MapToModel() =>
+        public override Models.Arcade.CarArcadeDrift MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Arcade.CarArcadeDrift
             {
                 CarId = data.CarId.ToCarName(),

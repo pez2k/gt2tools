@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class NATune : MappedDataStructure<NATune.Data>
+    public class NATune : MappedDataStructure<NATune.Data, Models.Common.NATune>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x0C
         public struct Data
@@ -17,7 +17,7 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte PowerMultiplier;
         }
 
-        public Models.Common.NATune MapToModel() =>
+        public override Models.Common.NATune MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.NATune
             {
                 CarId = data.CarId.ToCarName(),

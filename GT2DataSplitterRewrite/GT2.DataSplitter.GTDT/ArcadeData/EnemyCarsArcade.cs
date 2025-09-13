@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.ArcadeData
 {
     using CarNameConversion;
 
-    public class EnemyCarsArcade : MappedDataStructure<EnemyCarsArcade.Data>
+    public class EnemyCarsArcade : MappedDataStructure<EnemyCarsArcade.Data, Models.Arcade.EnemyCarsArcade>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x60
         public struct Data
@@ -75,7 +75,7 @@ namespace GT2.DataSplitter.GTDT.ArcadeData
             public ushort OpponentId;
         }
 
-        public Models.Arcade.EnemyCarsArcade MapToModel() =>
+        public override Models.Arcade.EnemyCarsArcade MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Arcade.EnemyCarsArcade
             {
                 CarId = data.CarId.ToCarName(),

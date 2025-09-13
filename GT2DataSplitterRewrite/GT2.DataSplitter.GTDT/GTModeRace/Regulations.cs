@@ -2,7 +2,7 @@
 
 namespace GT2.DataSplitter.GTDT.GTModeRace
 {
-    public class Regulations : MappedDataStructure<Regulations.Data>
+    public class Regulations : MappedDataStructure<Regulations.Data, Models.GTMode.Regulations>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x80
         public struct Data
@@ -11,7 +11,7 @@ namespace GT2.DataSplitter.GTDT.GTModeRace
             public uint[] EligibleCarIds;
         }
 
-        public Models.GTMode.Regulations MapToModel() =>
+        public override Models.GTMode.Regulations MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.GTMode.Regulations
             {
                 EligibleCarIds = data.EligibleCarIds

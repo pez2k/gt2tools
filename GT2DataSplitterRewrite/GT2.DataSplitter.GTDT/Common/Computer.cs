@@ -1,6 +1,6 @@
 ﻿namespace GT2.DataSplitter.GTDT.Common
 {
-    public class Computer : GenericEngineUpgrade
+    public class Computer : GenericEngineUpgrade<Models.Common.Computer>
     {
     }
 }

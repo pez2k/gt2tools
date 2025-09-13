@@ -4,7 +4,7 @@ namespace GT2.DataSplitter.GTDT.Common
 {
     using CarNameConversion;
 
-    public class Engine : MappedDataStructure<Engine.Data>
+    public class Engine : MappedDataStructure<Engine.Data, Models.Common.Engine>
     {
         [StructLayout(LayoutKind.Sequential, Pack = 1)] // 0x4C
         public struct Data
@@ -59,13 +59,13 @@ namespace GT2.DataSplitter.GTDT.Common
             public byte TorqueCurvePoints; // the number of values in both arrays that are used in hp calculations
         }
 
-        public Models.Common.Engine MapToModel(UnicodeStringTable strings) =>
+        public override Models.Common.Engine MapToModel(UnicodeStringTable unicode, ASCIIStringTable ascii) =>
             new Models.Common.Engine
             {
                 CarId = data.CarId.ToCarName(),
-                LayoutName = strings.Get(data.LayoutName),
-                ValvetrainName = strings.Get(data.ValvetrainName),
-                Aspiration = strings.Get(data.Aspiration),
+                LayoutName = unicode.Get(data.LayoutName),
+                ValvetrainName = unicode.Get(data.ValvetrainName),
+                Aspiration = unicode.Get(data.Aspiration),
                 SoundFile = data.SoundFile,
                 TorqueCurve1 = data.TorqueCurve1,
                 TorqueCurve2 = data.TorqueCurve2,
@@ -87,7 +87,7 @@ namespace GT2.DataSplitter.GTDT.Common
                 DisplayedPower = data.DisplayedPower,
                 MaxPowerRPM = data.MaxPowerRPM,
                 DisplayedTorque = data.DisplayedTorque,
-                MaxTorqueRPMName = strings.Get(data.MaxTorqueRPMName),
+                MaxTorqueRPMName = unicode.Get(data.MaxTorqueRPMName),
                 PowerMultiplier = data.PowerMultiplier,
                 ClutchReleaseRPM = data.ClutchReleaseRPM,
                 IdleRPM = data.IdleRPM,
