@@ -62,5 +62,30 @@ namespace GT2BillboardEditor
                 AltBanners[i] = billboard;
             }
         }
+
+        public void WriteToFile(Stream file)
+        {
+            if (Name.Length >= 0x10)
+            {
+                throw new Exception($"Pool name '{Name}' is longer than the maximum of {0x10} characters");
+            }
+            long position = file.Position + 0x10;
+            file.WriteCharacters(Name);
+            file.Position = position;
+
+            WriteBillboardsToFile(file, WideBanners);
+            WriteBillboardsToFile(file, SquareLogos);
+            WriteBillboardsToFile(file, FlagBanners);
+            WriteBillboardsToFile(file, SmallBanners);
+            WriteBillboardsToFile(file, AltBanners);
+        }
+
+        private void WriteBillboardsToFile(Stream file, Billboard[] billboards)
+        {
+            foreach (Billboard billboard in billboards)
+            {
+                billboard.WriteToFile(file);
+            }
+        }
     }
 }

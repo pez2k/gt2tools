@@ -12,5 +12,11 @@ namespace GT2BillboardEditor
             Chance = file.ReadUShort();
             Brand = file.ReadUShort();
         }
+
+        public void WriteToFile(Stream file)
+        {
+            file.WriteUShort(Chance);
+            file.WriteUShort(Brand);
+        }
     }
 }
